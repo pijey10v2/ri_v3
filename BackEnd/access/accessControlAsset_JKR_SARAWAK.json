@@ -1,0 +1,4146 @@
+{
+    "Assistant Director (Road Asset)": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WB": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+
+        },
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Config" : true,
+                "ProjectWise 365" : true,
+                "ProjectWise" : true,
+                "Power BI" : true,
+                "Share Point": true
+            },
+            "Project": true
+        }
+    },
+    "Assistant Engineer (Division)": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WB": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        }
+        
+    },
+    "Asset Engineer Section": {
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": true
+            },
+            "WA": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true
+            },
+            "IVR": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DIV": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+
+        }
+        
+    },
+    "Civil Engineer (Division)": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WB": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+
+        }
+
+    },
+    "Contract Assistance": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": false
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": true,
+                "newClaimsP": true,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+
+        }
+
+    },
+    "Divisional Engineer": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WB": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        }
+    },
+    "Facility Management Department": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        }
+        
+    },
+    "Head of Contract": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": false
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": true,
+                "newClaimsP": true,
+                "newClaimsHQ": true,
+                "newClaimsPerHQ": true,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        }
+        
+    },
+    "Head of Finance": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": false
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        }
+        
+    },
+    "Head of Section": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": false
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": false,
+                "read": false,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        }
+        
+    },
+    "Senior Civil Engineer (Road Asset)": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        },
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Config" : true,
+                "ProjectWise 365" : true,
+                "ProjectWise" : true,
+                "Power BI" : true,
+                "Share Point": true
+            },
+            "Project": true
+        }
+        
+    },
+    "Technical Inspector Section": {
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        }
+        
+    }, 
+    "Quantity Surveyor": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": true,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": true,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": true,
+                "rejectedContracts": true,
+                "routineContractAmend" : true
+            },
+            "Claims": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": true,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        }
+    }, 
+    "Senior Quantity Surveyor": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        }
+    },
+    "KKR": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Asset": {
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WB": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        },
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Config" : true,
+                "ProjectWise 365" : true,
+                "ProjectWise" : true,
+                "Power BI" : true,
+                "Share Point": true
+            },
+            "Project": true
+        }
+    },
+    "Senior Civil Engineer (Division)": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        }
+        
+    },
+    "Civil Engineer (Road Asset)": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true,
+                "routineContractAmend" : false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "newClaimsP": false,
+                "newClaimsHQ": false,
+                "newClaimsPerHQ": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            },
+            "LU": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LURates": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "LULocation": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Asset": {
+            "RM": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PM": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EW": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "AM": {
+                "create": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DR": {
+                "create": true,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IVR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WO": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOE": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WDR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NCP": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAU": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CVT": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DRG": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PAVE": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RF": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+            
+        },
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Config" : true,
+                "ProjectWise 365" : true,
+                "ProjectWise" : true,
+                "Power BI" : true,
+                "Share Point": true
+            },
+            "Project": true
+        }
+        
+    }
+}

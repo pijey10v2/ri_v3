@@ -1,0 +1,458 @@
+body {
+  --shadow: #29292933;
+  --appButtonFont: rgb(148, 148, 148);
+  --primary-lighter: #62aced;
+  --primary-light: #58a7ec;
+  --primary: #1e88e5;
+  --primary-dim:#187ad0;
+  --primary-dimmer:#156cb9;
+  --background: #E1E2E1;
+  --surface: #F5F5F6;
+  --surface-opacity: #f5f5f6b3;
+  --arrow: #ffffffb3;
+  --top: #ffff;
+  --backdrop: #ffffff8c;
+  --on-primary: #ffffff;
+  --on-surface: #4d4d4d;
+  --on-error: #ffffff;
+  --text-weight: bold;
+  --text-url: blue;
+  --text-container: #3a3a3a14;
+  --text-container-readonly: rgb(45 45 45 / 14%);
+  --text-container-autofill: #e7e7e8;
+  --disabled: #c1c1c7;
+  --border-bottom: #dadada;
+  --loader1: #1e88e5;
+  --loader-dim: #166DBA;
+  --loader-dimmer: #11528C;
+  --wizard-iframe: #ffff;
+  --thumb: #cfcece96;
+  --thumb-track: #e6e4e483;
+  --thumb-hover: #cfcece;
+  --button-hover: rgb(255 255 255 / 90%);
+  --gantt-group: #f7f7f7;
+  --gantt-weekend: #3a3a3a14;
+  --tile-disabled: #3a3a3a14;
+  --top-transparent: rgba(255, 255, 255, 0.551);
+}
+
+body.dark {
+  --shadow: #29292933;
+  --appButtonFont: rgb(148, 148, 148);
+  --primary-lighter: #5d9ed9;
+  --primary-light: #1875c8;
+  --primary: #135ea0;
+  --primary-dim:#115490;
+  --primary-dimmer: #0f4b80;
+  --background: #0A0A0A;
+  --surface: #212121;
+  --surface-opacity: #212121b3;
+  --top: #363636;
+  --backdrop: #0000008c;
+  --on-primary: #E1E2E1;
+  --on-surface: #F5F5F6;
+  --on-error: #ffff;
+  --text-weight: 500;
+  --text-url: #8989f5;
+  --text-container: #050404;
+  --text-container-readonly: #2a2a2a;
+  --text-container-autofill: #3a3a3a;
+  --disabled: #1a1a1a;
+  --border-bottom: #5a5a5a;
+  --loader1: #135ea0;
+  --loader-dim: #105189;
+  --loader-dimmer: #0D4472;
+  --wizard-iframe: #3b3b3b73;
+  --thumb: #494848;
+  --thumb-track: #5c5c5c83;
+  --thumb-hover: #414040;
+  --button-hover: rgb(72 72 72 / 90%);
+  --gantt-group: #212121;
+  --gantt-weekend: #131313;
+  --tile-disabled: black;
+  --top-transparent: rgba(54, 54, 54, 0.469);
+}
+
+body.dark img {
+  filter: brightness(0.8) contrast(1.2);
+}
+
+body.darling {
+  --shadow: #29292933;
+  --appButtonFont: rgb(148, 148, 148);
+  --primary-lighter: #aa5f64;
+  --primary-light: #a8212a;
+  --primary: #861a22;
+  --primary-dim:#78171e;
+  --primary-dimmer: #6b141b;
+  --background: #f4cdd4;
+  --surface: #f7f2eb;
+  --surface-opacity: #f7f2ebb3;
+  --arrow: #ffffffb3;
+  --top: #ffff;
+  --backdrop: #FDF7F78c;
+  --on-primary: #ffffff;
+  --on-surface: #0b322b;
+  --on-error: #ffffff;
+  --text-weight: bold;
+  --text-url: blue;
+  --text-container: #3a3a3a14;
+  --text-container-readonly: rgb(45 45 45 / 14%);
+  --text-container-autofill: #e7e7e8;
+  --disabled: #dbc5a6;
+  --border-bottom: #dbc5a6;
+  --loader1: #861A22;
+  --loader-dim: #5B1217;
+  --loader-dimmer: #300A0C;
+  --wizard-iframe: #ffff;
+  --thumb: #dbc5a6;
+  --thumb-track: #dbc5a683;
+  --thumb-hover: #dabd94;
+  --button-hover: rgb(255 255 255 / 90%);
+  --gantt-group: #f7f7f7;
+  --gantt-weekend: #3a3a3a14;
+  --tile-disabled: #3a3a3a14;
+  --top-transparent: rgba(255, 255, 255, 0.551);
+}
+
+body.laser {
+  --shadow: #29292933;
+  --appButtonFont: rgb(148, 148, 148);
+  --primary-lighter: #6e61a1;
+  --primary-light: #594a93;
+  --primary: #301d78;
+  --primary-dim:#2b1a6c;
+  --primary-dimmer:#261760;
+  --background: #08040b;
+  --surface: #27214d;
+  --surface-opacity: #27214db3;
+  --arrow: #ffffffb3;
+  --top: #3c2496;
+  --backdrop: #20134F8c;
+  --on-primary: #d42450;
+  --on-surface: #00a7b5;
+  --on-error: #ffffff;
+  --text-weight: bold;
+  --text-url: #8989f5;
+  --text-container: #3a3a3a14;
+  --text-container-readonly: rgb(45 45 45 / 14%);
+  --text-container-autofill: #e7e7e8;
+  --disabled: #1f1a3e;
+  --border-bottom: #332682;
+  --loader1: #d42450;
+  --loader-dim: #A81D40;
+  --loader-dimmer: #7D152F;
+  --wizard-iframe: #ffff;
+  --thumb: #362691;
+  --thumb-track: #31296083;
+  --thumb-hover: #291d6e;
+  --button-hover: rgb(255 255 255 / 90%);
+  --gantt-group: #f7f7f7;
+  --gantt-weekend: #3a3a3a14;
+  --tile-disabled: #3a3a3a14;
+  --top-transparent: rgba(60, 36, 150, 0.469);
+}
+
+body.matcha {
+  --shadow: #29292933;
+  --appButtonFont: rgb(148, 148, 148);
+  --primary-lighter: #a1b17f;
+  --primary-light: #94af5f;
+  --primary: #789048;
+  --primary-dim:#6a7f40;
+  --primary-dimmer: #5c6e37;
+  --background: #eadab7;
+  --surface: #f0f0d8;
+  --surface-opacity: #f0f0d8b3;
+  --arrow: #ffffffb3;
+  --top: #ffffff;
+  --backdrop: #F6EEDE8c;
+  --on-primary: #f0f0d8;
+  --on-surface: #604848;
+  --on-error: #ffffff;
+  --text-weight: bold;
+  --text-url: blue;
+  --text-container: #3a3a3a14;
+  --text-container-readonly: rgb(45 45 45 / 14%);
+  --text-container-autofill: #e7e7e8;
+  --disabled: #d7d796;
+  --border-bottom: #c0d860;
+  --loader1: #789048;
+  --loader-dim: #5C6E37;
+  --loader-dimmer: #404C26;
+  --wizard-iframe: #ffff;
+  --thumb: #d7d796;
+  --thumb-track: #d7d79683;
+  --thumb-hover: #c7c783;
+  --button-hover: rgb(255 255 255 / 90%);
+  --gantt-group: #f7f7f7;
+  --gantt-weekend: #3a3a3a14;
+  --tile-disabled: #3a3a3a14;
+  --top-transparent: rgba(255, 255, 255, 0.469);
+}
+
+body {
+  background-color: var(--surface) !important;
+}
+
+html {
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: none !important;
+}
+
+body {
+  overflow: hidden !important; /* Temporarily remove for full screen fit */
+}
+
+#lOne {
+  overflow-y: auto;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.charts-container > .highcharts {
+  margin-bottom: 12px;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ri-dash-block-2, .ri-dash-block-3 {
+  height: 100% !important;
+}
+
+#paymentChart, #demolisedChart, #offerIssuedChart {
+  height: calc(100% - 40px);
+}
+
+.container-fluid > .row:last-child {
+  margin-bottom: 0;
+}
+
+.ri-dash-block-1, .ri-dash-block-2, .ri-dash-block-3 {
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.ri-dash-round {
+  border-radius: 5px;
+}
+
+.ri-dash-header {
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: bold;
+  padding: 10px 15px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.ri-dash-round-top {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.ri-dash-content-body.ri-dash-two-col {
+  display: flex;
+  padding: 15px;
+  flex-wrap: nowrap;
+}
+
+.ri-dash-chart-col {
+  flex-grow: 1;
+  margin-right: 15px;
+}
+
+.ri-dash-stats-col {
+  flex-shrink: 0;
+}
+
+.ri-dash-info-card {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.ri-dash-info-card .head {
+  font-size: 14px;
+  font-weight: normal;
+  margin-bottom: 5px;
+  opacity: 0.8;
+}
+
+.ri-dash-info-card span {
+  font-size: 24px;
+  font-weight: bold;
+  display: block;
+}
+
+.ri-dash-placeholder {
+  height: 100%;
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showLabel {
+  font-size: 10px;
+  display: none;
+}
+
+.highcharts-menu > li {
+  list-style: none !important;
+}
+
+.clickableCard {
+  cursor: pointer;
+}
+
+.table-font {
+  font-size: 12px !important;
+  overflow-y: auto;
+}
+
+@media screen and (min-height: 924px) {
+  .table-font {
+    font-size: 15px !important;
+  }
+}
+@media screen and (max-width: 1366px) {
+  .table-font {
+    font-size: 12px !important;
+  }
+}
+@media print {
+  .labelRotate {
+    filter: drop-shadow(-1px 0 black) drop-shadow(0 1px black) drop-shadow(1px 0 black) drop-shadow(0 -1px black);
+  }
+}
+.clickableCard {
+  cursor: pointer;
+}
+
+:fullscreen {
+  background: #ffffff !important;
+}
+
+.ri-dash-info-card-2 {
+  margin-bottom: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.ri-dash-info-card-2 .head {
+  background: var(--primary);
+  font-size: 14px;
+  color: white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 5px;
+}
+
+.ri-dash-info-card-2 .data {
+  font-size: 14px;
+  font-weight: bold;
+  background: white;
+}
+
+.background {
+  background: var(--surface);
+}
+
+.highcharts-button-box {
+  fill: transparent;
+}
+
+.highcharts-background {
+  fill: var(--surface);
+}
+
+.highcharts-title {
+  color: var(--on-surface) !important;
+}
+
+text {
+  color: var(--on-surface);
+  fill: var(--on-surface) !important;
+  font-weight: var(--text-weight) !important;
+}
+text tspan {
+  stroke: none;
+  font-weight: 400 !important;
+}
+
+.highcharts-stack-labels text,
+.highcharts-data-label text {
+  fill: #000000 !important; /* Forces black color in SVG */
+  stroke: none !important; /* Removes any potential stroke/outline */
+  stroke-width: 0 !important;
+}
+
+.highcharts-stack-labels,
+.highcharts-data-label {
+  opacity: 1 !important; /* Ensure visibility */
+}
+
+.highcharts-container text {
+  fill: #000000 !important;
+}
+
+.highcharts-data-labels span {
+  color: var(--on-surface) !important;
+  fill: var(--on-surface) !important;
+}
+
+.highcharts-grid-line, .highcharts-axis-line {
+  stroke: var(--border-bottom);
+}
+
+.highcharts-minor-grid-line {
+  stroke: var(--thumb-track);
+}
+
+path.highcharts-label-box.highcharts-tooltip-box {
+  fill: var(--top-transparent) !important;
+  stroke: var(--primary) !important;
+}
+
+.highcharts-label.highcharts-tooltip span {
+  color: var(--on-surface);
+}
+
+.highcharts-menu {
+  background: var(--top) !important;
+  border: 1px solid var(--border-bottom) !important;
+  box-shadow: var(--shadow) 3px 3px 10px !important;
+}
+
+.highcharts-menu-item {
+  color: var(--on-surface) !important;
+  background: var(--top) !important;
+}
+
+.highcharts-menu-item:hover {
+  color: var(--on-primary) !important;
+  background: var(--primary) !important;
+}/*# sourceMappingURL=dashboard_land.css.map */

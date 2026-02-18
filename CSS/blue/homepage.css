@@ -1,0 +1,245 @@
+.nav-bar ul button {
+  position: absolute;
+  right: 20px;
+  height: 35px;
+  padding: 0 10px 0 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  border-style: none;
+}
+.nav-bar ul button img {
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.documentation-page#homepage {
+  display: block;
+  padding: 0px;
+  margin: 0px;
+  top: 70px;
+  position: absolute;
+  height: calc(100% - 70px);
+  width: 100%;
+  background: white;
+}
+.documentation-page#homepage #sidebar-documentation {
+  position: absolute;
+  height: 100%;
+  width: 380px;
+  background: rgb(54, 54, 54);
+  box-shadow: 7px 0px 10px 0px rgba(0, 0, 0, 0.664);
+  line-height: 2;
+  overflow: auto;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container {
+  height: auto;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-homelayer {
+  list-style: none;
+  margin-left: 20px;
+  padding: 0px;
+  margin-top: 5px;
+  margin-bottom: 0;
+  line-height: 2.5;
+  margin-right: 20px;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-homelayer li a.non-expandable {
+  color: white;
+  margin-left: 5px;
+  text-decoration: none;
+  display: inline-flex;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-homelayer li img.non-expandable {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-homelayer li:hover {
+  background: grey;
+  cursor: pointer;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer {
+  list-style: none;
+  margin-left: 20px;
+  padding: 0px;
+  line-height: 2.5;
+  margin-top: 0px;
+  margin-right: 20px;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer li a.expandable {
+  color: white;
+  margin-left: 5px;
+  text-decoration: none;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer li a.non-expandable {
+  color: white;
+  margin-left: 25px;
+  text-decoration: none;
+  display: inline-flex;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer li img.non-expandable {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  display: none;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer li img.expandable {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer li:hover {
+  background: grey;
+  cursor: pointer;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .firstlayer-button {
+  display: block;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer {
+  display: none;
+  list-style: none;
+  margin-left: 25px;
+  padding: 0px;
+  line-height: 2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .secondlayer-button.non-expandable.active {
+  background: grey;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer li a.expandable {
+  color: white;
+  margin-left: 10px;
+  text-decoration: none;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer li a.non-expandable {
+  color: white;
+  margin-left: 25px;
+  text-decoration: none;
+  display: inline-flex;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer li img.non-expandable {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  display: none;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer li img.expandable {
+  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer li:hover {
+  background: grey;
+  cursor: pointer;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer {
+  display: none;
+  list-style: none;
+  margin-left: 30px;
+  padding: 0px;
+  line-height: 2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer .thirdlayer-button.active {
+  background: grey;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer li a.expandable {
+  color: white;
+  margin-left: 5px;
+  text-decoration: none;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer li a.non-expandable {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  display: inline-flex;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer li img.non-expandable {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  display: none;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer li img.expandable {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer li:hover {
+  background: grey;
+  cursor: pointer;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer .sidebar-fourthlayer {
+  display: none;
+  list-style: none;
+  margin-left: 45px;
+  padding: 0px;
+  line-height: 2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer .sidebar-fourthlayer li a.expandable {
+  color: white;
+  margin-left: 5px;
+  text-decoration: none;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer .sidebar-fourthlayer li a.non-expandable {
+  color: white;
+  margin-left: 25px;
+  text-decoration: none;
+  display: inline-flex;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer .sidebar-fourthlayer li img.non-expandable {
+  display: none;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer .sidebar-fourthlayer li img.expandable {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+.documentation-page#homepage #sidebar-documentation .sidebar-container .sidebar-firstlayer .sidebar-secondlayer .sidebar-thirdlayer .sidebar-fourthlayer li:hover {
+  background: grey;
+  cursor: pointer;
+}
+.documentation-page#homepage #main-documentation {
+  position: absolute;
+  width: calc(100% - 415px);
+  left: 405px;
+  overflow-y: auto;
+  height: calc(100vh - 72px);
+}
+.documentation-page#homepage #main-documentation .main-container#homepage {
+  width: calc(100% - 30px);
+  padding: 10px 5px;
+}
+.documentation-page#homepage #main-documentation .main-container#homepage .container-header {
+  border-bottom: 1px solid gray;
+}
+.documentation-page#homepage #main-documentation .main-container#homepage .container-content p {
+  text-align: justify;
+}
+.documentation-page#homepage #main-documentation .main-container#homepage .container-content img {
+  position: relative;
+  width: calc(100% - 30px);
+  padding: 10px;
+}/*# sourceMappingURL=homepage.css.map */

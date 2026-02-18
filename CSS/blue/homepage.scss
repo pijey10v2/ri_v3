@@ -1,0 +1,261 @@
+.nav-bar ul{
+    button{
+        position: absolute;
+        right: 20px;
+        height: 35px;
+        padding: 0 10px 0 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        border-style: none;
+        img{
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+    }
+
+}
+
+.documentation-page#homepage{
+    display: block;
+    padding:0px;
+    margin:0px;
+    top:70px;
+    position:absolute;
+    height: calc(100% - 70px);
+    width: 100%;
+    background: white;
+    #sidebar-documentation{
+        position:absolute;
+        height: 100%;
+        width: 380px;
+        background: rgb(54, 54, 54);
+        box-shadow:7px 0px 10px 0px rgba(0, 0, 0, 0.664);
+        line-height: 2;
+        overflow:auto;
+        .sidebar-container{
+            height: auto;
+            .sidebar-homelayer{
+                list-style: none;
+                margin-left:20px;
+                padding:0px;
+                margin-top: 5px;
+                margin-bottom: 0;
+                line-height: 2.5;
+                margin-right: 20px;
+                li{
+                    a.non-expandable{
+                        color:white;
+                        margin-left:5px;
+                        text-decoration:none; 
+                        display: inline-flex;
+                        vertical-align: middle;
+                        line-height: 1.2;
+                    } 
+                    img.non-expandable{
+                        vertical-align: middle;
+                        width:20px;
+                        height:20px;
+                        display: inline-flex;
+                    }
+                    &:hover{
+                        background: grey;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .sidebar-firstlayer{
+                list-style: none;
+                margin-left:20px;
+                padding:0px;
+                line-height: 2.5;
+                margin-top: 0px;
+                margin-right: 20px;
+                li{
+                    a.expandable{
+                        color:white;
+                        margin-left:5px;
+                        text-decoration:none; 
+                        vertical-align: middle;
+                        line-height: 1.2;
+                    }
+                    a.non-expandable{
+                        color:white;
+                        margin-left:25px;
+                        text-decoration:none; 
+                        display: inline-flex;
+                        vertical-align: middle;
+                        line-height: 1.2;
+                    } 
+                    img.non-expandable{
+                        vertical-align: middle;
+                        width:20px;
+                        height:20px;
+                        display: none;
+                    }
+                    img.expandable{
+                        vertical-align: middle;
+                        width:20px;
+                        height:20px;
+                    }
+                    &:hover{
+                        background: grey;
+                        cursor: pointer;
+                    }
+                }
+                .firstlayer-button{
+                    display:block;
+                }
+                .sidebar-secondlayer{
+                    display:none;
+                    list-style: none;
+                    margin-left:25px;
+                    padding:0px;
+                    line-height: 2;
+                    .secondlayer-button.non-expandable.active{
+                        background: grey;
+                    }
+                    li{
+                        a.expandable{
+                            color:white;
+                            margin-left:10px;
+                            text-decoration:none; 
+                            vertical-align: middle;
+                            line-height: 1.2;
+                        }
+                        a.non-expandable{
+                            color:white;
+                            margin-left:25px;
+                            text-decoration:none; 
+                            display: inline-flex;
+                            vertical-align: middle;
+                            line-height: 1.2;
+                        }  
+                        img.non-expandable{
+                            vertical-align: middle;
+                            width:20px;
+                            height:20px;
+                            display: none;
+                        }
+                        img.expandable{
+                            vertical-align: middle;
+                            width:15px;
+                            height:15px;
+                        }
+                        &:hover{
+                            background: grey;
+                            cursor: pointer;
+                        }
+                    }
+                    .sidebar-thirdlayer{
+                        display:none;
+                        list-style: none;
+                        margin-left:30px;
+                        padding:0px;
+                        line-height: 2;
+                        .thirdlayer-button.active{
+                            background: grey;
+                        }
+                        li{
+                            a.expandable{
+                                color:white;
+                                margin-left:5px;
+                                text-decoration:none; 
+                                vertical-align: middle;
+                                line-height: 1.2;
+                            }
+                            a.non-expandable{
+                                color:white;
+                                margin-left:20px;
+                                text-decoration:none; 
+                                display: inline-flex;
+                                vertical-align: middle;
+                                line-height: 1.2;
+                            } 
+                            img.non-expandable{
+                                vertical-align: middle;
+                                width:20px;
+                                height:20px;
+                                display: none;
+                            }
+                            img.expandable{
+                                vertical-align: middle;
+                                width:20px;
+                                height:20px;
+                            }
+                            &:hover{
+                                background: grey;
+                                cursor: pointer;
+                            }
+                        }
+                        .sidebar-fourthlayer{
+                            display:none;
+                            list-style: none;
+                            margin-left:45px;
+                            padding:0px;
+                            line-height: 2;
+                            li{
+                                a.expandable{
+                                    color:white;
+                                    margin-left:5px;
+                                    text-decoration:none; 
+                                    vertical-align: middle;
+                                    line-height: 1.2;
+                                }
+                                a.non-expandable{
+                                    color:white;
+                                    margin-left:25px;
+                                    text-decoration:none; 
+                                    display: inline-flex;
+                                    vertical-align: middle;
+                                    line-height: 1.2;
+                                } 
+                                img.non-expandable{
+                                    display: none;
+                                    vertical-align: middle;
+                                    width:20px;
+                                    height:20px;
+                                }
+                                img.expandable{
+                                    vertical-align: middle;
+                                    width:20px;
+                                    height:20px;
+                                }
+                                &:hover{
+                                    background: grey;
+                                    cursor: pointer;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #main-documentation{
+        position: absolute;
+        width: calc(100% - 415px);
+        left: 405px;
+        overflow-y: auto;
+        height: calc(100vh - 72px);
+        .main-container#homepage{
+            width: calc(100% - 30px);
+            padding: 10px 5px;
+            .container-header{
+                border-bottom: 1px solid gray;
+            }
+            .container-content{
+                p{
+                    text-align: justify;
+                }
+                img{
+                    position: relative;
+                    width: calc(100% - 30px);
+                    padding: 10px;
+                }
+            }
+        }
+        
+    }
+}

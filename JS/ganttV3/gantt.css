@@ -1,0 +1,1080 @@
+/* Sample CSS for jsGanttImproved v1.8.0 */
+body {
+  --shadow: #29292933;
+  --appButtonFont: rgb(148, 148, 148);
+  --primary-lighter: #62aced;
+  --primary-light: #58a7ec;
+  --primary: #1e88e5;
+  --primary-dim:#187ad0;
+  --primary-dimmer:#156cb9;
+  --background: #E1E2E1;
+  --surface: #F5F5F6;
+  --surface-opacity: #f5f5f6b3;
+  --arrow: #ffffffb3;
+  --top: #ffff;
+  --backdrop: #ffffff8c;
+  --on-primary: #ffffff;
+  --on-surface: #4d4d4d;
+  --on-error: #ffffff;
+  --text-weight: bold;
+  --text-url: blue;
+  --text-container: #3a3a3a14;
+  --text-container-readonly: rgb(45 45 45 / 14%);
+  --text-container-autofill: #e7e7e8;
+  --disabled: #c1c1c7;
+  --border-bottom: #dadada;
+  --loader1: #1e88e5;
+  --loader-dim: #166DBA;
+  --loader-dimmer: #11528C;
+  --wizard-iframe: #ffff;
+  --thumb: #cfcece96;
+  --thumb-track: #f1f1f1;
+  --thumb-hover: #cfcece;
+  --button-hover: rgb(255 255 255 / 90%);
+  --gantt-group: #f7f7f7;
+  --gantt-weekend: #3a3a3a14;
+  --tile-disabled: #3a3a3a14;
+  --top-transparent: rgba(255, 255, 255, 0.551);
+}
+
+body.dark {
+--shadow: #29292933;
+--appButtonFont: rgb(148, 148, 148);
+--primary-lighter: #5d9ed9;
+--primary-light: #1875c8;
+--primary: #135ea0;
+--primary-dim:#115490;
+--primary-dimmer: #0f4b80;
+--background: #0A0A0A;
+--surface: #212121;
+--surface-opacity: #212121b3;
+--top: #363636;
+--backdrop: #0000008c;
+--on-primary: #E1E2E1;
+--on-surface: #F5F5F6;
+--on-error: #ffff;
+--text-weight: 500;
+--text-url: #8989f5;
+--text-container: #050404;
+--text-container-readonly: #2a2a2a;
+--text-container-autofill: #3a3a3a;
+--disabled: #1a1a1a;
+--border-bottom: #5a5a5a;
+--loader1: #135ea0;
+--loader-dim: #105189;
+--loader-dimmer: #0D4472;
+--wizard-iframe: #3b3b3b73;
+--thumb: #494848;
+--thumb-track: #5c5c5c;
+--thumb-hover: #414040;
+--button-hover: rgb(72 72 72 / 90%);
+--gantt-group: #212121;
+--gantt-weekend: #131313;
+--tile-disabled: black;
+--top-transparent: rgba(54, 54, 54, 0.469);
+}
+
+body.dark img {
+filter: brightness(0.8) contrast(1.2);
+}
+
+body.darling {
+--shadow: #29292933;
+--appButtonFont: rgb(148, 148, 148);
+--primary-lighter: #aa5f64;
+--primary-light: #a8212a;
+--primary: #861a22;
+--primary-dim:#78171e;
+--primary-dimmer: #6b141b;
+--background: #f4cdd4;
+--surface: #f7f2eb;
+--surface-opacity: #f7f2ebb3;
+--arrow: #ffffffb3;
+--top: #ffff;
+--backdrop: #FDF7F78c;
+--on-primary: #ffffff;
+--on-surface: #0b322b;
+--on-error: #ffffff;
+--text-weight: bold;
+--text-url: blue;
+--text-container: #3a3a3a14;
+--text-container-readonly: rgb(45 45 45 / 14%);
+--text-container-autofill: #e7e7e8;
+--disabled: #dbc5a6;
+--border-bottom: #dbc5a6;
+--loader1: #861A22;
+--loader-dim: #5B1217;
+--loader-dimmer: #300A0C;
+--wizard-iframe: #ffff;
+--thumb: #dbc5a6;
+--thumb-track: #dbc5a683;
+--thumb-hover: #dabd94;
+--button-hover: rgb(255 255 255 / 90%);
+--gantt-group: #f7f7f7;
+--gantt-weekend: #3a3a3a14;
+--tile-disabled: #3a3a3a14;
+--top-transparent: rgba(255, 255, 255, 0.551);
+}
+
+body.laser {
+--shadow: #29292933;
+--appButtonFont: rgb(148, 148, 148);
+--primary-lighter: #6e61a1;
+--primary-light: #594a93;
+--primary: #301d78;
+--primary-dim:#2b1a6c;
+--primary-dimmer:#261760;
+--background: #08040b;
+--surface: #27214d;
+--surface-opacity: #27214db3;
+--arrow: #ffffffb3;
+--top: #3c2496;
+--backdrop: #20134F8c;
+--on-primary: #d42450;
+--on-surface: #00a7b5;
+--on-error: #ffffff;
+--text-weight: bold;
+--text-url: #8989f5;
+--text-container: #3a3a3a14;
+--text-container-readonly: rgb(45 45 45 / 14%);
+--text-container-autofill: #e7e7e8;
+--disabled: #1f1a3e;
+--border-bottom: #312960;
+--loader1: #d42450;
+--loader-dim: #A81D40;
+--loader-dimmer: #7D152F;
+--wizard-iframe: #ffff;
+--thumb: #362691;
+--thumb-track: #31296083;
+--thumb-hover: #291d6e;
+--button-hover: rgb(255 255 255 / 90%);
+--gantt-group: #f7f7f7;
+--gantt-weekend: #3a3a3a14;
+--tile-disabled: #3a3a3a14;
+--top-transparent: rgba(60, 36, 150, 0.469);
+}
+
+body.matcha {
+  --shadow: #29292933;
+  --appButtonFont: rgb(148, 148, 148);
+  --primary-lighter: #a1b17f;
+  --primary-light: #94af5f;
+  --primary: #789048;
+  --primary-dim:#6a7f40;
+  --primary-dimmer: #5c6e37;
+  --background: #eadab7;
+  --surface: #f0f0d8;
+  --surface-opacity: #f0f0d8b3;
+  --arrow: #ffffffb3;
+  --top: #ffffff;
+  --backdrop: #F6EEDE8c;
+  --on-primary: #f0f0d8;
+  --on-surface: #604848;
+  --on-error: #ffffff;
+  --text-weight: bold;
+  --text-url: blue;
+  --text-container: #3a3a3a14;
+  --text-container-readonly: rgb(45 45 45 / 14%);
+  --text-container-autofill: #e7e7e8;
+  --disabled: #d7d796;
+  --border-bottom: #c0d860;
+  --loader1: #789048;
+  --loader-dim: #5C6E37;
+  --loader-dimmer: #404C26;
+  --wizard-iframe: #ffff;
+  --thumb: #d7d796;
+  --thumb-track: #d7d79683;
+  --thumb-hover: #c7c783;
+  --button-hover: rgb(255 255 255 / 90%);
+  --gantt-group: #f7f7f7;
+  --gantt-weekend: #3a3a3a14;
+  --tile-disabled: #3a3a3a14;
+  --top-transparent: rgba(255, 255, 255, 0.469);
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background); 
+  border-radius: 10px;
+  }
+  
+::-webkit-scrollbar-thumb {
+background: var(--primary);
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dimmer); 
+  cursor: grab;
+}
+
+@-moz-document url-prefix() {
+  * {
+      scrollbar-color: var(--primary) var(--background);
+      scrollbar-width: thin;
+  }
+}
+
+div.gantt {
+    font-family: tahoma, arial, verdana, Sans-serif;
+    font-size: 10px;
+    color: #656565;
+  }
+  
+  .gantt table {
+    border-collapse: collapse;
+    white-space: nowrap;
+  }
+  
+  .gantt td {
+    padding: 0px;
+  }
+  
+  /* cell defaults */
+  
+  .gmajorheading,
+  .gminorheading,
+  .gminorheadingwkend,
+  .gtaskcell,
+  .gtaskcellwkend {
+    height: 19px;
+    font-size: 12px;
+    border: var(--border-bottom) 1px solid;
+    text-align: center;
+    cursor: default
+  }
+  
+  .gtasklist {
+    height: 19px;
+    min-width: 5px;
+    max-width: 5px;
+    width: 5px;
+    border: var(--border-bottom) 1px solid;
+    border-right: none;
+  }
+  
+  /* all three width values set just to make sure - helps resizing code */
+  
+  /* Additional values for some cell elements */
+  
+  .gtaskheading,
+  .gmajorheading,
+  .gminorheading {
+    background-color: var(--top);
+    font-weight: bold;
+    font-size: 9px;
+    white-space: nowrap;
+    color: var(--on-surface);
+  }
+  
+  .gtaskcellwkend,
+  .gminorheadingwkend {
+    background-color: var(--gantt-weekend);
+    font-weight: bold;
+    font-size: 9px;
+    white-space: nowrap;
+    color: var(--on-surface);
+  }
+  
+  td.gtaskcell {
+    text-align: left
+  }
+  
+  td.gspanning {
+    border-left: none;
+    border-right: none;
+  }
+  
+  .gtaskcelldiv {
+    position: relative;
+  }
+  
+  /* Task list defaults */
+  
+  .gtaskheading,
+  .gname,
+  .gtaskname,
+  .gresource,
+  .gduration,
+  .gpccomplete,
+  .gstartdate,
+  .gplanstartdate,
+  .gplanenddate,
+  .gcost,
+  .genddate,
+  .gtotalslack,
+  .gbasestart,
+  .gbasefinish {
+    height: 18px;
+    white-space: nowrap;
+    border: var(--border-bottom) 1px solid;
+  }
+  
+  .gtaskbarcontainer.gplan {
+    position: absolute !important;
+    top: 0px;
+    opacity: 0.3;
+    background: white;
+    z-index: 10000;
+    border: 1px solid black;
+  }
+  
+  /* Additional values for some task list elements */
+  
+  /* needed for IE8 */
+  
+  .gstartdate div,
+  .gplanstartdate,
+  .gplanenddate,
+  .gstartdate,
+  .genddate,
+  .gtotalslack,
+  .gbasestart,
+  .gbasefinish {
+    text-align: center;
+    min-width: 70px;
+    width: 105px;
+    max-width: 105px;
+    font-size: 10px;
+  }
+  
+  .gtaskheading {
+    text-align: center;
+  }
+  
+  .gtaskname div,
+  /* needed for IE8 */
+  
+  .gtaskname {
+    min-width: 170px;
+    max-width: 250px;
+    width: fit-content;
+    font-size: 9px;
+    border-left: none;
+  }
+  
+  .gtaskheading,
+  .gtaskname {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  
+  .gselector {
+    text-align: left;
+    white-space: nowrap;
+    min-width: 170px;
+    max-width: 250px;
+    width: fit-content;
+    color: var(--on-surface);
+  }
+  
+  .gformlabel {
+    position: relative;
+    top: 0px;
+    cursor: pointer;
+    border: var(--top) 1px solid;
+    margin-left: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
+    color: var(--on-surface)
+  }
+  
+  span.gformlabel:hover,
+  span.gselected {
+    background-color: var(--border-bottom);
+    border: var(--border-bottom) 1px solid;
+  }
+  
+  span.gfoldercollapse {
+    color: var(--on-surface);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: Courier, "Courier New", monospace;
+  }
+  
+  .gtasktableh,
+  .gtasktable {
+    border-right: var(--border-bottom) 1px solid;
+  }
+  
+  .gcharttableh,
+  .gtasktableh,
+  .gtasktable,
+  .gcharttable {
+    border-collapse: collapse;
+  }
+  
+  .gcharttable {
+    border: var(--border-bottom) 1px solid;
+  }
+  
+  /* for some reason firefox needs this */
+  
+  /* Differentiate Group, Milestone and Ordinary task items (applied to row) */
+  
+  .ggroupitem {
+    background-color: var(--gantt-group);
+    font-weight: bold;
+    color: var(--on-surface);
+  }
+  
+  .gmileitem,
+  .glineitem {
+    background-color: var(--top);
+    color: var(--on-surface);
+  }
+  
+  /* highlight row (applied to row) */
+  
+  .gitemhighlight td {
+    background-image: none;
+    background-color: #dadada83;
+  }
+  
+  /* task bar caption text styles */
+  
+  .gmilecaption,
+  .ggroupcaption,
+  .gcaption {
+    font-weight: normal;
+    font-size: 9px;
+    text-align: left;
+    white-space: nowrap;
+    top: 1px;
+    position: absolute;
+    top: 2px;
+  }
+  
+  .ggroupcaption,
+  .gcaption {
+    right: -126px;
+  }
+  
+  /* Task complete %age bar shared attributes */
+  
+  .gtaskcomplete {
+    float: left;
+    overflow: hidden;
+  }
+  
+  /* Task complete %age bar */
+  
+  .gtaskcomplete {
+    height: 5px;
+    background-color: #000000;
+    margin-top: 4px;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+  }
+  
+  /* Milestones */
+  
+  .gmilestone {
+    font-size: 14px;
+    position: absolute;
+    top: -2px;
+  }
+  
+  .gmdtop {
+    top: 2px;
+    overflow: hidden;
+    width: 0px;
+    height: 0px;
+    border-bottom: 5px solid black;
+    border-left: 5px solid transparent;
+    border-top: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+  
+  .gmdbottom {
+    top: 2px;
+    overflow: hidden;
+    width: 0px;
+    height: 0px;
+    border-top: 5px solid black;
+    border-left: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+  
+  /* Task bar shared attributes */
+  
+  .ggroupblack,
+  .gtaskblue,
+  .gtaskred,
+  .gtaskgreen,
+  .gtaskyellow,
+  .gtaskpurple,
+  .gtaskpink {
+    height: 13px;
+    filter: alpha(opacity=90);
+    opacity: 0.9;
+    margin-top: 1px;
+  }
+  
+  /* Task bars - ggroupblack is set as the default class on the task if it is undefined */
+  
+  .ggroupblack {
+    height: 7px;
+    background: var(--on-surface);
+    margin-top: 2px;
+  }
+  
+  .ggroupblackendpointleft {
+    overflow: hidden;
+    width: 0px;
+    height: 0px;
+    top: 2px;
+    border-top: 4px solid var(--on-surface);
+    border-left: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 4px solid transparent;
+    float: left;
+  }
+  
+  .ggroupblackendpointright {
+    overflow: hidden;
+    width: 0px;
+    height: 0px;
+    top: 2px;
+    border-top: 4px solid black;
+    border-left: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 4px solid transparent;
+    float: right;
+  }
+  
+  .ggroupblackcomplete {
+    float: left;
+    overflow: hidden;
+    height: 3px;
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+    background-color: #777777;
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  
+  .gtaskblue {
+    background: var(--primary);
+    /* Old browsers */
+    /* background: linear-gradient(to bottom, rgba(58, 132, 195, 1) 0%, rgba(65, 154, 214, 1) 20%, rgba(75, 184, 240, 1) 40%, rgba(58, 139, 194, 1) 70%, rgba(38, 85, 139, 1) 100%); */
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4bb8f0', endColorstr='#3a84c3', GradientType=0);
+    /* IE6-9 */
+  }
+  
+  .gtaskred {
+    background: rgb(196, 58, 58);
+    /* Old browsers */
+    background: linear-gradient(to bottom, rgba(196, 58, 58, 1) 0%, rgba(211, 65, 65, 1) 20%, rgba(239, 76, 76, 1) 40%, rgba(196, 58, 58, 1) 70%, rgba(135, 37, 37, 1) 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ef4c4c', endColorstr='#c43a3a', GradientType=0);
+    /* IE6-9 */
+  }
+  
+  .gtaskgreen {
+    background: rgb(80, 193, 58);
+    /* Old browsers */
+    background: linear-gradient(to bottom, rgba(80, 193, 58, 1) 0%, rgba(88, 209, 64, 1) 20%, rgba(102, 237, 75, 1) 40%, rgba(80, 193, 58, 1) 70%, rgba(53, 132, 37, 1) 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66ED4B', endColorstr='#50c13a', GradientType=0);
+    /* IE6-9 */
+  }
+  
+  .gtaskyellow {
+    background: rgb(247, 228, 56);
+    /* Old browsers */
+    background: linear-gradient(to bottom, rgba(247, 228, 56, 1) 0%, rgba(239, 239, 55, 1) 20%, rgba(255, 255, 58, 1) 40%, rgba(242, 236, 55, 1) 70%, rgba(241, 218, 54, 1) 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffff3a', endColorstr='#f7e438', GradientType=0);
+    /* IE6-9 */
+  }
+  
+  .gtaskpurple {
+    background: rgb(193, 58, 193);
+    /* Old browsers */
+    background: linear-gradient(to bottom, rgba(193, 58, 193, 1) 0%, rgba(211, 65, 211, 1) 20%, rgba(239, 76, 239, 1) 40%, rgba(193, 58, 193, 1) 70%, rgba(137, 38, 137, 1) 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ef4cef', endColorstr='#892689', GradientType=0);
+    /* IE6-9 */
+  }
+  
+  .gtaskpink {
+    background: rgb(249, 177, 245);
+    /* Old browsers */
+    background: linear-gradient(to bottom, rgba(249, 177, 245, 1) 0%, rgba(247, 192, 243, 1) 20%, rgba(247, 202, 244, 1) 40%, rgba(249, 192, 246, 1) 70%, rgba(252, 174, 247, 1) 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7caf4', endColorstr='#fcaef7', GradientType=0);
+    /* IE6-9 */
+  }
+  
+  .gtaskbluecomplete,
+  .gtaskredcomplete,
+  .gtaskgreencomplete,
+  .gtaskyellowcomplete,
+  .gtaskpurplecomplete,
+  .gtaskpinkcomplete {
+    float: left;
+    overflow: hidden;
+    height: 5px;
+    filter: alpha(opacity=40);
+    opacity: 0.4;
+    background-color: #000000;
+    margin-top: 4px;
+  }
+  
+  /*  END Task bar styles */
+  
+  .glinev {
+    border-left: 1px solid;
+    width: 0px;
+  }
+  
+  .glineh {
+    border-top: 1px solid;
+    height: 0px;
+  }
+  
+  .gDepFS,
+  .gDepSS,
+  .gDepSF,
+  .gDepFF {
+    border-color: #ff0000;
+  }
+  
+  .gDepFSArw,
+  .gDepSSArw {
+    overflow: hidden;
+    width: 0px;
+    height: 0px;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #ff0000;
+    border-top: 4px solid transparent;
+    border-right: 4px solid transparent;
+  }
+  
+  .gDepFFArw,
+  .gDepSFArw {
+    overflow: hidden;
+    width: 0px;
+    height: 0px;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-top: 4px solid transparent;
+    border-right: 4px solid #ff0000;
+  }
+  
+  .gCurDate {
+    border-color: #0000ff;
+  }
+  
+  div.gtaskbarcontainer {
+    z-index: 1;
+    position: absolute;
+    top: 0px
+  }
+  
+  .JSGanttToolTip {
+    position: absolute;
+    display: block;
+    z-index: 21;
+  }
+  
+  .JSGanttToolTipcont {
+    font-family: tahoma, arial, verdana;
+    font-size: 10px;
+    display: block;
+    background: #ffffff;
+    color: var(--on-surface);
+  }
+  
+  .gTaskInfo {
+    background: var(--border-bottom);
+    width: 400px;
+    border: var(--border-bottom) 1px solid;
+    border-radius: 10px;
+    padding: 4px 6px 4px 6px;
+    float: left;
+    color: var(--on-surface);
+  }
+  
+  .gTtTitle {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--on-surface);
+    margin-left: 4px;
+    margin-bottom: 1em;
+  }
+  
+  .gTaskLabel {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--on-surface);
+    margin-left: 4px;
+  }
+  
+  .gTaskText {
+    position: absolute;
+    left: 120px;
+    padding-top: 1px;
+    font-size: 10px;
+    font-weight: normal;
+    color: var(--on-surface);
+  }
+  
+  .gTaskNotes {
+    font-size: 11px;
+    font-weight: normal;
+    color: var(--on-surface);
+    padding: 0 15px;
+    display: block;
+  }
+  
+  .gTIn {
+    padding-top: 10px;
+  }
+  
+  .gantt {
+    min-width: 632px;
+    /* 2x LC width */
+  }
+  
+  .gchartcontainer {
+    /* padding-left: 532px; LC width */
+    line-height: 1;
+    /* height: 100%; */
+    /*overflow: auto;*/
+    display: flex;
+    /* Overrides inherited CSS (e.g. from Bootstrap) */
+  }
+  
+  .gcontainercol {
+    position: relative;
+  }
+  
+  /* Add a max-height value here if wanted */
+  
+  .glistgrid {
+    min-width: 132px;
+    /* LC width */
+    float: left;
+    /* LC width */
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    background-color: var(--top);
+    overflow: hidden;
+  }
+  
+  .glistlbl {
+    min-width: 132px;
+    /* LC width */
+    float: left;
+    /* LC width */
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    background-color: var(--top);
+    overflow: hidden;
+  }
+  
+  .glabelfooter {
+    clear: both;
+  }
+  
+  .ggridfooter {
+    clear: both;
+  }
+  
+  .rhscrpad {
+    width: 150px;
+    position: absolute;
+    top: 0px;
+    height: 1px;
+  }
+  
+  .gchartgrid {
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    background-color: var(--top);
+    position: relative;
+    /* overflow: auto; */
+    overflow: unset;
+    min-height: 0%;
+  }
+  
+  .gchartlbl {
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    background-color: var(--top);
+    position: relative;
+    overflow: unset;
+  }
+  
+  /* Old Internet Explorer version hacks */
+  
+  .gantt {
+    _height: 100%
+  }
+  
+  /* otherwise the chart disappears! */
+  
+  div .gantt {
+    /* _width: 1064px; ie6 fixed width */
+  }
+  
+  div.gchartlbl,
+  div.gchartgrid {
+    /* _width: 532px; */
+  }
+  
+  /* ie6 fixed width */
+  
+  div.glistlbl,
+  div.glistgrid {
+    /*right: 0px;*/
+    /* ie7 pulls the content too far left with the negative margin */
+    _right: 532px;
+    /* but ie6 fixed width needs this */
+    _margin-left: -532px;
+    /* ie6 fixed width */
+    float: left;
+  }
+  
+  div.gchartgrid {
+    /*padding-bottom: 20px;*/
+    /*overflow-y: hidden;*/
+  }
+  
+  /* variable height design, no need for vertical scroll */
+  
+  td.gmajorheading div {
+    /*overflow: hidden;*/
+  }
+  
+  /* stops resizing fixed width columns if the text is too wide */
+  
+  td.gspanning div {
+    /*overflow: hidden;*/
+  }
+  
+  /* stops resizing fixed width columns if the text is too wide */
+  
+  /* border transparency tricks */
+  
+  .ggroupblackendpointleft {
+    _border-top: 4px solid black;
+    _border-left: 4px solid pink;
+    _border-bottom: 4px solid pink;
+    _border-right: 4px solid pink;
+    _filter: chroma(color=pink);
+  }
+  
+  .ggroupblackendpointright {
+    _border-top: 4px solid black;
+    _border-left: 4px solid pink;
+    _border-bottom: 4px solid pink;
+    _border-right: 4px solid pink;
+    _filter: chroma(color=pink);
+  }
+  
+  .gmdtop {
+    _border-left: 5px solid pink;
+    _border-top: 5px solid pink;
+    _border-right: 5px solid pink;
+    _filter: chroma(color=pink);
+  }
+  
+  .gmdbottom {
+    _border-left: 5px solid pink;
+    _border-bottom: 5px solid pink;
+    _border-right: 5px solid pink;
+    _filter: chroma(color=pink);
+  }
+  
+  .gDepFSArw,
+  .gDepSSArw {
+    _border-bottom: 4px solid pink;
+    _border-top: 4px solid pink;
+    _border-right: 4px solid pink;
+    _filter: chroma(color=pink);
+  }
+  
+  .gDepFFArw,
+  .gDepSFArw {
+    _border-bottom: 4px solid pink;
+    _border-left: 4px solid pink;
+    _border-top: 4px solid pink;
+    _filter: chroma(color=pink);
+  }
+  
+  /* Workaround for odd bug in old versions of Opera - no other browser needs this */
+  
+  .glinediv {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+  
+  .gantt-inputtable {
+    width: 100%;
+    max-height: 16px;
+  }
+  
+  .gadditional {
+    border: var(border-bottom) 1px solid;
+  }
+  
+  .gadditional,
+  .gresource,
+  .gduration,
+  .gpccomplete,
+  .gcost {
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    font-size: 10px;
+  }
+  
+  @media print {
+    /* All your print styles go here */
+    html,
+    .gchartgrid {
+      overflow: unset !important;
+    }
+    .glistgrid {
+      float: none !important;
+    }
+  }
+  
+  /* if using setUseSingleCell(1) the following is a suggested set of CSS3 styles to recreate the table grid - won't work on old browsers
+  .ggrouphour td,
+  .gmilehour td,
+  .gitemhour td			{ background-size: 19px 1px; background-image: linear-gradient(to left, #efefef, transparent 1px, transparent 18px); width: 100%; height: 19px; }
+  .ggroupday td,
+  .gmileday td,
+  .gitemday td			{ background-size: 19px 1px, 133px 1px; background-image: linear-gradient(to left, #efefef, transparent 1px, transparent 18px), linear-gradient(to left, #f7f7f7 39px, transparent 1px, transparent 92px); width: 100%; height: 19px; }
+  .ggroupweek td,
+  .gmileweek td,
+  .gitemweek td			{ background-size: 37px 1px; background-image: linear-gradient(to left, #efefef, transparent 1px, transparent 36px); width: 100%; height: 19px; }
+  .ggroupmonth td,
+  .gmilemonth td,
+  .gitemmonth td			{ background-size: 37px 1px; background-image: linear-gradient(to left, #efefef, transparent 1px, transparent 36px); width: 100%; height: 19px; }
+  .ggroupquarter td,
+  .gmilequarter td,
+  .gitemquarter td		{ background-size: 19px 1px; background-image: linear-gradient(to left, #efefef, transparent 1px, transparent 18px); width: 100%; height: 19px; }
+  */
+  
+  .gmain {
+    width: auto;
+    display: inline-block;
+    height: 100%;
+  }
+  
+  .gmainright {
+    overflow-x: auto;
+    overflow-y: hidden;
+    top: 0;
+    width: 80%
+  }
+  
+  .gmainleft {
+    overflow-x: auto;
+    overflow-y: hidden;
+    top: 0;
+    width: auto;
+  }
+  
+  .gtasktableh tr,
+  .gcharttable tr,
+  .gtasktable tr {
+    height: 22px !important;
+    width: 100%;
+  }
+  
+  .gtasktable {
+    margin-bottom: 14px;
+  }
+  
+  /* Printer friendly styles - we could use these all the time but they are not as pretty! */
+  
+  /* note that "@media print" is not supported in IE6 or 7.  Fully patched IE8 should be OK */
+  
+  @media print {
+    .ggroupblack {
+      height: 0px;
+      border-top: 7px solid;
+      border-color: #000000;
+    }
+    .gtaskblue {
+      height: 0px;
+      border-top: 13px solid;
+      border-color: rgb(58, 132, 195);
+    }
+    .gtaskred {
+      height: 0px;
+      border-top: 13px solid;
+      border-color: rgb(196, 58, 58);
+    }
+    .gtaskgreen {
+      height: 0px;
+      border-top: 13px solid;
+      border-color: rgb(80, 193, 58);
+    }
+    .gtaskyellow {
+      height: 0px;
+      border-top: 13px solid;
+      border-color: rgb(247, 228, 56);
+    }
+    .gtaskpurple {
+      height: 0px;
+      border-top: 13px solid;
+      border-color: rgb(193, 58, 193);
+    }
+    .gtaskpink {
+      height: 0px;
+      border-top: 13px solid;
+      border-color: rgb(249, 177, 245);
+    }
+    .gtaskbluecomplete,
+    .gtaskredcomplete,
+    .gtaskgreencomplete,
+    .gtaskyellowcomplete,
+    .gtaskpurplecomplete,
+    .gtaskpinkcomplete {
+      height: 0px;
+      filter: alpha(opacity=40);
+      opacity: 0.4;
+      margin-top: -9px;
+      border-top: 5px solid;
+      border-color: #000000;
+    }
+    .ggroupblackcomplete {
+      height: 0px;
+      filter: alpha(opacity=80);
+      opacity: 0.8;
+      margin-top: -5px;
+      border-top: 3px solid;
+      border-color: #777777;
+    }
+  
+    table { page-break-after:auto }
+    tr    { page-break-inside:avoid; page-break-after:auto }
+    td    { page-break-inside:avoid; page-break-after:auto }
+    thead { display:table-header-group }
+    tfoot { display:table-footer-group }
+  }
+  

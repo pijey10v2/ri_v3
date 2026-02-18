@@ -1,0 +1,2588 @@
+{
+    "Project Manager": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": false
+            },
+            "Contract": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": false,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": false
+            },
+            "Claims": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "claimsInbox": false,
+                "currentClaims": false,
+                "newClaims": false,
+                "rejectedClaims": false,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "VOInbox": false,
+                "currentVO": false,
+                "newVO": true,
+                "rejectedVO": false,
+                "approvedVO": true
+            },
+            "ACS": {
+                "newACS": true,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": true,
+                "approvedEOT": true 
+            },
+            "CA": {
+                "amendmentInbox": false,
+                "newAmendment": false,
+                "amendments": false,
+                "archivedContracts" : false
+            },
+            "LU": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "WIR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "RFI": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "MOS": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "RS": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true
+            },
+            "IR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "SD": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": true
+            },
+            "MS": { 
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "SA":{
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true
+            },
+            "SMH":{
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true
+            },
+            "PSU":{
+                "create" : true,
+                "org": "MRSB",
+                "read" : true
+            },
+            "PTW": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "CAR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "RR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "NOI": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "PUBC": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "EVNT": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "LAND": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            },
+            "SETUP": {
+                "create": true,
+                "org": "MRSB",
+                "areaSetup": true,
+                "pubcCatg": true,
+                "classification": true,
+                "controlSetup": true,
+                "discipline": true,
+                "entity": true,
+                "eventCatg": true,
+                "incCatg": true,
+                "ownerSetup": true,
+                "packageIDsetup": true,
+                "packageSection": true,
+                "projectImpactSetup": true,
+                "section": true,
+                "sourceSetup": true,
+                "statusSetup": true,
+                "subDiscipline": true,
+                "trade": true,
+                "WPC": true,
+                "WTG": true,
+                "CTD": true
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": true,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "register": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Config" : true,
+                "ProjectWise 365" : true,
+                "ProjectWise" : true,
+                "Power BI" : true,
+                "Share Point": true
+            },
+            "Project": true
+        },
+        "Dashboard" : {
+            "read" : true
+        }
+    },
+    "Finance Officer": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": false
+            },
+            "Contract": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": false,
+                "publishedContracts": true,
+                "newContract": true,
+                "rejectedContracts": false
+            },
+            "Claims": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": false,
+                "currentClaims": false,
+                "newClaims": true,
+                "rejectedClaims": false,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "VOInbox": false,
+                "currentVO": false,
+                "newVO": true,
+                "rejectedVO": false,
+                "approvedVO": true
+            },
+            "ACS": {
+                "newACS": true,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": true,
+                "approvedEOT": true 
+            },
+            "LU": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": { 
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": true,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Finance Head": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": true,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "ACS": {
+                "newACS": false,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": false,
+                "approvedEOT": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": true,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : true
+        }
+    },
+    "QAQC Engineer": {
+        "Construct": {
+            "NCR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "NOI": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "WIR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "RFI": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "MOS": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "RS": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": true
+            },
+            "MS": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "SA":{
+                "create": false,
+                "read": false
+            },
+            "SMH":{
+                "create": false,
+                "read": false
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "CAR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "SETUP": {
+                "create": true,
+                "org": "MRSB",
+                "incCatg": true,
+                "pubcCatg": true,
+                "eventCatg": true,
+                "areaSetup": true,
+                "ownerSetup": true,
+                "projectImpactSetup": true,
+                "sourceSetup": true,
+                "packageIDsetup": true,
+                "controlSetup": true,
+                "statusSetup": true,
+                "classification": true,
+                "discipline": true,
+                "subDiscipline": true,
+                "entity": true,
+                "section": true,
+                "trade": true,
+                "WPC": true
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Director": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": true
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": true,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": true
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true 
+            },
+            "ACS": {
+                "newACS": false,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": false,
+                "approvedEOT": true 
+            },
+            "CA": {
+                "amendmentInbox": true,
+                "newAmendment": false,
+                "amendments": true,
+                "archivedContracts" : true
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": true,
+                "readConfidential":true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : true
+        }
+    },
+    "Construction Engineer": {
+        "PFS": {
+            "ProjectDetails": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "projectDetails": false
+            },
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": false,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": false
+            },
+            "Claims": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": false,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": false,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true
+            },
+            "ACS": {
+                "newACS": false,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": false,
+                "approvedEOT": true 
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": true,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Project_Admin": {
+            "UserDetails": false,
+            "DataPool": false,
+            "AerialImages": false,
+            "Schedule": false,
+            "Config": {
+                "Config" : true,
+                "ProjectWise 365" : false,
+                "ProjectWise" : false,
+                "Power BI" : true,
+                "Share Point": false
+            },
+            "Project": false
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Safety Officer": {
+        "Construct": {
+            "NCR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "NOI": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true
+            },
+            "SMH":{
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "CAR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "SETUP": {
+                "create": true,
+                "org": "MRSB",
+                "incCatg": true,
+                "pubcCatg": true,
+                "eventCatg": true,
+                "areaSetup": true,
+                "ownerSetup": true,
+                "projectImpactSetup": true,
+                "sourceSetup": true,
+                "packageIDsetup": true,
+                "controlSetup": true,
+                "statusSetup": true,
+                "classification": true,
+                "discipline": true,
+                "subDiscipline": true,
+                "entity": true,
+                "WPC": true
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Planning Engineer": {
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "SDL": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": true
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : true,
+                "read" : true,
+                "org": "MRSB"
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Project_Admin": {
+            "UserDetails": false,
+            "DataPool": false,
+            "AerialImages": false,
+            "Schedule": true,
+            "Config":  {
+                "Config" : false,
+                "ProjectWise 365" : false,
+                "ProjectWise" : false,
+                "Power BI" : false,
+                "Share Point": false
+            },
+            "Project": false
+        },
+        "Dashboard" : {
+            "read" : true
+        }
+    },
+    "Risk Engineer": {
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RR": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Consultant CRE": {
+        "PFS": {
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": false,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": false
+            },
+            "Claims": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": true,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true
+            },
+            "ACS": {
+                "newACS": true,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": true,
+                "approvedEOT": true 
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Consultant RE": {
+        "PFS": {
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": false,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": false
+            },
+            "Claims": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": true,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true
+            },
+            "ACS": {
+                "newACS": false,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": false,
+                "approvedEOT": true 
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Contractor PM": {
+        "PFS": {
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": false,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": false
+            },
+            "Claims": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": true,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": true,
+                "approve": false,
+                "delete": true,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": true,
+                "rejectedVO": true,
+                "approvedVO": true
+            },
+            "ACS": {
+                "newACS": true,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": true,
+                "approvedEOT": true 
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Contractor Engineer": {
+        "PFS": {
+            "Contract": {
+                "create": false,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "contractsInbox": false,
+                "publishedContracts": true,
+                "newContract": false,
+                "rejectedContracts": false
+            },
+            "Claims": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": true,
+                "claimsInbox": true,
+                "currentClaims": true,
+                "newClaims": true,
+                "rejectedClaims": true,
+                "approvedClaims": true
+            },
+            "VO": {
+                "create": true,
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": true,
+                "VOInbox": true,
+                "currentVO": true,
+                "newVO": false,
+                "rejectedVO": true,
+                "approvedVO": true
+            },
+            "ACS": {
+                "newACS": false,
+                "approvedACS": true 
+            },
+            "EOT": {
+                "newEOT": false,
+                "approvedEOT": true 
+            }
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
+        },
+        "Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": false,
+                "readConfidential":false,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : false
+        }
+    },
+    "Doc Controller": {
+        "Project_Document": {
+            "Documents": {
+                "create": true,
+                "readAll": true,
+                "readOpen": true,
+                "readRestricted": true,
+                "readConfidential":true,
+                "update": true,
+                "verify": true,
+                "approve": true,
+                "delete": true,
+                "register": true,
+                "setup": true,
+                "archive": true
+            },
+            "Correspondence":{
+                "create": true,
+                "read": true               
+            }
+        },
+        "Dashboard" : {
+            "read" : true
+        }      
+    },
+    "Corporate Comm Officer": {
+        "Construct": {
+            "PUBC": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "EVNT": {
+                "create": true,
+                "org": "MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            }
+        }
+    },
+    "Project_Document": {
+        "Documents": {
+            "create": false,
+            "readAll": false,
+            "readOpen": true,
+            "readRestricted": false,
+            "readConfidential":false,
+            "update": false,
+            "verify": false,
+            "approve": false,
+            "delete": false
+        },
+        "Correspondence":{
+            "create": false,
+            "read": true               
+        }
+    },
+    "Land Officer": {
+        
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "WIR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": { 
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": true
+            },
+            "SMH":{
+                "create": false,
+                "read": true
+            },
+            "PSU":{
+                "create" : false,
+                "read" : true
+            },
+            "PTW": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "CAR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RR": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOI": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PUBC": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "EVNT": {
+                "create": false,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "LAND": {
+                "create": true,
+                "org":"MRSB",
+                "read": true,
+                "update": true,
+                "verify": false,
+                "approve": true,
+                "delete": true
+            },
+            "SETUP": {
+                "create": true,
+                "org": "MRSB",
+                "areaSetup": false,
+                "pubcCatg": false,
+                "classification": false,
+                "controlSetup": false,
+                "discipline": false,
+                "entity": false,
+                "eventCatg": false,
+                "incCatg": false,
+                "ownerSetup": false,
+                "packageIDsetup": false,
+                "packageSection": true,
+                "projectImpactSetup": false,
+                "section": false,
+                "sourceSetup": false,
+                "statusSetup": false,
+                "subDiscipline": false,
+                "trade": false,
+                "WPC": false,
+                "WTG": true,
+                "CTD": true
+            }
+            },"Project_Document": {
+            "Documents": {
+                "create": false,
+                "readAll": false,
+                "readOpen": true,
+                "readRestricted": true,
+                "readConfidential":false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false,
+                "register": false
+            },
+            "Correspondence":{
+                "create": false,
+                "read": true               
+            }
+        }
+        
+    }
+}

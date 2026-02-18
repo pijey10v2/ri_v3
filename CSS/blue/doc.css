@@ -1,0 +1,2712 @@
+.document-page {
+  display: block;
+  padding: 0px;
+  margin: 0px;
+  top: 70px;
+  position: absolute;
+  height: calc(100% - 70px);
+  width: 100%;
+  background: white;
+}
+.document-page #sidebar-admin {
+  position: absolute;
+  height: 100%;
+  width: 300px;
+  background: #e0e0e0;
+  box-shadow: 7px 0px 10px 0px rgba(33, 33, 33, 0.2);
+}
+.document-page #sidebar-admin .sidebar-items {
+  vertical-align: middle;
+  line-height: 45px;
+  padding: 0px;
+  margin: 0px;
+}
+.document-page #sidebar-admin .sidebar-items li.adminHead {
+  padding: 15px;
+  font-weight: bold;
+  color: black;
+}
+.document-page #sidebar-admin .sidebar-items li.adminHead a {
+  margin-left: 15px;
+}
+.document-page #sidebar-admin .sidebar-items li.adminHead img {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+.document-page #sidebar-admin .sidebar-items li.adminHead img:hover {
+  cursor: pointer;
+}
+.document-page #sidebar-admin .sidebar-items li.adminItems {
+  color: black;
+  text-decoration: none;
+  list-style: none;
+  padding-left: 15px;
+}
+.document-page #sidebar-admin .sidebar-items li.adminItems:hover {
+  cursor: pointer;
+  background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+}
+.document-page #sidebar-admin .sidebar-items li.adminItems a {
+  text-decoration: none;
+  margin-left: 15px;
+}
+.document-page #sidebar-admin .sidebar-items li.adminItems img {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+.document-page #sidebar-admin .sidebar-items li.adminItems div.arrow {
+  float: right;
+  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+  margin: 12px;
+  background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowdown.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.document-page #sidebar-admin .sidebar-items li.adminItems div.arrow.active {
+  background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowup.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.document-page #sidebar-admin .sidebar-items li.adminItems.active {
+  background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+}
+.document-page #sidebar-admin .sidebar-items ul {
+  display: none;
+  list-style: none;
+  padding-left: 0;
+}
+.document-page #sidebar-admin .sidebar-items ul li {
+  color: black;
+  text-decoration: none;
+  list-style: none;
+  display: flex;
+  margin: 10px 0;
+  padding-right: 5px;
+}
+.document-page #sidebar-admin .sidebar-items ul li:hover {
+  cursor: pointer;
+  background: #5e92f3;
+}
+.document-page #sidebar-admin .sidebar-items ul li a {
+  text-decoration: none;
+  line-height: 30px;
+}
+.document-page #sidebar-admin .sidebar-items ul li a.long {
+  line-height: 17px;
+}
+.document-page #sidebar-admin .sidebar-items ul li img {
+  padding-top: 2px;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  padding-left: 35px;
+  margin-right: 15px;
+}
+.document-page #sidebar-admin .sidebar-items ul li.active {
+  background: #5e92f3;
+}
+.document-page #main-home {
+  display: block;
+  position: relative;
+  padding: 0 20px;
+  width: calc(100% - 340px);
+  height: calc(100vh - 75px);
+  float: right;
+  overflow: auto;
+}
+.document-page #main-home .container-welcome .top-welcome {
+  margin: 10px 10px;
+  border-bottom: 1px solid #003c8f;
+  line-height: 52px;
+  font-weight: bolder;
+  font-size: 20px;
+}
+.document-page #main-home .container-welcome .top-welcome a {
+  margin: 0 10px;
+}
+.document-page #main-home .container-welcome .bottom-welcome {
+  margin: 20px;
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 30px;
+}
+.document-page #main-home .container-welcome .bottom-welcome a.secondary {
+  font-weight: normal;
+  font-size: 17px;
+}
+.document-page #main-home .container-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background: white;
+}
+.document-page #main-home .container-card .cards {
+  position: relative;
+  background: #003c8f;
+  border-radius: 5px;
+  top: 0px;
+  width: 500px;
+  height: 100%;
+  margin: 20px auto;
+  box-shadow: 2px 2px 10px 2px #c0c0c0;
+  transition: all 0.3s;
+}
+.document-page #main-home .container-card .cards:hover {
+  position: relative;
+  transform: scale(1.02);
+  box-shadow: 3px 3px 8px 3px #616161;
+  transition: all 0.3s;
+}
+.document-page #main-home .container-card .cards .card-header {
+  margin: 0 10px;
+  border-bottom: 1px solid rgb(189, 189, 189);
+  text-align: center;
+}
+.document-page #main-home .container-card .cards .card-header:hover {
+  cursor: move;
+}
+.document-page #main-home .container-card .cards .card-header h3 {
+  margin: 10px 0;
+  color: rgb(207, 207, 207);
+}
+.document-page #main-home .container-card .cards .card-body {
+  border-radius: 3px;
+  background: #003c8f;
+  margin: 10px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image {
+  padding: 15px;
+  height: auto;
+  background-size: 90px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #003c8f;
+  color: white;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph {
+  margin: 35px 0 35px 0;
+  font-size: 16px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .innerContainer {
+  display: inline-block;
+  width: calc(50% - 3px);
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph a {
+  font-size: 14px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph a.number {
+  font-size: 17px;
+  font-weight: bold;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph a.bigNum {
+  font-size: 40px;
+  font-weight: bold;
+  position: relative;
+  top: 8px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph a.primary {
+  font-size: 20px;
+  position: relative;
+  font-weight: bold;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph a.secondary {
+  font-size: 17px;
+  position: relative;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph.center {
+  text-align: center;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph.left {
+  text-align: left;
+  line-height: 45px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph.right {
+  text-align: right;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph:first-child {
+  margin: 15px 0 0 0;
+  font-size: 20px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph:last-child {
+  margin: 0 0 15px 0;
+  font-size: 12px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph img {
+  height: 25%;
+  width: 25%;
+  border-radius: 50%;
+  margin: 10px 0;
+  vertical-align: middle;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph img.twoImage {
+  height: auto;
+  width: 50px;
+  border-radius: 3px;
+  margin: 10px 10px;
+  padding: 5px;
+  background: #003c8f;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .updatedOn {
+  margin: 15px 0;
+  text-align: left;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph {
+  width: 100%;
+  height: 30px;
+  background-color: #b72f2f;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph .barInner {
+  height: 30px;
+  background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend {
+  margin: 15px 0;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active {
+  margin-right: 5px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active div {
+  margin: 0 5px;
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive {
+  margin-right: 5px;
+}
+.document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive div {
+  margin: 0 5px;
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  background-color: #b72f2f;
+}
+.document-page #main-home .container-card .cards .card-body .list-items {
+  height: 45%;
+  margin: 0px;
+  line-height: 30px;
+  list-style: none;
+  padding-left: 0px;
+}
+.document-page #main-home .container-card .cards .card-body .list-items li {
+  list-style-type: none;
+}
+.document-page #main-home .container-card .cards .card-body .list-items .items {
+  background: #1565c0;
+  color: white;
+  font-size: 15px;
+  margin: 3px 0;
+  padding: 10px 5px;
+  line-height: 20px;
+}
+.document-page #main-home .container-card .cards .card-body .list-items .items a {
+  padding-left: 15px;
+  font-weight: bold;
+}
+.document-page #main-home .container-card .cards .card-body .list-items .items a.secondary {
+  font-size: 12px;
+  color: rgb(190, 190, 190);
+}
+.document-page #main-home .container-card .cards .card-body .list-items .items:hover {
+  cursor: pointer;
+  background: #5e92f3;
+}
+.document-page #status-document,
+.document-page #main-document,
+.document-page #main-setup,
+.document-page #register-document,
+.document-page #setup-doc-type,
+.document-page #setup-distribution_group,
+.document-page #setup-work-package,
+.document-page #setup-entity,
+.document-page #setup-group,
+.document-page #setup-section,
+.document-page #main-inboxCorrespondence,
+.document-page #main-newCorrespondence,
+.document-page #main-bulkCorrespondenceRegister,
+.document-page #main-myCorrespondence,
+.document-page #main-incomingCorrespondence {
+  display: none;
+  position: relative;
+  margin: 10px;
+  /* padding: 0 20px; */
+  width: calc(100% - 340px);
+  height: calc(100vh - 90px);
+  float: right;
+}
+.document-page #status-document .mainHeader,
+.document-page #main-document .mainHeader,
+.document-page #main-setup .mainHeader,
+.document-page #register-document .mainHeader,
+.document-page #setup-doc-type .mainHeader,
+.document-page #setup-distribution_group .mainHeader,
+.document-page #setup-work-package .mainHeader,
+.document-page #setup-entity .mainHeader,
+.document-page #setup-group .mainHeader,
+.document-page #setup-section .mainHeader,
+.document-page #main-inboxCorrespondence .mainHeader,
+.document-page #main-newCorrespondence .mainHeader,
+.document-page #main-bulkCorrespondenceRegister .mainHeader,
+.document-page #main-myCorrespondence .mainHeader,
+.document-page #main-incomingCorrespondence .mainHeader {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(to bottom, #1565c0, #003c8f);
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+.document-page #status-document .mainHeader h3,
+.document-page #main-document .mainHeader h3,
+.document-page #main-setup .mainHeader h3,
+.document-page #register-document .mainHeader h3,
+.document-page #setup-doc-type .mainHeader h3,
+.document-page #setup-distribution_group .mainHeader h3,
+.document-page #setup-work-package .mainHeader h3,
+.document-page #setup-entity .mainHeader h3,
+.document-page #setup-group .mainHeader h3,
+.document-page #setup-section .mainHeader h3,
+.document-page #main-inboxCorrespondence .mainHeader h3,
+.document-page #main-newCorrespondence .mainHeader h3,
+.document-page #main-bulkCorrespondenceRegister .mainHeader h3,
+.document-page #main-myCorrespondence .mainHeader h3,
+.document-page #main-incomingCorrespondence .mainHeader h3 {
+  margin: 0px;
+  top: 15px;
+  position: relative;
+}
+.document-page #status-document .headerButton,
+.document-page #main-document .headerButton,
+.document-page #main-setup .headerButton,
+.document-page #register-document .headerButton,
+.document-page #setup-doc-type .headerButton,
+.document-page #setup-distribution_group .headerButton,
+.document-page #setup-work-package .headerButton,
+.document-page #setup-entity .headerButton,
+.document-page #setup-group .headerButton,
+.document-page #setup-section .headerButton,
+.document-page #main-inboxCorrespondence .headerButton,
+.document-page #main-newCorrespondence .headerButton,
+.document-page #main-bulkCorrespondenceRegister .headerButton,
+.document-page #main-myCorrespondence .headerButton,
+.document-page #main-incomingCorrespondence .headerButton {
+  top: -42px;
+  position: relative;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  right: 15px;
+}
+.document-page #status-document .headerButton button,
+.document-page #main-document .headerButton button,
+.document-page #main-setup .headerButton button,
+.document-page #register-document .headerButton button,
+.document-page #setup-doc-type .headerButton button,
+.document-page #setup-distribution_group .headerButton button,
+.document-page #setup-work-package .headerButton button,
+.document-page #setup-entity .headerButton button,
+.document-page #setup-group .headerButton button,
+.document-page #setup-section .headerButton button,
+.document-page #main-inboxCorrespondence .headerButton button,
+.document-page #main-newCorrespondence .headerButton button,
+.document-page #main-bulkCorrespondenceRegister .headerButton button,
+.document-page #main-myCorrespondence .headerButton button,
+.document-page #main-incomingCorrespondence .headerButton button {
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+.document-page #status-document .headerButton button.edit,
+.document-page #main-document .headerButton button.edit,
+.document-page #main-setup .headerButton button.edit,
+.document-page #register-document .headerButton button.edit,
+.document-page #setup-doc-type .headerButton button.edit,
+.document-page #setup-distribution_group .headerButton button.edit,
+.document-page #setup-work-package .headerButton button.edit,
+.document-page #setup-entity .headerButton button.edit,
+.document-page #setup-group .headerButton button.edit,
+.document-page #setup-section .headerButton button.edit,
+.document-page #main-inboxCorrespondence .headerButton button.edit,
+.document-page #main-newCorrespondence .headerButton button.edit,
+.document-page #main-bulkCorrespondenceRegister .headerButton button.edit,
+.document-page #main-myCorrespondence .headerButton button.edit,
+.document-page #main-incomingCorrespondence .headerButton button.edit {
+  display: none;
+}
+.document-page #status-document .checkcounter,
+.document-page #main-document .checkcounter,
+.document-page #main-setup .checkcounter,
+.document-page #register-document .checkcounter,
+.document-page #setup-doc-type .checkcounter,
+.document-page #setup-distribution_group .checkcounter,
+.document-page #setup-work-package .checkcounter,
+.document-page #setup-entity .checkcounter,
+.document-page #setup-group .checkcounter,
+.document-page #setup-section .checkcounter,
+.document-page #main-inboxCorrespondence .checkcounter,
+.document-page #main-newCorrespondence .checkcounter,
+.document-page #main-bulkCorrespondenceRegister .checkcounter,
+.document-page #main-myCorrespondence .checkcounter,
+.document-page #main-incomingCorrespondence .checkcounter {
+  top: 8px;
+  position: absolute;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  left: 20px;
+}
+.document-page #status-document .checkcounter.package,
+.document-page #main-document .checkcounter.package,
+.document-page #main-setup .checkcounter.package,
+.document-page #register-document .checkcounter.package,
+.document-page #setup-doc-type .checkcounter.package,
+.document-page #setup-distribution_group .checkcounter.package,
+.document-page #setup-work-package .checkcounter.package,
+.document-page #setup-entity .checkcounter.package,
+.document-page #setup-group .checkcounter.package,
+.document-page #setup-section .checkcounter.package,
+.document-page #main-inboxCorrespondence .checkcounter.package,
+.document-page #main-newCorrespondence .checkcounter.package,
+.document-page #main-bulkCorrespondenceRegister .checkcounter.package,
+.document-page #main-myCorrespondence .checkcounter.package,
+.document-page #main-incomingCorrespondence .checkcounter.package {
+  top: 447px;
+}
+.document-page #status-document .checkcounter p,
+.document-page #main-document .checkcounter p,
+.document-page #main-setup .checkcounter p,
+.document-page #register-document .checkcounter p,
+.document-page #setup-doc-type .checkcounter p,
+.document-page #setup-distribution_group .checkcounter p,
+.document-page #setup-work-package .checkcounter p,
+.document-page #setup-entity .checkcounter p,
+.document-page #setup-group .checkcounter p,
+.document-page #setup-section .checkcounter p,
+.document-page #main-inboxCorrespondence .checkcounter p,
+.document-page #main-newCorrespondence .checkcounter p,
+.document-page #main-bulkCorrespondenceRegister .checkcounter p,
+.document-page #main-myCorrespondence .checkcounter p,
+.document-page #main-incomingCorrespondence .checkcounter p {
+  margin: 10px 15px;
+  display: inline-block;
+  float: left;
+  display: none;
+  color: white;
+}
+.document-page #status-document .searchTable,
+.document-page #main-document .searchTable,
+.document-page #main-setup .searchTable,
+.document-page #register-document .searchTable,
+.document-page #setup-doc-type .searchTable,
+.document-page #setup-distribution_group .searchTable,
+.document-page #setup-work-package .searchTable,
+.document-page #setup-entity .searchTable,
+.document-page #setup-group .searchTable,
+.document-page #setup-section .searchTable,
+.document-page #main-inboxCorrespondence .searchTable,
+.document-page #main-newCorrespondence .searchTable,
+.document-page #main-bulkCorrespondenceRegister .searchTable,
+.document-page #main-myCorrespondence .searchTable,
+.document-page #main-incomingCorrespondence .searchTable {
+  top: 8px;
+  position: absolute;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  width: auto;
+  right: 20px;
+}
+.document-page #status-document .searchTable input,
+.document-page #main-document .searchTable input,
+.document-page #main-setup .searchTable input,
+.document-page #register-document .searchTable input,
+.document-page #setup-doc-type .searchTable input,
+.document-page #setup-distribution_group .searchTable input,
+.document-page #setup-work-package .searchTable input,
+.document-page #setup-entity .searchTable input,
+.document-page #setup-group .searchTable input,
+.document-page #setup-section .searchTable input,
+.document-page #main-inboxCorrespondence .searchTable input,
+.document-page #main-newCorrespondence .searchTable input,
+.document-page #main-bulkCorrespondenceRegister .searchTable input,
+.document-page #main-myCorrespondence .searchTable input,
+.document-page #main-incomingCorrespondence .searchTable input {
+  height: 30px;
+  width: 250px;
+  padding: 5px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+.document-page #status-document iframe,
+.document-page #main-document iframe,
+.document-page #main-setup iframe,
+.document-page #register-document iframe,
+.document-page #setup-doc-type iframe,
+.document-page #setup-distribution_group iframe,
+.document-page #setup-work-package iframe,
+.document-page #setup-entity iframe,
+.document-page #setup-group iframe,
+.document-page #setup-section iframe,
+.document-page #main-inboxCorrespondence iframe,
+.document-page #main-newCorrespondence iframe,
+.document-page #main-bulkCorrespondenceRegister iframe,
+.document-page #main-myCorrespondence iframe,
+.document-page #main-incomingCorrespondence iframe {
+  height: 100%;
+  width: 100%;
+  border: 0px;
+  margin: 0px;
+}
+.document-page #status-document .documentContainer, .document-page #status-document .setupContainer,
+.document-page #main-document .documentContainer,
+.document-page #main-document .setupContainer,
+.document-page #main-setup .documentContainer,
+.document-page #main-setup .setupContainer,
+.document-page #register-document .documentContainer,
+.document-page #register-document .setupContainer,
+.document-page #setup-doc-type .documentContainer,
+.document-page #setup-doc-type .setupContainer,
+.document-page #setup-distribution_group .documentContainer,
+.document-page #setup-distribution_group .setupContainer,
+.document-page #setup-work-package .documentContainer,
+.document-page #setup-work-package .setupContainer,
+.document-page #setup-entity .documentContainer,
+.document-page #setup-entity .setupContainer,
+.document-page #setup-group .documentContainer,
+.document-page #setup-group .setupContainer,
+.document-page #setup-section .documentContainer,
+.document-page #setup-section .setupContainer,
+.document-page #main-inboxCorrespondence .documentContainer,
+.document-page #main-inboxCorrespondence .setupContainer,
+.document-page #main-newCorrespondence .documentContainer,
+.document-page #main-newCorrespondence .setupContainer,
+.document-page #main-bulkCorrespondenceRegister .documentContainer,
+.document-page #main-bulkCorrespondenceRegister .setupContainer,
+.document-page #main-myCorrespondence .documentContainer,
+.document-page #main-myCorrespondence .setupContainer,
+.document-page #main-incomingCorrespondence .documentContainer,
+.document-page #main-incomingCorrespondence .setupContainer {
+  height: calc(100vh - 165px);
+  width: 100%;
+  overflow: auto;
+}
+.document-page #status-document .container-table,
+.document-page #main-document .container-table,
+.document-page #main-setup .container-table,
+.document-page #register-document .container-table,
+.document-page #setup-doc-type .container-table,
+.document-page #setup-distribution_group .container-table,
+.document-page #setup-work-package .container-table,
+.document-page #setup-entity .container-table,
+.document-page #setup-group .container-table,
+.document-page #setup-section .container-table,
+.document-page #main-inboxCorrespondence .container-table,
+.document-page #main-newCorrespondence .container-table,
+.document-page #main-bulkCorrespondenceRegister .container-table,
+.document-page #main-myCorrespondence .container-table,
+.document-page #main-incomingCorrespondence .container-table {
+  position: absolute;
+  width: calc(100% - 40px);
+  overflow: auto;
+  left: 20px;
+  float: right;
+  top: 55px;
+}
+.document-page #status-document .container-table table,
+.document-page #main-document .container-table table,
+.document-page #main-setup .container-table table,
+.document-page #register-document .container-table table,
+.document-page #setup-doc-type .container-table table,
+.document-page #setup-distribution_group .container-table table,
+.document-page #setup-work-package .container-table table,
+.document-page #setup-entity .container-table table,
+.document-page #setup-group .container-table table,
+.document-page #setup-section .container-table table,
+.document-page #main-inboxCorrespondence .container-table table,
+.document-page #main-newCorrespondence .container-table table,
+.document-page #main-bulkCorrespondenceRegister .container-table table,
+.document-page #main-myCorrespondence .container-table table,
+.document-page #main-incomingCorrespondence .container-table table {
+  border-collapse: collapse;
+  background-color: #ffffff;
+  width: 100%;
+}
+.document-page #status-document .container-table table td,
+.document-page #main-document .container-table table td,
+.document-page #main-setup .container-table table td,
+.document-page #register-document .container-table table td,
+.document-page #setup-doc-type .container-table table td,
+.document-page #setup-distribution_group .container-table table td,
+.document-page #setup-work-package .container-table table td,
+.document-page #setup-entity .container-table table td,
+.document-page #setup-group .container-table table td,
+.document-page #setup-section .container-table table td,
+.document-page #main-inboxCorrespondence .container-table table td,
+.document-page #main-newCorrespondence .container-table table td,
+.document-page #main-bulkCorrespondenceRegister .container-table table td,
+.document-page #main-myCorrespondence .container-table table td,
+.document-page #main-incomingCorrespondence .container-table table td {
+  text-align: left;
+  padding: 8px;
+  border: none;
+  line-height: 25px;
+  vertical-align: center;
+}
+.document-page #status-document .container-table table td span,
+.document-page #main-document .container-table table td span,
+.document-page #main-setup .container-table table td span,
+.document-page #register-document .container-table table td span,
+.document-page #setup-doc-type .container-table table td span,
+.document-page #setup-distribution_group .container-table table td span,
+.document-page #setup-work-package .container-table table td span,
+.document-page #setup-entity .container-table table td span,
+.document-page #setup-group .container-table table td span,
+.document-page #setup-section .container-table table td span,
+.document-page #main-inboxCorrespondence .container-table table td span,
+.document-page #main-newCorrespondence .container-table table td span,
+.document-page #main-bulkCorrespondenceRegister .container-table table td span,
+.document-page #main-myCorrespondence .container-table table td span,
+.document-page #main-incomingCorrespondence .container-table table td span {
+  margin-right: 10px;
+}
+.document-page #status-document .container-table table td span img,
+.document-page #main-document .container-table table td span img,
+.document-page #main-setup .container-table table td span img,
+.document-page #register-document .container-table table td span img,
+.document-page #setup-doc-type .container-table table td span img,
+.document-page #setup-distribution_group .container-table table td span img,
+.document-page #setup-work-package .container-table table td span img,
+.document-page #setup-entity .container-table table td span img,
+.document-page #setup-group .container-table table td span img,
+.document-page #setup-section .container-table table td span img,
+.document-page #main-inboxCorrespondence .container-table table td span img,
+.document-page #main-newCorrespondence .container-table table td span img,
+.document-page #main-bulkCorrespondenceRegister .container-table table td span img,
+.document-page #main-myCorrespondence .container-table table td span img,
+.document-page #main-incomingCorrespondence .container-table table td span img {
+  height: 15px;
+  width: 15px;
+}
+.document-page #status-document .container-table table th:first-child,
+.document-page #main-document .container-table table th:first-child,
+.document-page #main-setup .container-table table th:first-child,
+.document-page #register-document .container-table table th:first-child,
+.document-page #setup-doc-type .container-table table th:first-child,
+.document-page #setup-distribution_group .container-table table th:first-child,
+.document-page #setup-work-package .container-table table th:first-child,
+.document-page #setup-entity .container-table table th:first-child,
+.document-page #setup-group .container-table table th:first-child,
+.document-page #setup-section .container-table table th:first-child,
+.document-page #main-inboxCorrespondence .container-table table th:first-child,
+.document-page #main-newCorrespondence .container-table table th:first-child,
+.document-page #main-bulkCorrespondenceRegister .container-table table th:first-child,
+.document-page #main-myCorrespondence .container-table table th:first-child,
+.document-page #main-incomingCorrespondence .container-table table th:first-child {
+  border-top-left-radius: 5px;
+}
+.document-page #status-document .container-table table th:last-child,
+.document-page #main-document .container-table table th:last-child,
+.document-page #main-setup .container-table table th:last-child,
+.document-page #register-document .container-table table th:last-child,
+.document-page #setup-doc-type .container-table table th:last-child,
+.document-page #setup-distribution_group .container-table table th:last-child,
+.document-page #setup-work-package .container-table table th:last-child,
+.document-page #setup-entity .container-table table th:last-child,
+.document-page #setup-group .container-table table th:last-child,
+.document-page #setup-section .container-table table th:last-child,
+.document-page #main-inboxCorrespondence .container-table table th:last-child,
+.document-page #main-newCorrespondence .container-table table th:last-child,
+.document-page #main-bulkCorrespondenceRegister .container-table table th:last-child,
+.document-page #main-myCorrespondence .container-table table th:last-child,
+.document-page #main-incomingCorrespondence .container-table table th:last-child {
+  border-top-right-radius: 5px;
+}
+.document-page #status-document .container-table table tr:nth-of-type(even),
+.document-page #main-document .container-table table tr:nth-of-type(even),
+.document-page #main-setup .container-table table tr:nth-of-type(even),
+.document-page #register-document .container-table table tr:nth-of-type(even),
+.document-page #setup-doc-type .container-table table tr:nth-of-type(even),
+.document-page #setup-distribution_group .container-table table tr:nth-of-type(even),
+.document-page #setup-work-package .container-table table tr:nth-of-type(even),
+.document-page #setup-entity .container-table table tr:nth-of-type(even),
+.document-page #setup-group .container-table table tr:nth-of-type(even),
+.document-page #setup-section .container-table table tr:nth-of-type(even),
+.document-page #main-inboxCorrespondence .container-table table tr:nth-of-type(even),
+.document-page #main-newCorrespondence .container-table table tr:nth-of-type(even),
+.document-page #main-bulkCorrespondenceRegister .container-table table tr:nth-of-type(even),
+.document-page #main-myCorrespondence .container-table table tr:nth-of-type(even),
+.document-page #main-incomingCorrespondence .container-table table tr:nth-of-type(even) {
+  background: #f2f2f2;
+}
+.document-page #status-document .container-table table tr:nth-of-type(odd),
+.document-page #main-document .container-table table tr:nth-of-type(odd),
+.document-page #main-setup .container-table table tr:nth-of-type(odd),
+.document-page #register-document .container-table table tr:nth-of-type(odd),
+.document-page #setup-doc-type .container-table table tr:nth-of-type(odd),
+.document-page #setup-distribution_group .container-table table tr:nth-of-type(odd),
+.document-page #setup-work-package .container-table table tr:nth-of-type(odd),
+.document-page #setup-entity .container-table table tr:nth-of-type(odd),
+.document-page #setup-group .container-table table tr:nth-of-type(odd),
+.document-page #setup-section .container-table table tr:nth-of-type(odd),
+.document-page #main-inboxCorrespondence .container-table table tr:nth-of-type(odd),
+.document-page #main-newCorrespondence .container-table table tr:nth-of-type(odd),
+.document-page #main-bulkCorrespondenceRegister .container-table table tr:nth-of-type(odd),
+.document-page #main-myCorrespondence .container-table table tr:nth-of-type(odd),
+.document-page #main-incomingCorrespondence .container-table table tr:nth-of-type(odd) {
+  background: white;
+}
+.document-page #status-document .container-table table tr:hover,
+.document-page #main-document .container-table table tr:hover,
+.document-page #main-setup .container-table table tr:hover,
+.document-page #register-document .container-table table tr:hover,
+.document-page #setup-doc-type .container-table table tr:hover,
+.document-page #setup-distribution_group .container-table table tr:hover,
+.document-page #setup-work-package .container-table table tr:hover,
+.document-page #setup-entity .container-table table tr:hover,
+.document-page #setup-group .container-table table tr:hover,
+.document-page #setup-section .container-table table tr:hover,
+.document-page #main-inboxCorrespondence .container-table table tr:hover,
+.document-page #main-newCorrespondence .container-table table tr:hover,
+.document-page #main-bulkCorrespondenceRegister .container-table table tr:hover,
+.document-page #main-myCorrespondence .container-table table tr:hover,
+.document-page #main-incomingCorrespondence .container-table table tr:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+.document-page #status-document .container-table table th,
+.document-page #main-document .container-table table th,
+.document-page #main-setup .container-table table th,
+.document-page #register-document .container-table table th,
+.document-page #setup-doc-type .container-table table th,
+.document-page #setup-distribution_group .container-table table th,
+.document-page #setup-work-package .container-table table th,
+.document-page #setup-entity .container-table table th,
+.document-page #setup-group .container-table table th,
+.document-page #setup-section .container-table table th,
+.document-page #main-inboxCorrespondence .container-table table th,
+.document-page #main-newCorrespondence .container-table table th,
+.document-page #main-bulkCorrespondenceRegister .container-table table th,
+.document-page #main-myCorrespondence .container-table table th,
+.document-page #main-incomingCorrespondence .container-table table th {
+  background-color: #1565c0;
+  color: white;
+  text-align: left;
+  padding: 8px;
+  line-height: 25px;
+}
+.document-page #status-document .container-table table th:hover,
+.document-page #main-document .container-table table th:hover,
+.document-page #main-setup .container-table table th:hover,
+.document-page #register-document .container-table table th:hover,
+.document-page #setup-doc-type .container-table table th:hover,
+.document-page #setup-distribution_group .container-table table th:hover,
+.document-page #setup-work-package .container-table table th:hover,
+.document-page #setup-entity .container-table table th:hover,
+.document-page #setup-group .container-table table th:hover,
+.document-page #setup-section .container-table table th:hover,
+.document-page #main-inboxCorrespondence .container-table table th:hover,
+.document-page #main-newCorrespondence .container-table table th:hover,
+.document-page #main-bulkCorrespondenceRegister .container-table table th:hover,
+.document-page #main-myCorrespondence .container-table table th:hover,
+.document-page #main-incomingCorrespondence .container-table table th:hover {
+  cursor: default;
+}
+.document-page #status-document .container-table table th img,
+.document-page #main-document .container-table table th img,
+.document-page #main-setup .container-table table th img,
+.document-page #register-document .container-table table th img,
+.document-page #setup-doc-type .container-table table th img,
+.document-page #setup-distribution_group .container-table table th img,
+.document-page #setup-work-package .container-table table th img,
+.document-page #setup-entity .container-table table th img,
+.document-page #setup-group .container-table table th img,
+.document-page #setup-section .container-table table th img,
+.document-page #main-inboxCorrespondence .container-table table th img,
+.document-page #main-newCorrespondence .container-table table th img,
+.document-page #main-bulkCorrespondenceRegister .container-table table th img,
+.document-page #main-myCorrespondence .container-table table th img,
+.document-page #main-incomingCorrespondence .container-table table th img {
+  height: 10px;
+  width: auto;
+  margin-left: 5px;
+}
+.document-page #status-document .container-table table th img:hover,
+.document-page #main-document .container-table table th img:hover,
+.document-page #main-setup .container-table table th img:hover,
+.document-page #register-document .container-table table th img:hover,
+.document-page #setup-doc-type .container-table table th img:hover,
+.document-page #setup-distribution_group .container-table table th img:hover,
+.document-page #setup-work-package .container-table table th img:hover,
+.document-page #setup-entity .container-table table th img:hover,
+.document-page #setup-group .container-table table th img:hover,
+.document-page #setup-section .container-table table th img:hover,
+.document-page #main-inboxCorrespondence .container-table table th img:hover,
+.document-page #main-newCorrespondence .container-table table th img:hover,
+.document-page #main-bulkCorrespondenceRegister .container-table table th img:hover,
+.document-page #main-myCorrespondence .container-table table th img:hover,
+.document-page #main-incomingCorrespondence .container-table table th img:hover {
+  cursor: pointer;
+}
+.document-page #main-document {
+  height: calc(100vh - 90px);
+  float: right;
+  overflow: auto;
+  padding: 0px;
+  top: 0px;
+  margin: 10px;
+}
+.document-page #main-vo {
+  height: calc(100vh - 90px);
+  float: right;
+  overflow: auto;
+  padding: 0px;
+  top: 0px;
+  margin: 10px;
+}
+.document-page #main-vo .topcontainer {
+  height: 50vh;
+}
+.document-page #main-vo .bottomcontainer {
+  height: calc(50vh - 100px);
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.25) {
+  .document-page {
+    display: block;
+    padding: 0px;
+    margin: 0px;
+    top: 50px;
+    position: absolute;
+    height: calc(100% - 50px);
+    width: 100%;
+    background: white;
+  }
+  .document-page #sidebar-admin {
+    position: absolute;
+    height: 100%;
+    width: 220px;
+    background: #e0e0e0;
+    box-shadow: 7px 0px 10px 0px rgba(33, 33, 33, 0.2);
+    z-index: 1;
+  }
+  .document-page #sidebar-admin .sidebar-items {
+    vertical-align: middle;
+    line-height: 30px;
+    padding: 0px;
+    margin: 0px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead {
+    padding: 10px;
+    font-weight: bold;
+    color: black;
+    font-size: 12px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead a {
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead img:hover {
+    cursor: pointer;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    padding-left: 10px;
+    font-size: 12px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems:hover {
+    cursor: pointer;
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems a {
+    text-decoration: none;
+    margin-left: 10px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems div.arrow {
+    float: right;
+    vertical-align: middle;
+    width: 10px;
+    height: 10px;
+    margin: 7px;
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowdown.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems div.arrow.active {
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowup.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems.active {
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .document-page #sidebar-admin .sidebar-items ul {
+    display: none;
+    list-style: none;
+    padding-left: 0;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    font-size: 12px;
+    display: flex;
+    margin: 10px 0;
+    padding-right: 5px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li a {
+    text-decoration: none;
+    line-height: 30px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li a.long {
+    line-height: 17px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li img {
+    padding-top: 2px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    padding-left: 35px;
+    margin-right: 15px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li.active {
+    background: #5e92f3;
+  }
+  .document-page #main-home {
+    display: block;
+    position: relative;
+    padding: 0 20px;
+    width: calc(100% - 260px);
+    height: calc(100vh - 50px);
+    float: right;
+    overflow: auto;
+  }
+  .document-page #main-home .container-welcome .top-welcome {
+    margin: 10px 10px;
+    border-bottom: 1px solid #003c8f;
+    line-height: 52px;
+    font-weight: bolder;
+    font-size: 14px;
+  }
+  .document-page #main-home .container-welcome .top-welcome a {
+    margin: 0 10px;
+  }
+  .document-page #main-home .container-welcome .bottom-welcome {
+    margin: 20px;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 30px;
+  }
+  .document-page #main-home .container-welcome .bottom-welcome a.secondary {
+    font-weight: normal;
+    font-size: 13px;
+  }
+  .document-page #main-home .container-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: white;
+  }
+  .document-page #main-home .container-card .cards {
+    position: relative;
+    background: #003c8f;
+    border-radius: 5px;
+    top: 0px;
+    width: 340px;
+    height: 100%;
+    margin: 20px auto;
+    box-shadow: 2px 2px 10px 2px #c0c0c0;
+    transition: all 0.3s;
+  }
+  .document-page #main-home .container-card .cards:hover {
+    position: relative;
+    transform: scale(1.02);
+    box-shadow: 3px 3px 8px 3px #616161;
+    transition: all 0.3s;
+  }
+  .document-page #main-home .container-card .cards .card-header {
+    margin: 0 10px;
+    border-bottom: 1px solid rgb(189, 189, 189);
+    text-align: center;
+  }
+  .document-page #main-home .container-card .cards .card-header:hover {
+    cursor: move;
+  }
+  .document-page #main-home .container-card .cards .card-header h3 {
+    margin: 10px 0;
+    color: rgb(207, 207, 207);
+    font-size: 15px;
+  }
+  .document-page #main-home .container-card .cards .card-body {
+    border-radius: 3px;
+    background: #003c8f;
+    margin: 10px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image {
+    padding: 15px;
+    height: auto;
+    background-size: 90px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #003c8f;
+    color: white;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph {
+    margin: 25px 0 25px 0;
+    font-size: 10px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .innerContainer {
+    display: inline-block;
+    width: calc(50% - 3px);
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a {
+    font-size: 10px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.number {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.bigNum {
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    top: 8px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.primary {
+    font-size: 15px;
+    position: relative;
+    font-weight: bold;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.secondary {
+    font-size: 12px;
+    position: relative;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph.center {
+    text-align: center;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph.left {
+    text-align: left;
+    line-height: 45px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph.right {
+    text-align: right;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph:first-child {
+    margin: 15px 0 0 0;
+    font-size: 20px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph:last-child {
+    margin: 0 0 15px 0;
+    font-size: 12px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph img {
+    height: 25%;
+    width: 25%;
+    border-radius: 50%;
+    margin: 10px 0;
+    vertical-align: middle;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph img.twoImage {
+    height: auto;
+    width: 37px;
+    border-radius: 3px;
+    margin: 10px 10px;
+    padding: 5px;
+    background: #003c8f;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .updatedOn {
+    margin: 15px 0;
+    text-align: left;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph {
+    width: 100%;
+    height: 25px;
+    background-color: #b72f2f;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph .barInner {
+    height: 25px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend {
+    margin: 15px 0;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active {
+    margin-right: 5px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive {
+    margin-right: 5px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-color: #b72f2f;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items {
+    height: 45%;
+    margin: 0px;
+    line-height: 30px;
+    list-style: none;
+    padding-left: 0px;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items li {
+    list-style-type: none;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items {
+    background: #1565c0;
+    color: white;
+    font-size: 12px;
+    margin: 3px 0;
+    padding: 10px 5px;
+    line-height: 15px;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items a {
+    padding-left: 15px;
+    font-weight: bold;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items a.secondary {
+    font-size: 10px;
+    color: rgb(190, 190, 190);
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .document-page #status-document,
+  .document-page #main-document,
+  .document-page #main-setup,
+  .document-page #register-document,
+  .document-page #setup-doc-type,
+  .document-page #setup-distribution_group,
+  .document-page #setup-work-package,
+  .document-page #setup-entity,
+  .document-page #setup-group,
+  .document-page #setup-section,
+  .document-page #main-inboxCorrespondence,
+  .document-page #main-newCorrespondence,
+  .document-page #main-bulkCorrespondenceRegister,
+  .document-page #main-myCorrespondence,
+  .document-page #main-incomingCorrespondence {
+    display: none;
+    position: relative;
+    width: calc(100% - 260px);
+    height: calc(100vh - 75px);
+    float: right;
+    overflow: hidden;
+  }
+  .document-page #status-document .mainHeader,
+  .document-page #main-document .mainHeader,
+  .document-page #main-setup .mainHeader,
+  .document-page #register-document .mainHeader,
+  .document-page #setup-doc-type .mainHeader,
+  .document-page #setup-distribution_group .mainHeader,
+  .document-page #setup-work-package .mainHeader,
+  .document-page #setup-entity .mainHeader,
+  .document-page #setup-group .mainHeader,
+  .document-page #setup-section .mainHeader,
+  .document-page #main-inboxCorrespondence .mainHeader,
+  .document-page #main-newCorrespondence .mainHeader,
+  .document-page #main-bulkCorrespondenceRegister .mainHeader,
+  .document-page #main-myCorrespondence .mainHeader,
+  .document-page #main-incomingCorrespondence .mainHeader {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .document-page #status-document .mainHeader h3,
+  .document-page #main-document .mainHeader h3,
+  .document-page #main-setup .mainHeader h3,
+  .document-page #register-document .mainHeader h3,
+  .document-page #setup-doc-type .mainHeader h3,
+  .document-page #setup-distribution_group .mainHeader h3,
+  .document-page #setup-work-package .mainHeader h3,
+  .document-page #setup-entity .mainHeader h3,
+  .document-page #setup-group .mainHeader h3,
+  .document-page #setup-section .mainHeader h3,
+  .document-page #main-inboxCorrespondence .mainHeader h3,
+  .document-page #main-newCorrespondence .mainHeader h3,
+  .document-page #main-bulkCorrespondenceRegister .mainHeader h3,
+  .document-page #main-myCorrespondence .mainHeader h3,
+  .document-page #main-incomingCorrespondence .mainHeader h3 {
+    margin: 0px;
+    top: 12px;
+    position: relative;
+    font-size: 12px;
+  }
+  .document-page #status-document .headerButton,
+  .document-page #main-document .headerButton,
+  .document-page #main-setup .headerButton,
+  .document-page #register-document .headerButton,
+  .document-page #setup-doc-type .headerButton,
+  .document-page #setup-distribution_group .headerButton,
+  .document-page #setup-work-package .headerButton,
+  .document-page #setup-entity .headerButton,
+  .document-page #setup-group .headerButton,
+  .document-page #setup-section .headerButton,
+  .document-page #main-inboxCorrespondence .headerButton,
+  .document-page #main-newCorrespondence .headerButton,
+  .document-page #main-bulkCorrespondenceRegister .headerButton,
+  .document-page #main-myCorrespondence .headerButton,
+  .document-page #main-incomingCorrespondence .headerButton {
+    top: -42px;
+    position: relative;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    right: 15px;
+  }
+  .document-page #status-document .headerButton button,
+  .document-page #main-document .headerButton button,
+  .document-page #main-setup .headerButton button,
+  .document-page #register-document .headerButton button,
+  .document-page #setup-doc-type .headerButton button,
+  .document-page #setup-distribution_group .headerButton button,
+  .document-page #setup-work-package .headerButton button,
+  .document-page #setup-entity .headerButton button,
+  .document-page #setup-group .headerButton button,
+  .document-page #setup-section .headerButton button,
+  .document-page #main-inboxCorrespondence .headerButton button,
+  .document-page #main-newCorrespondence .headerButton button,
+  .document-page #main-bulkCorrespondenceRegister .headerButton button,
+  .document-page #main-myCorrespondence .headerButton button,
+  .document-page #main-incomingCorrespondence .headerButton button {
+    border-radius: 5px;
+    padding: 8px 20px;
+    font-size: 10px;
+  }
+  .document-page #status-document .headerButton button.edit,
+  .document-page #main-document .headerButton button.edit,
+  .document-page #main-setup .headerButton button.edit,
+  .document-page #register-document .headerButton button.edit,
+  .document-page #setup-doc-type .headerButton button.edit,
+  .document-page #setup-distribution_group .headerButton button.edit,
+  .document-page #setup-work-package .headerButton button.edit,
+  .document-page #setup-entity .headerButton button.edit,
+  .document-page #setup-group .headerButton button.edit,
+  .document-page #setup-section .headerButton button.edit,
+  .document-page #main-inboxCorrespondence .headerButton button.edit,
+  .document-page #main-newCorrespondence .headerButton button.edit,
+  .document-page #main-bulkCorrespondenceRegister .headerButton button.edit,
+  .document-page #main-myCorrespondence .headerButton button.edit,
+  .document-page #main-incomingCorrespondence .headerButton button.edit {
+    display: none;
+  }
+  .document-page #status-document .checkcounter,
+  .document-page #main-document .checkcounter,
+  .document-page #main-setup .checkcounter,
+  .document-page #register-document .checkcounter,
+  .document-page #setup-doc-type .checkcounter,
+  .document-page #setup-distribution_group .checkcounter,
+  .document-page #setup-work-package .checkcounter,
+  .document-page #setup-entity .checkcounter,
+  .document-page #setup-group .checkcounter,
+  .document-page #setup-section .checkcounter,
+  .document-page #main-inboxCorrespondence .checkcounter,
+  .document-page #main-newCorrespondence .checkcounter,
+  .document-page #main-bulkCorrespondenceRegister .checkcounter,
+  .document-page #main-myCorrespondence .checkcounter,
+  .document-page #main-incomingCorrespondence .checkcounter {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    left: 20px;
+  }
+  .document-page #status-document .checkcounter.package,
+  .document-page #main-document .checkcounter.package,
+  .document-page #main-setup .checkcounter.package,
+  .document-page #register-document .checkcounter.package,
+  .document-page #setup-doc-type .checkcounter.package,
+  .document-page #setup-distribution_group .checkcounter.package,
+  .document-page #setup-work-package .checkcounter.package,
+  .document-page #setup-entity .checkcounter.package,
+  .document-page #setup-group .checkcounter.package,
+  .document-page #setup-section .checkcounter.package,
+  .document-page #main-inboxCorrespondence .checkcounter.package,
+  .document-page #main-newCorrespondence .checkcounter.package,
+  .document-page #main-bulkCorrespondenceRegister .checkcounter.package,
+  .document-page #main-myCorrespondence .checkcounter.package,
+  .document-page #main-incomingCorrespondence .checkcounter.package {
+    top: 447px;
+  }
+  .document-page #status-document .checkcounter p,
+  .document-page #main-document .checkcounter p,
+  .document-page #main-setup .checkcounter p,
+  .document-page #register-document .checkcounter p,
+  .document-page #setup-doc-type .checkcounter p,
+  .document-page #setup-distribution_group .checkcounter p,
+  .document-page #setup-work-package .checkcounter p,
+  .document-page #setup-entity .checkcounter p,
+  .document-page #setup-group .checkcounter p,
+  .document-page #setup-section .checkcounter p,
+  .document-page #main-inboxCorrespondence .checkcounter p,
+  .document-page #main-newCorrespondence .checkcounter p,
+  .document-page #main-bulkCorrespondenceRegister .checkcounter p,
+  .document-page #main-myCorrespondence .checkcounter p,
+  .document-page #main-incomingCorrespondence .checkcounter p {
+    margin: 10px 15px;
+    display: inline-block;
+    float: left;
+    display: none;
+    color: white;
+  }
+  .document-page #status-document .searchTable,
+  .document-page #main-document .searchTable,
+  .document-page #main-setup .searchTable,
+  .document-page #register-document .searchTable,
+  .document-page #setup-doc-type .searchTable,
+  .document-page #setup-distribution_group .searchTable,
+  .document-page #setup-work-package .searchTable,
+  .document-page #setup-entity .searchTable,
+  .document-page #setup-group .searchTable,
+  .document-page #setup-section .searchTable,
+  .document-page #main-inboxCorrespondence .searchTable,
+  .document-page #main-newCorrespondence .searchTable,
+  .document-page #main-bulkCorrespondenceRegister .searchTable,
+  .document-page #main-myCorrespondence .searchTable,
+  .document-page #main-incomingCorrespondence .searchTable {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    width: auto;
+    right: 20px;
+  }
+  .document-page #status-document .searchTable input,
+  .document-page #main-document .searchTable input,
+  .document-page #main-setup .searchTable input,
+  .document-page #register-document .searchTable input,
+  .document-page #setup-doc-type .searchTable input,
+  .document-page #setup-distribution_group .searchTable input,
+  .document-page #setup-work-package .searchTable input,
+  .document-page #setup-entity .searchTable input,
+  .document-page #setup-group .searchTable input,
+  .document-page #setup-section .searchTable input,
+  .document-page #main-inboxCorrespondence .searchTable input,
+  .document-page #main-newCorrespondence .searchTable input,
+  .document-page #main-bulkCorrespondenceRegister .searchTable input,
+  .document-page #main-myCorrespondence .searchTable input,
+  .document-page #main-incomingCorrespondence .searchTable input {
+    height: 30px;
+    width: 250px;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 10px;
+  }
+  .document-page #status-document iframe,
+  .document-page #main-document iframe,
+  .document-page #main-setup iframe,
+  .document-page #register-document iframe,
+  .document-page #setup-doc-type iframe,
+  .document-page #setup-distribution_group iframe,
+  .document-page #setup-work-package iframe,
+  .document-page #setup-entity iframe,
+  .document-page #setup-group iframe,
+  .document-page #setup-section iframe,
+  .document-page #main-inboxCorrespondence iframe,
+  .document-page #main-newCorrespondence iframe,
+  .document-page #main-bulkCorrespondenceRegister iframe,
+  .document-page #main-myCorrespondence iframe,
+  .document-page #main-incomingCorrespondence iframe {
+    height: 100%;
+    width: 100%;
+    border: 0px;
+    margin: 0px;
+  }
+  .document-page #status-document .documentContainer, .document-page #status-document .setupContainer,
+  .document-page #main-document .documentContainer,
+  .document-page #main-document .setupContainer,
+  .document-page #main-setup .documentContainer,
+  .document-page #main-setup .setupContainer,
+  .document-page #register-document .documentContainer,
+  .document-page #register-document .setupContainer,
+  .document-page #setup-doc-type .documentContainer,
+  .document-page #setup-doc-type .setupContainer,
+  .document-page #setup-distribution_group .documentContainer,
+  .document-page #setup-distribution_group .setupContainer,
+  .document-page #setup-work-package .documentContainer,
+  .document-page #setup-work-package .setupContainer,
+  .document-page #setup-entity .documentContainer,
+  .document-page #setup-entity .setupContainer,
+  .document-page #setup-group .documentContainer,
+  .document-page #setup-group .setupContainer,
+  .document-page #setup-section .documentContainer,
+  .document-page #setup-section .setupContainer,
+  .document-page #main-inboxCorrespondence .documentContainer,
+  .document-page #main-inboxCorrespondence .setupContainer,
+  .document-page #main-newCorrespondence .documentContainer,
+  .document-page #main-newCorrespondence .setupContainer,
+  .document-page #main-bulkCorrespondenceRegister .documentContainer,
+  .document-page #main-bulkCorrespondenceRegister .setupContainer,
+  .document-page #main-myCorrespondence .documentContainer,
+  .document-page #main-myCorrespondence .setupContainer,
+  .document-page #main-incomingCorrespondence .documentContainer,
+  .document-page #main-incomingCorrespondence .setupContainer {
+    height: calc(100vh - 165px);
+    width: 100%;
+    overflow: auto;
+  }
+  .document-page #status-document .container-table,
+  .document-page #main-document .container-table,
+  .document-page #main-setup .container-table,
+  .document-page #register-document .container-table,
+  .document-page #setup-doc-type .container-table,
+  .document-page #setup-distribution_group .container-table,
+  .document-page #setup-work-package .container-table,
+  .document-page #setup-entity .container-table,
+  .document-page #setup-group .container-table,
+  .document-page #setup-section .container-table,
+  .document-page #main-inboxCorrespondence .container-table,
+  .document-page #main-newCorrespondence .container-table,
+  .document-page #main-bulkCorrespondenceRegister .container-table,
+  .document-page #main-myCorrespondence .container-table,
+  .document-page #main-incomingCorrespondence .container-table {
+    position: absolute;
+    width: calc(100% - 40px);
+    overflow: auto;
+    left: 20px;
+    float: right;
+    top: 55px;
+  }
+  .document-page #status-document .container-table table,
+  .document-page #main-document .container-table table,
+  .document-page #main-setup .container-table table,
+  .document-page #register-document .container-table table,
+  .document-page #setup-doc-type .container-table table,
+  .document-page #setup-distribution_group .container-table table,
+  .document-page #setup-work-package .container-table table,
+  .document-page #setup-entity .container-table table,
+  .document-page #setup-group .container-table table,
+  .document-page #setup-section .container-table table,
+  .document-page #main-inboxCorrespondence .container-table table,
+  .document-page #main-newCorrespondence .container-table table,
+  .document-page #main-bulkCorrespondenceRegister .container-table table,
+  .document-page #main-myCorrespondence .container-table table,
+  .document-page #main-incomingCorrespondence .container-table table {
+    border-collapse: collapse;
+    background-color: #ffffff;
+    width: 100%;
+    font-size: 10px;
+  }
+  .document-page #status-document .container-table table td,
+  .document-page #main-document .container-table table td,
+  .document-page #main-setup .container-table table td,
+  .document-page #register-document .container-table table td,
+  .document-page #setup-doc-type .container-table table td,
+  .document-page #setup-distribution_group .container-table table td,
+  .document-page #setup-work-package .container-table table td,
+  .document-page #setup-entity .container-table table td,
+  .document-page #setup-group .container-table table td,
+  .document-page #setup-section .container-table table td,
+  .document-page #main-inboxCorrespondence .container-table table td,
+  .document-page #main-newCorrespondence .container-table table td,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td,
+  .document-page #main-myCorrespondence .container-table table td,
+  .document-page #main-incomingCorrespondence .container-table table td {
+    text-align: left;
+    padding: 4px 8px;
+    border: none;
+    line-height: 20px;
+  }
+  .document-page #status-document .container-table table td span,
+  .document-page #main-document .container-table table td span,
+  .document-page #main-setup .container-table table td span,
+  .document-page #register-document .container-table table td span,
+  .document-page #setup-doc-type .container-table table td span,
+  .document-page #setup-distribution_group .container-table table td span,
+  .document-page #setup-work-package .container-table table td span,
+  .document-page #setup-entity .container-table table td span,
+  .document-page #setup-group .container-table table td span,
+  .document-page #setup-section .container-table table td span,
+  .document-page #main-inboxCorrespondence .container-table table td span,
+  .document-page #main-newCorrespondence .container-table table td span,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td span,
+  .document-page #main-myCorrespondence .container-table table td span,
+  .document-page #main-incomingCorrespondence .container-table table td span {
+    margin-right: 10px;
+  }
+  .document-page #status-document .container-table table td span img,
+  .document-page #main-document .container-table table td span img,
+  .document-page #main-setup .container-table table td span img,
+  .document-page #register-document .container-table table td span img,
+  .document-page #setup-doc-type .container-table table td span img,
+  .document-page #setup-distribution_group .container-table table td span img,
+  .document-page #setup-work-package .container-table table td span img,
+  .document-page #setup-entity .container-table table td span img,
+  .document-page #setup-group .container-table table td span img,
+  .document-page #setup-section .container-table table td span img,
+  .document-page #main-inboxCorrespondence .container-table table td span img,
+  .document-page #main-newCorrespondence .container-table table td span img,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td span img,
+  .document-page #main-myCorrespondence .container-table table td span img,
+  .document-page #main-incomingCorrespondence .container-table table td span img {
+    height: 10px;
+    width: 10px;
+  }
+  .document-page #status-document .container-table table td input,
+  .document-page #main-document .container-table table td input,
+  .document-page #main-setup .container-table table td input,
+  .document-page #register-document .container-table table td input,
+  .document-page #setup-doc-type .container-table table td input,
+  .document-page #setup-distribution_group .container-table table td input,
+  .document-page #setup-work-package .container-table table td input,
+  .document-page #setup-entity .container-table table td input,
+  .document-page #setup-group .container-table table td input,
+  .document-page #setup-section .container-table table td input,
+  .document-page #main-inboxCorrespondence .container-table table td input,
+  .document-page #main-newCorrespondence .container-table table td input,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td input,
+  .document-page #main-myCorrespondence .container-table table td input,
+  .document-page #main-incomingCorrespondence .container-table table td input {
+    height: 10px;
+  }
+  .document-page #status-document .container-table table th:first-child,
+  .document-page #main-document .container-table table th:first-child,
+  .document-page #main-setup .container-table table th:first-child,
+  .document-page #register-document .container-table table th:first-child,
+  .document-page #setup-doc-type .container-table table th:first-child,
+  .document-page #setup-distribution_group .container-table table th:first-child,
+  .document-page #setup-work-package .container-table table th:first-child,
+  .document-page #setup-entity .container-table table th:first-child,
+  .document-page #setup-group .container-table table th:first-child,
+  .document-page #setup-section .container-table table th:first-child,
+  .document-page #main-inboxCorrespondence .container-table table th:first-child,
+  .document-page #main-newCorrespondence .container-table table th:first-child,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th:first-child,
+  .document-page #main-myCorrespondence .container-table table th:first-child,
+  .document-page #main-incomingCorrespondence .container-table table th:first-child {
+    border-top-left-radius: 5px;
+  }
+  .document-page #status-document .container-table table th:last-child,
+  .document-page #main-document .container-table table th:last-child,
+  .document-page #main-setup .container-table table th:last-child,
+  .document-page #register-document .container-table table th:last-child,
+  .document-page #setup-doc-type .container-table table th:last-child,
+  .document-page #setup-distribution_group .container-table table th:last-child,
+  .document-page #setup-work-package .container-table table th:last-child,
+  .document-page #setup-entity .container-table table th:last-child,
+  .document-page #setup-group .container-table table th:last-child,
+  .document-page #setup-section .container-table table th:last-child,
+  .document-page #main-inboxCorrespondence .container-table table th:last-child,
+  .document-page #main-newCorrespondence .container-table table th:last-child,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th:last-child,
+  .document-page #main-myCorrespondence .container-table table th:last-child,
+  .document-page #main-incomingCorrespondence .container-table table th:last-child {
+    border-top-right-radius: 5px;
+  }
+  .document-page #status-document .container-table table tr:nth-of-type(even),
+  .document-page #main-document .container-table table tr:nth-of-type(even),
+  .document-page #main-setup .container-table table tr:nth-of-type(even),
+  .document-page #register-document .container-table table tr:nth-of-type(even),
+  .document-page #setup-doc-type .container-table table tr:nth-of-type(even),
+  .document-page #setup-distribution_group .container-table table tr:nth-of-type(even),
+  .document-page #setup-work-package .container-table table tr:nth-of-type(even),
+  .document-page #setup-entity .container-table table tr:nth-of-type(even),
+  .document-page #setup-group .container-table table tr:nth-of-type(even),
+  .document-page #setup-section .container-table table tr:nth-of-type(even),
+  .document-page #main-inboxCorrespondence .container-table table tr:nth-of-type(even),
+  .document-page #main-newCorrespondence .container-table table tr:nth-of-type(even),
+  .document-page #main-bulkCorrespondenceRegister .container-table table tr:nth-of-type(even),
+  .document-page #main-myCorrespondence .container-table table tr:nth-of-type(even),
+  .document-page #main-incomingCorrespondence .container-table table tr:nth-of-type(even) {
+    background: #f2f2f2;
+  }
+  .document-page #status-document .container-table table tr:nth-of-type(odd),
+  .document-page #main-document .container-table table tr:nth-of-type(odd),
+  .document-page #main-setup .container-table table tr:nth-of-type(odd),
+  .document-page #register-document .container-table table tr:nth-of-type(odd),
+  .document-page #setup-doc-type .container-table table tr:nth-of-type(odd),
+  .document-page #setup-distribution_group .container-table table tr:nth-of-type(odd),
+  .document-page #setup-work-package .container-table table tr:nth-of-type(odd),
+  .document-page #setup-entity .container-table table tr:nth-of-type(odd),
+  .document-page #setup-group .container-table table tr:nth-of-type(odd),
+  .document-page #setup-section .container-table table tr:nth-of-type(odd),
+  .document-page #main-inboxCorrespondence .container-table table tr:nth-of-type(odd),
+  .document-page #main-newCorrespondence .container-table table tr:nth-of-type(odd),
+  .document-page #main-bulkCorrespondenceRegister .container-table table tr:nth-of-type(odd),
+  .document-page #main-myCorrespondence .container-table table tr:nth-of-type(odd),
+  .document-page #main-incomingCorrespondence .container-table table tr:nth-of-type(odd) {
+    background: white;
+  }
+  .document-page #status-document .container-table table tr:hover,
+  .document-page #main-document .container-table table tr:hover,
+  .document-page #main-setup .container-table table tr:hover,
+  .document-page #register-document .container-table table tr:hover,
+  .document-page #setup-doc-type .container-table table tr:hover,
+  .document-page #setup-distribution_group .container-table table tr:hover,
+  .document-page #setup-work-package .container-table table tr:hover,
+  .document-page #setup-entity .container-table table tr:hover,
+  .document-page #setup-group .container-table table tr:hover,
+  .document-page #setup-section .container-table table tr:hover,
+  .document-page #main-inboxCorrespondence .container-table table tr:hover,
+  .document-page #main-newCorrespondence .container-table table tr:hover,
+  .document-page #main-bulkCorrespondenceRegister .container-table table tr:hover,
+  .document-page #main-myCorrespondence .container-table table tr:hover,
+  .document-page #main-incomingCorrespondence .container-table table tr:hover {
+    background-color: #ddd;
+    cursor: pointer;
+  }
+  .document-page #status-document .container-table table th,
+  .document-page #main-document .container-table table th,
+  .document-page #main-setup .container-table table th,
+  .document-page #register-document .container-table table th,
+  .document-page #setup-doc-type .container-table table th,
+  .document-page #setup-distribution_group .container-table table th,
+  .document-page #setup-work-package .container-table table th,
+  .document-page #setup-entity .container-table table th,
+  .document-page #setup-group .container-table table th,
+  .document-page #setup-section .container-table table th,
+  .document-page #main-inboxCorrespondence .container-table table th,
+  .document-page #main-newCorrespondence .container-table table th,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th,
+  .document-page #main-myCorrespondence .container-table table th,
+  .document-page #main-incomingCorrespondence .container-table table th {
+    background-color: #1565c0;
+    color: white;
+    text-align: left;
+    padding: 4px 8px;
+    line-height: 20px;
+  }
+  .document-page #status-document .container-table table th:hover,
+  .document-page #main-document .container-table table th:hover,
+  .document-page #main-setup .container-table table th:hover,
+  .document-page #register-document .container-table table th:hover,
+  .document-page #setup-doc-type .container-table table th:hover,
+  .document-page #setup-distribution_group .container-table table th:hover,
+  .document-page #setup-work-package .container-table table th:hover,
+  .document-page #setup-entity .container-table table th:hover,
+  .document-page #setup-group .container-table table th:hover,
+  .document-page #setup-section .container-table table th:hover,
+  .document-page #main-inboxCorrespondence .container-table table th:hover,
+  .document-page #main-newCorrespondence .container-table table th:hover,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th:hover,
+  .document-page #main-myCorrespondence .container-table table th:hover,
+  .document-page #main-incomingCorrespondence .container-table table th:hover {
+    cursor: default;
+  }
+  .document-page #status-document .container-table table th input,
+  .document-page #main-document .container-table table th input,
+  .document-page #main-setup .container-table table th input,
+  .document-page #register-document .container-table table th input,
+  .document-page #setup-doc-type .container-table table th input,
+  .document-page #setup-distribution_group .container-table table th input,
+  .document-page #setup-work-package .container-table table th input,
+  .document-page #setup-entity .container-table table th input,
+  .document-page #setup-group .container-table table th input,
+  .document-page #setup-section .container-table table th input,
+  .document-page #main-inboxCorrespondence .container-table table th input,
+  .document-page #main-newCorrespondence .container-table table th input,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th input,
+  .document-page #main-myCorrespondence .container-table table th input,
+  .document-page #main-incomingCorrespondence .container-table table th input {
+    height: 10px;
+  }
+  .document-page #status-document .container-table table th img,
+  .document-page #main-document .container-table table th img,
+  .document-page #main-setup .container-table table th img,
+  .document-page #register-document .container-table table th img,
+  .document-page #setup-doc-type .container-table table th img,
+  .document-page #setup-distribution_group .container-table table th img,
+  .document-page #setup-work-package .container-table table th img,
+  .document-page #setup-entity .container-table table th img,
+  .document-page #setup-group .container-table table th img,
+  .document-page #setup-section .container-table table th img,
+  .document-page #main-inboxCorrespondence .container-table table th img,
+  .document-page #main-newCorrespondence .container-table table th img,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th img,
+  .document-page #main-myCorrespondence .container-table table th img,
+  .document-page #main-incomingCorrespondence .container-table table th img {
+    height: 8px;
+    width: auto;
+    margin-left: 5px;
+  }
+  .document-page #status-document .container-table table th img:hover,
+  .document-page #main-document .container-table table th img:hover,
+  .document-page #main-setup .container-table table th img:hover,
+  .document-page #register-document .container-table table th img:hover,
+  .document-page #setup-doc-type .container-table table th img:hover,
+  .document-page #setup-distribution_group .container-table table th img:hover,
+  .document-page #setup-work-package .container-table table th img:hover,
+  .document-page #setup-entity .container-table table th img:hover,
+  .document-page #setup-group .container-table table th img:hover,
+  .document-page #setup-section .container-table table th img:hover,
+  .document-page #main-inboxCorrespondence .container-table table th img:hover,
+  .document-page #main-newCorrespondence .container-table table th img:hover,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th img:hover,
+  .document-page #main-myCorrespondence .container-table table th img:hover,
+  .document-page #main-incomingCorrespondence .container-table table th img:hover {
+    cursor: pointer;
+  }
+  .document-page #main-document {
+    height: calc(100vh - 90px);
+    float: right;
+    overflow: auto;
+    padding: 0px;
+    top: 0px;
+    margin: 10px;
+  }
+  .document-page #main-vo {
+    height: calc(100vh - 90px);
+    float: right;
+    overflow: auto;
+    padding: 0px;
+    top: 0px;
+    margin: 10px;
+  }
+  .document-page #main-vo .topcontainer {
+    height: 50vh;
+  }
+  .document-page #main-vo .bottomcontainer {
+    height: calc(50vh - 100px);
+  }
+}
+@media screen and (max-width: 1366px) {
+  .document-page {
+    display: block;
+    padding: 0px;
+    margin: 0px;
+    top: 50px;
+    position: absolute;
+    height: calc(100% - 50px);
+    width: 100%;
+    background: white;
+  }
+  .document-page #sidebar-admin {
+    position: absolute;
+    height: 100%;
+    width: 220px;
+    background: #e0e0e0;
+    box-shadow: 7px 0px 10px 0px rgba(33, 33, 33, 0.2);
+    z-index: 1;
+  }
+  .document-page #sidebar-admin .sidebar-items {
+    vertical-align: middle;
+    line-height: 30px;
+    padding: 0px;
+    margin: 0px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead {
+    padding: 10px;
+    font-weight: bold;
+    color: black;
+    font-size: 12px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead a {
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminHead img:hover {
+    cursor: pointer;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    padding-left: 10px;
+    font-size: 12px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems:hover {
+    cursor: pointer;
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems a {
+    text-decoration: none;
+    margin-left: 10px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems div.arrow {
+    float: right;
+    vertical-align: middle;
+    width: 10px;
+    height: 10px;
+    margin: 8px;
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowdown.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems div.arrow.active {
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowup.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .document-page #sidebar-admin .sidebar-items li.adminItems.active {
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .document-page #sidebar-admin .sidebar-items ul {
+    display: none;
+    list-style: none;
+    padding-left: 0;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    font-size: 12px;
+    display: flex;
+    margin: 10px 0;
+    padding-right: 5px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li a {
+    text-decoration: none;
+    line-height: 30px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li a.long {
+    line-height: 17px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li img {
+    padding-top: 2px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    padding-left: 35px;
+    margin-right: 15px;
+  }
+  .document-page #sidebar-admin .sidebar-items ul li.active {
+    background: #5e92f3;
+  }
+  .document-page #main-home {
+    display: block;
+    position: relative;
+    padding: 0 20px;
+    width: calc(100% - 260px);
+    height: calc(100vh - 50px);
+    float: right;
+    overflow: auto;
+  }
+  .document-page #main-home .container-welcome .top-welcome {
+    margin: 10px 10px;
+    border-bottom: 1px solid #003c8f;
+    line-height: 52px;
+    font-weight: bolder;
+    font-size: 14px;
+  }
+  .document-page #main-home .container-welcome .top-welcome a {
+    margin: 0 10px;
+  }
+  .document-page #main-home .container-welcome .bottom-welcome {
+    margin: 20px;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 30px;
+  }
+  .document-page #main-home .container-welcome .bottom-welcome a.secondary {
+    font-weight: normal;
+    font-size: 13px;
+  }
+  .document-page #main-home .container-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: white;
+  }
+  .document-page #main-home .container-card .cards {
+    position: relative;
+    background: #003c8f;
+    border-radius: 5px;
+    top: 0px;
+    width: 340px;
+    height: 100%;
+    margin: 20px auto;
+    box-shadow: 2px 2px 10px 2px #c0c0c0;
+    transition: all 0.3s;
+  }
+  .document-page #main-home .container-card .cards:hover {
+    position: relative;
+    transform: scale(1.02);
+    box-shadow: 3px 3px 8px 3px #616161;
+    transition: all 0.3s;
+  }
+  .document-page #main-home .container-card .cards .card-header {
+    margin: 0 10px;
+    border-bottom: 1px solid rgb(189, 189, 189);
+    text-align: center;
+  }
+  .document-page #main-home .container-card .cards .card-header:hover {
+    cursor: move;
+  }
+  .document-page #main-home .container-card .cards .card-header h3 {
+    margin: 10px 0;
+    color: rgb(207, 207, 207);
+    font-size: 15px;
+  }
+  .document-page #main-home .container-card .cards .card-body {
+    border-radius: 3px;
+    background: #003c8f;
+    margin: 10px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image {
+    padding: 15px;
+    height: auto;
+    background-size: 90px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #003c8f;
+    color: white;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph {
+    margin: 25px 0 25px 0;
+    font-size: 10px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .innerContainer {
+    display: inline-block;
+    width: calc(50% - 3px);
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a {
+    font-size: 10px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.number {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.bigNum {
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    top: 8px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.primary {
+    font-size: 15px;
+    position: relative;
+    font-weight: bold;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph a.secondary {
+    font-size: 12px;
+    position: relative;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph.center {
+    text-align: center;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph.left {
+    text-align: left;
+    line-height: 45px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph.right {
+    text-align: right;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph:first-child {
+    margin: 15px 0 0 0;
+    font-size: 20px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph:last-child {
+    margin: 0 0 15px 0;
+    font-size: 12px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph img {
+    height: 25%;
+    width: 25%;
+    border-radius: 50%;
+    margin: 10px 0;
+    vertical-align: middle;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph img.twoImage {
+    height: auto;
+    width: 37px;
+    border-radius: 3px;
+    margin: 10px 10px;
+    padding: 5px;
+    background: #003c8f;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .updatedOn {
+    margin: 15px 0;
+    text-align: left;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph {
+    width: 100%;
+    height: 25px;
+    background-color: #b72f2f;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph .barInner {
+    height: 25px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend {
+    margin: 15px 0;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active {
+    margin-right: 5px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive {
+    margin-right: 5px;
+  }
+  .document-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-color: #b72f2f;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items {
+    height: 45%;
+    margin: 0px;
+    line-height: 30px;
+    list-style: none;
+    padding-left: 0px;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items li {
+    list-style-type: none;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items {
+    background: #1565c0;
+    color: white;
+    font-size: 12px;
+    margin: 3px 0;
+    padding: 10px 5px;
+    line-height: 15px;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items a {
+    padding-left: 15px;
+    font-weight: bold;
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items a.secondary {
+    font-size: 10px;
+    color: rgb(190, 190, 190);
+  }
+  .document-page #main-home .container-card .cards .card-body .list-items .items:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .document-page #status-document,
+  .document-page #main-document,
+  .document-page #main-setup,
+  .document-page #register-document,
+  .document-page #setup-doc-type,
+  .document-page #setup-distribution_group,
+  .document-page #setup-work-package,
+  .document-page #setup-entity,
+  .document-page #setup-group,
+  .document-page #setup-section,
+  .document-page #main-inboxCorrespondence,
+  .document-page #main-newCorrespondence,
+  .document-page #main-bulkCorrespondenceRegister,
+  .document-page #main-myCorrespondence,
+  .document-page #main-incomingCorrespondence {
+    display: none;
+    position: relative;
+    width: calc(100% - 260px);
+    height: calc(100vh - 75px);
+    float: right;
+    overflow: hidden;
+  }
+  .document-page #status-document .mainHeader,
+  .document-page #main-document .mainHeader,
+  .document-page #main-setup .mainHeader,
+  .document-page #register-document .mainHeader,
+  .document-page #setup-doc-type .mainHeader,
+  .document-page #setup-distribution_group .mainHeader,
+  .document-page #setup-work-package .mainHeader,
+  .document-page #setup-entity .mainHeader,
+  .document-page #setup-group .mainHeader,
+  .document-page #setup-section .mainHeader,
+  .document-page #main-inboxCorrespondence .mainHeader,
+  .document-page #main-newCorrespondence .mainHeader,
+  .document-page #main-bulkCorrespondenceRegister .mainHeader,
+  .document-page #main-myCorrespondence .mainHeader,
+  .document-page #main-incomingCorrespondence .mainHeader {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .document-page #status-document .mainHeader h3,
+  .document-page #main-document .mainHeader h3,
+  .document-page #main-setup .mainHeader h3,
+  .document-page #register-document .mainHeader h3,
+  .document-page #setup-doc-type .mainHeader h3,
+  .document-page #setup-distribution_group .mainHeader h3,
+  .document-page #setup-work-package .mainHeader h3,
+  .document-page #setup-entity .mainHeader h3,
+  .document-page #setup-group .mainHeader h3,
+  .document-page #setup-section .mainHeader h3,
+  .document-page #main-inboxCorrespondence .mainHeader h3,
+  .document-page #main-newCorrespondence .mainHeader h3,
+  .document-page #main-bulkCorrespondenceRegister .mainHeader h3,
+  .document-page #main-myCorrespondence .mainHeader h3,
+  .document-page #main-incomingCorrespondence .mainHeader h3 {
+    margin: 0px;
+    top: 12px;
+    position: relative;
+    font-size: 12px;
+  }
+  .document-page #status-document .headerButton,
+  .document-page #main-document .headerButton,
+  .document-page #main-setup .headerButton,
+  .document-page #register-document .headerButton,
+  .document-page #setup-doc-type .headerButton,
+  .document-page #setup-distribution_group .headerButton,
+  .document-page #setup-work-package .headerButton,
+  .document-page #setup-entity .headerButton,
+  .document-page #setup-group .headerButton,
+  .document-page #setup-section .headerButton,
+  .document-page #main-inboxCorrespondence .headerButton,
+  .document-page #main-newCorrespondence .headerButton,
+  .document-page #main-bulkCorrespondenceRegister .headerButton,
+  .document-page #main-myCorrespondence .headerButton,
+  .document-page #main-incomingCorrespondence .headerButton {
+    top: -42px;
+    position: relative;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    right: 15px;
+  }
+  .document-page #status-document .headerButton button,
+  .document-page #main-document .headerButton button,
+  .document-page #main-setup .headerButton button,
+  .document-page #register-document .headerButton button,
+  .document-page #setup-doc-type .headerButton button,
+  .document-page #setup-distribution_group .headerButton button,
+  .document-page #setup-work-package .headerButton button,
+  .document-page #setup-entity .headerButton button,
+  .document-page #setup-group .headerButton button,
+  .document-page #setup-section .headerButton button,
+  .document-page #main-inboxCorrespondence .headerButton button,
+  .document-page #main-newCorrespondence .headerButton button,
+  .document-page #main-bulkCorrespondenceRegister .headerButton button,
+  .document-page #main-myCorrespondence .headerButton button,
+  .document-page #main-incomingCorrespondence .headerButton button {
+    border-radius: 5px;
+    padding: 8px 20px;
+    font-size: 10px;
+  }
+  .document-page #status-document .headerButton button.edit,
+  .document-page #main-document .headerButton button.edit,
+  .document-page #main-setup .headerButton button.edit,
+  .document-page #register-document .headerButton button.edit,
+  .document-page #setup-doc-type .headerButton button.edit,
+  .document-page #setup-distribution_group .headerButton button.edit,
+  .document-page #setup-work-package .headerButton button.edit,
+  .document-page #setup-entity .headerButton button.edit,
+  .document-page #setup-group .headerButton button.edit,
+  .document-page #setup-section .headerButton button.edit,
+  .document-page #main-inboxCorrespondence .headerButton button.edit,
+  .document-page #main-newCorrespondence .headerButton button.edit,
+  .document-page #main-bulkCorrespondenceRegister .headerButton button.edit,
+  .document-page #main-myCorrespondence .headerButton button.edit,
+  .document-page #main-incomingCorrespondence .headerButton button.edit {
+    display: none;
+  }
+  .document-page #status-document .checkcounter,
+  .document-page #main-document .checkcounter,
+  .document-page #main-setup .checkcounter,
+  .document-page #register-document .checkcounter,
+  .document-page #setup-doc-type .checkcounter,
+  .document-page #setup-distribution_group .checkcounter,
+  .document-page #setup-work-package .checkcounter,
+  .document-page #setup-entity .checkcounter,
+  .document-page #setup-group .checkcounter,
+  .document-page #setup-section .checkcounter,
+  .document-page #main-inboxCorrespondence .checkcounter,
+  .document-page #main-newCorrespondence .checkcounter,
+  .document-page #main-bulkCorrespondenceRegister .checkcounter,
+  .document-page #main-myCorrespondence .checkcounter,
+  .document-page #main-incomingCorrespondence .checkcounter {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    left: 20px;
+  }
+  .document-page #status-document .checkcounter.package,
+  .document-page #main-document .checkcounter.package,
+  .document-page #main-setup .checkcounter.package,
+  .document-page #register-document .checkcounter.package,
+  .document-page #setup-doc-type .checkcounter.package,
+  .document-page #setup-distribution_group .checkcounter.package,
+  .document-page #setup-work-package .checkcounter.package,
+  .document-page #setup-entity .checkcounter.package,
+  .document-page #setup-group .checkcounter.package,
+  .document-page #setup-section .checkcounter.package,
+  .document-page #main-inboxCorrespondence .checkcounter.package,
+  .document-page #main-newCorrespondence .checkcounter.package,
+  .document-page #main-bulkCorrespondenceRegister .checkcounter.package,
+  .document-page #main-myCorrespondence .checkcounter.package,
+  .document-page #main-incomingCorrespondence .checkcounter.package {
+    top: 447px;
+  }
+  .document-page #status-document .checkcounter p,
+  .document-page #main-document .checkcounter p,
+  .document-page #main-setup .checkcounter p,
+  .document-page #register-document .checkcounter p,
+  .document-page #setup-doc-type .checkcounter p,
+  .document-page #setup-distribution_group .checkcounter p,
+  .document-page #setup-work-package .checkcounter p,
+  .document-page #setup-entity .checkcounter p,
+  .document-page #setup-group .checkcounter p,
+  .document-page #setup-section .checkcounter p,
+  .document-page #main-inboxCorrespondence .checkcounter p,
+  .document-page #main-newCorrespondence .checkcounter p,
+  .document-page #main-bulkCorrespondenceRegister .checkcounter p,
+  .document-page #main-myCorrespondence .checkcounter p,
+  .document-page #main-incomingCorrespondence .checkcounter p {
+    margin: 10px 15px;
+    display: inline-block;
+    float: left;
+    display: none;
+    color: white;
+  }
+  .document-page #status-document .searchTable,
+  .document-page #main-document .searchTable,
+  .document-page #main-setup .searchTable,
+  .document-page #register-document .searchTable,
+  .document-page #setup-doc-type .searchTable,
+  .document-page #setup-distribution_group .searchTable,
+  .document-page #setup-work-package .searchTable,
+  .document-page #setup-entity .searchTable,
+  .document-page #setup-group .searchTable,
+  .document-page #setup-section .searchTable,
+  .document-page #main-inboxCorrespondence .searchTable,
+  .document-page #main-newCorrespondence .searchTable,
+  .document-page #main-bulkCorrespondenceRegister .searchTable,
+  .document-page #main-myCorrespondence .searchTable,
+  .document-page #main-incomingCorrespondence .searchTable {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    width: auto;
+    right: 20px;
+  }
+  .document-page #status-document .searchTable input,
+  .document-page #main-document .searchTable input,
+  .document-page #main-setup .searchTable input,
+  .document-page #register-document .searchTable input,
+  .document-page #setup-doc-type .searchTable input,
+  .document-page #setup-distribution_group .searchTable input,
+  .document-page #setup-work-package .searchTable input,
+  .document-page #setup-entity .searchTable input,
+  .document-page #setup-group .searchTable input,
+  .document-page #setup-section .searchTable input,
+  .document-page #main-inboxCorrespondence .searchTable input,
+  .document-page #main-newCorrespondence .searchTable input,
+  .document-page #main-bulkCorrespondenceRegister .searchTable input,
+  .document-page #main-myCorrespondence .searchTable input,
+  .document-page #main-incomingCorrespondence .searchTable input {
+    height: 30px;
+    width: 250px;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 10px;
+  }
+  .document-page #status-document iframe,
+  .document-page #main-document iframe,
+  .document-page #main-setup iframe,
+  .document-page #register-document iframe,
+  .document-page #setup-doc-type iframe,
+  .document-page #setup-distribution_group iframe,
+  .document-page #setup-work-package iframe,
+  .document-page #setup-entity iframe,
+  .document-page #setup-group iframe,
+  .document-page #setup-section iframe,
+  .document-page #main-inboxCorrespondence iframe,
+  .document-page #main-newCorrespondence iframe,
+  .document-page #main-bulkCorrespondenceRegister iframe,
+  .document-page #main-myCorrespondence iframe,
+  .document-page #main-incomingCorrespondence iframe {
+    height: 100%;
+    width: 100%;
+    border: 0px;
+    margin: 0px;
+  }
+  .document-page #status-document .documentContainer, .document-page #status-document .setupContainer,
+  .document-page #main-document .documentContainer,
+  .document-page #main-document .setupContainer,
+  .document-page #main-setup .documentContainer,
+  .document-page #main-setup .setupContainer,
+  .document-page #register-document .documentContainer,
+  .document-page #register-document .setupContainer,
+  .document-page #setup-doc-type .documentContainer,
+  .document-page #setup-doc-type .setupContainer,
+  .document-page #setup-distribution_group .documentContainer,
+  .document-page #setup-distribution_group .setupContainer,
+  .document-page #setup-work-package .documentContainer,
+  .document-page #setup-work-package .setupContainer,
+  .document-page #setup-entity .documentContainer,
+  .document-page #setup-entity .setupContainer,
+  .document-page #setup-group .documentContainer,
+  .document-page #setup-group .setupContainer,
+  .document-page #setup-section .documentContainer,
+  .document-page #setup-section .setupContainer,
+  .document-page #main-inboxCorrespondence .documentContainer,
+  .document-page #main-inboxCorrespondence .setupContainer,
+  .document-page #main-newCorrespondence .documentContainer,
+  .document-page #main-newCorrespondence .setupContainer,
+  .document-page #main-bulkCorrespondenceRegister .documentContainer,
+  .document-page #main-bulkCorrespondenceRegister .setupContainer,
+  .document-page #main-myCorrespondence .documentContainer,
+  .document-page #main-myCorrespondence .setupContainer,
+  .document-page #main-incomingCorrespondence .documentContainer,
+  .document-page #main-incomingCorrespondence .setupContainer {
+    height: calc(100vh - 165px);
+    width: 100%;
+    overflow: auto;
+  }
+  .document-page #status-document .container-table,
+  .document-page #main-document .container-table,
+  .document-page #main-setup .container-table,
+  .document-page #register-document .container-table,
+  .document-page #setup-doc-type .container-table,
+  .document-page #setup-distribution_group .container-table,
+  .document-page #setup-work-package .container-table,
+  .document-page #setup-entity .container-table,
+  .document-page #setup-group .container-table,
+  .document-page #setup-section .container-table,
+  .document-page #main-inboxCorrespondence .container-table,
+  .document-page #main-newCorrespondence .container-table,
+  .document-page #main-bulkCorrespondenceRegister .container-table,
+  .document-page #main-myCorrespondence .container-table,
+  .document-page #main-incomingCorrespondence .container-table {
+    position: absolute;
+    width: calc(100% - 40px);
+    overflow: auto;
+    left: 20px;
+    float: right;
+    top: 55px;
+  }
+  .document-page #status-document .container-table table,
+  .document-page #main-document .container-table table,
+  .document-page #main-setup .container-table table,
+  .document-page #register-document .container-table table,
+  .document-page #setup-doc-type .container-table table,
+  .document-page #setup-distribution_group .container-table table,
+  .document-page #setup-work-package .container-table table,
+  .document-page #setup-entity .container-table table,
+  .document-page #setup-group .container-table table,
+  .document-page #setup-section .container-table table,
+  .document-page #main-inboxCorrespondence .container-table table,
+  .document-page #main-newCorrespondence .container-table table,
+  .document-page #main-bulkCorrespondenceRegister .container-table table,
+  .document-page #main-myCorrespondence .container-table table,
+  .document-page #main-incomingCorrespondence .container-table table {
+    border-collapse: collapse;
+    background-color: #ffffff;
+    width: 100%;
+    font-size: 10px;
+  }
+  .document-page #status-document .container-table table td,
+  .document-page #main-document .container-table table td,
+  .document-page #main-setup .container-table table td,
+  .document-page #register-document .container-table table td,
+  .document-page #setup-doc-type .container-table table td,
+  .document-page #setup-distribution_group .container-table table td,
+  .document-page #setup-work-package .container-table table td,
+  .document-page #setup-entity .container-table table td,
+  .document-page #setup-group .container-table table td,
+  .document-page #setup-section .container-table table td,
+  .document-page #main-inboxCorrespondence .container-table table td,
+  .document-page #main-newCorrespondence .container-table table td,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td,
+  .document-page #main-myCorrespondence .container-table table td,
+  .document-page #main-incomingCorrespondence .container-table table td {
+    text-align: left;
+    padding: 4px 8px;
+    border: none;
+    line-height: 20px;
+  }
+  .document-page #status-document .container-table table td span,
+  .document-page #main-document .container-table table td span,
+  .document-page #main-setup .container-table table td span,
+  .document-page #register-document .container-table table td span,
+  .document-page #setup-doc-type .container-table table td span,
+  .document-page #setup-distribution_group .container-table table td span,
+  .document-page #setup-work-package .container-table table td span,
+  .document-page #setup-entity .container-table table td span,
+  .document-page #setup-group .container-table table td span,
+  .document-page #setup-section .container-table table td span,
+  .document-page #main-inboxCorrespondence .container-table table td span,
+  .document-page #main-newCorrespondence .container-table table td span,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td span,
+  .document-page #main-myCorrespondence .container-table table td span,
+  .document-page #main-incomingCorrespondence .container-table table td span {
+    margin-right: 10px;
+  }
+  .document-page #status-document .container-table table td span img,
+  .document-page #main-document .container-table table td span img,
+  .document-page #main-setup .container-table table td span img,
+  .document-page #register-document .container-table table td span img,
+  .document-page #setup-doc-type .container-table table td span img,
+  .document-page #setup-distribution_group .container-table table td span img,
+  .document-page #setup-work-package .container-table table td span img,
+  .document-page #setup-entity .container-table table td span img,
+  .document-page #setup-group .container-table table td span img,
+  .document-page #setup-section .container-table table td span img,
+  .document-page #main-inboxCorrespondence .container-table table td span img,
+  .document-page #main-newCorrespondence .container-table table td span img,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td span img,
+  .document-page #main-myCorrespondence .container-table table td span img,
+  .document-page #main-incomingCorrespondence .container-table table td span img {
+    height: 10px;
+    width: 10px;
+  }
+  .document-page #status-document .container-table table td input,
+  .document-page #main-document .container-table table td input,
+  .document-page #main-setup .container-table table td input,
+  .document-page #register-document .container-table table td input,
+  .document-page #setup-doc-type .container-table table td input,
+  .document-page #setup-distribution_group .container-table table td input,
+  .document-page #setup-work-package .container-table table td input,
+  .document-page #setup-entity .container-table table td input,
+  .document-page #setup-group .container-table table td input,
+  .document-page #setup-section .container-table table td input,
+  .document-page #main-inboxCorrespondence .container-table table td input,
+  .document-page #main-newCorrespondence .container-table table td input,
+  .document-page #main-bulkCorrespondenceRegister .container-table table td input,
+  .document-page #main-myCorrespondence .container-table table td input,
+  .document-page #main-incomingCorrespondence .container-table table td input {
+    height: 10px;
+  }
+  .document-page #status-document .container-table table th:first-child,
+  .document-page #main-document .container-table table th:first-child,
+  .document-page #main-setup .container-table table th:first-child,
+  .document-page #register-document .container-table table th:first-child,
+  .document-page #setup-doc-type .container-table table th:first-child,
+  .document-page #setup-distribution_group .container-table table th:first-child,
+  .document-page #setup-work-package .container-table table th:first-child,
+  .document-page #setup-entity .container-table table th:first-child,
+  .document-page #setup-group .container-table table th:first-child,
+  .document-page #setup-section .container-table table th:first-child,
+  .document-page #main-inboxCorrespondence .container-table table th:first-child,
+  .document-page #main-newCorrespondence .container-table table th:first-child,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th:first-child,
+  .document-page #main-myCorrespondence .container-table table th:first-child,
+  .document-page #main-incomingCorrespondence .container-table table th:first-child {
+    border-top-left-radius: 5px;
+  }
+  .document-page #status-document .container-table table th:last-child,
+  .document-page #main-document .container-table table th:last-child,
+  .document-page #main-setup .container-table table th:last-child,
+  .document-page #register-document .container-table table th:last-child,
+  .document-page #setup-doc-type .container-table table th:last-child,
+  .document-page #setup-distribution_group .container-table table th:last-child,
+  .document-page #setup-work-package .container-table table th:last-child,
+  .document-page #setup-entity .container-table table th:last-child,
+  .document-page #setup-group .container-table table th:last-child,
+  .document-page #setup-section .container-table table th:last-child,
+  .document-page #main-inboxCorrespondence .container-table table th:last-child,
+  .document-page #main-newCorrespondence .container-table table th:last-child,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th:last-child,
+  .document-page #main-myCorrespondence .container-table table th:last-child,
+  .document-page #main-incomingCorrespondence .container-table table th:last-child {
+    border-top-right-radius: 5px;
+  }
+  .document-page #status-document .container-table table tr:nth-of-type(even),
+  .document-page #main-document .container-table table tr:nth-of-type(even),
+  .document-page #main-setup .container-table table tr:nth-of-type(even),
+  .document-page #register-document .container-table table tr:nth-of-type(even),
+  .document-page #setup-doc-type .container-table table tr:nth-of-type(even),
+  .document-page #setup-distribution_group .container-table table tr:nth-of-type(even),
+  .document-page #setup-work-package .container-table table tr:nth-of-type(even),
+  .document-page #setup-entity .container-table table tr:nth-of-type(even),
+  .document-page #setup-group .container-table table tr:nth-of-type(even),
+  .document-page #setup-section .container-table table tr:nth-of-type(even),
+  .document-page #main-inboxCorrespondence .container-table table tr:nth-of-type(even),
+  .document-page #main-newCorrespondence .container-table table tr:nth-of-type(even),
+  .document-page #main-bulkCorrespondenceRegister .container-table table tr:nth-of-type(even),
+  .document-page #main-myCorrespondence .container-table table tr:nth-of-type(even),
+  .document-page #main-incomingCorrespondence .container-table table tr:nth-of-type(even) {
+    background: #f2f2f2;
+  }
+  .document-page #status-document .container-table table tr:nth-of-type(odd),
+  .document-page #main-document .container-table table tr:nth-of-type(odd),
+  .document-page #main-setup .container-table table tr:nth-of-type(odd),
+  .document-page #register-document .container-table table tr:nth-of-type(odd),
+  .document-page #setup-doc-type .container-table table tr:nth-of-type(odd),
+  .document-page #setup-distribution_group .container-table table tr:nth-of-type(odd),
+  .document-page #setup-work-package .container-table table tr:nth-of-type(odd),
+  .document-page #setup-entity .container-table table tr:nth-of-type(odd),
+  .document-page #setup-group .container-table table tr:nth-of-type(odd),
+  .document-page #setup-section .container-table table tr:nth-of-type(odd),
+  .document-page #main-inboxCorrespondence .container-table table tr:nth-of-type(odd),
+  .document-page #main-newCorrespondence .container-table table tr:nth-of-type(odd),
+  .document-page #main-bulkCorrespondenceRegister .container-table table tr:nth-of-type(odd),
+  .document-page #main-myCorrespondence .container-table table tr:nth-of-type(odd),
+  .document-page #main-incomingCorrespondence .container-table table tr:nth-of-type(odd) {
+    background: white;
+  }
+  .document-page #status-document .container-table table tr:hover,
+  .document-page #main-document .container-table table tr:hover,
+  .document-page #main-setup .container-table table tr:hover,
+  .document-page #register-document .container-table table tr:hover,
+  .document-page #setup-doc-type .container-table table tr:hover,
+  .document-page #setup-distribution_group .container-table table tr:hover,
+  .document-page #setup-work-package .container-table table tr:hover,
+  .document-page #setup-entity .container-table table tr:hover,
+  .document-page #setup-group .container-table table tr:hover,
+  .document-page #setup-section .container-table table tr:hover,
+  .document-page #main-inboxCorrespondence .container-table table tr:hover,
+  .document-page #main-newCorrespondence .container-table table tr:hover,
+  .document-page #main-bulkCorrespondenceRegister .container-table table tr:hover,
+  .document-page #main-myCorrespondence .container-table table tr:hover,
+  .document-page #main-incomingCorrespondence .container-table table tr:hover {
+    background-color: #ddd;
+    cursor: pointer;
+  }
+  .document-page #status-document .container-table table th,
+  .document-page #main-document .container-table table th,
+  .document-page #main-setup .container-table table th,
+  .document-page #register-document .container-table table th,
+  .document-page #setup-doc-type .container-table table th,
+  .document-page #setup-distribution_group .container-table table th,
+  .document-page #setup-work-package .container-table table th,
+  .document-page #setup-entity .container-table table th,
+  .document-page #setup-group .container-table table th,
+  .document-page #setup-section .container-table table th,
+  .document-page #main-inboxCorrespondence .container-table table th,
+  .document-page #main-newCorrespondence .container-table table th,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th,
+  .document-page #main-myCorrespondence .container-table table th,
+  .document-page #main-incomingCorrespondence .container-table table th {
+    background-color: #1565c0;
+    color: white;
+    text-align: left;
+    padding: 4px 8px;
+    line-height: 20px;
+  }
+  .document-page #status-document .container-table table th:hover,
+  .document-page #main-document .container-table table th:hover,
+  .document-page #main-setup .container-table table th:hover,
+  .document-page #register-document .container-table table th:hover,
+  .document-page #setup-doc-type .container-table table th:hover,
+  .document-page #setup-distribution_group .container-table table th:hover,
+  .document-page #setup-work-package .container-table table th:hover,
+  .document-page #setup-entity .container-table table th:hover,
+  .document-page #setup-group .container-table table th:hover,
+  .document-page #setup-section .container-table table th:hover,
+  .document-page #main-inboxCorrespondence .container-table table th:hover,
+  .document-page #main-newCorrespondence .container-table table th:hover,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th:hover,
+  .document-page #main-myCorrespondence .container-table table th:hover,
+  .document-page #main-incomingCorrespondence .container-table table th:hover {
+    cursor: default;
+  }
+  .document-page #status-document .container-table table th input,
+  .document-page #main-document .container-table table th input,
+  .document-page #main-setup .container-table table th input,
+  .document-page #register-document .container-table table th input,
+  .document-page #setup-doc-type .container-table table th input,
+  .document-page #setup-distribution_group .container-table table th input,
+  .document-page #setup-work-package .container-table table th input,
+  .document-page #setup-entity .container-table table th input,
+  .document-page #setup-group .container-table table th input,
+  .document-page #setup-section .container-table table th input,
+  .document-page #main-inboxCorrespondence .container-table table th input,
+  .document-page #main-newCorrespondence .container-table table th input,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th input,
+  .document-page #main-myCorrespondence .container-table table th input,
+  .document-page #main-incomingCorrespondence .container-table table th input {
+    height: 10px;
+  }
+  .document-page #status-document .container-table table th img,
+  .document-page #main-document .container-table table th img,
+  .document-page #main-setup .container-table table th img,
+  .document-page #register-document .container-table table th img,
+  .document-page #setup-doc-type .container-table table th img,
+  .document-page #setup-distribution_group .container-table table th img,
+  .document-page #setup-work-package .container-table table th img,
+  .document-page #setup-entity .container-table table th img,
+  .document-page #setup-group .container-table table th img,
+  .document-page #setup-section .container-table table th img,
+  .document-page #main-inboxCorrespondence .container-table table th img,
+  .document-page #main-newCorrespondence .container-table table th img,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th img,
+  .document-page #main-myCorrespondence .container-table table th img,
+  .document-page #main-incomingCorrespondence .container-table table th img {
+    height: 8px;
+    width: auto;
+    margin-left: 5px;
+  }
+  .document-page #status-document .container-table table th img:hover,
+  .document-page #main-document .container-table table th img:hover,
+  .document-page #main-setup .container-table table th img:hover,
+  .document-page #register-document .container-table table th img:hover,
+  .document-page #setup-doc-type .container-table table th img:hover,
+  .document-page #setup-distribution_group .container-table table th img:hover,
+  .document-page #setup-work-package .container-table table th img:hover,
+  .document-page #setup-entity .container-table table th img:hover,
+  .document-page #setup-group .container-table table th img:hover,
+  .document-page #setup-section .container-table table th img:hover,
+  .document-page #main-inboxCorrespondence .container-table table th img:hover,
+  .document-page #main-newCorrespondence .container-table table th img:hover,
+  .document-page #main-bulkCorrespondenceRegister .container-table table th img:hover,
+  .document-page #main-myCorrespondence .container-table table th img:hover,
+  .document-page #main-incomingCorrespondence .container-table table th img:hover {
+    cursor: pointer;
+  }
+  .document-page #main-document {
+    height: calc(100vh - 90px);
+    float: right;
+    overflow: auto;
+    padding: 0px;
+    top: 0px;
+    margin: 10px;
+  }
+  .document-page #main-vo {
+    height: calc(100vh - 90px);
+    float: right;
+    overflow: auto;
+    padding: 0px;
+    top: 0px;
+    margin: 10px;
+  }
+  .document-page #main-vo .topcontainer {
+    height: 50vh;
+  }
+  .document-page #main-vo .bottomcontainer {
+    height: calc(50vh - 100px);
+  }
+}/*# sourceMappingURL=doc.css.map */

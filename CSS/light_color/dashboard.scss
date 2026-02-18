@@ -1,0 +1,3081 @@
+
+///---CSS for 1080 screen resolution---///
+.dashboardHeader{
+    background: rgb(204, 204, 204);
+    width: 100%;
+    height: 70px;
+    display: inline-flex;
+    .logo{
+        display: inline-block;
+        padding: 10px;
+        text-align: center;
+        img{
+            height: 100%;
+        }
+    }
+    .title{
+        display: inline-block;
+        margin: 0 auto;
+        color: white;
+        h4{
+            margin: 10px 0;
+        }
+        h3{
+            text-align: center;
+            margin: 4px 0;
+        }
+    }
+}
+
+.dashboardBody{
+    ////background: yellow;
+    width: 100%;
+    height: calc(100% - 110px);
+    position: relative;
+    .sidebar{
+        ////background: grey;
+        display: inline-block;
+        margin: 10px;
+        position: absolute;
+        height: calc(100% - 20px);
+        width: calc(20% - 20px);
+        .filterContainer{
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
+            height: calc(100% - 20px);
+            width: calc(100% - 20px);
+            .filter{
+                background: white;
+                color: black;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                padding: 5px;
+                line-height: 35px;
+                text-align: center;
+                label{
+
+                }
+                select{
+                    border-radius: 5px;
+                    width: 100%;
+                    height: 30px;
+                }
+
+                .filterBtn {
+                    background-color: white;
+                    border: none;
+                    padding: 15px 32px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    cursor: pointer;
+                    width: 70%;
+                }
+                
+                .activeBtn {
+                    background-color: #ffc961;;
+                }
+            }
+        }
+    }
+
+    ///////       layout inside right container      //////
+    .layout{
+        ////background: grey;
+        display: inline-block;
+        padding: 5px;
+        position: absolute;
+        right: 0px;
+        height: calc(100% - 10px);
+        width: calc(80% - 10px);
+    }
+    .oneRow{
+        .rowOne{
+            //background: blue;
+            height: 100%;
+        }
+    }
+    .twoRow{
+        .rowOne-S{
+            //background: blue;
+            height: 20%;
+        }
+        .rowOne-M{
+            //background:blue;
+            height: 50%;
+        }
+        .rowOne-L{
+            //background: blue;
+            height: 80%;
+        }
+        .rowOne-T{
+            background: white;
+            height: 20px;
+            line-height: 20px;
+            color: black;
+            text-align: center;
+            overflow: hidden;
+            font-size: 12px;
+        }
+        .rowTwo-S{
+            //background: red;
+            height: 20%;
+        }
+        .rowTwo-M{
+            //background:red;
+            height: 50%;
+        }
+        .rowTwo-L{
+            //background: red;
+            height: 80%;
+        }
+        .rowTwo-T{
+            background: #9d9d9d69;
+            height: calc(100% - 20px);
+        }
+    }
+    .threeRow{
+        .rowOne-S{
+            //background: blue;
+            height: 16.5%;
+        }
+        .rowOne-M{
+            //background: blue;
+            height: 33.3%;
+        }
+        .rowOne-L{
+            //background: blue;
+            height: 50%;
+        }
+        .rowTwo-S{
+            //background: red;
+            height: 16.5%;
+        }
+        .rowTwo-M{
+            //background: red;
+            height: 33.3%;
+        }
+        .rowTwo-L{
+            //background: red;
+            height: 50%;
+        }
+        .rowThree-S{
+            //background: yellow;
+            height: 16.5%;
+        }
+        .rowThree-M{
+            //background: yellow;
+            height: 33.3%;
+        }
+        .rowThree-L{
+            //background: yellow;
+            height: 50%;
+        }
+    }
+    .fourRow{
+        .rowOne-S{
+            //background: blue;
+            height: 16.5%;
+        }
+        .rowOne-M{
+            //background: blue;
+            height: 25%;
+        }
+        .rowOne-L{
+            //background: blue;
+            height: 50%;
+        }
+        .rowTwo-S{
+            //background: red;
+            height: 16.5%;
+        }
+        .rowTwo-M{
+            //background: red;
+            height: 25%;
+        }
+        .rowTwo-L{
+            //background: red;
+            height: 50%;
+        }
+        .rowThree-S{
+            //background: yellow;
+            height: 16.5%;
+        }
+        .rowThree-M{
+            //background: yellow;
+            height: 25%;
+        }
+        .rowThree-L{
+            //background: yellow;
+            height: 50%;
+        }
+        .rowFour-S{
+            //background: yellow;
+            height: 16.5%;
+        }
+        .rowFour-M{
+            //background: yellow;
+            height: 25%;
+        }
+        .rowTFour-L{
+            //background: yellow;
+            height: 50%;
+        }
+    }
+    .oneColumn{
+        width: 100%;
+        display: inline-flex;
+        .flex{
+            display: flex;
+            flex-direction: column;
+            .infoContainer{
+                margin: auto 5px
+            }
+        }
+        .columnOne{
+            //background: pink;
+            height: calc(100% - 10px) !important;
+            width: calc(100% - 10px) !important;
+            width: 100% !important;
+            margin: 5px !important;
+        }
+    }
+    .twoColumn{
+        width: 100%;
+        display: inline-flex;
+        .flex{
+            display: flex;
+            flex-direction: column;
+            .infoContainer{
+                margin: auto 5px
+            }
+        }
+        .columnOne-XS{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(10% - 10px);
+            margin: 5px;
+        }
+        .columnOne-S{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(20% - 10px);
+            margin: 5px;
+        }
+        .columnOne-M{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnOne-L{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(80% - 10px);
+            margin: 5px;
+        }
+        .columnOne-XL{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(90% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-XS{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(10% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-S{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(20% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-M{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-L{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(80% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-XL{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(90% - 10px);
+            margin: 5px;
+        }
+    }
+    .threeColumn{
+        width: 100%;
+        display: inline-flex;
+        overflow: hidden;
+        .flex{
+            display: flex;
+            flex-direction: column;
+            .infoContainer{
+                margin: auto 5px
+            }
+        }
+        .columnOne-S{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(16.5% - 10px);
+            margin: 5px;
+        }
+        .columnOne-M{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(33.3% - 10px);
+            margin: 5px;
+        }
+        .columnOne-ML{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(41.75% - 10px);
+            margin: 5px;
+        }
+        .columnOne-L{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnOne-LL{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(60% - 10px);
+            margin: 5px;
+        }
+        .columnOne-XL{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(67% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-S{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(16.5% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-M{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(33.3% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-ML{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(41.75% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-L{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-LL{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(60% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-XL{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(67% - 10px);
+            margin: 5px;
+        }
+        .columnThree-S{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(16.5% - 10px);
+            margin: 5px;
+        }
+        .columnThree-M{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(33.3% - 10px);
+            margin: 5px;
+        }
+        .columnThree-ML{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(41.75% - 10px);
+            margin: 5px;
+        }
+        .columnThree-L{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnThree-LL{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(60% - 10px);
+            margin: 5px;
+        }
+        .columnThree-XL{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(67% - 10px);
+            margin: 5px;
+        }
+
+    }
+    .fourColumn{
+        width: 100%;
+        display: inline-flex;
+        .flex{
+            display: flex;
+            flex-direction: column;
+            .infoContainer{
+                margin: auto 5px
+            }
+        }
+        .columnOne-S{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(16.5% - 10px);
+            margin: 5px;
+        }
+        .columnOne-M{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(25% - 10px);
+            margin: 5px;
+        }
+        .columnOne-ML{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(27.8% - 10px);
+            margin: 5px;
+        }
+        .columnOne-L{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnOne-XL{
+            //background: pink;
+            height: calc(100% - 10px);
+            width: calc(67% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-S{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(16.5% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-M{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(25% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-ML{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(27.8% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-L{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnTwo-XL{
+            //background: greenyellow;
+            height: calc(100% - 10px);
+            width: calc(67% - 10px);
+            margin: 5px;
+        }
+        .columnThree-S{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(16.5% - 10px);
+            margin: 5px;
+        }
+        .columnThree-M{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(25% - 10px);
+            margin: 5px;
+        }
+        .columnThree-ML{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(27.8% - 10px);
+            margin: 5px;
+        }
+        .columnThree-L{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnThree-XL{
+            //background: cyan;
+            height: calc(100% - 10px);
+            width: calc(67% - 10px);
+            margin: 5px;
+        }
+        .columnFour-S{
+            //background: orange;
+            height: calc(100% - 10px);
+            width: calc(16.5% - 10px);
+            margin: 5px;
+        }
+        .columnFour-M{
+            //background: orange;
+            height: calc(100% - 10px);
+            width: calc(25% - 10px);
+            margin: 5px;
+        }
+        .columnFour-ML{
+            //background: orange;
+            height: calc(100% - 10px);
+            width: calc(27.8% - 10px);
+            margin: 5px;
+        }
+        .columnFour-L{
+            //background: orange;
+            height: calc(100% - 10px);
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        .columnFour-XL{
+            //background: orange;
+            height: calc(100% - 10px);
+            width: calc(67% - 10px);
+            margin: 5px;
+        }
+
+    }
+    .infoContainerDiv{
+        display: flex;
+        justify-content: space-evenly;
+        margin: auto 0;
+        .infoContainer{
+            width: 50%;
+        }
+    }
+    .infoContainerFlex{
+        display: flex;
+        justify-content: space-evenly;
+        .infoContainer{
+            width: 50%;
+            margin: auto 5px !important;
+            line-height: 25px;
+            font-size: 12px;  
+            .head{
+                background: white;
+                color: black;
+                line-height: 12px;
+                font-size: 12px;
+                padding: 3px;
+            }
+        }
+    }
+    .infoContainer{
+        background: white;
+        margin: 10px 5px;
+        text-align: center;
+        line-height: 30px;
+        font-size: 15px;
+        &:first-child{
+            margin: 0 5px;
+        }
+        .head{
+            background: white;
+            color: black;
+            line-height: 12px;
+            font-size: 12px;
+            padding: 5px;
+        }
+    }
+    .containerHeader{
+        background: rgb(204, 204, 204);
+        width: 100%;
+        height: 20px;
+        text-align: center;
+        color: black;
+        line-height: 20px;
+        overflow: hidden;
+        font-size: 12px;
+    }
+    .dash-charts {
+        height: calc(100% - 20px);
+        width: 100%;
+    }
+    .tableContainer{
+        overflow-y: auto;
+        height: 100%;
+        &.legend{
+            overflow-y: hidden;
+            height: auto;
+        }
+        table {
+            border-collapse: collapse;
+            background-color:#ffffff;
+            width: 100%;
+            &.legend{
+                margin-top: 5px
+            }
+        }
+        td {
+            text-align: left;
+            padding: 5px;
+            border: none;
+        }
+        td:hover {
+            cursor: pointer;
+        }
+        th:first-child {
+            border-top-left-radius: 0px;
+        }
+        th:last-child {
+            border-top-right-radius: 0px;
+        }
+        tr:nth-of-type(even) {
+            background: #f2f2f2;
+        }
+        tr:nth-of-type(odd) {
+            background: white;
+        }
+        tr:hover {
+            background-color: #ddd;
+            cursor: pointer;
+        }
+        tr.active {
+            background-color: #ddd;
+            cursor: pointer;
+        }
+        tr.active td {
+            font-weight: bold;
+        }
+        th {
+            background-color: rgb(204, 204, 204);
+            color: white;
+            text-align: left;
+            padding: 5px;
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0px;
+            font-size: 12px;
+        }
+    }
+
+    /////     minimize/mazimize button     //////
+    .minimizeButton{
+        height: 75px;
+        width: 15px;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+        background: grey;
+        position: absolute;
+        left: 20%;
+        top: 50%;
+        transform: translate(-10px, -50%);
+        display: flex;
+        &:hover{
+            cursor: pointer;
+        }
+        .lines{
+            height: calc(100% - 10px);
+            width: 2px;
+            margin: 5px 0 5px 3.5px;
+            background: lightgrey;
+            border-radius: 20px;
+        }
+    }
+}
+
+.loadingcontainer-dashboard{
+    display: none;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(78, 78, 78, 0.6);
+    z-index: 1;
+    .loader{
+        display: block;
+        position: relative;
+        top: calc(50% - 35px);
+        left: calc(50% - 35px);
+        border: 10px solid #f3f3f3;
+        border-top: 10px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+    #loadingText3{
+        text-align: center;
+        position: relative;
+        top: calc(50% - 20px);
+        color: white;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+}
+
+.uploadcontainer{
+    .buttoncontainer{
+        background: #b7b7b7;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        height: 21px;
+        #add-file-btn-dash{
+            float: right;
+        }
+        .vlHeader {
+            border-left: 1px solid black;
+            height: 23px;
+        }
+    }
+    .vl {
+        border-left: 1px solid black;
+        height: 100%;
+    }
+    #tableMainContainer {
+        display: flex;
+        justify-content: space-between;
+        height: calc(100% - 75px);
+
+        .combineContainer{
+            width: 45%;
+            margin: 0 auto;
+            height: 100%;
+
+            &.top{
+                width: 100%;
+                height: 65%;
+            }
+            
+            &.bottom{
+                width: 100%;
+                height: 30%;
+            }
+            &.twoRow{
+                display: flex;
+                flex-direction: column;
+            }
+
+            .tableTitle{
+                background: white;
+                color: #3f3f3f;
+                text-align: center;
+                border-radius: 5px;
+                margin-bottom: 10px;
+                padding: 5px;
+                font-size: 14px;
+
+                .tableNote {
+                    font-size: 10px;
+                    position: absolute;
+                    right: 55px;
+                }
+            }
+    
+            .tableChildContainer{
+                overflow: auto;
+                height: calc(100% - 35px);
+
+                &.top{
+                    height: calc(100% - 50px);
+                }
+                
+                &.bottom{
+                    height: calc(100% - 50px);
+                }
+
+                table {
+                    border-collapse: collapse;
+                    background-color:#ffffff;
+                    width: 100%;
+                    &.legend{
+                        margin-top: 5px
+                    }
+                }
+                td {
+                    text-align: left;
+                    padding: 5px;
+                    border: none;
+                    font-size: 12px;
+                }
+                th:first-child {
+                    border-top-left-radius: 0px;
+                }
+                th:last-child {
+                    border-top-right-radius: 0px;
+                }
+                tr:nth-of-type(even) {
+                    background: #f2f2f2;
+                }
+                tr:nth-of-type(odd) {
+                    background: white;
+                }
+                tr:hover {
+                    background-color: #ddd;
+                }
+                tr.active {
+                    background-color: #ddd;
+                }
+                tr.active td {
+                    font-weight: bold;
+                }
+                th {
+                    background-color: rgb(204, 204, 204);
+                    color: black;
+                    text-align: left;
+                    padding:8px;
+                    position: sticky;
+                    top: 0px;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}
+
+.templateDiv {
+    width: 40%;
+}
+.uploadDiv {
+    width: 40%;
+}
+.vlHeader {
+    border-left: 1px solid lightgrey;
+    height: 23px;
+}
+.buttoncontainer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.tableChildTwoColumnOne{
+    height: 100%;
+    flex: 0 0 100%;
+    max-height: 60%;
+    min-height: 60%;
+    max-width: 100%;
+    overflow: hidden;
+}
+.tableChildTwoColumnTwo{
+    height: 100%;
+    flex: 0 0 100%;
+    max-height: 40%;
+    min-height: 40%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+///---CSS for 1080 height 924 (mximize)
+@media screen and (min-height: 924px){
+    .dashboardHeader{
+        background: rgb(204, 204, 204);
+        width: 100%;
+        height: 70px;
+        display: inline-flex;
+        .logo{
+            display: inline-block;
+            padding: 10px;
+            text-align: center;
+            img{
+                height: 100%;
+            }
+        }
+        .title{
+            display: inline-block;
+            margin: 0 auto;
+            color: white;
+            h4{
+                margin: 10px 0;
+            }
+            h3{
+                text-align: center;
+                margin: 4px 0;
+            }
+        }
+    }
+    
+    .dashboardBody{
+        ////background: yellow;
+        width: 100%;
+        height: calc(100% - 110px);
+        position: relative;
+        .sidebar{
+            ////background: grey;
+            display: inline-block;
+            margin: 10px;
+            position: absolute;
+            height: calc(100% - 20px);
+            width: calc(20% - 20px);
+            .filterContainer{
+                background: white;
+                border-radius: 5px;
+                padding: 10px;
+                height: calc(100% - 20px);
+                width: calc(100% - 20px);
+                .filter{
+                    background: white;
+                    color: black;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                    padding: 5px;
+                    line-height: 35px;
+                    text-align: center;
+                    label{
+    
+                    }
+                    select{
+                        border-radius: 5px;
+                        width: 100%;
+                        height: 30px;
+                    }
+    
+                    .filterBtn {
+                        background-color: white;
+                        border: none;
+                        padding: 15px 32px;
+                        text-align: center;
+                        text-decoration: none;
+                        display: inline-block;
+                        font-size: 16px;
+                        margin: 4px 2px;
+                        cursor: pointer;
+                        width: 70%;
+                    }
+                    
+                    .activeBtn {
+                        background-color: #ffc961;;
+                    }
+                }
+            }
+        }
+    
+        ///////       layout inside right container      //////
+        .layout{
+            ////background: grey;
+            display: inline-block;
+            padding: 5px;
+            position: absolute;
+            right: 0px;
+            height: calc(100% - 10px);
+            width: calc(80% - 10px);
+        }
+        .oneRow{
+            .rowOne{
+                //background: blue;
+                height: 100%;
+            }
+        }
+        .twoRow{
+            .rowOne-S{
+                //background: blue;
+                height: 20%;
+            }
+            .rowOne-M{
+                //background:blue;
+                height: 50%;
+            }
+            .rowOne-L{
+                //background: blue;
+                height: 80%;
+            }
+            .rowOne-T{
+                background: white;
+                height: 30px;
+                line-height: 30px;
+                color: black;
+                text-align: center;
+                overflow: hidden;
+                font-size: 15px;
+            }
+            .rowTwo-S{
+                //background: red;
+                height: 20%;
+            }
+            .rowTwo-M{
+                //background:red;
+                height: 50%;
+            }
+            .rowTwo-L{
+                //background: red;
+                height: 80%;
+            }
+            .rowTwo-T{
+                background: #9d9d9d69;
+                height: calc(100% - 30px);
+            }
+        }
+        .threeRow{
+            .rowOne-S{
+                //background: blue;
+                height: 16.5%;
+            }
+            .rowOne-M{
+                //background: blue;
+                height: 33.3%;
+            }
+            .rowOne-L{
+                //background: blue;
+                height: 50%;
+            }
+            .rowTwo-S{
+                //background: red;
+                height: 16.5%;
+            }
+            .rowTwo-M{
+                //background: red;
+                height: 33.3%;
+            }
+            .rowTwo-L{
+                //background: red;
+                height: 50%;
+            }
+            .rowThree-S{
+                //background: yellow;
+                height: 16.5%;
+            }
+            .rowThree-M{
+                //background: yellow;
+                height: 33.3%;
+            }
+            .rowThree-L{
+                //background: yellow;
+                height: 50%;
+            }
+        }
+        .fourRow{
+            .rowOne-S{
+                //background: blue;
+                height: 16.5%;
+            }
+            .rowOne-M{
+                //background: blue;
+                height: 25%;
+            }
+            .rowOne-L{
+                //background: blue;
+                height: 50%;
+            }
+            .rowTwo-S{
+                //background: red;
+                height: 16.5%;
+            }
+            .rowTwo-M{
+                //background: red;
+                height: 25%;
+            }
+            .rowTwo-L{
+                //background: red;
+                height: 50%;
+            }
+            .rowThree-S{
+                //background: yellow;
+                height: 16.5%;
+            }
+            .rowThree-M{
+                //background: yellow;
+                height: 25%;
+            }
+            .rowThree-L{
+                //background: yellow;
+                height: 50%;
+            }
+            .rowFour-S{
+                //background: yellow;
+                height: 16.5%;
+            }
+            .rowFour-M{
+                //background: yellow;
+                height: 25%;
+            }
+            .rowTFour-L{
+                //background: yellow;
+                height: 50%;
+            }
+        }
+        .oneColumn{
+            width: 100%;
+            display: inline-flex;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne{
+                //background: pink;
+                height: calc(100% - 10px) !important;
+                width: calc(100% - 10px) !important;
+                width: 100% !important;
+                margin: 5px !important;
+            }
+        }
+        .twoColumn{
+            width: 100%;
+            display: inline-flex;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne-XS{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(10% - 10px);
+                margin: 5px;
+            }
+            .columnOne-S{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(20% - 10px);
+                margin: 5px;
+            }
+            .columnOne-M{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnOne-L{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(80% - 10px);
+                margin: 5px;
+            }
+            .columnOne-XL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(90% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XS{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(10% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-S{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(20% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-M{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-L{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(80% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XL{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(90% - 10px);
+                margin: 5px;
+            }
+        }
+        .threeColumn{
+            width: 100%;
+            display: inline-flex;
+            overflow: hidden;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne-S{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnOne-M{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(33.3% - 10px);
+                margin: 5px;
+            }
+            .columnOne-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(41.75% - 10px);
+                margin: 5px;
+            }
+            .columnOne-L{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnOne-LL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(60% - 10px);
+                margin: 5px;
+            }
+            .columnOne-XL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-S{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-M{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(33.3% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(41.75% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-L{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-LL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(60% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XL{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnThree-S{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnThree-M{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(33.3% - 10px);
+                margin: 5px;
+            }
+            .columnThree-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(41.75% - 10px);
+                margin: 5px;
+            }
+            .columnThree-L{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnThree-LL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(60% - 10px);
+                margin: 5px;
+            }
+            .columnThree-XL{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+    
+        }
+        .fourColumn{
+            width: 100%;
+            display: inline-flex;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne-S{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnOne-M{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnOne-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnOne-L{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnOne-XL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-S{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-M{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-ML{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-L{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XL{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnThree-S{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnThree-M{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnThree-ML{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnThree-L{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnThree-XL{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnFour-S{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnFour-M{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnFour-ML{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnFour-L{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnFour-XL{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+    
+        }
+        .infoContainerDiv{
+            display: flex;
+            justify-content: space-evenly;
+            margin: auto 0;
+            .infoContainer{
+                width: 50%;
+            }
+        }
+        .infoContainerFlex{
+            display: flex;
+            justify-content: space-evenly;
+            .infoContainer{
+                width: 50%;
+                margin: auto 5px !important;
+                line-height: 33px;
+                font-size: 15px;  
+                .head{
+                    background: white;
+                    color: black;
+                    line-height: 18px;
+                    font-size: 15px;
+                    padding: 3px;
+                }
+            }
+        }
+        .infoContainer{
+            background: white;
+            margin: 10px 5px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+            &:first-child{
+                margin: 0 5px;
+            }
+            .head{
+                background: black;
+                color: white;
+                line-height: 20px;
+                font-size: 15px;
+                padding: 5px;
+            }
+        }
+        .containerHeader{
+            background: rgb(204, 204, 204);
+            width: 100%;
+            height: 30px;
+            text-align: center;
+            color: black;
+            line-height: 30px;
+            overflow: hidden;
+            font-size: 15px;
+        }
+        .dash-charts {
+            height: calc(100% - 30px);
+            width: 100%;
+        }
+        .tableContainer{
+            overflow-y: auto;
+            height: 100%;
+            &.legend{
+                overflow-y: hidden;
+                height: auto;
+            }
+            table {
+                border-collapse: collapse;
+                background-color:#ffffff;
+                width: 100%;
+                &.legend{
+                    margin-top: 5px
+                }
+            }
+            td {
+                text-align: left;
+                padding: 5px;
+                border: none;
+            }
+            th:first-child {
+                border-top-left-radius: 0px;
+            }
+            th:last-child {
+                border-top-right-radius: 0px;
+            }
+            tr:nth-of-type(even) {
+                background: #f2f2f2;
+            }
+            tr:nth-of-type(odd) {
+                background: white;
+            }
+            tr:hover {
+                background-color: #ddd;
+            }
+            tr.active {
+                background-color: #ddd;
+            }
+            tr.active td {
+                font-weight: bold;
+            }
+            th {
+                background-color: black;
+                color: white;
+                text-align: left;
+                padding:8px;
+                position: sticky;
+                top: 0px;
+            }
+        }
+    
+        /////     minimize/mazimize button     //////
+        .minimizeButton{
+            height: 75px;
+            width: 15px;
+            border-top-right-radius: 7px;
+            border-bottom-right-radius: 7px;
+            background: grey;
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            transform: translate(-10px, -50%);
+            display: flex;
+            &:hover{
+                cursor: pointer;
+            }
+            .lines{
+                height: calc(100% - 10px);
+                width: 2px;
+                margin: 5px 0 5px 3.5px;
+                background: lightgrey;
+                border-radius: 20px;
+            }
+        }
+    }
+}
+
+///---CSS for 1366 screen resolution---///
+@media screen and (max-width: 1366px){
+    .dashboardHeader{
+        background: rgb(204, 204, 204);
+        width: 100%;
+        height: 50px;
+        display: inline-flex;
+        .logo{
+            display: inline-block;
+            padding: 10px;
+            text-align: center;
+            img{
+                height: 100%;
+            }
+        }
+        .title{
+            display: inline-block;
+            margin: 0 auto;
+            color: white;
+            h4{
+                margin: 6px 0;
+                font-size: 14px;
+            }
+            h3{
+                text-align: center;
+                margin: 4px 0;
+                font-size: 16px;
+            }
+        }
+    }
+
+    .dashboardBody{
+        ////background: yellow;
+        width: 100%;
+        height: calc(100% - 70px);
+        position: relative;
+        .sidebar{
+            ////background: grey;
+            display: inline-block;
+            margin: 10px;
+            position: absolute;
+            height: calc(100% - 20px);
+            width: calc(20% - 20px);
+            .filterContainer{
+                background: white;
+                border-radius: 5px;
+                padding: 10px;
+                height: calc(100% - 20px);
+                width: calc(100% - 20px);
+                .filter{
+                    background: white;
+                    color: black;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                    padding: 5px;
+                    line-height: 20px;
+                    text-align: center;
+                    font-size: 12px;
+                    label{
+    
+                    }
+                    select{
+                        border-radius: 5px;
+                        width: 100%;
+                        height: 20px;
+                        font-size: 10px;
+                    }
+    
+                    .filterBtn {
+                        background-color: white;
+                        border: none;
+                        padding: 15px 32px;
+                        text-align: center;
+                        text-decoration: none;
+                        display: inline-block;
+                        font-size: 16px;
+                        margin: 4px 2px;
+                        cursor: pointer;
+                        width: 70%;
+                    }
+                    
+                    .activeBtn {
+                        background-color: #ffc961;;
+                    }
+                }
+            }
+        }
+    
+        ///////       layout inside right container      //////
+        .layout{
+            ////background: grey;
+            display: inline-block;
+            padding: 5px;
+            position: absolute;
+            right: 0px;
+            height: calc(100% - 10px);
+            width: calc(80% - 10px);
+        }
+        .oneRow{
+            .rowOne{
+                //background: blue;
+                height: 100%;
+            }
+        }
+        .twoRow{
+            .rowOne-S{
+                //background: blue;
+                height: 20%;
+            }
+            .rowOne-M{
+                //background:blue;
+                height: 50%;
+            }
+            .rowOne-L{
+                //background: blue;
+                height: 80%;
+            }
+            .rowOne-T{
+                background: white;
+                height: 15px;
+                line-height: 15px;
+                color: black;
+                text-align: center;
+                overflow: hidden;
+                font-size: 10px;
+            }
+            .rowTwo-S{
+                //background: red;
+                height: 20%;
+            }
+            .rowTwo-M{
+                //background:red;
+                height: 50%;
+            }
+            .rowTwo-L{
+                //background: red;
+                height: 80%;
+            }
+            .rowTwo-T{
+                background: #9d9d9d69;
+                height: calc(100% - 15px);
+            }
+        }
+        .threeRow{
+            .rowOne-S{
+                //background: blue;
+                height: 16.5%;
+            }
+            .rowOne-M{
+                //background: blue;
+                height: 33.3%;
+            }
+            .rowOne-L{
+                //background: blue;
+                height: 50%;
+            }
+            .rowTwo-S{
+                //background: red;
+                height: 16.5%;
+            }
+            .rowTwo-M{
+                //background: red;
+                height: 33.3%;
+            }
+            .rowTwo-L{
+                //background: red;
+                height: 50%;
+            }
+            .rowThree-S{
+                //background: yellow;
+                height: 16.5%;
+            }
+            .rowThree-M{
+                //background: yellow;
+                height: 33.3%;
+            }
+            .rowThree-L{
+                //background: yellow;
+                height: 50%;
+            }
+        }
+        .fourRow{
+            .rowOne-S{
+                //background: blue;
+                height: 16.5%;
+            }
+            .rowOne-M{
+                //background: blue;
+                height: 25%;
+            }
+            .rowOne-L{
+                //background: blue;
+                height: 50%;
+            }
+            .rowTwo-S{
+                //background: red;
+                height: 16.5%;
+            }
+            .rowTwo-M{
+                //background: red;
+                height: 25%;
+            }
+            .rowTwo-L{
+                //background: red;
+                height: 50%;
+            }
+            .rowThree-S{
+                //background: yellow;
+                height: 16.5%;
+            }
+            .rowThree-M{
+                //background: yellow;
+                height: 25%;
+            }
+            .rowThree-L{
+                //background: yellow;
+                height: 50%;
+            }
+            .rowFour-S{
+                //background: yellow;
+                height: 16.5%;
+            }
+            .rowFour-M{
+                //background: yellow;
+                height: 25%;
+            }
+            .rowTFour-L{
+                //background: yellow;
+                height: 50%;
+            }
+        }
+        .oneColumn{
+            width: 100%;
+            display: inline-flex;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne{
+                //background: pink;
+                height: calc(100% - 10px) !important;
+                width: calc(100% - 10px) !important;
+                width: 100% !important;
+                margin: 5px !important;
+            }
+        }
+        .twoColumn{
+            width: 100%;
+            display: inline-flex;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne-XS{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(10% - 10px);
+                margin: 5px;
+            }
+            .columnOne-S{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(20% - 10px);
+                margin: 5px;
+            }
+            .columnOne-M{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnOne-L{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(80% - 10px);
+                margin: 5px;
+            }
+            .columnOne-XL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(90% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XS{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(10% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-S{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(20% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-M{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-L{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(80% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XL{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(90% - 10px);
+                margin: 5px;
+            }
+        }
+        .threeColumn{
+            width: 100%;
+            display: inline-flex;
+            overflow: hidden;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne-S{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnOne-M{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(33.3% - 10px);
+                margin: 5px;
+            }
+            .columnOne-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(41.75% - 10px);
+                margin: 5px;
+            }
+            .columnOne-L{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnOne-LL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(60% - 10px);
+                margin: 5px;
+            }
+            .columnOne-XL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-S{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-M{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(33.3% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(41.75% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-L{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-LL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(60% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XL{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnThree-S{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnThree-M{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(33.3% - 10px);
+                margin: 5px;
+            }
+            .columnThree-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(41.75% - 10px);
+                margin: 5px;
+            }
+            .columnThree-L{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnThree-LL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(60% - 10px);
+                margin: 5px;
+            }
+            .columnThree-XL{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+    
+        }
+        .fourColumn{
+            width: 100%;
+            display: inline-flex;
+            .flex{
+                display: flex;
+                flex-direction: column;
+                .infoContainer{
+                    margin: auto 5px
+                }
+            }
+            .columnOne-S{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnOne-M{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnOne-ML{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnOne-L{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnOne-XL{
+                //background: pink;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-S{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-M{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-ML{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-L{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnTwo-XL{
+                //background: greenyellow;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnThree-S{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnThree-M{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnThree-ML{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnThree-L{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnThree-XL{
+                //background: cyan;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+            .columnFour-S{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(16.5% - 10px);
+                margin: 5px;
+            }
+            .columnFour-M{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(25% - 10px);
+                margin: 5px;
+            }
+            .columnFour-ML{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(27.8% - 10px);
+                margin: 5px;
+            }
+            .columnFour-L{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(50% - 10px);
+                margin: 5px;
+            }
+            .columnFour-XL{
+                //background: orange;
+                height: calc(100% - 10px);
+                width: calc(67% - 10px);
+                margin: 5px;
+            }
+    
+        }
+        .infoContainerDiv{
+            display: flex;
+            justify-content: space-evenly;
+            margin: auto 0;
+            .infoContainer{
+                width: 50%;
+            }
+        }
+        .infoContainerFlex{
+            display: flex;
+            justify-content: space-evenly;
+            .infoContainer{
+                width: 50%;
+                margin: auto 5px !important;
+                line-height: 16px;
+                font-size: 10px; 
+                .head{
+                    background: white;
+                    color: black;
+                    line-height: 8px;
+                    font-size: 8px;
+                    padding: 3px;
+                }
+            }
+        }
+        .infoContainer{
+            background: white;
+            margin: 10px 5px;
+            text-align: center;
+            line-height: 28px;
+            font-size: 10px;
+            &:first-child{
+                margin: 0 5px;
+            }
+            .head{
+                background: black;
+                color: white;
+                line-height: 8px;
+                font-size: 10px;
+                padding: 3px;
+            }
+        }
+        .containerHeader{
+            background: rgb(204, 204, 204);
+            width: 100%;
+            height: 15px;
+            text-align: center;
+            color: black;
+            line-height: 15px;
+            font-size: 10px;
+            overflow: hidden;
+        }
+        .dash-charts {
+            height: calc(100% - 15px);
+            width: 100%;
+        }
+        .tableContainer{
+            overflow-y: auto;
+            height: 100%;
+            &.legend{
+                overflow-y: hidden;
+                height: auto;
+            }
+            table {
+                border-collapse: collapse;
+                background-color:#ffffff;
+                width: 100%;
+                &.legend{
+                    margin-top: 5px
+                }
+            }
+            td {
+                text-align: left;
+                padding: 5px;
+                border: none;
+                font-size: 10px;
+            }
+            th:first-child {
+                border-top-left-radius: 0px;
+            }
+            th:last-child {
+                border-top-right-radius: 0px;
+            }
+            tr:nth-of-type(even) {
+                background: #f2f2f2;
+            }
+            tr:nth-of-type(odd) {
+                background: white;
+            }
+            tr:hover {
+                background-color: #ddd;
+            }
+            tr.active {
+                background-color: #ddd;
+            }
+            tr.active td {
+                font-weight: bold;
+            }
+            th {
+                background-color: black;
+                color: white;
+                text-align: left;
+                padding: 2px 5px;
+                position: -webkit-sticky;
+                position: sticky;
+                top: 0px;
+                font-size: 10px;
+            }
+        }
+    
+        /////     minimize/mazimize button     //////
+        .minimizeButton{
+            height: 60px;
+            width: 15px;
+            border-top-right-radius: 7px;
+            border-bottom-right-radius: 7px;
+            background: grey;
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            transform: translate(-10px, -50%);
+            display: flex;
+            &:hover{
+                cursor: pointer;
+            }
+            .lines{
+                height: calc(100% - 10px);
+                width: 2px;
+                margin: 5px 0 5px 3.5px;
+                background: lightgrey;
+                border-radius: 20px;
+            }
+        }
+    }
+
+    .loadingcontainer-dashboard{
+        display: none;
+        top: 0px;
+        left: 0px;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background: rgba(78, 78, 78, 0.6);
+        z-index: 1;
+        .loader{
+            display: block;
+            position: relative;
+            top: calc(50% - 35px);
+            left: calc(50% - 35px);
+            border: 10px solid #f3f3f3;
+            border-top: 10px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+        #loadingText3{
+            text-align: center;
+            position: relative;
+            top: calc(50% - 20px);
+            color: white;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    }
+
+    @media screen and (min-height: 723px){
+        .dashboardHeader{
+            background: rgb(204, 204, 204);
+            width: 100%;
+            height: 50px;
+            display: inline-flex;
+            .logo{
+                display: inline-block;
+                padding: 10px;
+                text-align: center;
+                img{
+                    height: 100%;
+                }
+            }
+            .title{
+                display: inline-block;
+                margin: 0 auto;
+                color: white;
+                h4{
+                    margin: 6px 0;
+                    font-size: 14px;
+                }
+                h3{
+                    text-align: center;
+                    margin: 4px 0;
+                    font-size: 16px;
+                }
+            }
+        }
+    
+        .dashboardBody{
+            ////background: yellow;
+            width: 100%;
+            height: calc(100% - 70px);
+            position: relative;
+            .sidebar{
+                ////background: grey;
+                display: inline-block;
+                margin: 10px;
+                position: absolute;
+                height: calc(100% - 20px);
+                width: calc(20% - 20px);
+                .filterContainer{
+                    background: white;
+                    border-radius: 5px;
+                    padding: 10px;
+                    height: calc(100% - 20px);
+                    width: calc(100% - 20px);
+                    .filter{
+                        background: white;
+                        color: black;
+                        margin-bottom: 10px;
+                        border-radius: 5px;
+                        padding: 5px;
+                        line-height: 20px;
+                        text-align: center;
+                        font-size: 12px;
+                        label{
+        
+                        }
+                        select{
+                            border-radius: 5px;
+                            width: 100%;
+                            height: 20px;
+                            font-size: 10px;
+                        }
+        
+                        .filterBtn {
+                            background-color: white;
+                            border: none;
+                            padding: 15px 32px;
+                            text-align: center;
+                            text-decoration: none;
+                            display: inline-block;
+                            font-size: 16px;
+                            margin: 4px 2px;
+                            cursor: pointer;
+                            width: 70%;
+                        }
+                        
+                        .activeBtn {
+                            background-color: #ffc961;;
+                        }
+                    }
+                }
+            }
+        
+            ///////       layout inside right container      //////
+            .layout{
+                ////background: grey;
+                display: inline-block;
+                padding: 5px;
+                position: absolute;
+                right: 0px;
+                height: calc(100% - 10px);
+                width: calc(80% - 10px);
+            }
+            .oneRow{
+                .rowOne{
+                    //background: blue;
+                    height: 100%;
+                }
+            }
+            .twoRow{
+                .rowOne-S{
+                    //background: blue;
+                    height: 20%;
+                }
+                .rowOne-M{
+                    //background:blue;
+                    height: 50%;
+                }
+                .rowOne-L{
+                    //background: blue;
+                    height: 80%;
+                }
+                .rowOne-T{
+                    background: white;
+                    height: 20px;
+                    line-height: 20px;
+                    color: black;
+                    text-align: center;
+                    overflow: hidden;
+                    font-size: 15px;
+                }
+                .rowTwo-S{
+                    //background: red;
+                    height: 20%;
+                }
+                .rowTwo-M{
+                    //background:red;
+                    height: 50%;
+                }
+                .rowTwo-L{
+                    //background: red;
+                    height: 80%;
+                }
+                .rowTwo-T{
+                    background: #9d9d9d69;
+                    height: calc(100% - 20px);
+                }
+            }
+            .threeRow{
+                .rowOne-S{
+                    //background: blue;
+                    height: 16.5%;
+                }
+                .rowOne-M{
+                    //background: blue;
+                    height: 33.3%;
+                }
+                .rowOne-L{
+                    //background: blue;
+                    height: 50%;
+                }
+                .rowTwo-S{
+                    //background: red;
+                    height: 16.5%;
+                }
+                .rowTwo-M{
+                    //background: red;
+                    height: 33.3%;
+                }
+                .rowTwo-L{
+                    //background: red;
+                    height: 50%;
+                }
+                .rowThree-S{
+                    //background: yellow;
+                    height: 16.5%;
+                }
+                .rowThree-M{
+                    //background: yellow;
+                    height: 33.3%;
+                }
+                .rowThree-L{
+                    //background: yellow;
+                    height: 50%;
+                }
+            }
+            .fourRow{
+                .rowOne-S{
+                    //background: blue;
+                    height: 16.5%;
+                }
+                .rowOne-M{
+                    //background: blue;
+                    height: 25%;
+                }
+                .rowOne-L{
+                    //background: blue;
+                    height: 50%;
+                }
+                .rowTwo-S{
+                    //background: red;
+                    height: 16.5%;
+                }
+                .rowTwo-M{
+                    //background: red;
+                    height: 25%;
+                }
+                .rowTwo-L{
+                    //background: red;
+                    height: 50%;
+                }
+                .rowThree-S{
+                    //background: yellow;
+                    height: 16.5%;
+                }
+                .rowThree-M{
+                    //background: yellow;
+                    height: 25%;
+                }
+                .rowThree-L{
+                    //background: yellow;
+                    height: 50%;
+                }
+                .rowFour-S{
+                    //background: yellow;
+                    height: 16.5%;
+                }
+                .rowFour-M{
+                    //background: yellow;
+                    height: 25%;
+                }
+                .rowTFour-L{
+                    //background: yellow;
+                    height: 50%;
+                }
+            }
+            .oneColumn{
+                width: 100%;
+                display: inline-flex;
+                .flex{
+                    display: flex;
+                    flex-direction: column;
+                    .infoContainer{
+                        margin: auto 5px
+                    }
+                }
+                .columnOne{
+                    //background: pink;
+                    height: calc(100% - 10px) !important;
+                    width: calc(100% - 10px) !important;
+                    width: 100% !important;
+                    margin: 5px !important;
+                }
+            }
+            .twoColumn{
+                width: 100%;
+                display: inline-flex;
+                .flex{
+                    display: flex;
+                    flex-direction: column;
+                    .infoContainer{
+                        margin: auto 5px
+                    }
+                }
+                .columnOne-XS{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(10% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-S{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(20% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-M{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-L{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(80% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-XL{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(90% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-XS{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(10% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-S{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(20% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-M{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-L{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(80% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-XL{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(90% - 10px);
+                    margin: 5px;
+                }
+            }
+            .threeColumn{
+                width: 100%;
+                display: inline-flex;
+                overflow: hidden;
+                .flex{
+                    display: flex;
+                    flex-direction: column;
+                    .infoContainer{
+                        margin: auto 5px
+                    }
+                }
+                .columnOne-S{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(16.5% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-M{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(33.3% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-ML{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(41.75% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-L{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-LL{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(60% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-XL{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(67% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-S{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(16.5% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-M{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(33.3% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-ML{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(41.75% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-L{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-LL{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(60% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-XL{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(67% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-S{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(16.5% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-M{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(33.3% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-ML{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(41.75% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-L{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-LL{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(60% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-XL{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(67% - 10px);
+                    margin: 5px;
+                }
+        
+            }
+            .fourColumn{
+                width: 100%;
+                display: inline-flex;
+                .flex{
+                    display: flex;
+                    flex-direction: column;
+                    .infoContainer{
+                        margin: auto 5px
+                    }
+                }
+                .columnOne-S{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(16.5% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-M{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(25% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-ML{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(27.8% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-L{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnOne-XL{
+                    //background: pink;
+                    height: calc(100% - 10px);
+                    width: calc(67% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-S{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(16.5% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-M{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(25% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-ML{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(27.8% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-L{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnTwo-XL{
+                    //background: greenyellow;
+                    height: calc(100% - 10px);
+                    width: calc(67% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-S{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(16.5% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-M{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(25% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-ML{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(27.8% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-L{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnThree-XL{
+                    //background: cyan;
+                    height: calc(100% - 10px);
+                    width: calc(67% - 10px);
+                    margin: 5px;
+                }
+                .columnFour-S{
+                    //background: orange;
+                    height: calc(100% - 10px);
+                    width: calc(16.5% - 10px);
+                    margin: 5px;
+                }
+                .columnFour-M{
+                    //background: orange;
+                    height: calc(100% - 10px);
+                    width: calc(25% - 10px);
+                    margin: 5px;
+                }
+                .columnFour-ML{
+                    //background: orange;
+                    height: calc(100% - 10px);
+                    width: calc(27.8% - 10px);
+                    margin: 5px;
+                }
+                .columnFour-L{
+                    //background: orange;
+                    height: calc(100% - 10px);
+                    width: calc(50% - 10px);
+                    margin: 5px;
+                }
+                .columnFour-XL{
+                    //background: orange;
+                    height: calc(100% - 10px);
+                    width: calc(67% - 10px);
+                    margin: 5px;
+                }
+        
+            }
+            .infoContainerDiv{
+                display: flex;
+                justify-content: space-evenly;
+                margin: auto 0;
+                .infoContainer{
+                    width: 50%;
+                }
+            }
+            .infoContainerFlex{
+                display: flex;
+                justify-content: space-evenly;
+                .infoContainer{
+                    width: 50%;
+                    margin: auto 5px;
+                    line-height: 27px;
+                    font-size: 12px;  
+                }
+                .head{
+                    background: white;
+                    color: black;
+                    line-height: 15px;
+                    font-size: 12px;
+                    padding: 3px;
+                }
+            }
+            .infoContainer{
+                background: white;
+                margin: 10px 5px;
+                text-align: center;
+                line-height: 33px;
+                font-size: 12px;  
+                &:first-child{
+                    margin: 0 5px;
+                }  
+                .head{
+                    background: black;
+                    color: white;
+                    line-height: 17px;
+                    font-size: 12px;
+                    padding: 3px;
+                }
+            }
+            .containerHeader{
+                background: rgb(204, 204, 204);
+                width: 100%;
+                height: 20px;
+                text-align: center;
+                color: black;
+                line-height: 20px;
+                font-size: 15px;
+                overflow: hidden;
+            }
+            .dash-charts {
+                height: calc(100% - 20px);
+                width: 100%;
+            }
+            .tableContainer{
+                overflow-y: auto;
+                height: 100%;
+                &.legend{
+                    overflow-y: hidden;
+                    height: auto;
+                }
+                table {
+                    border-collapse: collapse;
+                    background-color:#ffffff;
+                    width: 100%;
+                    &.legend{
+                        margin-top: 5px
+                    }
+                }
+                td {
+                    text-align: left;
+                    padding: 5px;
+                    border: none;
+                    font-size: 12px;
+                }
+                th:first-child {
+                    border-top-left-radius: 0px;
+                }
+                th:last-child {
+                    border-top-right-radius: 0px;
+                }
+                tr:nth-of-type(even) {
+                    background: #f2f2f2;
+                }
+                tr:nth-of-type(odd) {
+                    background: white;
+                }
+                tr:hover {
+                    background-color: #ddd;
+                }
+                tr.active {
+                    background-color: #ddd;
+                }
+                tr.active td {
+                    font-weight: bold;
+                }
+                th {
+                    background-color: black;
+                    color: white;
+                    text-align: left;
+                    padding: 3px 5px;
+                    position: -webkit-sticky;
+                    position: sticky;
+                    top: 0px;
+                    font-size: 11px;
+                }
+            }
+        
+            /////     minimize/mazimize button     //////
+            .minimizeButton{
+                height: 60px;
+                width: 15px;
+                border-top-right-radius: 7px;
+                border-bottom-right-radius: 7px;
+                background: grey;
+                position: absolute;
+                left: 20%;
+                top: 50%;
+                transform: translate(-10px, -50%);
+                display: flex;
+                &:hover{
+                    cursor: pointer;
+                }
+                .lines{
+                    height: calc(100% - 10px);
+                    width: 2px;
+                    margin: 5px 0 5px 3.5px;
+                    background: lightgrey;
+                    border-radius: 20px;
+                }
+            }
+        }
+    
+        .loadingcontainer-dashboard{
+            display: none;
+            top: 0px;
+            left: 0px;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background: rgba(78, 78, 78, 0.6);
+            z-index: 1;
+            .loader{
+                display: block;
+                position: relative;
+                top: calc(50% - 35px);
+                left: calc(50% - 35px);
+                border: 10px solid #f3f3f3;
+                border-top: 10px solid #3498db;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                -webkit-animation: spin 2s linear infinite;
+                animation: spin 2s linear infinite;
+            }
+            #loadingText3{
+                text-align: center;
+                position: relative;
+                top: calc(50% - 20px);
+                color: white;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        }
+    }
+}
+

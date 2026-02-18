@@ -1,0 +1,36 @@
+.clickable-page#clickable{
+    display: block;
+    padding:0px;
+    margin:0px;
+    top:0px;
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    background: white;
+    left:0px;
+    #main-clickable{
+        position: absolute;
+        width: 100%;
+        //left: 345px;
+        overflow-y: auto;
+        //height: calc(100vh - 72px);
+        .main-container#clickable{
+            width: calc(100% - 30px);
+            padding: 10px 5px;
+            .container-header{
+                border-bottom: 1px solid gray;
+            }
+            .container-content{
+                p{
+                    text-align: justify;
+                }
+                img{
+                    position: relative;
+                    width: calc(100% - 30px);
+                    padding: 10px;
+                }
+            }
+        }
+        
+    }
+}

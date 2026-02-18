@@ -1,0 +1,28 @@
+.licensePrompt {
+  background-color: #acb9b9;
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.licensePrompt img {
+  margin-top: 100px;
+  margin-bottom: 45px;
+  height: 35%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.licensePrompt h1 {
+  text-align: center;
+}
+
+.licensePrompt p {
+  text-align: center;
+}
+/*# sourceMappingURL=errorLicense.css.map */

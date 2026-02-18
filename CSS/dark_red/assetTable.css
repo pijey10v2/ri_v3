@@ -1,0 +1,183 @@
+.assetContainer {
+  width: calc(100% - 5px);
+  height: calc(100% - 10px);
+  position: relative;
+  margin-top: 5px;
+  font-size: 13px;
+}
+.assetContainer .title {
+  margin-left: 6px;
+}
+.assetContainer .filterContainer {
+  display: flex;
+  width: 60%;
+  height: auto;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+}
+.assetContainer .filterContainer.fullWidth {
+  width: calc(100% - 15px);
+  background: #acaaaa;
+}
+.assetContainer .filterContainer.flexColumn {
+  flex-direction: column;
+}
+.assetContainer .filterContainer .columnTop {
+  width: calc(100% - 14px);
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.assetContainer .filterContainer .columnTop.justifyBetween {
+  justify-content: space-between;
+}
+.assetContainer .filterContainer .columnTop.marginBottom {
+  margin-bottom: 10px;
+}
+.assetContainer .filterContainer .filter {
+  display: flex;
+  width: calc(50% - 20px);
+  align-items: center;
+}
+.assetContainer .filterContainer .filter.three {
+  width: calc(33.33% - 0px);
+}
+.assetContainer .filterContainer .filter.justifyEnd {
+  justify-content: end;
+}
+.assetContainer .filterContainer .filter select {
+  border-radius: 5px;
+  width: calc(50% - 0px);
+  height: 25px;
+  margin-left: 10px;
+  outline: none;
+}
+.assetContainer .bodyContainer {
+  width: 100%;
+  height: calc(100% - 30px);
+  margin-top: 5px;
+}
+.assetContainer .bodyContainer .titleHeader {
+  background: black;
+  border: 1px solid #555658;
+  color: white;
+  padding: 8px;
+  text-transform: none;
+  font-size: 10px !important;
+  line-height: 11.2px;
+  text-align: center;
+}
+.assetContainer .bodyContainer .tableContainer {
+  overflow: auto;
+  height: calc(100% - 40px);
+}
+.assetContainer .bodyContainer .tableContainer.oneTable {
+  height: calc(100% - 85px);
+  display: flex;
+  justify-content: space-between;
+}
+.assetContainer .bodyContainer .tableContainer.oneTable .columnM {
+  width: calc(100% - 5px);
+  margin-left: 3px;
+}
+.assetContainer .bodyContainer .tableContainer.twoTable {
+  height: calc(100% - 85px);
+  display: flex;
+  justify-content: space-between;
+}
+.assetContainer .bodyContainer .tableContainer.twoTable .columnM {
+  width: calc(50% - 10px);
+  margin-left: 7px;
+  margin-right: 3px;
+  overflow-x: auto;
+}
+.assetContainer .bodyContainer .tableContainer.dataStoringOne {
+  height: calc(100% - 20px);
+}
+.assetContainer .bodyContainer .tableContainer.dataStoringTwo {
+  height: calc(100% - 50px);
+}
+.assetContainer .bodyContainer .tableContainer table {
+  border-collapse: separate;
+  background-color: #ffffff;
+  width: 100%;
+  border-spacing: 0;
+}
+.assetContainer .bodyContainer .tableContainer td {
+  text-align: left;
+  padding: 5px;
+  border: none;
+  font-size: 12px;
+}
+.assetContainer .bodyContainer .tableContainer td.green {
+  background-color: #92D050 !important;
+  border: 1px solid white;
+}
+.assetContainer .bodyContainer .tableContainer td.red {
+  background-color: #FF0000 !important;
+  border: 1px solid white;
+}
+.assetContainer .bodyContainer .tableContainer td.orange {
+  background-color: #df9814 !important;
+  border: 1px solid white;
+}
+.assetContainer .bodyContainer .tableContainer td.yellow {
+  background-color: #FFD966 !important;
+  border: 1px solid white;
+}
+.assetContainer .bodyContainer .tableContainer th:first-child {
+  border-top-left-radius: 0px;
+}
+.assetContainer .bodyContainer .tableContainer th:last-child {
+  border-top-right-radius: 0px;
+}
+.assetContainer .bodyContainer .tableContainer tr:nth-of-type(even) {
+  background: #f2f2f2;
+}
+.assetContainer .bodyContainer .tableContainer tr:nth-of-type(odd) {
+  background: white;
+}
+.assetContainer .bodyContainer .tableContainer tr:hover {
+  background-color: #ddd;
+}
+.assetContainer .bodyContainer .tableContainer tr.active {
+  background-color: #ddd;
+}
+.assetContainer .bodyContainer .tableContainer tr.active td {
+  font-weight: bold;
+}
+.assetContainer .bodyContainer .tableContainer th {
+  background: black;
+  border: 1px solid #555658;
+  color: white;
+  text-align: left;
+  padding: 8px;
+  position: sticky;
+  top: 0px;
+  text-transform: none;
+  font-size: 10px !important;
+  line-height: 11.2px;
+}
+.assetContainer .bodyContainer .tableContainer th.secondRow {
+  top: 29.2px;
+}
+.assetContainer .bodyContainer .tableContainer th.thirdRow {
+  top: 58.4px;
+}
+.assetContainer .bodyContainer .tableContainer th.forthRowMLP {
+  top: 87.6px;
+}
+.assetContainer .bodyContainer .tableContainer th.forthRow {
+  top: 89.8px;
+}
+.assetContainer .bodyContainer .tableContainer th.fifthRow {
+  top: 121.2px;
+}
+.assetContainer .bodyContainer .tableContainer th.center {
+  text-align: center;
+}
+.assetContainer .bodyContainer .tableContainer th.textTop {
+  vertical-align: baseline;
+}/*# sourceMappingURL=assetTable.css.map */

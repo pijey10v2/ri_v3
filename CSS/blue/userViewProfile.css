@@ -1,0 +1,2707 @@
+.projectinfoView {
+  font-family: Arial, Helvetica, sans-serif;
+  display: none;
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.479);
+}
+.projectinfoView .projectinfoContent {
+  position: relative;
+  background: #1565c0;
+  margin: 5% auto;
+  width: 45%;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+  border-radius: 5px;
+  animation-name: fade;
+  animation-duration: 0.3s;
+}
+.projectinfoView .projectinfoContent .projectinfoPicture {
+  position: absolute;
+  line-height: 25px;
+  right: 0;
+  left: calc(50% - 50px);
+  top: -70px;
+  color: black;
+  background: lightgray;
+  font-size: 16px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  font-weight: bold;
+  /* text-align: center; */
+  text-align: center;
+  box-shadow: 5px, 5px, 10px, #000;
+  z-index: 2;
+  border: 5px solid #1565c0;
+  vertical-align: middle;
+}
+.projectinfoView .projectinfoContent .projectinfoPicture .projectinfoInitial {
+  position: relative;
+}
+.projectinfoView .projectinfoContent .projectinfoPicture .projectinfoInitial img {
+  width: 100%;
+  border-radius: 50%;
+  height: 100%;
+}
+.projectinfoView .projectinfoContent .projectinfoHeader {
+  background: linear-gradient(to bottom, #1565c0, #003c8f);
+  width: 100%;
+  text-align: center;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  padding: 30px 0 0 0;
+  color: white;
+  padding-bottom: 10px;
+}
+.projectinfoView .projectinfoContent .projectinfoHeader h3 {
+  margin: 10px 50px;
+  max-height: 150px;
+  overflow: hidden;
+}
+.projectinfoView .projectinfoContent .closebutton {
+  position: absolute;
+  line-height: 25px;
+  right: -12px;
+  top: -10px;
+  padding: 2em, 2em;
+  color: black;
+  background: rgb(231, 231, 231);
+  font-size: 16px;
+  width: 25px;
+  height: 25px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 5px, 5px, 10px, #000;
+  z-index: 2;
+}
+.projectinfoView .projectinfoContent .closebutton:hover {
+  background-image: linear-gradient(to bottom, white, grey);
+  cursor: pointer;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody {
+  position: relative;
+  background: white;
+  height: 70vh;
+  line-height: 40px;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item {
+  list-style: none;
+  margin: 0px;
+  padding: 5px 0 0 0;
+  background-color: #003c8f;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab {
+  display: inline-block;
+  margin: 0;
+  background: lightgrey;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 0 10px;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab.active {
+  background: white;
+  font-weight: bold;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab:hover {
+  background: grey;
+  cursor: pointer;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab.active:hover {
+  background: white;
+  cursor: default;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody {
+  width: calc(100% - 40px);
+  height: calc(70vh - 85px);
+  padding: 20px;
+  overflow-y: auto;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojectcontactadmindetails {
+  border: 1px solid;
+  border-radius: 5px;
+  text-align: center;
+  width: 70%;
+  margin: auto;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader {
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  margin: auto;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader .viewprojecttabdivider img {
+  width: 30px;
+  vertical-align: middle;
+  margin-left: 0px;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader .viewprojecttabdivider a {
+  width: 30%;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody img {
+  width: 30px;
+  vertical-align: middle;
+  margin: 0 15px;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody a {
+  text-decoration: none;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody#financeinfo {
+  display: none;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo {
+  margin: 0px;
+  padding: 0px;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader {
+  list-style: none;
+  background: linear-gradient(to bottom, #dedede, #cacaca, #dedede);
+  box-shadow: #737373 3px 3px 4px 1px;
+  line-height: 30px;
+  vertical-align: middle;
+  margin: 6px 0 0 0;
+  border-radius: 5px;
+  overflow: hidden;
+  width: calc(100% - 6px);
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader:hover {
+  background: linear-gradient(to bottom, #e6e6e6, #cacaca, #c5c5c5);
+  cursor: pointer;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader:active {
+  background: linear-gradient(to bottom, #dadada, #dadada, #dadada);
+  box-shadow: #737373 1px 1px 2px 0px;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader label {
+  margin: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  vertical-align: middle;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .list-items {
+  margin: 0px;
+  padding: 0px;
+  display: none;
+}
+.projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .list-items.active {
+  display: block;
+}
+
+.layerinfoView {
+  font-family: Arial, Helvetica, sans-serif;
+  display: none;
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.479);
+}
+.layerinfoView .layerinfoContent {
+  position: relative;
+  background: #1565c0;
+  margin: 5% auto;
+  width: 70%;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+  border-radius: 5px;
+  animation-name: fade;
+  animation-duration: 0.3s;
+}
+.layerinfoView .layerinfoContent .layerinfoHeader {
+  background-color: #1565c0;
+  width: 100%;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px 0px 10px 0;
+  color: white;
+}
+.layerinfoView .layerinfoContent .layerinfoHeader h3 {
+  margin: 15px 0 15px 0;
+}
+.layerinfoView .layerinfoContent .closebutton {
+  position: absolute;
+  line-height: 25px;
+  right: -12px;
+  top: -10px;
+  padding: 2em, 2em;
+  color: black;
+  background: rgb(231, 231, 231);
+  font-size: 16px;
+  width: 25px;
+  height: 25px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 5px, 5px, 10px, #000;
+  z-index: 2;
+}
+.layerinfoView .layerinfoContent .closebutton:hover {
+  background-image: linear-gradient(to bottom, white, grey);
+  cursor: pointer;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody {
+  position: relative;
+  background: white;
+  height: 70vh;
+  overflow-y: auto;
+  line-height: 40px;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody1 {
+  width: calc(30% - 40px);
+  height: calc(100% - 40px);
+  padding: 20px;
+  float: left;
+  color: white;
+  background: rgb(82, 82, 82);
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody1 .layerinfoDisplay input {
+  width: 100%;
+  width: calc(100% - 10px);
+  padding: 5px;
+  border-radius: 5px;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 {
+  width: calc(70% - 40px);
+  height: calc(100% - 40px);
+  padding: 20px;
+  float: right;
+  overflow: auto;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable h4 {
+  margin: 5px 0 15px 0;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table {
+  border-radius: 5px;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table td {
+  text-align: left;
+  padding: 8px;
+  border: none;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table td:hover {
+  cursor: pointer;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table th:first-child {
+  border-top-left-radius: 5px;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table th:last-child {
+  border-top-right-radius: 5px;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table tr:nth-of-type(even) {
+  background: #f2f2f2;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table tr:nth-of-type(odd) {
+  background: white;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table tr:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table th {
+  background-color: #3f3f3f;
+  color: white;
+  text-align: left;
+  padding: 8px;
+}
+.layerinfoView .layerinfoContent .layerinfoContainerMainBody .layerinfoContainerBody2 .layerinfoTable table th img {
+  height: 10px;
+  width: auto;
+  margin-left: 5px;
+}
+
+.infoView {
+  font-family: Arial, Helvetica, sans-serif;
+  display: none;
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.479);
+}
+.infoView .infoContent {
+  position: relative;
+  background: #1565c0;
+  margin: 10% auto;
+  width: 40%;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+  border-radius: 5px;
+  animation-name: fade;
+  animation-duration: 0.3s;
+}
+.infoView .infoContent .infoPicture {
+  position: absolute;
+  line-height: 25px;
+  right: 0;
+  left: calc(50% - 50px);
+  top: -70px;
+  color: black;
+  font-size: 16px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  font-weight: bold;
+  /* text-align: center; */
+  text-align: center;
+  box-shadow: 5px, 5px, 10px, #000;
+  z-index: 2;
+  border: 5px solid #1565c0;
+  vertical-align: middle;
+}
+.infoView .infoContent .infoPicture .infoInitial {
+  position: relative;
+  top: 39px;
+  color: white;
+  font-size: 30px;
+  text-transform: uppercase;
+}
+.infoView .infoContent .infoHeader-readonly {
+  background: linear-gradient(to bottom, #1565c0, #003c8f);
+  width: 100%;
+  height: 80px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 30px 0 0 0;
+  display: block;
+  color: white;
+  line-height: 30px;
+}
+.infoView .infoContent .infoHeader-readonly h3 {
+  margin: 10px 0 0 0;
+}
+.infoView .infoContent .infoHeader-readonly h4 {
+  margin: 0px;
+}
+.infoView .infoContent .infoHeader-edit {
+  background: linear-gradient(to bottom, #1565c0, #003c8f);
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 30px 0 0 0;
+  display: none;
+  color: white;
+}
+.infoView .infoContent .infoHeader-edit h3 {
+  margin: 10px 0 0 0;
+}
+.infoView .infoContent .infoHeader-edit h4 {
+  margin: 0px;
+}
+.infoView .infoContent .closebutton {
+  position: absolute;
+  line-height: 25px;
+  right: -12px;
+  top: -10px;
+  padding: 2em, 2em;
+  color: black;
+  background: rgb(231, 231, 231);
+  font-size: 16px;
+  width: 25px;
+  height: 25px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 5px, 5px, 10px, #000;
+  z-index: 2;
+}
+.infoView .infoContent .closebutton:hover {
+  background-image: linear-gradient(to bottom, white, grey);
+  cursor: pointer;
+}
+.infoView .infoContent .infoContainerMainBody {
+  position: relative;
+  background: white;
+  height: 30vh;
+  overflow-y: auto;
+  line-height: 40px;
+  padding: 30px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-readonly {
+  width: 100%;
+  display: block;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-readonly img {
+  width: 30px;
+  vertical-align: middle;
+  margin: 0 15px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit {
+  line-height: 35px;
+  margin: 0px;
+  display: none;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput.idcontainer {
+  display: flex;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .idcontainer {
+  display: none;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit label {
+  font-weight: bold;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input {
+  background: #fff;
+  color: #525865;
+  border-radius: 4px;
+  border: 1px solid #d1d1d1;
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.45;
+  padding: 0.6em 1.45em 0.7em 1.45em;
+  outline: none;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input::-moz-placeholder {
+  color: rgb(200, 200, 200);
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input::placeholder {
+  color: rgb(200, 200, 200);
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not([type=checkbox]) {
+  width: calc(100% - 10px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not([type=checkbox]) {
+  width: calc(100% - 49px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newconfirmpasswordprofile:not([type=checkbox]) {
+  width: calc(100% - 49px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:valid:not([type=checkbox]):required {
+  width: calc(100% - 64px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:valid:not([type=checkbox]):required {
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus:invalid:not([type=checkbox]):required {
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:hover {
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.02);
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus {
+  color: #4b515d;
+  border: 1px solid #B8B6B6;
+  box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.01), 0px 0px 8px rgba(0, 0, 0, 0.2);
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus.newid {
+  color: lightgrey;
+  border: 1px solid lightgrey;
+  box-shadow: none;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit label.required:after {
+  content: "*";
+  color: lightcoral;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input {
+  border-color: #d1d1d1;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not(:-moz-placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not(:placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not(:-moz-placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 64px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not(:placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 64px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:-moz-placeholder-shown:focus:invalid:required {
+  width: calc(100% - 10px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:placeholder-shown:focus:invalid:required {
+  width: calc(100% - 10px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus:valid:required {
+  border-color: hsl(120, 76%, 50%);
+  background: url(../../Images/icons/gen_button/checked.svg);
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:valid:required {
+  border-color: #d1d1d1;
+  background: url(../../Images/icons/gen_button/checked.svg);
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide,
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide {
+  display: inline-flex;
+  border: 1px solid grey;
+  height: 28px;
+  /* padding: 8px; */
+  border-radius: 4px;
+  outline: none;
+  /* border-style: none; */
+  width: 29px;
+  position: relative;
+  top: -1px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button,
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button {
+  background: none;
+  border-style: none;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button img,
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button img {
+  width: 15px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button img:active,
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button img:active {
+  outline: 0;
+  background: #888;
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+  box-shadow: 0 0 0px 5px #888;
+  transition-duration: 10ms;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button:focus,
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button:focus {
+  outline: 0;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator {
+  display: none;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthContainerprofile {
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
+  width: 200px;
+  height: 20px;
+  display: inline-block;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthContainerprofile #passwordstrengthprofile {
+  background: red;
+  width: 50px;
+  height: 20px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthTextprofile {
+  display: inline-block;
+  position: relative;
+  align-items: center;
+  top: -4px;
+  margin-left: 10px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck {
+  display: inline;
+  margin-top: 0px;
+  width: auto;
+  padding: 3px 0px;
+  border-radius: 3px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck#checkresetpassword, .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck#checkupdatelabel {
+  margin-top: 20px;
+  padding-left: 10px;
+  display: inline;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit select {
+  font-size: 1em;
+  width: 100%;
+  padding: 3px 0px 3px 6px;
+  border-radius: 4px;
+  border: 1px solid #d1d1d1;
+  background: #fff;
+  color: #525865;
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+  font-family: inherit;
+  line-height: 1.45;
+  outline: none;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput {
+  display: flex;
+  width: 100%;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput .column1 {
+  width: 50%;
+  margin-right: 5px;
+}
+.infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput .column2 {
+  width: 50%;
+  margin-left: 5px;
+}
+.infoView .infoContent .profileuserFooter {
+  background-color: #003c8f;
+  padding: 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  text-align: right;
+}
+.infoView .infoContent .profileuserFooter div {
+  padding: 0px;
+  margin: 0px;
+}
+.infoView .infoContent .profileuserFooter div button {
+  padding: 7.5px 15px;
+  border-radius: 5px;
+}
+.infoView .infoContent .profileuserFooter div button:hover {
+  cursor: pointer;
+}
+.infoView .infoContent .profileuserFooter .editPage {
+  display: none;
+}
+.infoView .infoContent .profileuserFooter .readonly {
+  display: block;
+}
+
+.settingView {
+  font-family: Arial, Helvetica, sans-serif;
+  display: none;
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.479);
+}
+.settingView .settingContent {
+  position: relative;
+  background: #1565c0;
+  margin: 10% auto;
+  width: 40%;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+  border-radius: 5px;
+  animation-name: fade;
+  animation-duration: 0.3s;
+}
+.settingView .settingContent .settingHeader {
+  background: linear-gradient(to bottom, #1565c0, #003c8f);
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  border-radius: 5px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 20px 0 0 0;
+  display: block;
+  color: white;
+}
+.settingView .settingContent .settingHeader h3 {
+  margin: 0px;
+}
+.settingView .settingContent .settingHeader h4 {
+  margin: 0px;
+}
+.settingView .settingContent .closebutton {
+  position: absolute;
+  line-height: 25px;
+  right: -12px;
+  top: -10px;
+  padding: 2em, 2em;
+  color: black;
+  background: rgb(231, 231, 231);
+  font-size: 16px;
+  width: 25px;
+  height: 25px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 5px, 5px, 10px, #000;
+  z-index: 2;
+}
+.settingView .settingContent .closebutton:hover {
+  background-image: linear-gradient(to bottom, white, grey);
+  cursor: pointer;
+}
+.settingView .settingContent .settingContainerMainBody {
+  position: relative;
+  background: white;
+  height: 50vh;
+  overflow-y: auto;
+  line-height: 10px;
+}
+.settingView .settingContent .settingContainerMainBody h4 {
+  display: block;
+  height: 0px;
+  margin: 15px 0;
+  text-align: center;
+}
+.settingView .settingContent .settingContainerMainBody .container-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0px;
+}
+.settingView .settingContent .settingContainerMainBody .container-cards .card {
+  position: relative;
+  background: #1565c0;
+  border-radius: 5px;
+  top: 0px;
+  width: 315px;
+  height: 265px;
+  margin: 20px auto;
+  box-shadow: 2px 2px 10px 2px #c0c0c0;
+}
+.settingView .settingContent .settingContainerMainBody .container-cards .card .head {
+  height: 10px;
+  margin: 15px 0;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+.settingView .settingContent .settingContainerMainBody .container-cards .card .previewImage {
+  height: calc(100% - 40px);
+  width: 100%;
+}
+.settingView .settingContent .settingContainerMainBody .container-cards .card .previewImage img {
+  height: 100%;
+  width: 100%;
+}
+.settingView .settingContent .settingContainerMainBody .container-cards .card input {
+  display: block;
+  margin: 10px auto;
+}
+.settingView .settingContent .settingContainerMainBody .container-cards .card:hover {
+  position: relative;
+  top: -3px;
+  box-shadow: 3px 3px 10px 3px #777777;
+  transition: all 0.5s;
+}
+.settingView .settingContent .settingFooter {
+  background-color: #003c8f;
+  padding: 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  text-align: right;
+}
+.settingView .settingContent .settingFooter div {
+  padding: 0px;
+  margin: 0px;
+}
+.settingView .settingContent .settingFooter div button {
+  padding: 7.5px 15px;
+  border-radius: 5px;
+}
+.settingView .settingContent .settingFooter div button:hover {
+  cursor: pointer;
+}
+.settingView .settingContent .settingFooter .editPage {
+  display: block;
+}
+.settingView .settingContent .settingFooter .readonly {
+  display: block;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.25) {
+  .projectinfoView {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.479);
+  }
+  .projectinfoView .projectinfoContent {
+    position: relative;
+    background: #1565c0;
+    margin: 8% auto;
+    width: 45%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+    border-radius: 5px;
+    animation-name: fade;
+    animation-duration: 0.3s;
+  }
+  .projectinfoView .projectinfoContent .projectinfoPicture {
+    position: absolute;
+    line-height: 25px;
+    right: 0;
+    left: calc(50% - 40px);
+    top: -70px;
+    color: black;
+    background: lightgray;
+    font-size: 16px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-weight: bold;
+    /* text-align: center; */
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+    border: 5px solid #1565c0;
+    vertical-align: middle;
+  }
+  .projectinfoView .projectinfoContent .projectinfoPicture .projectinfoInitial {
+    position: relative;
+  }
+  .projectinfoView .projectinfoContent .projectinfoPicture .projectinfoInitial img {
+    width: 100%;
+    border-radius: 50%;
+    height: 100%;
+  }
+  .projectinfoView .projectinfoContent .projectinfoHeader {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    text-align: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    padding: 20px 0 0 0;
+    color: white;
+    padding-bottom: 10px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoHeader h3 {
+    margin: 5px 15px;
+    font-size: 15px;
+  }
+  .projectinfoView .projectinfoContent .closebutton {
+    position: absolute;
+    line-height: 25px;
+    right: -12px;
+    top: -10px;
+    padding: 2em, 2em;
+    color: black;
+    background: rgb(231, 231, 231);
+    font-size: 16px;
+    width: 25px;
+    height: 25px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+  }
+  .projectinfoView .projectinfoContent .closebutton:hover {
+    background-image: linear-gradient(to bottom, white, grey);
+    cursor: pointer;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody {
+    position: relative;
+    background: white;
+    height: 60vh;
+    line-height: 30px;
+    font-size: 10px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer {
+    height: 35px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item {
+    list-style: none;
+    margin: 0px;
+    padding: 5px 0 0 0;
+    background-color: #003c8f;
+    height: 30px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab {
+    display: inline-block;
+    margin: 0;
+    background: lightgrey;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 0 10px;
+    font-size: 12px;
+    height: 30px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab.active {
+    background: white;
+    font-weight: bold;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab:hover {
+    background: grey;
+    cursor: pointer;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab.active:hover {
+    background: white;
+    cursor: default;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody {
+    width: calc(100% - 40px);
+    height: calc(60vh - 75px);
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojectcontactadmindetails {
+    border: 1px solid;
+    border-radius: 5px;
+    text-align: center;
+    width: 70%;
+    margin: auto;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader {
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    margin: auto;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader .viewprojecttabdivider img {
+    width: 30px;
+    vertical-align: middle;
+    margin-left: 0px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader .viewprojecttabdivider a {
+    width: 30%;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody img {
+    width: 20px;
+    vertical-align: middle;
+    margin: 0 15px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody a {
+    text-decoration: none;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody#financeinfo {
+    display: none;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo {
+    margin: 0px;
+    padding: 0px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader {
+    list-style: none;
+    background: linear-gradient(to bottom, #dedede, #cacaca, #dedede);
+    box-shadow: #737373 3px 3px 4px 1px;
+    line-height: 25px;
+    vertical-align: middle;
+    margin: 10px 0 0 0;
+    border-radius: 5px;
+    overflow: hidden;
+    width: calc(100% - 6px);
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader:hover {
+    background: linear-gradient(to bottom, #e6e6e6, #cacaca, #c5c5c5);
+    cursor: pointer;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader:active {
+    background: linear-gradient(to bottom, #dadada, #dadada, #dadada);
+    box-shadow: #737373 1px 1px 2px 0px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader label {
+    margin: 8px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .list-items {
+    margin: 0px;
+    padding: 0px;
+    display: none;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .list-items.active {
+    display: block;
+  }
+  .infoView {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.479);
+  }
+  .infoView .infoContent {
+    position: relative;
+    background: #1565c0;
+    margin: 10% auto;
+    width: 40%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+    border-radius: 5px;
+    animation-name: fade;
+    animation-duration: 0.3s;
+  }
+  .infoView .infoContent .infoPicture {
+    position: absolute;
+    line-height: 25px;
+    right: 0;
+    left: calc(50% - 40px);
+    top: -60px;
+    color: black;
+    font-size: 16px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-weight: bold;
+    /* text-align: center; */
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+    border: 5px solid #1565c0;
+    vertical-align: middle;
+  }
+  .infoView .infoContent .infoPicture .infoInitial {
+    position: relative;
+    top: 29px;
+    color: white;
+    font-size: 25px;
+    text-transform: uppercase;
+  }
+  .infoView .infoContent .infoHeader-readonly {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    height: 65px;
+    text-align: center;
+    border-radius: 5px;
+    padding: 25px 0 0 0;
+    display: block;
+    color: white;
+    line-height: 25px;
+  }
+  .infoView .infoContent .infoHeader-readonly h3 {
+    margin: 5px 0 0 0;
+    font-size: 15px;
+  }
+  .infoView .infoContent .infoHeader-readonly h4 {
+    margin: 0px;
+    font-size: 12px;
+  }
+  .infoView .infoContent .infoHeader-edit {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    border-radius: 5px;
+    padding: 30px 0 0 0;
+    display: none;
+    color: white;
+  }
+  .infoView .infoContent .infoHeader-edit h3 {
+    margin: 0px 0 0 0;
+    font-size: 14px;
+  }
+  .infoView .infoContent .infoHeader-edit h4 {
+    margin: 0px;
+  }
+  .infoView .infoContent .closebutton {
+    position: absolute;
+    line-height: 25px;
+    right: -12px;
+    top: -10px;
+    padding: 2em, 2em;
+    color: black;
+    background: rgb(231, 231, 231);
+    font-size: 16px;
+    width: 25px;
+    height: 25px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+  }
+  .infoView .infoContent .closebutton:hover {
+    background-image: linear-gradient(to bottom, white, grey);
+    cursor: pointer;
+  }
+  .infoView .infoContent .infoContainerMainBody {
+    position: relative;
+    background: white;
+    height: 30vh;
+    overflow-y: auto;
+    line-height: 30px;
+    padding: 20px;
+    font-size: 12px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-readonly {
+    width: 100%;
+    display: block;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-readonly img {
+    width: 20px;
+    vertical-align: middle;
+    margin: 0 15px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit {
+    line-height: 30px;
+    margin: 0px;
+    display: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput.idcontainer {
+    display: flex;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .idcontainer {
+    display: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit label {
+    font-weight: bold;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input {
+    background: #fff;
+    color: #525865;
+    border-radius: 4px;
+    border: 1px solid #d1d1d1;
+    box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+    font-family: inherit;
+    font-size: 1em;
+    line-height: 1.45;
+    padding: 0.6em 1.45em 0.7em 1.45em;
+    outline: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input::-moz-placeholder {
+    color: rgb(200, 200, 200);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input::placeholder {
+    color: rgb(200, 200, 200);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not([type=checkbox]) {
+    width: calc(100% - 10px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not([type=checkbox]) {
+    width: calc(100% - 49px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newconfirmpasswordprofile:not([type=checkbox]) {
+    width: calc(100% - 49px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:valid:not([type=checkbox]):required {
+    width: calc(100% - 64px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:valid:not([type=checkbox]):required {
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus:invalid:not([type=checkbox]):required {
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:hover {
+    box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus {
+    color: #4b515d;
+    border: 1px solid #B8B6B6;
+    box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.01), 0px 0px 8px rgba(0, 0, 0, 0.2);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus.newid {
+    color: lightgrey;
+    border: 1px solid lightgrey;
+    box-shadow: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit label.required:after {
+    content: "*";
+    color: lightcoral;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input {
+    border-color: #d1d1d1;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not(:-moz-placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not(:placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not(:-moz-placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 64px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not(:placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 64px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:-moz-placeholder-shown:focus:invalid:required {
+    width: calc(100% - 10px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:placeholder-shown:focus:invalid:required {
+    width: calc(100% - 10px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus:valid:required {
+    border-color: hsl(120, 76%, 50%);
+    background: url(../../Images/icons/gen_button/checked.svg);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:valid:required {
+    border-color: #d1d1d1;
+    background: url(../../Images/icons/gen_button/checked.svg);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide {
+    display: inline-flex;
+    border: 1px solid grey;
+    height: 23px;
+    /* padding: 8px; */
+    border-radius: 4px;
+    outline: none;
+    /* border-style: none; */
+    width: 23px;
+    position: relative;
+    top: 0px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button {
+    background: none;
+    border-style: none;
+    padding: 0 4px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button img,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button img {
+    width: 15px;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button img:active,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button img:active {
+    outline: 0;
+    background: #888;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    box-shadow: 0 0 0px 5px #888;
+    transition-duration: 10ms;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button:focus,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button:focus {
+    outline: 0;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator {
+    display: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthContainerprofile {
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    width: 200px;
+    height: 20px;
+    display: inline-block;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthContainerprofile #passwordstrengthprofile {
+    background: red;
+    width: 50px;
+    height: 20px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthTextprofile {
+    display: inline-block;
+    position: relative;
+    align-items: center;
+    top: -4px;
+    margin-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck {
+    display: inline;
+    margin-top: 0px;
+    width: auto;
+    padding: 3px 0px;
+    border-radius: 3px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck#checkresetpassword, .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck#checkupdatelabel {
+    margin-top: 20px;
+    padding-left: 10px;
+    display: inline;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit select {
+    font-size: 1em;
+    width: 100%;
+    padding: 3px 0px 3px 6px;
+    border-radius: 4px;
+    border: 1px solid #d1d1d1;
+    background: #fff;
+    color: #525865;
+    box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+    font-family: inherit;
+    line-height: 1.45;
+    outline: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput {
+    display: flex;
+    width: 100%;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput .column1 {
+    width: 50%;
+    margin-right: 5px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput .column2 {
+    width: 50%;
+    margin-left: 5px;
+  }
+  .infoView .infoContent .profileuserFooter {
+    background-color: #003c8f;
+    padding: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-align: right;
+  }
+  .infoView .infoContent .profileuserFooter div {
+    padding: 0px;
+    margin: 0px;
+  }
+  .infoView .infoContent .profileuserFooter div button {
+    padding: 4.5px 11px;
+    font-size: 10px;
+    border-radius: 5px;
+  }
+  .infoView .infoContent .profileuserFooter div button:hover {
+    cursor: pointer;
+  }
+  .infoView .infoContent .profileuserFooter .editPage {
+    display: none;
+  }
+  .infoView .infoContent .profileuserFooter .readonly {
+    display: block;
+  }
+  .settingView {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.479);
+  }
+  .settingView .settingContent {
+    position: relative;
+    background: #1565c0;
+    margin: 5% auto;
+    width: 40%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+    border-radius: 5px;
+    animation-name: fade;
+    animation-duration: 0.3s;
+  }
+  .settingView .settingContent .settingHeader {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    border-radius: 5px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 15px 0 0 0;
+    display: block;
+    color: white;
+  }
+  .settingView .settingContent .settingHeader h3 {
+    margin: 0px;
+    font-size: 14px;
+  }
+  .settingView .settingContent .settingHeader h4 {
+    margin: 0px;
+  }
+  .settingView .settingContent .closebutton {
+    position: absolute;
+    line-height: 25px;
+    right: -12px;
+    top: -10px;
+    padding: 2em, 2em;
+    color: black;
+    background: rgb(231, 231, 231);
+    font-size: 16px;
+    width: 25px;
+    height: 25px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+  }
+  .settingView .settingContent .closebutton:hover {
+    background-image: linear-gradient(to bottom, white, grey);
+    cursor: pointer;
+  }
+  .settingView .settingContent .settingContainerMainBody {
+    position: relative;
+    background: white;
+    height: 50vh;
+    overflow-y: auto;
+    line-height: 10px;
+  }
+  .settingView .settingContent .settingContainerMainBody h4 {
+    display: block;
+    height: 0px;
+    margin: 15px 0;
+    text-align: center;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0px;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card {
+    position: relative;
+    background: #1565c0;
+    border-radius: 5px;
+    top: 0px;
+    width: 200px;
+    height: 180px;
+    margin: 20px auto;
+    box-shadow: 2px 2px 10px 2px #c0c0c0;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card .head {
+    height: 10px;
+    margin: 10px 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card .previewImage {
+    height: calc(100% - 30px);
+    width: 100%;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card .previewImage img {
+    height: 100%;
+    width: 100%;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card input {
+    display: block;
+    margin: 10px auto;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card:hover {
+    position: relative;
+    top: -3px;
+    box-shadow: 3px 3px 10px 3px #777777;
+    transition: all 0.5s;
+  }
+  .settingView .settingContent .settingFooter {
+    background-color: #003c8f;
+    padding: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-align: right;
+  }
+  .settingView .settingContent .settingFooter div {
+    padding: 0px;
+    margin: 0px;
+  }
+  .settingView .settingContent .settingFooter div button {
+    padding: 4.5px 11px;
+    font-size: 10px;
+    border-radius: 5px;
+  }
+  .settingView .settingContent .settingFooter div button:hover {
+    cursor: pointer;
+  }
+  .settingView .settingContent .settingFooter .editPage {
+    display: block;
+  }
+  .settingView .settingContent .settingFooter .readonly {
+    display: block;
+  }
+}
+@media screen and (max-width: 1366px) {
+  .projectinfoView {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.479);
+  }
+  .projectinfoView .projectinfoContent {
+    position: relative;
+    background: #1565c0;
+    margin: 8% auto;
+    width: 45%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+    border-radius: 5px;
+    animation-name: fade;
+    animation-duration: 0.3s;
+  }
+  .projectinfoView .projectinfoContent .projectinfoPicture {
+    position: absolute;
+    line-height: 25px;
+    right: 0;
+    left: calc(50% - 40px);
+    top: -70px;
+    color: black;
+    background: lightgray;
+    font-size: 16px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-weight: bold;
+    /* text-align: center; */
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+    border: 5px solid #1565c0;
+    vertical-align: middle;
+  }
+  .projectinfoView .projectinfoContent .projectinfoPicture .projectinfoInitial {
+    position: relative;
+  }
+  .projectinfoView .projectinfoContent .projectinfoPicture .projectinfoInitial img {
+    width: 100%;
+    border-radius: 50%;
+    height: 100%;
+  }
+  .projectinfoView .projectinfoContent .projectinfoHeader {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    text-align: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    padding: 20px 0 0 0;
+    color: white;
+    padding-bottom: 10px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoHeader h3 {
+    margin: 5px 15px;
+    font-size: 15px;
+  }
+  .projectinfoView .projectinfoContent .closebutton {
+    position: absolute;
+    line-height: 25px;
+    right: -12px;
+    top: -10px;
+    padding: 2em, 2em;
+    color: black;
+    background: rgb(231, 231, 231);
+    font-size: 16px;
+    width: 25px;
+    height: 25px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+  }
+  .projectinfoView .projectinfoContent .closebutton:hover {
+    background-image: linear-gradient(to bottom, white, grey);
+    cursor: pointer;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody {
+    position: relative;
+    background: white;
+    height: 60vh;
+    line-height: 30px;
+    font-size: 10px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer {
+    height: 35px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item {
+    list-style: none;
+    margin: 0px;
+    padding: 5px 0 0 0;
+    background-color: #003c8f;
+    height: 30px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab {
+    display: inline-block;
+    margin: 0;
+    background: lightgrey;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 0 10px;
+    font-size: 12px;
+    height: 30px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab.active {
+    background: white;
+    font-weight: bold;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab:hover {
+    background: grey;
+    cursor: pointer;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .tabsContainer ul.tabs-item li.tab.active:hover {
+    background: white;
+    cursor: default;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody {
+    width: calc(100% - 40px);
+    height: calc(60vh - 75px);
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojectcontactadmindetails {
+    border: 1px solid;
+    border-radius: 5px;
+    text-align: center;
+    width: 70%;
+    margin: auto;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader {
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    margin: auto;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader .viewprojecttabdivider img {
+    width: 30px;
+    vertical-align: middle;
+    margin-left: 0px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody .viewprojecttabheader .viewprojecttabdivider a {
+    width: 30%;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody img {
+    width: 20px;
+    vertical-align: middle;
+    margin: 0 15px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody a {
+    text-decoration: none;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody#financeinfo {
+    display: none;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo {
+    margin: 0px;
+    padding: 0px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader {
+    list-style: none;
+    background: linear-gradient(to bottom, #dedede, #cacaca, #dedede);
+    box-shadow: #737373 3px 3px 4px 1px;
+    line-height: 25px;
+    vertical-align: middle;
+    margin: 10px 0 0 0;
+    border-radius: 5px;
+    overflow: hidden;
+    width: calc(100% - 6px);
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader:hover {
+    background: linear-gradient(to bottom, #e6e6e6, #cacaca, #c5c5c5);
+    cursor: pointer;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader:active {
+    background: linear-gradient(to bottom, #dadada, #dadada, #dadada);
+    box-shadow: #737373 1px 1px 2px 0px;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .projectHeader label {
+    margin: 8px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .list-items {
+    margin: 0px;
+    padding: 0px;
+    display: none;
+  }
+  .projectinfoView .projectinfoContent .projectinfoContainerMainBody .projectinfoContainerBody #financeContractInfo .list-items.active {
+    display: block;
+  }
+  .infoView {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.479);
+  }
+  .infoView .infoContent {
+    position: relative;
+    background: #1565c0;
+    margin: 10% auto;
+    width: 40%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+    border-radius: 5px;
+    animation-name: fade;
+    animation-duration: 0.3s;
+  }
+  .infoView .infoContent .infoPicture {
+    position: absolute;
+    line-height: 25px;
+    right: 0;
+    left: calc(50% - 40px);
+    top: -60px;
+    color: black;
+    font-size: 16px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-weight: bold;
+    /* text-align: center; */
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+    border: 5px solid #1565c0;
+    vertical-align: middle;
+  }
+  .infoView .infoContent .infoPicture .infoInitial {
+    position: relative;
+    top: 29px;
+    color: white;
+    font-size: 25px;
+    text-transform: uppercase;
+  }
+  .infoView .infoContent .infoHeader-readonly {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    height: 65px;
+    text-align: center;
+    border-radius: 5px;
+    padding: 25px 0 0 0;
+    display: block;
+    color: white;
+    line-height: 25px;
+  }
+  .infoView .infoContent .infoHeader-readonly h3 {
+    margin: 5px 0 0 0;
+    font-size: 15px;
+  }
+  .infoView .infoContent .infoHeader-readonly h4 {
+    margin: 0px;
+    font-size: 12px;
+  }
+  .infoView .infoContent .infoHeader-edit {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    border-radius: 5px;
+    padding: 30px 0 0 0;
+    display: none;
+    color: white;
+  }
+  .infoView .infoContent .infoHeader-edit h3 {
+    margin: 0px 0 0 0;
+    font-size: 14px;
+  }
+  .infoView .infoContent .infoHeader-edit h4 {
+    margin: 0px;
+  }
+  .infoView .infoContent .closebutton {
+    position: absolute;
+    line-height: 25px;
+    right: -12px;
+    top: -10px;
+    padding: 2em, 2em;
+    color: black;
+    background: rgb(231, 231, 231);
+    font-size: 16px;
+    width: 25px;
+    height: 25px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+  }
+  .infoView .infoContent .closebutton:hover {
+    background-image: linear-gradient(to bottom, white, grey);
+    cursor: pointer;
+  }
+  .infoView .infoContent .infoContainerMainBody {
+    position: relative;
+    background: white;
+    height: 30vh;
+    overflow-y: auto;
+    line-height: 30px;
+    padding: 20px;
+    font-size: 12px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-readonly {
+    width: 100%;
+    display: block;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-readonly img {
+    width: 20px;
+    vertical-align: middle;
+    margin: 0 15px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit {
+    line-height: 30px;
+    margin: 0px;
+    display: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput.idcontainer {
+    display: flex;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .idcontainer {
+    display: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit label {
+    font-weight: bold;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input {
+    background: #fff;
+    color: #525865;
+    border-radius: 4px;
+    border: 1px solid #d1d1d1;
+    box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+    font-family: inherit;
+    font-size: 1em;
+    line-height: 1.45;
+    padding: 0.6em 1.45em 0.7em 1.45em;
+    outline: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input::-moz-placeholder {
+    color: rgb(200, 200, 200);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input::placeholder {
+    color: rgb(200, 200, 200);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not([type=checkbox]) {
+    width: calc(100% - 10px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not([type=checkbox]) {
+    width: calc(100% - 49px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newconfirmpasswordprofile:not([type=checkbox]) {
+    width: calc(100% - 49px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:valid:not([type=checkbox]):required {
+    width: calc(100% - 64px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:valid:not([type=checkbox]):required {
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus:invalid:not([type=checkbox]):required {
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:hover {
+    box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus {
+    color: #4b515d;
+    border: 1px solid #B8B6B6;
+    box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.01), 0px 0px 8px rgba(0, 0, 0, 0.2);
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus.newid {
+    color: lightgrey;
+    border: 1px solid lightgrey;
+    box-shadow: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit label.required:after {
+    content: "*";
+    color: lightcoral;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input {
+    border-color: #d1d1d1;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not(:-moz-placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:not(:placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 25px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not(:-moz-placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 64px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input#newpasswordprofile:not(:placeholder-shown):invalid:required {
+    background: url(../../Images/icons/gen_button/cancel.svg);
+    border-color: red;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    width: calc(100% - 64px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 25px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:-moz-placeholder-shown:focus:invalid:required {
+    width: calc(100% - 10px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:placeholder-shown:focus:invalid:required {
+    width: calc(100% - 10px);
+    padding: 3px 0px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:focus:valid:required {
+    border-color: hsl(120, 76%, 50%);
+    background: url(../../Images/icons/gen_button/checked.svg);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit input:valid:required {
+    border-color: #d1d1d1;
+    background: url(../../Images/icons/gen_button/checked.svg);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide {
+    display: inline-flex;
+    border: 1px solid grey;
+    height: 23px;
+    /* padding: 8px; */
+    border-radius: 4px;
+    outline: none;
+    /* border-style: none; */
+    width: 23px;
+    position: relative;
+    top: 0px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button {
+    background: none;
+    border-style: none;
+    padding: 0 4px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button img,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button img {
+    width: 15px;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button img:active,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button img:active {
+    outline: 0;
+    background: #888;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    box-shadow: 0 0 0px 5px #888;
+    transition-duration: 10ms;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .password-showhide button:focus,
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .confirm-password-showhide button:focus {
+    outline: 0;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator {
+    display: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthContainerprofile {
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    width: 200px;
+    height: 20px;
+    display: inline-block;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthContainerprofile #passwordstrengthprofile {
+    background: red;
+    width: 50px;
+    height: 20px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .passindicator #passwordstrengthTextprofile {
+    display: inline-block;
+    position: relative;
+    align-items: center;
+    top: -4px;
+    margin-left: 10px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck {
+    display: inline;
+    margin-top: 0px;
+    width: auto;
+    padding: 3px 0px;
+    border-radius: 3px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck#checkresetpassword, .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .resetcheck#checkupdatelabel {
+    margin-top: 20px;
+    padding-left: 10px;
+    display: inline;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit select {
+    font-size: 1em;
+    width: 100%;
+    padding: 3px 0px 3px 6px;
+    border-radius: 4px;
+    border: 1px solid #d1d1d1;
+    background: #fff;
+    color: #525865;
+    box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+    font-family: inherit;
+    line-height: 1.45;
+    outline: none;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput {
+    display: flex;
+    width: 100%;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput .column1 {
+    width: 50%;
+    margin-right: 5px;
+  }
+  .infoView .infoContent .infoContainerMainBody .infoContainerBody-edit .doubleinput .column2 {
+    width: 50%;
+    margin-left: 5px;
+  }
+  .infoView .infoContent .profileuserFooter {
+    background-color: #003c8f;
+    padding: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-align: right;
+  }
+  .infoView .infoContent .profileuserFooter div {
+    padding: 0px;
+    margin: 0px;
+  }
+  .infoView .infoContent .profileuserFooter div button {
+    padding: 4.5px 11px;
+    font-size: 10px;
+    border-radius: 5px;
+  }
+  .infoView .infoContent .profileuserFooter div button:hover {
+    cursor: pointer;
+  }
+  .infoView .infoContent .profileuserFooter .editPage {
+    display: none;
+  }
+  .infoView .infoContent .profileuserFooter .readonly {
+    display: block;
+  }
+  .settingView {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.479);
+  }
+  .settingView .settingContent {
+    position: relative;
+    background: #1565c0;
+    margin: 5% auto;
+    width: 40%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+    border-radius: 5px;
+    animation-name: fade;
+    animation-duration: 0.3s;
+  }
+  .settingView .settingContent .settingHeader {
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    border-radius: 5px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 15px 0 0 0;
+    display: block;
+    color: white;
+  }
+  .settingView .settingContent .settingHeader h3 {
+    margin: 0px;
+    font-size: 14px;
+  }
+  .settingView .settingContent .settingHeader h4 {
+    margin: 0px;
+  }
+  .settingView .settingContent .closebutton {
+    position: absolute;
+    line-height: 25px;
+    right: -12px;
+    top: -10px;
+    padding: 2em, 2em;
+    color: black;
+    background: rgb(231, 231, 231);
+    font-size: 16px;
+    width: 25px;
+    height: 25px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 5px, 5px, 10px, #000;
+    z-index: 2;
+  }
+  .settingView .settingContent .closebutton:hover {
+    background-image: linear-gradient(to bottom, white, grey);
+    cursor: pointer;
+  }
+  .settingView .settingContent .settingContainerMainBody {
+    position: relative;
+    background: white;
+    height: 50vh;
+    overflow-y: auto;
+    line-height: 10px;
+  }
+  .settingView .settingContent .settingContainerMainBody h4 {
+    display: block;
+    height: 0px;
+    margin: 15px 0;
+    text-align: center;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0px;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card {
+    position: relative;
+    background: #1565c0;
+    border-radius: 5px;
+    top: 0px;
+    width: 200px;
+    height: 180px;
+    margin: 20px auto;
+    box-shadow: 2px 2px 10px 2px #c0c0c0;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card .head {
+    height: 10px;
+    margin: 10px 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card .previewImage {
+    height: calc(100% - 30px);
+    width: 100%;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card .previewImage img {
+    height: 100%;
+    width: 100%;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card input {
+    display: block;
+    margin: 10px auto;
+  }
+  .settingView .settingContent .settingContainerMainBody .container-cards .card:hover {
+    position: relative;
+    top: -3px;
+    box-shadow: 3px 3px 10px 3px #777777;
+    transition: all 0.5s;
+  }
+  .settingView .settingContent .settingFooter {
+    background-color: #003c8f;
+    padding: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-align: right;
+  }
+  .settingView .settingContent .settingFooter div {
+    padding: 0px;
+    margin: 0px;
+  }
+  .settingView .settingContent .settingFooter div button {
+    padding: 4.5px 11px;
+    font-size: 10px;
+    border-radius: 5px;
+  }
+  .settingView .settingContent .settingFooter div button:hover {
+    cursor: pointer;
+  }
+  .settingView .settingContent .settingFooter .editPage {
+    display: block;
+  }
+  .settingView .settingContent .settingFooter .readonly {
+    display: block;
+  }
+}
+.pwcredentialView {
+  font-family: Arial, Helvetica, sans-serif;
+  display: none;
+  position: absolute;
+  z-index: 7;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.479);
+}
+.pwcredentialView .credentialContent {
+  position: relative;
+  background: #1565c0;
+  margin: 10% auto;
+  width: 40%;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+  border-radius: 5px;
+  animation-name: fade;
+  animation-duration: 0.3s;
+}
+.pwcredentialView .credentialContent .credentialHeader {
+  background: linear-gradient(to bottom, #1565c0, #003c8f);
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  border-radius: 5px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 20px 0 0 0;
+  display: block;
+  color: white;
+}
+.pwcredentialView .credentialContent .credentialHeader h3 {
+  margin: 0px;
+}
+.pwcredentialView .credentialContent .credentialHeader h4 {
+  margin: 0px;
+}
+.pwcredentialView .credentialContent .closebutton {
+  position: absolute;
+  line-height: 25px;
+  right: -12px;
+  top: -10px;
+  padding: 2em, 2em;
+  color: black;
+  background: rgb(231, 231, 231);
+  font-size: 16px;
+  width: 25px;
+  height: 25px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 5px, 5px, 10px, #000;
+  z-index: 2;
+}
+.pwcredentialView .credentialContent .closebutton:hover {
+  background-image: linear-gradient(to bottom, white, grey);
+  cursor: pointer;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody {
+  position: relative;
+  background: white;
+  height: 50vh;
+  overflow-y: auto;
+  line-height: 10px;
+  padding: 30px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody h4 {
+  display: block;
+  height: 0px;
+  margin: 15px 0;
+  text-align: center;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit {
+  line-height: 35px;
+  margin: 0px;
+  display: block;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .doubleinput.idcontainer {
+  display: flex;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .idcontainer {
+  display: none;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit label {
+  font-weight: bold;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input {
+  background: #fff;
+  color: #525865;
+  border-radius: 4px;
+  border: 1px solid #d1d1d1;
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.45;
+  padding: 0.6em 1.45em 0.7em 1.45em;
+  outline: none;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input::-moz-placeholder {
+  color: rgb(200, 200, 200);
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input::placeholder {
+  color: rgb(200, 200, 200);
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:not([type=checkbox]) {
+  width: calc(100% - 10px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input#newpasswordprofile:not([type=checkbox]) {
+  width: calc(100% - 49px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input#newconfirmpasswordprofile:not([type=checkbox]) {
+  width: calc(100% - 49px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input#newpasswordprofile:valid:not([type=checkbox]):required {
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:valid:not([type=checkbox]):required {
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:focus:invalid:not([type=checkbox]):required {
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:hover {
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.02);
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:focus {
+  color: #4b515d;
+  border: 1px solid #B8B6B6;
+  box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.01), 0px 0px 8px rgba(0, 0, 0, 0.2);
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:focus.newid {
+  color: lightgrey;
+  border: 1px solid lightgrey;
+  box-shadow: none;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit label.required:after {
+  content: "*";
+  color: lightcoral;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input {
+  border-color: #d1d1d1;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:not(:-moz-placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:not(:placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input#newpasswordprofile:not(:-moz-placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input#newpasswordprofile:not(:placeholder-shown):invalid:required {
+  background: url(../../Images/icons/gen_button/cancel.svg);
+  border-color: red;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+  width: calc(100% - 25px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 25px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:-moz-placeholder-shown:focus:invalid:required {
+  width: calc(100% - 10px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:placeholder-shown:focus:invalid:required {
+  width: calc(100% - 10px);
+  padding: 3px 0px;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:focus:valid:required {
+  border-color: hsl(120, 76%, 50%);
+  background: url(../../Images/icons/gen_button/checked.svg);
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit input:valid:required {
+  border-color: #d1d1d1;
+  background: url(../../Images/icons/gen_button/checked.svg);
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: 2px 4px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .password-showhide,
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .confirm-password-showhide {
+  display: inline-flex;
+  border: 1px solid grey;
+  height: 28px;
+  /* padding: 8px; */
+  border-radius: 4px;
+  outline: none;
+  /* border-style: none; */
+  width: 29px;
+  position: relative;
+  top: -1px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .password-showhide button,
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .confirm-password-showhide button {
+  background: none;
+  border-style: none;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .password-showhide button img,
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .confirm-password-showhide button img {
+  width: 15px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .password-showhide button img:active,
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .confirm-password-showhide button img:active {
+  outline: 0;
+  background: #888;
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+  box-shadow: 0 0 0px 5px #888;
+  transition-duration: 10ms;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .password-showhide button:focus,
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .confirm-password-showhide button:focus {
+  outline: 0;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .passindicator {
+  display: none;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .passindicator #passwordstrengthContainerprofile {
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
+  width: 200px;
+  height: 20px;
+  display: inline-block;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .passindicator #passwordstrengthContainerprofile #passwordstrengthprofile {
+  background: red;
+  width: 50px;
+  height: 20px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .passindicator #passwordstrengthTextprofile {
+  display: inline-block;
+  position: relative;
+  align-items: center;
+  top: -4px;
+  margin-left: 10px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .resetcheck {
+  display: inline;
+  margin-top: 0px;
+  width: auto;
+  padding: 3px 0px;
+  border-radius: 3px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .resetcheck#checkresetpassword, .pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .resetcheck#checkupdatelabel {
+  margin-top: 20px;
+  padding-left: 10px;
+  display: inline;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit select {
+  font-size: 1em;
+  width: 100%;
+  padding: 3px 0px 3px 6px;
+  border-radius: 4px;
+  border: 1px solid #d1d1d1;
+  background: #fff;
+  color: #525865;
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+  font-family: inherit;
+  line-height: 1.45;
+  outline: none;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .doubleinput {
+  display: flex;
+  width: 100%;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .doubleinput .column1 {
+  width: 50%;
+  margin-right: 5px;
+}
+.pwcredentialView .credentialContent .credentialContainerMainBody .credentialContent-edit .doubleinput .column2 {
+  width: 50%;
+  margin-left: 5px;
+}
+.pwcredentialView .credentialContent .credentialFooter {
+  background-color: #003c8f;
+  padding: 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  text-align: right;
+}
+.pwcredentialView .credentialContent .credentialFooter div {
+  padding: 0px;
+  margin: 0px;
+}
+.pwcredentialView .credentialContent .credentialFooter div button {
+  padding: 7.5px 15px;
+  border-radius: 5px;
+}
+.pwcredentialView .credentialContent .credentialFooter div button:hover {
+  cursor: pointer;
+}
+.pwcredentialView .credentialContent .credentialFooter .editPage {
+  display: block;
+}
+.pwcredentialView .credentialContent .credentialFooter .readonly {
+  display: block;
+}/*# sourceMappingURL=userViewProfile.css.map */

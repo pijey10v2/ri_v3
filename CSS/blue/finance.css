@@ -1,0 +1,2571 @@
+.finance-page {
+  display: block;
+  padding: 0px;
+  margin: 0px;
+  top: 70px;
+  position: absolute;
+  height: calc(100% - 70px);
+  width: 100%;
+  background: white;
+}
+.finance-page #sidebar-admin {
+  position: absolute;
+  height: 100%;
+  width: 300px;
+  background: #e0e0e0;
+  box-shadow: 7px 0px 10px 0px rgba(33, 33, 33, 0.2);
+}
+.finance-page #sidebar-admin .sidebar-items {
+  vertical-align: middle;
+  line-height: 45px;
+  padding: 0px;
+  margin: 0px;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminHead {
+  padding: 15px;
+  font-weight: bold;
+  color: black;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminHead a {
+  margin-left: 15px;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminHead img {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminHead img:hover {
+  cursor: pointer;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminItems {
+  color: black;
+  text-decoration: none;
+  list-style: none;
+  padding-left: 15px;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminItems:hover {
+  cursor: pointer;
+  background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+}
+.finance-page #sidebar-admin .sidebar-items li.adminItems a {
+  text-decoration: none;
+  margin-left: 15px;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminItems img {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminItems div.arrow {
+  float: right;
+  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+  margin: 12px;
+  background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowdown.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminItems div.arrow.active {
+  background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowup.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.finance-page #sidebar-admin .sidebar-items li.adminItems.active {
+  background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+}
+.finance-page #sidebar-admin .sidebar-items ul {
+  display: none;
+  list-style: none;
+  padding-left: 0;
+}
+.finance-page #sidebar-admin .sidebar-items ul li {
+  color: black;
+  text-decoration: none;
+  list-style: none;
+  display: flex;
+  margin: 10px 0;
+  padding-right: 5px;
+}
+.finance-page #sidebar-admin .sidebar-items ul li:hover {
+  cursor: pointer;
+  background: #5e92f3;
+}
+.finance-page #sidebar-admin .sidebar-items ul li a {
+  text-decoration: none;
+  line-height: 30px;
+}
+.finance-page #sidebar-admin .sidebar-items ul li a.long {
+  line-height: 17px;
+}
+.finance-page #sidebar-admin .sidebar-items ul li img {
+  padding-top: 2px;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  padding-left: 35px;
+  margin-right: 15px;
+}
+.finance-page #sidebar-admin .sidebar-items ul li.active {
+  background: #5e92f3;
+}
+.finance-page #main-home {
+  display: block;
+  position: relative;
+  padding: 0 20px;
+  width: calc(100% - 340px);
+  height: calc(100vh - 75px);
+  float: right;
+  overflow: auto;
+}
+.finance-page #main-home .container-welcome .top-welcome {
+  margin: 10px 10px;
+  border-bottom: 1px solid #003c8f;
+  line-height: 52px;
+  font-weight: bolder;
+  font-size: 20px;
+}
+.finance-page #main-home .container-welcome .top-welcome a {
+  margin: 0 10px;
+}
+.finance-page #main-home .container-welcome .bottom-welcome {
+  margin: 20px;
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 30px;
+}
+.finance-page #main-home .container-welcome .bottom-welcome a.secondary {
+  font-weight: normal;
+  font-size: 17px;
+}
+.finance-page #main-home .container-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background: white;
+}
+.finance-page #main-home .container-card .cards {
+  position: relative;
+  background: #003c8f;
+  border-radius: 5px;
+  top: 0px;
+  width: 500px;
+  height: 100%;
+  margin: 20px auto;
+  box-shadow: 2px 2px 10px 2px #c0c0c0;
+  transition: all 0.3s;
+}
+.finance-page #main-home .container-card .cards:hover {
+  position: relative;
+  transform: scale(1.02);
+  box-shadow: 3px 3px 8px 3px #616161;
+  transition: all 0.3s;
+}
+.finance-page #main-home .container-card .cards .card-header {
+  margin: 0 10px;
+  border-bottom: 1px solid rgb(189, 189, 189);
+  text-align: center;
+}
+.finance-page #main-home .container-card .cards .card-header:hover {
+  cursor: move;
+}
+.finance-page #main-home .container-card .cards .card-header h3 {
+  margin: 10px 0;
+  color: rgb(207, 207, 207);
+}
+.finance-page #main-home .container-card .cards .card-body {
+  border-radius: 3px;
+  background: #003c8f;
+  margin: 10px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image {
+  padding: 15px;
+  height: auto;
+  background-size: 90px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #003c8f;
+  color: white;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph {
+  margin: 35px 0 35px 0;
+  font-size: 16px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .innerContainer {
+  display: inline-block;
+  width: calc(50% - 3px);
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph a {
+  font-size: 14px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.number {
+  font-size: 17px;
+  font-weight: bold;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.bigNum {
+  font-size: 40px;
+  font-weight: bold;
+  position: relative;
+  top: 8px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.primary {
+  font-size: 20px;
+  position: relative;
+  font-weight: bold;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.secondary {
+  font-size: 17px;
+  position: relative;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph.center {
+  text-align: center;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph.left {
+  text-align: left;
+  line-height: 45px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph.right {
+  text-align: right;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph:first-child {
+  margin: 15px 0 0 0;
+  font-size: 20px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph:last-child {
+  margin: 0 0 15px 0;
+  font-size: 12px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph img {
+  height: 25%;
+  width: 25%;
+  border-radius: 50%;
+  margin: 10px 0;
+  vertical-align: middle;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph img.twoImage {
+  height: auto;
+  width: 50px;
+  border-radius: 3px;
+  margin: 10px 10px;
+  padding: 5px;
+  background: #003c8f;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .updatedOn {
+  margin: 15px 0;
+  text-align: left;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph {
+  width: 100%;
+  height: 30px;
+  background-color: #b72f2f;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph .barInner {
+  height: 30px;
+  bbackground-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend {
+  margin: 15px 0;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active {
+  margin-right: 5px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active div {
+  margin: 0 5px;
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive {
+  margin-right: 5px;
+}
+.finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive div {
+  margin: 0 5px;
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  background-color: #b72f2f;
+}
+.finance-page #main-home .container-card .cards .card-body .list-items {
+  height: 45%;
+  margin: 0px;
+  line-height: 30px;
+  list-style: none;
+  padding-left: 0px;
+}
+.finance-page #main-home .container-card .cards .card-body .list-items li {
+  list-style-type: none;
+}
+.finance-page #main-home .container-card .cards .card-body .list-items .items {
+  background: #1565c0;
+  color: white;
+  font-size: 15px;
+  margin: 3px 0;
+  padding: 10px 5px;
+  line-height: 20px;
+}
+.finance-page #main-home .container-card .cards .card-body .list-items .items a {
+  padding-left: 15px;
+  font-weight: bold;
+}
+.finance-page #main-home .container-card .cards .card-body .list-items .items a.secondary {
+  font-size: 12px;
+  color: rgb(190, 190, 190);
+}
+.finance-page #main-home .container-card .cards .card-body .list-items .items:hover {
+  cursor: pointer;
+  background: #5e92f3;
+}
+.finance-page #main-claims,
+.finance-page #main-contracts,
+.finance-page #main-budget,
+.finance-page #main-vo,
+.finance-page #main-amendment,
+.finance-page #main-schedule,
+.finance-page #main-rates,
+.finance-page #main-location-factor,
+.finance-page #main-unit {
+  display: none;
+  position: relative;
+  margin: 10px;
+  /* padding: 0 20px; */
+  width: calc(100% - 340px);
+  height: calc(100vh - 90px);
+  float: right;
+}
+.finance-page #main-claims .mainHeader,
+.finance-page #main-contracts .mainHeader,
+.finance-page #main-budget .mainHeader,
+.finance-page #main-vo .mainHeader,
+.finance-page #main-amendment .mainHeader,
+.finance-page #main-schedule .mainHeader,
+.finance-page #main-rates .mainHeader,
+.finance-page #main-location-factor .mainHeader,
+.finance-page #main-unit .mainHeader {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(to bottom, #1565c0, #003c8f);
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+.finance-page #main-claims .mainHeader h3,
+.finance-page #main-contracts .mainHeader h3,
+.finance-page #main-budget .mainHeader h3,
+.finance-page #main-vo .mainHeader h3,
+.finance-page #main-amendment .mainHeader h3,
+.finance-page #main-schedule .mainHeader h3,
+.finance-page #main-rates .mainHeader h3,
+.finance-page #main-location-factor .mainHeader h3,
+.finance-page #main-unit .mainHeader h3 {
+  margin: 0px;
+  top: 15px;
+  position: relative;
+}
+.finance-page #main-claims .tabContainer,
+.finance-page #main-contracts .tabContainer,
+.finance-page #main-budget .tabContainer,
+.finance-page #main-vo .tabContainer,
+.finance-page #main-amendment .tabContainer,
+.finance-page #main-schedule .tabContainer,
+.finance-page #main-rates .tabContainer,
+.finance-page #main-location-factor .tabContainer,
+.finance-page #main-unit .tabContainer {
+  margin-top: 10px;
+  height: 30px;
+}
+.finance-page #main-claims .tabContainer .tabsContainer,
+.finance-page #main-contracts .tabContainer .tabsContainer,
+.finance-page #main-budget .tabContainer .tabsContainer,
+.finance-page #main-vo .tabContainer .tabsContainer,
+.finance-page #main-amendment .tabContainer .tabsContainer,
+.finance-page #main-schedule .tabContainer .tabsContainer,
+.finance-page #main-rates .tabContainer .tabsContainer,
+.finance-page #main-location-factor .tabContainer .tabsContainer,
+.finance-page #main-unit .tabContainer .tabsContainer {
+  list-style: none;
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+}
+.finance-page #main-claims .tabContainer .tabsContainer .tab,
+.finance-page #main-contracts .tabContainer .tabsContainer .tab,
+.finance-page #main-budget .tabContainer .tabsContainer .tab,
+.finance-page #main-vo .tabContainer .tabsContainer .tab,
+.finance-page #main-amendment .tabContainer .tabsContainer .tab,
+.finance-page #main-schedule .tabContainer .tabsContainer .tab,
+.finance-page #main-rates .tabContainer .tabsContainer .tab,
+.finance-page #main-location-factor .tabContainer .tabsContainer .tab,
+.finance-page #main-unit .tabContainer .tabsContainer .tab {
+  display: inline-block;
+  background: #003c8f;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin: 0px;
+  padding: 10px 0 0 0;
+  height: 20px;
+}
+.finance-page #main-claims .tabContainer .tabsContainer .tab label,
+.finance-page #main-contracts .tabContainer .tabsContainer .tab label,
+.finance-page #main-budget .tabContainer .tabsContainer .tab label,
+.finance-page #main-vo .tabContainer .tabsContainer .tab label,
+.finance-page #main-amendment .tabContainer .tabsContainer .tab label,
+.finance-page #main-schedule .tabContainer .tabsContainer .tab label,
+.finance-page #main-rates .tabContainer .tabsContainer .tab label,
+.finance-page #main-location-factor .tabContainer .tabsContainer .tab label,
+.finance-page #main-unit .tabContainer .tabsContainer .tab label {
+  background: transparent;
+  color: white;
+  padding: 4px 10px;
+  margin: 0px 0px;
+}
+.finance-page #main-claims .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-contracts .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-budget .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-vo .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-amendment .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-schedule .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-rates .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-location-factor .tabContainer .tabsContainer .tab label:hover,
+.finance-page #main-unit .tabContainer .tabsContainer .tab label:hover {
+  cursor: pointer;
+}
+.finance-page #main-claims .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-contracts .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-budget .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-vo .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-amendment .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-schedule .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-rates .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-location-factor .tabContainer .tabsContainer .tab:hover,
+.finance-page #main-unit .tabContainer .tabsContainer .tab:hover {
+  cursor: pointer;
+}
+.finance-page #main-claims .tabContainer .tabsContainer .tab.active,
+.finance-page #main-contracts .tabContainer .tabsContainer .tab.active,
+.finance-page #main-budget .tabContainer .tabsContainer .tab.active,
+.finance-page #main-vo .tabContainer .tabsContainer .tab.active,
+.finance-page #main-amendment .tabContainer .tabsContainer .tab.active,
+.finance-page #main-schedule .tabContainer .tabsContainer .tab.active,
+.finance-page #main-rates .tabContainer .tabsContainer .tab.active,
+.finance-page #main-location-factor .tabContainer .tabsContainer .tab.active,
+.finance-page #main-unit .tabContainer .tabsContainer .tab.active {
+  background: #aeaeae;
+}
+.finance-page #main-claims .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-contracts .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-budget .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-vo .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-amendment .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-schedule .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-rates .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-location-factor .tabContainer .tabsContainer .tab.active label,
+.finance-page #main-unit .tabContainer .tabsContainer .tab.active label {
+  color: black;
+}
+.finance-page #main-claims .headerButton,
+.finance-page #main-contracts .headerButton,
+.finance-page #main-budget .headerButton,
+.finance-page #main-vo .headerButton,
+.finance-page #main-amendment .headerButton,
+.finance-page #main-schedule .headerButton,
+.finance-page #main-rates .headerButton,
+.finance-page #main-location-factor .headerButton,
+.finance-page #main-unit .headerButton {
+  top: -42px;
+  position: relative;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  right: 15px;
+}
+.finance-page #main-claims .headerButton.finance-budget,
+.finance-page #main-contracts .headerButton.finance-budget,
+.finance-page #main-budget .headerButton.finance-budget,
+.finance-page #main-vo .headerButton.finance-budget,
+.finance-page #main-amendment .headerButton.finance-budget,
+.finance-page #main-schedule .headerButton.finance-budget,
+.finance-page #main-rates .headerButton.finance-budget,
+.finance-page #main-location-factor .headerButton.finance-budget,
+.finance-page #main-unit .headerButton.finance-budget {
+  top: -15px;
+}
+.finance-page #main-claims .headerButton button,
+.finance-page #main-contracts .headerButton button,
+.finance-page #main-budget .headerButton button,
+.finance-page #main-vo .headerButton button,
+.finance-page #main-amendment .headerButton button,
+.finance-page #main-schedule .headerButton button,
+.finance-page #main-rates .headerButton button,
+.finance-page #main-location-factor .headerButton button,
+.finance-page #main-unit .headerButton button {
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+.finance-page #main-claims .headerButton button.edit,
+.finance-page #main-contracts .headerButton button.edit,
+.finance-page #main-budget .headerButton button.edit,
+.finance-page #main-vo .headerButton button.edit,
+.finance-page #main-amendment .headerButton button.edit,
+.finance-page #main-schedule .headerButton button.edit,
+.finance-page #main-rates .headerButton button.edit,
+.finance-page #main-location-factor .headerButton button.edit,
+.finance-page #main-unit .headerButton button.edit {
+  display: none;
+}
+.finance-page #main-claims .checkcounter,
+.finance-page #main-contracts .checkcounter,
+.finance-page #main-budget .checkcounter,
+.finance-page #main-vo .checkcounter,
+.finance-page #main-amendment .checkcounter,
+.finance-page #main-schedule .checkcounter,
+.finance-page #main-rates .checkcounter,
+.finance-page #main-location-factor .checkcounter,
+.finance-page #main-unit .checkcounter {
+  top: 8px;
+  position: absolute;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  left: 20px;
+}
+.finance-page #main-claims .checkcounter.package,
+.finance-page #main-contracts .checkcounter.package,
+.finance-page #main-budget .checkcounter.package,
+.finance-page #main-vo .checkcounter.package,
+.finance-page #main-amendment .checkcounter.package,
+.finance-page #main-schedule .checkcounter.package,
+.finance-page #main-rates .checkcounter.package,
+.finance-page #main-location-factor .checkcounter.package,
+.finance-page #main-unit .checkcounter.package {
+  top: 447px;
+}
+.finance-page #main-claims .checkcounter p,
+.finance-page #main-contracts .checkcounter p,
+.finance-page #main-budget .checkcounter p,
+.finance-page #main-vo .checkcounter p,
+.finance-page #main-amendment .checkcounter p,
+.finance-page #main-schedule .checkcounter p,
+.finance-page #main-rates .checkcounter p,
+.finance-page #main-location-factor .checkcounter p,
+.finance-page #main-unit .checkcounter p {
+  margin: 10px 15px;
+  display: inline-block;
+  float: left;
+  display: none;
+  color: white;
+}
+.finance-page #main-claims .searchTable,
+.finance-page #main-contracts .searchTable,
+.finance-page #main-budget .searchTable,
+.finance-page #main-vo .searchTable,
+.finance-page #main-amendment .searchTable,
+.finance-page #main-schedule .searchTable,
+.finance-page #main-rates .searchTable,
+.finance-page #main-location-factor .searchTable,
+.finance-page #main-unit .searchTable {
+  top: 8px;
+  position: absolute;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  width: auto;
+  right: 20px;
+}
+.finance-page #main-claims .searchTable input,
+.finance-page #main-contracts .searchTable input,
+.finance-page #main-budget .searchTable input,
+.finance-page #main-vo .searchTable input,
+.finance-page #main-amendment .searchTable input,
+.finance-page #main-schedule .searchTable input,
+.finance-page #main-rates .searchTable input,
+.finance-page #main-location-factor .searchTable input,
+.finance-page #main-unit .searchTable input {
+  height: 30px;
+  width: 250px;
+  padding: 5px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+.finance-page #main-claims iframe,
+.finance-page #main-contracts iframe,
+.finance-page #main-budget iframe,
+.finance-page #main-vo iframe,
+.finance-page #main-amendment iframe,
+.finance-page #main-schedule iframe,
+.finance-page #main-rates iframe,
+.finance-page #main-location-factor iframe,
+.finance-page #main-unit iframe {
+  height: calc(100% - 10px);
+  width: 100%;
+  border: 0px;
+  margin: 0px;
+  padding: 5px 0;
+}
+.finance-page #main-claims iframe.tabiframe,
+.finance-page #main-contracts iframe.tabiframe,
+.finance-page #main-budget iframe.tabiframe,
+.finance-page #main-vo iframe.tabiframe,
+.finance-page #main-amendment iframe.tabiframe,
+.finance-page #main-schedule iframe.tabiframe,
+.finance-page #main-rates iframe.tabiframe,
+.finance-page #main-location-factor iframe.tabiframe,
+.finance-page #main-unit iframe.tabiframe {
+  height: calc(100% - 10px);
+}
+.finance-page #main-claims .contractContainer, .finance-page #main-claims .claimContainer, .finance-page #main-claims .vo, .finance-page #main-claims .lookupContainer, .finance-page #main-claims .amendment,
+.finance-page #main-contracts .contractContainer,
+.finance-page #main-contracts .claimContainer,
+.finance-page #main-contracts .vo,
+.finance-page #main-contracts .lookupContainer,
+.finance-page #main-contracts .amendment,
+.finance-page #main-budget .contractContainer,
+.finance-page #main-budget .claimContainer,
+.finance-page #main-budget .vo,
+.finance-page #main-budget .lookupContainer,
+.finance-page #main-budget .amendment,
+.finance-page #main-vo .contractContainer,
+.finance-page #main-vo .claimContainer,
+.finance-page #main-vo .vo,
+.finance-page #main-vo .lookupContainer,
+.finance-page #main-vo .amendment,
+.finance-page #main-amendment .contractContainer,
+.finance-page #main-amendment .claimContainer,
+.finance-page #main-amendment .vo,
+.finance-page #main-amendment .lookupContainer,
+.finance-page #main-amendment .amendment,
+.finance-page #main-schedule .contractContainer,
+.finance-page #main-schedule .claimContainer,
+.finance-page #main-schedule .vo,
+.finance-page #main-schedule .lookupContainer,
+.finance-page #main-schedule .amendment,
+.finance-page #main-rates .contractContainer,
+.finance-page #main-rates .claimContainer,
+.finance-page #main-rates .vo,
+.finance-page #main-rates .lookupContainer,
+.finance-page #main-rates .amendment,
+.finance-page #main-location-factor .contractContainer,
+.finance-page #main-location-factor .claimContainer,
+.finance-page #main-location-factor .vo,
+.finance-page #main-location-factor .lookupContainer,
+.finance-page #main-location-factor .amendment,
+.finance-page #main-unit .contractContainer,
+.finance-page #main-unit .claimContainer,
+.finance-page #main-unit .vo,
+.finance-page #main-unit .lookupContainer,
+.finance-page #main-unit .amendment {
+  background: #aeaeae;
+  height: calc(100vh - 150px);
+  overflow: hidden;
+  padding: 0px 5px;
+  margin-top: 10px;
+}
+.finance-page #main-claims .budgetContainer,
+.finance-page #main-contracts .budgetContainer,
+.finance-page #main-budget .budgetContainer,
+.finance-page #main-vo .budgetContainer,
+.finance-page #main-amendment .budgetContainer,
+.finance-page #main-schedule .budgetContainer,
+.finance-page #main-rates .budgetContainer,
+.finance-page #main-location-factor .budgetContainer,
+.finance-page #main-unit .budgetContainer {
+  background: #aeaeae;
+  height: calc(100vh - 180px);
+  padding: 0 5px;
+}
+.finance-page #main-claims .container-table,
+.finance-page #main-contracts .container-table,
+.finance-page #main-budget .container-table,
+.finance-page #main-vo .container-table,
+.finance-page #main-amendment .container-table,
+.finance-page #main-schedule .container-table,
+.finance-page #main-rates .container-table,
+.finance-page #main-location-factor .container-table,
+.finance-page #main-unit .container-table {
+  position: absolute;
+  width: calc(100% - 40px);
+  overflow: auto;
+  left: 20px;
+  float: right;
+  top: 55px;
+}
+.finance-page #main-claims .container-table table,
+.finance-page #main-contracts .container-table table,
+.finance-page #main-budget .container-table table,
+.finance-page #main-vo .container-table table,
+.finance-page #main-amendment .container-table table,
+.finance-page #main-schedule .container-table table,
+.finance-page #main-rates .container-table table,
+.finance-page #main-location-factor .container-table table,
+.finance-page #main-unit .container-table table {
+  border-collapse: collapse;
+  background-color: #ffffff;
+  width: 100%;
+}
+.finance-page #main-claims .container-table table td,
+.finance-page #main-contracts .container-table table td,
+.finance-page #main-budget .container-table table td,
+.finance-page #main-vo .container-table table td,
+.finance-page #main-amendment .container-table table td,
+.finance-page #main-schedule .container-table table td,
+.finance-page #main-rates .container-table table td,
+.finance-page #main-location-factor .container-table table td,
+.finance-page #main-unit .container-table table td {
+  text-align: left;
+  padding: 8px;
+  border: none;
+  line-height: 25px;
+  vertical-align: center;
+}
+.finance-page #main-claims .container-table table td span,
+.finance-page #main-contracts .container-table table td span,
+.finance-page #main-budget .container-table table td span,
+.finance-page #main-vo .container-table table td span,
+.finance-page #main-amendment .container-table table td span,
+.finance-page #main-schedule .container-table table td span,
+.finance-page #main-rates .container-table table td span,
+.finance-page #main-location-factor .container-table table td span,
+.finance-page #main-unit .container-table table td span {
+  margin-right: 10px;
+}
+.finance-page #main-claims .container-table table td span img,
+.finance-page #main-contracts .container-table table td span img,
+.finance-page #main-budget .container-table table td span img,
+.finance-page #main-vo .container-table table td span img,
+.finance-page #main-amendment .container-table table td span img,
+.finance-page #main-schedule .container-table table td span img,
+.finance-page #main-rates .container-table table td span img,
+.finance-page #main-location-factor .container-table table td span img,
+.finance-page #main-unit .container-table table td span img {
+  height: 15px;
+  width: 15px;
+}
+.finance-page #main-claims .container-table table th:first-child,
+.finance-page #main-contracts .container-table table th:first-child,
+.finance-page #main-budget .container-table table th:first-child,
+.finance-page #main-vo .container-table table th:first-child,
+.finance-page #main-amendment .container-table table th:first-child,
+.finance-page #main-schedule .container-table table th:first-child,
+.finance-page #main-rates .container-table table th:first-child,
+.finance-page #main-location-factor .container-table table th:first-child,
+.finance-page #main-unit .container-table table th:first-child {
+  border-top-left-radius: 5px;
+}
+.finance-page #main-claims .container-table table th:last-child,
+.finance-page #main-contracts .container-table table th:last-child,
+.finance-page #main-budget .container-table table th:last-child,
+.finance-page #main-vo .container-table table th:last-child,
+.finance-page #main-amendment .container-table table th:last-child,
+.finance-page #main-schedule .container-table table th:last-child,
+.finance-page #main-rates .container-table table th:last-child,
+.finance-page #main-location-factor .container-table table th:last-child,
+.finance-page #main-unit .container-table table th:last-child {
+  border-top-right-radius: 5px;
+}
+.finance-page #main-claims .container-table table tr:nth-of-type(even),
+.finance-page #main-contracts .container-table table tr:nth-of-type(even),
+.finance-page #main-budget .container-table table tr:nth-of-type(even),
+.finance-page #main-vo .container-table table tr:nth-of-type(even),
+.finance-page #main-amendment .container-table table tr:nth-of-type(even),
+.finance-page #main-schedule .container-table table tr:nth-of-type(even),
+.finance-page #main-rates .container-table table tr:nth-of-type(even),
+.finance-page #main-location-factor .container-table table tr:nth-of-type(even),
+.finance-page #main-unit .container-table table tr:nth-of-type(even) {
+  background: #f2f2f2;
+}
+.finance-page #main-claims .container-table table tr:nth-of-type(odd),
+.finance-page #main-contracts .container-table table tr:nth-of-type(odd),
+.finance-page #main-budget .container-table table tr:nth-of-type(odd),
+.finance-page #main-vo .container-table table tr:nth-of-type(odd),
+.finance-page #main-amendment .container-table table tr:nth-of-type(odd),
+.finance-page #main-schedule .container-table table tr:nth-of-type(odd),
+.finance-page #main-rates .container-table table tr:nth-of-type(odd),
+.finance-page #main-location-factor .container-table table tr:nth-of-type(odd),
+.finance-page #main-unit .container-table table tr:nth-of-type(odd) {
+  background: white;
+}
+.finance-page #main-claims .container-table table tr:hover,
+.finance-page #main-contracts .container-table table tr:hover,
+.finance-page #main-budget .container-table table tr:hover,
+.finance-page #main-vo .container-table table tr:hover,
+.finance-page #main-amendment .container-table table tr:hover,
+.finance-page #main-schedule .container-table table tr:hover,
+.finance-page #main-rates .container-table table tr:hover,
+.finance-page #main-location-factor .container-table table tr:hover,
+.finance-page #main-unit .container-table table tr:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+.finance-page #main-claims .container-table table th,
+.finance-page #main-contracts .container-table table th,
+.finance-page #main-budget .container-table table th,
+.finance-page #main-vo .container-table table th,
+.finance-page #main-amendment .container-table table th,
+.finance-page #main-schedule .container-table table th,
+.finance-page #main-rates .container-table table th,
+.finance-page #main-location-factor .container-table table th,
+.finance-page #main-unit .container-table table th {
+  background-color: #1565c0;
+  color: white;
+  text-align: left;
+  padding: 8px;
+  line-height: 25px;
+}
+.finance-page #main-claims .container-table table th:hover,
+.finance-page #main-contracts .container-table table th:hover,
+.finance-page #main-budget .container-table table th:hover,
+.finance-page #main-vo .container-table table th:hover,
+.finance-page #main-amendment .container-table table th:hover,
+.finance-page #main-schedule .container-table table th:hover,
+.finance-page #main-rates .container-table table th:hover,
+.finance-page #main-location-factor .container-table table th:hover,
+.finance-page #main-unit .container-table table th:hover {
+  cursor: default;
+}
+.finance-page #main-claims .container-table table th img,
+.finance-page #main-contracts .container-table table th img,
+.finance-page #main-budget .container-table table th img,
+.finance-page #main-vo .container-table table th img,
+.finance-page #main-amendment .container-table table th img,
+.finance-page #main-schedule .container-table table th img,
+.finance-page #main-rates .container-table table th img,
+.finance-page #main-location-factor .container-table table th img,
+.finance-page #main-unit .container-table table th img {
+  height: 10px;
+  width: auto;
+  margin-left: 5px;
+}
+.finance-page #main-claims .container-table table th img:hover,
+.finance-page #main-contracts .container-table table th img:hover,
+.finance-page #main-budget .container-table table th img:hover,
+.finance-page #main-vo .container-table table th img:hover,
+.finance-page #main-amendment .container-table table th img:hover,
+.finance-page #main-schedule .container-table table th img:hover,
+.finance-page #main-rates .container-table table th img:hover,
+.finance-page #main-location-factor .container-table table th img:hover,
+.finance-page #main-unit .container-table table th img:hover {
+  cursor: pointer;
+}
+.finance-page #main-claims,
+.finance-page #main-vo {
+  margin: 10px;
+  padding: 0px;
+  top: 0px;
+}
+.finance-page #main-vo .topcontainer {
+  height: 50vh;
+}
+.finance-page #main-vo .bottomcontainer {
+  height: calc(50vh - 100px);
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.25) {
+  .finance-page {
+    display: block;
+    padding: 0px;
+    margin: 0px;
+    top: 50px;
+    position: absolute;
+    height: calc(100% - 50px);
+    width: 100%;
+    background: white;
+  }
+  .finance-page #sidebar-admin {
+    position: absolute;
+    height: 100%;
+    width: 220px;
+    background: #e0e0e0;
+    box-shadow: 7px 0px 10px 0px rgba(33, 33, 33, 0.2);
+  }
+  .finance-page #sidebar-admin .sidebar-items {
+    vertical-align: middle;
+    line-height: 30px;
+    padding: 0px;
+    margin: 0px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead {
+    padding: 10px;
+    font-weight: bold;
+    color: black;
+    font-size: 12px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead a {
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead img:hover {
+    cursor: pointer;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    padding-left: 10px;
+    font-size: 12px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems:hover {
+    cursor: pointer;
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems a {
+    text-decoration: none;
+    margin-left: 10px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems div.arrow {
+    float: right;
+    vertical-align: middle;
+    width: 10px;
+    height: 10px;
+    margin: 7px;
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowdown.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems div.arrow.active {
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowup.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems.active {
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .finance-page #sidebar-admin .sidebar-items ul {
+    display: none;
+    list-style: none;
+    padding-left: 0;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    font-size: 12px;
+    display: flex;
+    margin: 10px 0;
+    padding-right: 5px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li a {
+    text-decoration: none;
+    line-height: 30px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li a.long {
+    line-height: 17px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li img {
+    padding-top: 2px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    padding-left: 35px;
+    margin-right: 15px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li.active {
+    background: #5e92f3;
+  }
+  .finance-page #main-home {
+    display: block;
+    position: relative;
+    padding: 0 20px;
+    width: calc(100% - 260px);
+    height: calc(100vh - 50px);
+    float: right;
+    overflow: auto;
+  }
+  .finance-page #main-home .container-welcome .top-welcome {
+    margin: 10px 10px;
+    border-bottom: 1px solid #003c8f;
+    line-height: 52px;
+    font-weight: bolder;
+    font-size: 14px;
+  }
+  .finance-page #main-home .container-welcome .top-welcome a {
+    margin: 0 10px;
+  }
+  .finance-page #main-home .container-welcome .bottom-welcome {
+    margin: 20px;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 30px;
+  }
+  .finance-page #main-home .container-welcome .bottom-welcome a.secondary {
+    font-weight: normal;
+    font-size: 13px;
+  }
+  .finance-page #main-home .container-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: white;
+  }
+  .finance-page #main-home .container-card .cards {
+    position: relative;
+    background: #003c8f;
+    border-radius: 5px;
+    top: 0px;
+    width: 340px;
+    height: 100%;
+    margin: 20px auto;
+    box-shadow: 2px 2px 10px 2px #c0c0c0;
+    transition: all 0.3s;
+  }
+  .finance-page #main-home .container-card .cards:hover {
+    position: relative;
+    transform: scale(1.02);
+    box-shadow: 3px 3px 8px 3px #616161;
+    transition: all 0.3s;
+  }
+  .finance-page #main-home .container-card .cards .card-header {
+    margin: 0 10px;
+    border-bottom: 1px solid rgb(189, 189, 189);
+    text-align: center;
+  }
+  .finance-page #main-home .container-card .cards .card-header:hover {
+    cursor: move;
+  }
+  .finance-page #main-home .container-card .cards .card-header h3 {
+    margin: 10px 0;
+    color: rgb(207, 207, 207);
+    font-size: 15px;
+  }
+  .finance-page #main-home .container-card .cards .card-body {
+    border-radius: 3px;
+    background: #003c8f;
+    margin: 10px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image {
+    padding: 15px;
+    height: auto;
+    background-size: 90px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #003c8f;
+    color: white;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph {
+    margin: 25px 0 25px 0;
+    font-size: 10px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .innerContainer {
+    display: inline-block;
+    width: calc(50% - 3px);
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a {
+    font-size: 10px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.number {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.bigNum {
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    top: 8px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.primary {
+    font-size: 15px;
+    position: relative;
+    font-weight: bold;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.secondary {
+    font-size: 12px;
+    position: relative;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph.center {
+    text-align: center;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph.left {
+    text-align: left;
+    line-height: 30px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph.right {
+    text-align: right;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph:first-child {
+    margin: 5px 0 0 0;
+    font-size: 15px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph:last-child {
+    margin: 0 0 15px 0;
+    font-size: 12px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph img {
+    height: 25%;
+    width: 25%;
+    border-radius: 50%;
+    margin: 10px 0;
+    vertical-align: middle;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph img.twoImage {
+    height: auto;
+    width: 37px;
+    border-radius: 3px;
+    margin: 10px 10px;
+    padding: 5px;
+    background: #003c8f;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .updatedOn {
+    margin: 15px 0;
+    text-align: left;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph {
+    width: 100%;
+    height: 25px;
+    background-color: #b72f2f;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph .barInner {
+    height: 25px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend {
+    margin: 15px 0;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active {
+    margin-right: 5px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive {
+    margin-right: 5px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-color: #b72f2f;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items {
+    height: 45%;
+    margin: 0px;
+    line-height: 30px;
+    list-style: none;
+    padding-left: 0px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items li {
+    list-style-type: none;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items {
+    background: #1565c0;
+    color: white;
+    font-size: 12px;
+    margin: 3px 0;
+    padding: 10px 5px;
+    line-height: 15px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items a {
+    padding-left: 15px;
+    font-weight: bold;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items a.secondary {
+    font-size: 12px;
+    color: rgb(190, 190, 190);
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .finance-page #main-claims,
+  .finance-page #main-contracts,
+  .finance-page #main-budget,
+  .finance-page #main-vo,
+  .finance-page #main-amendment,
+  .finance-page #main-schedule,
+  .finance-page #main-rates,
+  .finance-page #main-location-factor,
+  .finance-page #main-unit {
+    display: none;
+    position: relative;
+    margin: 10px;
+    /* padding: 0 20px; */
+    width: calc(100% - 250px);
+    height: calc(100vh - 90px);
+    float: right;
+  }
+  .finance-page #main-claims .mainHeader,
+  .finance-page #main-contracts .mainHeader,
+  .finance-page #main-budget .mainHeader,
+  .finance-page #main-vo .mainHeader,
+  .finance-page #main-amendment .mainHeader,
+  .finance-page #main-schedule .mainHeader,
+  .finance-page #main-rates .mainHeader,
+  .finance-page #main-location-factor .mainHeader,
+  .finance-page #main-unit .mainHeader {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .finance-page #main-claims .mainHeader h3,
+  .finance-page #main-contracts .mainHeader h3,
+  .finance-page #main-budget .mainHeader h3,
+  .finance-page #main-vo .mainHeader h3,
+  .finance-page #main-amendment .mainHeader h3,
+  .finance-page #main-schedule .mainHeader h3,
+  .finance-page #main-rates .mainHeader h3,
+  .finance-page #main-location-factor .mainHeader h3,
+  .finance-page #main-unit .mainHeader h3 {
+    margin: 0px;
+    top: 12px;
+    position: relative;
+    font-size: 12px;
+  }
+  .finance-page #main-claims .tabContainer,
+  .finance-page #main-contracts .tabContainer,
+  .finance-page #main-budget .tabContainer,
+  .finance-page #main-vo .tabContainer,
+  .finance-page #main-amendment .tabContainer,
+  .finance-page #main-schedule .tabContainer,
+  .finance-page #main-rates .tabContainer,
+  .finance-page #main-location-factor .tabContainer,
+  .finance-page #main-unit .tabContainer {
+    margin-top: 10px;
+    height: 25px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer,
+  .finance-page #main-contracts .tabContainer .tabsContainer,
+  .finance-page #main-budget .tabContainer .tabsContainer,
+  .finance-page #main-vo .tabContainer .tabsContainer,
+  .finance-page #main-amendment .tabContainer .tabsContainer,
+  .finance-page #main-schedule .tabContainer .tabsContainer,
+  .finance-page #main-rates .tabContainer .tabsContainer,
+  .finance-page #main-location-factor .tabContainer .tabsContainer,
+  .finance-page #main-unit .tabContainer .tabsContainer {
+    list-style: none;
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+    font-size: 10px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab {
+    display: inline-block;
+    background: #003c8f;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0px;
+    padding: 10px 0 0 0;
+    height: 15px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab label,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab label,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab label,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab label,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab label,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab label,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab label,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab label,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab label {
+    background: transparent;
+    color: white;
+    padding: 4px 12px;
+    margin: 0px 0px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab label:hover {
+    cursor: pointer;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab:hover {
+    cursor: pointer;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab.active {
+    background: #aeaeae;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab.active label {
+    color: black;
+  }
+  .finance-page #main-claims .headerButton,
+  .finance-page #main-contracts .headerButton,
+  .finance-page #main-budget .headerButton,
+  .finance-page #main-vo .headerButton,
+  .finance-page #main-amendment .headerButton,
+  .finance-page #main-schedule .headerButton,
+  .finance-page #main-rates .headerButton,
+  .finance-page #main-location-factor .headerButton,
+  .finance-page #main-unit .headerButton {
+    top: -42px;
+    position: relative;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    right: 15px;
+  }
+  .finance-page #main-claims .headerButton.finance-budget,
+  .finance-page #main-contracts .headerButton.finance-budget,
+  .finance-page #main-budget .headerButton.finance-budget,
+  .finance-page #main-vo .headerButton.finance-budget,
+  .finance-page #main-amendment .headerButton.finance-budget,
+  .finance-page #main-schedule .headerButton.finance-budget,
+  .finance-page #main-rates .headerButton.finance-budget,
+  .finance-page #main-location-factor .headerButton.finance-budget,
+  .finance-page #main-unit .headerButton.finance-budget {
+    top: -15px;
+  }
+  .finance-page #main-claims .headerButton button,
+  .finance-page #main-contracts .headerButton button,
+  .finance-page #main-budget .headerButton button,
+  .finance-page #main-vo .headerButton button,
+  .finance-page #main-amendment .headerButton button,
+  .finance-page #main-schedule .headerButton button,
+  .finance-page #main-rates .headerButton button,
+  .finance-page #main-location-factor .headerButton button,
+  .finance-page #main-unit .headerButton button {
+    border-radius: 5px;
+    padding: 8px 20px;
+    font-size: 10px;
+  }
+  .finance-page #main-claims .headerButton button.edit,
+  .finance-page #main-contracts .headerButton button.edit,
+  .finance-page #main-budget .headerButton button.edit,
+  .finance-page #main-vo .headerButton button.edit,
+  .finance-page #main-amendment .headerButton button.edit,
+  .finance-page #main-schedule .headerButton button.edit,
+  .finance-page #main-rates .headerButton button.edit,
+  .finance-page #main-location-factor .headerButton button.edit,
+  .finance-page #main-unit .headerButton button.edit {
+    display: none;
+  }
+  .finance-page #main-claims .checkcounter,
+  .finance-page #main-contracts .checkcounter,
+  .finance-page #main-budget .checkcounter,
+  .finance-page #main-vo .checkcounter,
+  .finance-page #main-amendment .checkcounter,
+  .finance-page #main-schedule .checkcounter,
+  .finance-page #main-rates .checkcounter,
+  .finance-page #main-location-factor .checkcounter,
+  .finance-page #main-unit .checkcounter {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    left: 20px;
+  }
+  .finance-page #main-claims .checkcounter.package,
+  .finance-page #main-contracts .checkcounter.package,
+  .finance-page #main-budget .checkcounter.package,
+  .finance-page #main-vo .checkcounter.package,
+  .finance-page #main-amendment .checkcounter.package,
+  .finance-page #main-schedule .checkcounter.package,
+  .finance-page #main-rates .checkcounter.package,
+  .finance-page #main-location-factor .checkcounter.package,
+  .finance-page #main-unit .checkcounter.package {
+    top: 447px;
+  }
+  .finance-page #main-claims .checkcounter p,
+  .finance-page #main-contracts .checkcounter p,
+  .finance-page #main-budget .checkcounter p,
+  .finance-page #main-vo .checkcounter p,
+  .finance-page #main-amendment .checkcounter p,
+  .finance-page #main-schedule .checkcounter p,
+  .finance-page #main-rates .checkcounter p,
+  .finance-page #main-location-factor .checkcounter p,
+  .finance-page #main-unit .checkcounter p {
+    margin: 10px 15px;
+    display: inline-block;
+    float: left;
+    display: none;
+    color: white;
+  }
+  .finance-page #main-claims .searchTable,
+  .finance-page #main-contracts .searchTable,
+  .finance-page #main-budget .searchTable,
+  .finance-page #main-vo .searchTable,
+  .finance-page #main-amendment .searchTable,
+  .finance-page #main-schedule .searchTable,
+  .finance-page #main-rates .searchTable,
+  .finance-page #main-location-factor .searchTable,
+  .finance-page #main-unit .searchTable {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    width: auto;
+    right: 20px;
+  }
+  .finance-page #main-claims .searchTable input,
+  .finance-page #main-contracts .searchTable input,
+  .finance-page #main-budget .searchTable input,
+  .finance-page #main-vo .searchTable input,
+  .finance-page #main-amendment .searchTable input,
+  .finance-page #main-schedule .searchTable input,
+  .finance-page #main-rates .searchTable input,
+  .finance-page #main-location-factor .searchTable input,
+  .finance-page #main-unit .searchTable input {
+    height: 10px;
+    width: 250px;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 10px;
+    font-size: 10px;
+  }
+  .finance-page #main-claims iframe,
+  .finance-page #main-contracts iframe,
+  .finance-page #main-budget iframe,
+  .finance-page #main-vo iframe,
+  .finance-page #main-amendment iframe,
+  .finance-page #main-schedule iframe,
+  .finance-page #main-rates iframe,
+  .finance-page #main-location-factor iframe,
+  .finance-page #main-unit iframe {
+    height: calc(100% - 10px);
+    width: 100%;
+    border: 0px;
+    margin: 0px;
+    padding: 5px 0;
+  }
+  .finance-page #main-claims iframe.tabiframe,
+  .finance-page #main-contracts iframe.tabiframe,
+  .finance-page #main-budget iframe.tabiframe,
+  .finance-page #main-vo iframe.tabiframe,
+  .finance-page #main-amendment iframe.tabiframe,
+  .finance-page #main-schedule iframe.tabiframe,
+  .finance-page #main-rates iframe.tabiframe,
+  .finance-page #main-location-factor iframe.tabiframe,
+  .finance-page #main-unit iframe.tabiframe {
+    height: calc(100% - 10px);
+  }
+  .finance-page #main-claims .contractContainer, .finance-page #main-claims .claimContainer, .finance-page #main-claims .vo,
+  .finance-page #main-contracts .contractContainer,
+  .finance-page #main-contracts .claimContainer,
+  .finance-page #main-contracts .vo,
+  .finance-page #main-budget .contractContainer,
+  .finance-page #main-budget .claimContainer,
+  .finance-page #main-budget .vo,
+  .finance-page #main-vo .contractContainer,
+  .finance-page #main-vo .claimContainer,
+  .finance-page #main-vo .vo,
+  .finance-page #main-amendment .contractContainer,
+  .finance-page #main-amendment .claimContainer,
+  .finance-page #main-amendment .vo,
+  .finance-page #main-schedule .contractContainer,
+  .finance-page #main-schedule .claimContainer,
+  .finance-page #main-schedule .vo,
+  .finance-page #main-rates .contractContainer,
+  .finance-page #main-rates .claimContainer,
+  .finance-page #main-rates .vo,
+  .finance-page #main-location-factor .contractContainer,
+  .finance-page #main-location-factor .claimContainer,
+  .finance-page #main-location-factor .vo,
+  .finance-page #main-unit .contractContainer,
+  .finance-page #main-unit .claimContainer,
+  .finance-page #main-unit .vo {
+    background: #aeaeae;
+    height: calc(100vh - 150px);
+    overflow: hidden;
+    padding: 0px 5px;
+    margin-top: 10px;
+  }
+  .finance-page #main-claims .budgetContainer,
+  .finance-page #main-contracts .budgetContainer,
+  .finance-page #main-budget .budgetContainer,
+  .finance-page #main-vo .budgetContainer,
+  .finance-page #main-amendment .budgetContainer,
+  .finance-page #main-schedule .budgetContainer,
+  .finance-page #main-rates .budgetContainer,
+  .finance-page #main-location-factor .budgetContainer,
+  .finance-page #main-unit .budgetContainer {
+    background: #aeaeae;
+    height: calc(100vh - 180px);
+    padding: 0 5px;
+  }
+  .finance-page #main-claims .container-table,
+  .finance-page #main-contracts .container-table,
+  .finance-page #main-budget .container-table,
+  .finance-page #main-vo .container-table,
+  .finance-page #main-amendment .container-table,
+  .finance-page #main-schedule .container-table,
+  .finance-page #main-rates .container-table,
+  .finance-page #main-location-factor .container-table,
+  .finance-page #main-unit .container-table {
+    position: absolute;
+    width: calc(100% - 40px);
+    overflow: auto;
+    left: 20px;
+    float: right;
+    top: 55px;
+  }
+  .finance-page #main-claims .container-table table,
+  .finance-page #main-contracts .container-table table,
+  .finance-page #main-budget .container-table table,
+  .finance-page #main-vo .container-table table,
+  .finance-page #main-amendment .container-table table,
+  .finance-page #main-schedule .container-table table,
+  .finance-page #main-rates .container-table table,
+  .finance-page #main-location-factor .container-table table,
+  .finance-page #main-unit .container-table table {
+    border-collapse: collapse;
+    background-color: #ffffff;
+    width: 100%;
+  }
+  .finance-page #main-claims .container-table table td,
+  .finance-page #main-contracts .container-table table td,
+  .finance-page #main-budget .container-table table td,
+  .finance-page #main-vo .container-table table td,
+  .finance-page #main-amendment .container-table table td,
+  .finance-page #main-schedule .container-table table td,
+  .finance-page #main-rates .container-table table td,
+  .finance-page #main-location-factor .container-table table td,
+  .finance-page #main-unit .container-table table td {
+    text-align: left;
+    padding: 8px;
+    border: none;
+    line-height: 25px;
+    vertical-align: center;
+  }
+  .finance-page #main-claims .container-table table td span,
+  .finance-page #main-contracts .container-table table td span,
+  .finance-page #main-budget .container-table table td span,
+  .finance-page #main-vo .container-table table td span,
+  .finance-page #main-amendment .container-table table td span,
+  .finance-page #main-schedule .container-table table td span,
+  .finance-page #main-rates .container-table table td span,
+  .finance-page #main-location-factor .container-table table td span,
+  .finance-page #main-unit .container-table table td span {
+    margin-right: 10px;
+  }
+  .finance-page #main-claims .container-table table td span img,
+  .finance-page #main-contracts .container-table table td span img,
+  .finance-page #main-budget .container-table table td span img,
+  .finance-page #main-vo .container-table table td span img,
+  .finance-page #main-amendment .container-table table td span img,
+  .finance-page #main-schedule .container-table table td span img,
+  .finance-page #main-rates .container-table table td span img,
+  .finance-page #main-location-factor .container-table table td span img,
+  .finance-page #main-unit .container-table table td span img {
+    height: 15px;
+    width: 15px;
+  }
+  .finance-page #main-claims .container-table table th:first-child,
+  .finance-page #main-contracts .container-table table th:first-child,
+  .finance-page #main-budget .container-table table th:first-child,
+  .finance-page #main-vo .container-table table th:first-child,
+  .finance-page #main-amendment .container-table table th:first-child,
+  .finance-page #main-schedule .container-table table th:first-child,
+  .finance-page #main-rates .container-table table th:first-child,
+  .finance-page #main-location-factor .container-table table th:first-child,
+  .finance-page #main-unit .container-table table th:first-child {
+    border-top-left-radius: 5px;
+  }
+  .finance-page #main-claims .container-table table th:last-child,
+  .finance-page #main-contracts .container-table table th:last-child,
+  .finance-page #main-budget .container-table table th:last-child,
+  .finance-page #main-vo .container-table table th:last-child,
+  .finance-page #main-amendment .container-table table th:last-child,
+  .finance-page #main-schedule .container-table table th:last-child,
+  .finance-page #main-rates .container-table table th:last-child,
+  .finance-page #main-location-factor .container-table table th:last-child,
+  .finance-page #main-unit .container-table table th:last-child {
+    border-top-right-radius: 5px;
+  }
+  .finance-page #main-claims .container-table table tr:nth-of-type(even),
+  .finance-page #main-contracts .container-table table tr:nth-of-type(even),
+  .finance-page #main-budget .container-table table tr:nth-of-type(even),
+  .finance-page #main-vo .container-table table tr:nth-of-type(even),
+  .finance-page #main-amendment .container-table table tr:nth-of-type(even),
+  .finance-page #main-schedule .container-table table tr:nth-of-type(even),
+  .finance-page #main-rates .container-table table tr:nth-of-type(even),
+  .finance-page #main-location-factor .container-table table tr:nth-of-type(even),
+  .finance-page #main-unit .container-table table tr:nth-of-type(even) {
+    background: #f2f2f2;
+  }
+  .finance-page #main-claims .container-table table tr:nth-of-type(odd),
+  .finance-page #main-contracts .container-table table tr:nth-of-type(odd),
+  .finance-page #main-budget .container-table table tr:nth-of-type(odd),
+  .finance-page #main-vo .container-table table tr:nth-of-type(odd),
+  .finance-page #main-amendment .container-table table tr:nth-of-type(odd),
+  .finance-page #main-schedule .container-table table tr:nth-of-type(odd),
+  .finance-page #main-rates .container-table table tr:nth-of-type(odd),
+  .finance-page #main-location-factor .container-table table tr:nth-of-type(odd),
+  .finance-page #main-unit .container-table table tr:nth-of-type(odd) {
+    background: white;
+  }
+  .finance-page #main-claims .container-table table tr:hover,
+  .finance-page #main-contracts .container-table table tr:hover,
+  .finance-page #main-budget .container-table table tr:hover,
+  .finance-page #main-vo .container-table table tr:hover,
+  .finance-page #main-amendment .container-table table tr:hover,
+  .finance-page #main-schedule .container-table table tr:hover,
+  .finance-page #main-rates .container-table table tr:hover,
+  .finance-page #main-location-factor .container-table table tr:hover,
+  .finance-page #main-unit .container-table table tr:hover {
+    background-color: #ddd;
+    cursor: pointer;
+  }
+  .finance-page #main-claims .container-table table th,
+  .finance-page #main-contracts .container-table table th,
+  .finance-page #main-budget .container-table table th,
+  .finance-page #main-vo .container-table table th,
+  .finance-page #main-amendment .container-table table th,
+  .finance-page #main-schedule .container-table table th,
+  .finance-page #main-rates .container-table table th,
+  .finance-page #main-location-factor .container-table table th,
+  .finance-page #main-unit .container-table table th {
+    background-color: #1565c0;
+    color: white;
+    text-align: left;
+    padding: 8px;
+    line-height: 25px;
+  }
+  .finance-page #main-claims .container-table table th:hover,
+  .finance-page #main-contracts .container-table table th:hover,
+  .finance-page #main-budget .container-table table th:hover,
+  .finance-page #main-vo .container-table table th:hover,
+  .finance-page #main-amendment .container-table table th:hover,
+  .finance-page #main-schedule .container-table table th:hover,
+  .finance-page #main-rates .container-table table th:hover,
+  .finance-page #main-location-factor .container-table table th:hover,
+  .finance-page #main-unit .container-table table th:hover {
+    cursor: default;
+  }
+  .finance-page #main-claims .container-table table th img,
+  .finance-page #main-contracts .container-table table th img,
+  .finance-page #main-budget .container-table table th img,
+  .finance-page #main-vo .container-table table th img,
+  .finance-page #main-amendment .container-table table th img,
+  .finance-page #main-schedule .container-table table th img,
+  .finance-page #main-rates .container-table table th img,
+  .finance-page #main-location-factor .container-table table th img,
+  .finance-page #main-unit .container-table table th img {
+    height: 10px;
+    width: auto;
+    margin-left: 5px;
+  }
+  .finance-page #main-claims .container-table table th img:hover,
+  .finance-page #main-contracts .container-table table th img:hover,
+  .finance-page #main-budget .container-table table th img:hover,
+  .finance-page #main-vo .container-table table th img:hover,
+  .finance-page #main-amendment .container-table table th img:hover,
+  .finance-page #main-schedule .container-table table th img:hover,
+  .finance-page #main-rates .container-table table th img:hover,
+  .finance-page #main-location-factor .container-table table th img:hover,
+  .finance-page #main-unit .container-table table th img:hover {
+    cursor: pointer;
+  }
+  .finance-page #main-claims,
+  .finance-page #main-vo {
+    margin: 10px;
+    padding: 0px;
+    top: 0px;
+  }
+  .finance-page #main-vo .topcontainer {
+    height: 50vh;
+  }
+  .finance-page #main-vo .bottomcontainer {
+    height: calc(50vh - 100px);
+  }
+}
+@media screen and (max-width: 1366px) {
+  .finance-page {
+    display: block;
+    padding: 0px;
+    margin: 0px;
+    top: 50px;
+    position: absolute;
+    height: calc(100% - 50px);
+    width: 100%;
+    background: white;
+  }
+  .finance-page #sidebar-admin {
+    position: absolute;
+    height: 100%;
+    width: 220px;
+    background: #e0e0e0;
+    box-shadow: 7px 0px 10px 0px rgba(33, 33, 33, 0.2);
+  }
+  .finance-page #sidebar-admin .sidebar-items {
+    vertical-align: middle;
+    line-height: 30px;
+    padding: 0px;
+    margin: 0px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead {
+    padding: 10px;
+    font-weight: bold;
+    color: black;
+    font-size: 12px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead a {
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminHead img:hover {
+    cursor: pointer;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    padding-left: 10px;
+    font-size: 12px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems:hover {
+    cursor: pointer;
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems a {
+    text-decoration: none;
+    margin-left: 10px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems img {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems div.arrow {
+    float: right;
+    vertical-align: middle;
+    width: 10px;
+    height: 10px;
+    margin: 8px;
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowdown.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems div.arrow.active {
+    background-image: url("../../Images/icons/admin_page/sidebar/blue/arrowup.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  .finance-page #sidebar-admin .sidebar-items li.adminItems.active {
+    background: linear-gradient(#5e92f3, #1565c0, #5e92f3);
+  }
+  .finance-page #sidebar-admin .sidebar-items ul {
+    display: none;
+    list-style: none;
+    padding-left: 0;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li {
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    font-size: 12px;
+    display: flex;
+    margin: 10px 0;
+    padding-right: 5px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li a {
+    text-decoration: none;
+    line-height: 30px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li a.long {
+    line-height: 17px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li img {
+    padding-top: 2px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    padding-left: 35px;
+    margin-right: 15px;
+  }
+  .finance-page #sidebar-admin .sidebar-items ul li.active {
+    background: #5e92f3;
+  }
+  .finance-page #main-home {
+    display: block;
+    position: relative;
+    padding: 0 20px;
+    width: calc(100% - 260px);
+    height: calc(100vh - 50px);
+    float: right;
+    overflow: auto;
+  }
+  .finance-page #main-home .container-welcome .top-welcome {
+    margin: 10px 10px;
+    border-bottom: 1px solid #003c8f;
+    line-height: 52px;
+    font-weight: bolder;
+    font-size: 14px;
+  }
+  .finance-page #main-home .container-welcome .top-welcome a {
+    margin: 0 10px;
+  }
+  .finance-page #main-home .container-welcome .bottom-welcome {
+    margin: 20px;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 30px;
+  }
+  .finance-page #main-home .container-welcome .bottom-welcome a.secondary {
+    font-weight: normal;
+    font-size: 13px;
+  }
+  .finance-page #main-home .container-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background: white;
+  }
+  .finance-page #main-home .container-card .cards {
+    position: relative;
+    background: #003c8f;
+    border-radius: 5px;
+    top: 0px;
+    width: 340px;
+    height: 100%;
+    margin: 20px auto;
+    box-shadow: 2px 2px 10px 2px #c0c0c0;
+    transition: all 0.3s;
+  }
+  .finance-page #main-home .container-card .cards:hover {
+    position: relative;
+    transform: scale(1.02);
+    box-shadow: 3px 3px 8px 3px #616161;
+    transition: all 0.3s;
+  }
+  .finance-page #main-home .container-card .cards .card-header {
+    margin: 0 10px;
+    border-bottom: 1px solid rgb(189, 189, 189);
+    text-align: center;
+  }
+  .finance-page #main-home .container-card .cards .card-header:hover {
+    cursor: move;
+  }
+  .finance-page #main-home .container-card .cards .card-header h3 {
+    margin: 10px 0;
+    color: rgb(207, 207, 207);
+    font-size: 15px;
+  }
+  .finance-page #main-home .container-card .cards .card-body {
+    border-radius: 3px;
+    background: #003c8f;
+    margin: 10px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image {
+    padding: 15px;
+    height: auto;
+    background-size: 90px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #003c8f;
+    color: white;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph {
+    margin: 25px 0 25px 0;
+    font-size: 10px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .innerContainer {
+    display: inline-block;
+    width: calc(50% - 3px);
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a {
+    font-size: 10px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.number {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.bigNum {
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    top: 8px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.primary {
+    font-size: 15px;
+    position: relative;
+    font-weight: bold;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph a.secondary {
+    font-size: 12px;
+    position: relative;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph.center {
+    text-align: center;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph.left {
+    text-align: left;
+    line-height: 30px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph.right {
+    text-align: right;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph:first-child {
+    margin: 5px 0 0 0;
+    font-size: 15px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph:last-child {
+    margin: 0 0 15px 0;
+    font-size: 12px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph img {
+    height: 25%;
+    width: 25%;
+    border-radius: 50%;
+    margin: 10px 0;
+    vertical-align: middle;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph img.twoImage {
+    height: auto;
+    width: 37px;
+    border-radius: 3px;
+    margin: 10px 10px;
+    padding: 5px;
+    background: #003c8f;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .updatedOn {
+    margin: 15px 0;
+    text-align: left;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph {
+    width: 100%;
+    height: 25px;
+    background-color: #b72f2f;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph .barInner {
+    height: 25px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend {
+    margin: 15px 0;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active {
+    margin-right: 5px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-image: linear-gradient(to right, #aeaeae, #e0e0e0);
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive {
+    margin-right: 5px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive div {
+    margin: 0 5px;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+    background-color: #b72f2f;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items {
+    height: 45%;
+    margin: 0px;
+    line-height: 30px;
+    list-style: none;
+    padding-left: 0px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items li {
+    list-style-type: none;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items {
+    background: #1565c0;
+    color: white;
+    font-size: 12px;
+    margin: 3px 0;
+    padding: 10px 5px;
+    line-height: 15px;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items a {
+    padding-left: 15px;
+    font-weight: bold;
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items a.secondary {
+    font-size: 12px;
+    color: rgb(190, 190, 190);
+  }
+  .finance-page #main-home .container-card .cards .card-body .list-items .items:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .finance-page #main-claims,
+  .finance-page #main-contracts,
+  .finance-page #main-budget,
+  .finance-page #main-vo,
+  .finance-page #main-amendment,
+  .finance-page #main-schedule,
+  .finance-page #main-rates,
+  .finance-page #main-location-factor,
+  .finance-page #main-unit {
+    display: none;
+    position: relative;
+    margin: 10px;
+    /* padding: 0 20px; */
+    width: calc(100% - 250px);
+    height: calc(100vh - 90px);
+    float: right;
+  }
+  .finance-page #main-claims .mainHeader,
+  .finance-page #main-contracts .mainHeader,
+  .finance-page #main-budget .mainHeader,
+  .finance-page #main-vo .mainHeader,
+  .finance-page #main-amendment .mainHeader,
+  .finance-page #main-schedule .mainHeader,
+  .finance-page #main-rates .mainHeader,
+  .finance-page #main-location-factor .mainHeader,
+  .finance-page #main-unit .mainHeader {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, #1565c0, #003c8f);
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .finance-page #main-claims .mainHeader h3,
+  .finance-page #main-contracts .mainHeader h3,
+  .finance-page #main-budget .mainHeader h3,
+  .finance-page #main-vo .mainHeader h3,
+  .finance-page #main-amendment .mainHeader h3,
+  .finance-page #main-schedule .mainHeader h3,
+  .finance-page #main-rates .mainHeader h3,
+  .finance-page #main-location-factor .mainHeader h3,
+  .finance-page #main-unit .mainHeader h3 {
+    margin: 0px;
+    top: 12px;
+    position: relative;
+    font-size: 12px;
+  }
+  .finance-page #main-claims .tabContainer,
+  .finance-page #main-contracts .tabContainer,
+  .finance-page #main-budget .tabContainer,
+  .finance-page #main-vo .tabContainer,
+  .finance-page #main-amendment .tabContainer,
+  .finance-page #main-schedule .tabContainer,
+  .finance-page #main-rates .tabContainer,
+  .finance-page #main-location-factor .tabContainer,
+  .finance-page #main-unit .tabContainer {
+    margin-top: 10px;
+    height: 25px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer,
+  .finance-page #main-contracts .tabContainer .tabsContainer,
+  .finance-page #main-budget .tabContainer .tabsContainer,
+  .finance-page #main-vo .tabContainer .tabsContainer,
+  .finance-page #main-amendment .tabContainer .tabsContainer,
+  .finance-page #main-schedule .tabContainer .tabsContainer,
+  .finance-page #main-rates .tabContainer .tabsContainer,
+  .finance-page #main-location-factor .tabContainer .tabsContainer,
+  .finance-page #main-unit .tabContainer .tabsContainer {
+    list-style: none;
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+    font-size: 10px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab {
+    display: inline-block;
+    background: #003c8f;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0px;
+    padding: 10px 0 0 0;
+    height: 15px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab label,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab label,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab label,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab label,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab label,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab label,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab label,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab label,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab label {
+    background: transparent;
+    color: white;
+    padding: 4px 12px;
+    margin: 0px 0px;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab label:hover,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab label:hover {
+    cursor: pointer;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab:hover,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab:hover {
+    cursor: pointer;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab.active,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab.active {
+    background: #aeaeae;
+  }
+  .finance-page #main-claims .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-contracts .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-budget .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-vo .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-amendment .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-schedule .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-rates .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-location-factor .tabContainer .tabsContainer .tab.active label,
+  .finance-page #main-unit .tabContainer .tabsContainer .tab.active label {
+    color: black;
+  }
+  .finance-page #main-claims .headerButton,
+  .finance-page #main-contracts .headerButton,
+  .finance-page #main-budget .headerButton,
+  .finance-page #main-vo .headerButton,
+  .finance-page #main-amendment .headerButton,
+  .finance-page #main-schedule .headerButton,
+  .finance-page #main-rates .headerButton,
+  .finance-page #main-location-factor .headerButton,
+  .finance-page #main-unit .headerButton {
+    top: -42px;
+    position: relative;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    right: 15px;
+  }
+  .finance-page #main-claims .headerButton.finance-budget,
+  .finance-page #main-contracts .headerButton.finance-budget,
+  .finance-page #main-budget .headerButton.finance-budget,
+  .finance-page #main-vo .headerButton.finance-budget,
+  .finance-page #main-amendment .headerButton.finance-budget,
+  .finance-page #main-schedule .headerButton.finance-budget,
+  .finance-page #main-rates .headerButton.finance-budget,
+  .finance-page #main-location-factor .headerButton.finance-budget,
+  .finance-page #main-unit .headerButton.finance-budget {
+    top: -15px;
+  }
+  .finance-page #main-claims .headerButton button,
+  .finance-page #main-contracts .headerButton button,
+  .finance-page #main-budget .headerButton button,
+  .finance-page #main-vo .headerButton button,
+  .finance-page #main-amendment .headerButton button,
+  .finance-page #main-schedule .headerButton button,
+  .finance-page #main-rates .headerButton button,
+  .finance-page #main-location-factor .headerButton button,
+  .finance-page #main-unit .headerButton button {
+    border-radius: 5px;
+    padding: 8px 20px;
+    font-size: 10px;
+  }
+  .finance-page #main-claims .headerButton button.edit,
+  .finance-page #main-contracts .headerButton button.edit,
+  .finance-page #main-budget .headerButton button.edit,
+  .finance-page #main-vo .headerButton button.edit,
+  .finance-page #main-amendment .headerButton button.edit,
+  .finance-page #main-schedule .headerButton button.edit,
+  .finance-page #main-rates .headerButton button.edit,
+  .finance-page #main-location-factor .headerButton button.edit,
+  .finance-page #main-unit .headerButton button.edit {
+    display: none;
+  }
+  .finance-page #main-claims .checkcounter,
+  .finance-page #main-contracts .checkcounter,
+  .finance-page #main-budget .checkcounter,
+  .finance-page #main-vo .checkcounter,
+  .finance-page #main-amendment .checkcounter,
+  .finance-page #main-schedule .checkcounter,
+  .finance-page #main-rates .checkcounter,
+  .finance-page #main-location-factor .checkcounter,
+  .finance-page #main-unit .checkcounter {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    left: 20px;
+  }
+  .finance-page #main-claims .checkcounter.package,
+  .finance-page #main-contracts .checkcounter.package,
+  .finance-page #main-budget .checkcounter.package,
+  .finance-page #main-vo .checkcounter.package,
+  .finance-page #main-amendment .checkcounter.package,
+  .finance-page #main-schedule .checkcounter.package,
+  .finance-page #main-rates .checkcounter.package,
+  .finance-page #main-location-factor .checkcounter.package,
+  .finance-page #main-unit .checkcounter.package {
+    top: 447px;
+  }
+  .finance-page #main-claims .checkcounter p,
+  .finance-page #main-contracts .checkcounter p,
+  .finance-page #main-budget .checkcounter p,
+  .finance-page #main-vo .checkcounter p,
+  .finance-page #main-amendment .checkcounter p,
+  .finance-page #main-schedule .checkcounter p,
+  .finance-page #main-rates .checkcounter p,
+  .finance-page #main-location-factor .checkcounter p,
+  .finance-page #main-unit .checkcounter p {
+    margin: 10px 15px;
+    display: inline-block;
+    float: left;
+    display: none;
+    color: white;
+  }
+  .finance-page #main-claims .searchTable,
+  .finance-page #main-contracts .searchTable,
+  .finance-page #main-budget .searchTable,
+  .finance-page #main-vo .searchTable,
+  .finance-page #main-amendment .searchTable,
+  .finance-page #main-schedule .searchTable,
+  .finance-page #main-rates .searchTable,
+  .finance-page #main-location-factor .searchTable,
+  .finance-page #main-unit .searchTable {
+    top: 8px;
+    position: absolute;
+    float: right;
+    display: inline-block;
+    z-index: 1;
+    width: auto;
+    right: 20px;
+  }
+  .finance-page #main-claims .searchTable input,
+  .finance-page #main-contracts .searchTable input,
+  .finance-page #main-budget .searchTable input,
+  .finance-page #main-vo .searchTable input,
+  .finance-page #main-amendment .searchTable input,
+  .finance-page #main-schedule .searchTable input,
+  .finance-page #main-rates .searchTable input,
+  .finance-page #main-location-factor .searchTable input,
+  .finance-page #main-unit .searchTable input {
+    height: 10px;
+    width: 250px;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 10px;
+    font-size: 10px;
+  }
+  .finance-page #main-claims iframe,
+  .finance-page #main-contracts iframe,
+  .finance-page #main-budget iframe,
+  .finance-page #main-vo iframe,
+  .finance-page #main-amendment iframe,
+  .finance-page #main-schedule iframe,
+  .finance-page #main-rates iframe,
+  .finance-page #main-location-factor iframe,
+  .finance-page #main-unit iframe {
+    height: calc(100% - 10px);
+    width: 100%;
+    border: 0px;
+    margin: 0px;
+    padding: 5px 0;
+  }
+  .finance-page #main-claims iframe.tabiframe,
+  .finance-page #main-contracts iframe.tabiframe,
+  .finance-page #main-budget iframe.tabiframe,
+  .finance-page #main-vo iframe.tabiframe,
+  .finance-page #main-amendment iframe.tabiframe,
+  .finance-page #main-schedule iframe.tabiframe,
+  .finance-page #main-rates iframe.tabiframe,
+  .finance-page #main-location-factor iframe.tabiframe,
+  .finance-page #main-unit iframe.tabiframe {
+    height: calc(100% - 10px);
+  }
+  .finance-page #main-claims .contractContainer, .finance-page #main-claims .claimContainer, .finance-page #main-claims .vo,
+  .finance-page #main-contracts .contractContainer,
+  .finance-page #main-contracts .claimContainer,
+  .finance-page #main-contracts .vo,
+  .finance-page #main-budget .contractContainer,
+  .finance-page #main-budget .claimContainer,
+  .finance-page #main-budget .vo,
+  .finance-page #main-vo .contractContainer,
+  .finance-page #main-vo .claimContainer,
+  .finance-page #main-vo .vo,
+  .finance-page #main-amendment .contractContainer,
+  .finance-page #main-amendment .claimContainer,
+  .finance-page #main-amendment .vo,
+  .finance-page #main-schedule .contractContainer,
+  .finance-page #main-schedule .claimContainer,
+  .finance-page #main-schedule .vo,
+  .finance-page #main-rates .contractContainer,
+  .finance-page #main-rates .claimContainer,
+  .finance-page #main-rates .vo,
+  .finance-page #main-location-factor .contractContainer,
+  .finance-page #main-location-factor .claimContainer,
+  .finance-page #main-location-factor .vo,
+  .finance-page #main-unit .contractContainer,
+  .finance-page #main-unit .claimContainer,
+  .finance-page #main-unit .vo {
+    background: #aeaeae;
+    height: calc(100vh - 150px);
+    overflow: hidden;
+    padding: 0px 5px;
+    margin-top: 10px;
+  }
+  .finance-page #main-claims .budgetContainer,
+  .finance-page #main-contracts .budgetContainer,
+  .finance-page #main-budget .budgetContainer,
+  .finance-page #main-vo .budgetContainer,
+  .finance-page #main-amendment .budgetContainer,
+  .finance-page #main-schedule .budgetContainer,
+  .finance-page #main-rates .budgetContainer,
+  .finance-page #main-location-factor .budgetContainer,
+  .finance-page #main-unit .budgetContainer {
+    background: #aeaeae;
+    height: calc(100vh - 180px);
+    padding: 0 5px;
+  }
+  .finance-page #main-claims .container-table,
+  .finance-page #main-contracts .container-table,
+  .finance-page #main-budget .container-table,
+  .finance-page #main-vo .container-table,
+  .finance-page #main-amendment .container-table,
+  .finance-page #main-schedule .container-table,
+  .finance-page #main-rates .container-table,
+  .finance-page #main-location-factor .container-table,
+  .finance-page #main-unit .container-table {
+    position: absolute;
+    width: calc(100% - 40px);
+    overflow: auto;
+    left: 20px;
+    float: right;
+    top: 55px;
+  }
+  .finance-page #main-claims .container-table table,
+  .finance-page #main-contracts .container-table table,
+  .finance-page #main-budget .container-table table,
+  .finance-page #main-vo .container-table table,
+  .finance-page #main-amendment .container-table table,
+  .finance-page #main-schedule .container-table table,
+  .finance-page #main-rates .container-table table,
+  .finance-page #main-location-factor .container-table table,
+  .finance-page #main-unit .container-table table {
+    border-collapse: collapse;
+    background-color: #ffffff;
+    width: 100%;
+  }
+  .finance-page #main-claims .container-table table td,
+  .finance-page #main-contracts .container-table table td,
+  .finance-page #main-budget .container-table table td,
+  .finance-page #main-vo .container-table table td,
+  .finance-page #main-amendment .container-table table td,
+  .finance-page #main-schedule .container-table table td,
+  .finance-page #main-rates .container-table table td,
+  .finance-page #main-location-factor .container-table table td,
+  .finance-page #main-unit .container-table table td {
+    text-align: left;
+    padding: 8px;
+    border: none;
+    line-height: 25px;
+    vertical-align: center;
+  }
+  .finance-page #main-claims .container-table table td span,
+  .finance-page #main-contracts .container-table table td span,
+  .finance-page #main-budget .container-table table td span,
+  .finance-page #main-vo .container-table table td span,
+  .finance-page #main-amendment .container-table table td span,
+  .finance-page #main-schedule .container-table table td span,
+  .finance-page #main-rates .container-table table td span,
+  .finance-page #main-location-factor .container-table table td span,
+  .finance-page #main-unit .container-table table td span {
+    margin-right: 10px;
+  }
+  .finance-page #main-claims .container-table table td span img,
+  .finance-page #main-contracts .container-table table td span img,
+  .finance-page #main-budget .container-table table td span img,
+  .finance-page #main-vo .container-table table td span img,
+  .finance-page #main-amendment .container-table table td span img,
+  .finance-page #main-schedule .container-table table td span img,
+  .finance-page #main-rates .container-table table td span img,
+  .finance-page #main-location-factor .container-table table td span img,
+  .finance-page #main-unit .container-table table td span img {
+    height: 15px;
+    width: 15px;
+  }
+  .finance-page #main-claims .container-table table th:first-child,
+  .finance-page #main-contracts .container-table table th:first-child,
+  .finance-page #main-budget .container-table table th:first-child,
+  .finance-page #main-vo .container-table table th:first-child,
+  .finance-page #main-amendment .container-table table th:first-child,
+  .finance-page #main-schedule .container-table table th:first-child,
+  .finance-page #main-rates .container-table table th:first-child,
+  .finance-page #main-location-factor .container-table table th:first-child,
+  .finance-page #main-unit .container-table table th:first-child {
+    border-top-left-radius: 5px;
+  }
+  .finance-page #main-claims .container-table table th:last-child,
+  .finance-page #main-contracts .container-table table th:last-child,
+  .finance-page #main-budget .container-table table th:last-child,
+  .finance-page #main-vo .container-table table th:last-child,
+  .finance-page #main-amendment .container-table table th:last-child,
+  .finance-page #main-schedule .container-table table th:last-child,
+  .finance-page #main-rates .container-table table th:last-child,
+  .finance-page #main-location-factor .container-table table th:last-child,
+  .finance-page #main-unit .container-table table th:last-child {
+    border-top-right-radius: 5px;
+  }
+  .finance-page #main-claims .container-table table tr:nth-of-type(even),
+  .finance-page #main-contracts .container-table table tr:nth-of-type(even),
+  .finance-page #main-budget .container-table table tr:nth-of-type(even),
+  .finance-page #main-vo .container-table table tr:nth-of-type(even),
+  .finance-page #main-amendment .container-table table tr:nth-of-type(even),
+  .finance-page #main-schedule .container-table table tr:nth-of-type(even),
+  .finance-page #main-rates .container-table table tr:nth-of-type(even),
+  .finance-page #main-location-factor .container-table table tr:nth-of-type(even),
+  .finance-page #main-unit .container-table table tr:nth-of-type(even) {
+    background: #f2f2f2;
+  }
+  .finance-page #main-claims .container-table table tr:nth-of-type(odd),
+  .finance-page #main-contracts .container-table table tr:nth-of-type(odd),
+  .finance-page #main-budget .container-table table tr:nth-of-type(odd),
+  .finance-page #main-vo .container-table table tr:nth-of-type(odd),
+  .finance-page #main-amendment .container-table table tr:nth-of-type(odd),
+  .finance-page #main-schedule .container-table table tr:nth-of-type(odd),
+  .finance-page #main-rates .container-table table tr:nth-of-type(odd),
+  .finance-page #main-location-factor .container-table table tr:nth-of-type(odd),
+  .finance-page #main-unit .container-table table tr:nth-of-type(odd) {
+    background: white;
+  }
+  .finance-page #main-claims .container-table table tr:hover,
+  .finance-page #main-contracts .container-table table tr:hover,
+  .finance-page #main-budget .container-table table tr:hover,
+  .finance-page #main-vo .container-table table tr:hover,
+  .finance-page #main-amendment .container-table table tr:hover,
+  .finance-page #main-schedule .container-table table tr:hover,
+  .finance-page #main-rates .container-table table tr:hover,
+  .finance-page #main-location-factor .container-table table tr:hover,
+  .finance-page #main-unit .container-table table tr:hover {
+    background-color: #ddd;
+    cursor: pointer;
+  }
+  .finance-page #main-claims .container-table table th,
+  .finance-page #main-contracts .container-table table th,
+  .finance-page #main-budget .container-table table th,
+  .finance-page #main-vo .container-table table th,
+  .finance-page #main-amendment .container-table table th,
+  .finance-page #main-schedule .container-table table th,
+  .finance-page #main-rates .container-table table th,
+  .finance-page #main-location-factor .container-table table th,
+  .finance-page #main-unit .container-table table th {
+    background-color: #1565c0;
+    color: white;
+    text-align: left;
+    padding: 8px;
+    line-height: 25px;
+  }
+  .finance-page #main-claims .container-table table th:hover,
+  .finance-page #main-contracts .container-table table th:hover,
+  .finance-page #main-budget .container-table table th:hover,
+  .finance-page #main-vo .container-table table th:hover,
+  .finance-page #main-amendment .container-table table th:hover,
+  .finance-page #main-schedule .container-table table th:hover,
+  .finance-page #main-rates .container-table table th:hover,
+  .finance-page #main-location-factor .container-table table th:hover,
+  .finance-page #main-unit .container-table table th:hover {
+    cursor: default;
+  }
+  .finance-page #main-claims .container-table table th img,
+  .finance-page #main-contracts .container-table table th img,
+  .finance-page #main-budget .container-table table th img,
+  .finance-page #main-vo .container-table table th img,
+  .finance-page #main-amendment .container-table table th img,
+  .finance-page #main-schedule .container-table table th img,
+  .finance-page #main-rates .container-table table th img,
+  .finance-page #main-location-factor .container-table table th img,
+  .finance-page #main-unit .container-table table th img {
+    height: 10px;
+    width: auto;
+    margin-left: 5px;
+  }
+  .finance-page #main-claims .container-table table th img:hover,
+  .finance-page #main-contracts .container-table table th img:hover,
+  .finance-page #main-budget .container-table table th img:hover,
+  .finance-page #main-vo .container-table table th img:hover,
+  .finance-page #main-amendment .container-table table th img:hover,
+  .finance-page #main-schedule .container-table table th img:hover,
+  .finance-page #main-rates .container-table table th img:hover,
+  .finance-page #main-location-factor .container-table table th img:hover,
+  .finance-page #main-unit .container-table table th img:hover {
+    cursor: pointer;
+  }
+  .finance-page #main-claims,
+  .finance-page #main-vo {
+    margin: 10px;
+    padding: 0px;
+    top: 0px;
+  }
+  .finance-page #main-vo .topcontainer {
+    height: 50vh;
+  }
+  .finance-page #main-vo .bottomcontainer {
+    height: calc(50vh - 100px);
+  }
+}/*# sourceMappingURL=finance.css.map */

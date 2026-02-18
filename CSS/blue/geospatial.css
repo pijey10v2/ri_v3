@@ -1,0 +1,776 @@
+.geospatial-page {
+  display: block;
+  padding: 0px;
+  margin: 0px;
+  top: 70px;
+  position: absolute;
+  height: calc(100% - 70px);
+  width: 100%;
+  background: white;
+}
+.geospatial-page #sidebar-admin {
+  position: absolute;
+  height: 100%;
+  width: 300px;
+  background: rgb(54, 54, 54);
+  box-shadow: 7px 0px 10px 0px rgba(0, 0, 0, 0.664);
+}
+.geospatial-page #sidebar-admin .sidebar-items {
+  vertical-align: middle;
+  line-height: 45px;
+  padding: 0px;
+  margin: 0px;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminHead {
+  padding: 15px;
+  font-weight: bold;
+  color: white;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminHead a {
+  margin-left: 15px;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminHead img {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminHead img:hover {
+  cursor: pointer;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminItems {
+  color: white;
+  text-decoration: none;
+  list-style: none;
+  padding-left: 15px;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminItems:hover {
+  cursor: pointer;
+  background-image: linear-gradient(to bottom, rgb(95, 95, 95), rgb(75, 75, 75), rgb(95, 95, 95));
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminItems a {
+  text-decoration: none;
+  margin-left: 15px;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminItems img {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminItems div.arrow {
+  float: right;
+  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+  margin: 14px;
+  background-image: url("../../Images/icons/admin_page/sidebar/dark_red/arrowdown.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminItems div.arrow.active {
+  background-image: url("../../Images/icons/admin_page/sidebar/dark_red/arrowup.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.geospatial-page #sidebar-admin .sidebar-items li.adminItems.active {
+  background-image: linear-gradient(to bottom, rgb(95, 95, 95), rgb(75, 75, 75), rgb(95, 95, 95));
+}
+.geospatial-page #sidebar-admin .sidebar-items ul {
+  display: none;
+  list-style: none;
+  line-height: 45px;
+  padding-left: 0;
+}
+.geospatial-page #sidebar-admin .sidebar-items ul li {
+  color: white;
+  text-decoration: none;
+  list-style: none;
+}
+.geospatial-page #sidebar-admin .sidebar-items ul li:hover {
+  cursor: pointer;
+  background: grey;
+}
+.geospatial-page #sidebar-admin .sidebar-items ul li a {
+  text-decoration: none;
+  margin-left: 15px;
+}
+.geospatial-page #sidebar-admin .sidebar-items ul li img {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  padding-left: 35px;
+}
+.geospatial-page #sidebar-admin .sidebar-items ul li.active {
+  background: rgb(95, 95, 95);
+}
+.geospatial-page #main-home {
+  display: block;
+  position: relative;
+  padding: 0 20px;
+  width: calc(100% - 340px);
+  height: calc(100vh - 75px);
+  float: right;
+  overflow: auto;
+}
+.geospatial-page #main-home .container-welcome .top-welcome {
+  margin: 10px 10px;
+  border-bottom: 1px solid black;
+  line-height: 52px;
+  font-weight: bolder;
+  font-size: 20px;
+}
+.geospatial-page #main-home .container-welcome .top-welcome a {
+  margin: 0 10px;
+}
+.geospatial-page #main-home .container-welcome .bottom-welcome {
+  margin: 20px;
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 30px;
+}
+.geospatial-page #main-home .container-welcome .bottom-welcome a.secondary {
+  font-weight: normal;
+  font-size: 17px;
+}
+.geospatial-page #main-home .container-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background: white;
+}
+.geospatial-page #main-home .container-card .cards {
+  position: relative;
+  background: black;
+  border-radius: 5px;
+  top: 0px;
+  width: 500px;
+  height: 100%;
+  margin: 20px auto;
+  box-shadow: 2px 2px 10px 2px #c0c0c0;
+  transition: all 0.3s;
+}
+.geospatial-page #main-home .container-card .cards:hover {
+  position: relative;
+  transform: scale(1.02);
+  box-shadow: 3px 3px 8px 3px #616161;
+  transition: all 0.3s;
+}
+.geospatial-page #main-home .container-card .cards .card-header {
+  margin: 0 10px;
+  border-bottom: 1px solid rgb(189, 189, 189);
+  text-align: center;
+}
+.geospatial-page #main-home .container-card .cards .card-header:hover {
+  cursor: move;
+}
+.geospatial-page #main-home .container-card .cards .card-header h3 {
+  margin: 10px 0;
+  color: rgb(207, 207, 207);
+}
+.geospatial-page #main-home .container-card .cards .card-body {
+  border-radius: 3px;
+  background: black;
+  margin: 10px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image {
+  padding: 15px;
+  height: auto;
+  background-size: 90px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: black;
+  color: white;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph {
+  margin: 35px 0 35px 0;
+  font-size: 16px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .innerContainer {
+  display: inline-block;
+  width: calc(50% - 3px);
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph a {
+  font-size: 14px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph a.number {
+  font-size: 17px;
+  font-weight: bold;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph a.bigNum {
+  font-size: 40px;
+  font-weight: bold;
+  position: relative;
+  top: 8px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph a.primary {
+  font-size: 20px;
+  position: relative;
+  font-weight: bold;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph a.secondary {
+  font-size: 17px;
+  position: relative;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph.center {
+  text-align: center;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph.left {
+  text-align: left;
+  line-height: 45px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph.right {
+  text-align: right;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph:first-child {
+  margin: 15px 0 0 0;
+  font-size: 20px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph:last-child {
+  margin: 0 0 15px 0;
+  font-size: 12px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph img {
+  height: 25%;
+  width: 25%;
+  border-radius: 50%;
+  margin: 10px 0;
+  vertical-align: middle;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph img.twoImage {
+  height: auto;
+  width: 50px;
+  border-radius: 3px;
+  margin: 10px 10px;
+  padding: 5px;
+  background: #363636;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .updatedOn {
+  margin: 15px 0;
+  text-align: left;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph {
+  width: 100%;
+  height: 30px;
+  background-color: #b72f2f;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .barGraph .barInner {
+  height: 30px;
+  background-image: linear-gradient(to right, #1f5667, #01cbf9);
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .legend {
+  margin: 15px 0;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active {
+  margin-right: 5px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .active div {
+  margin: 0 5px;
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  background-image: linear-gradient(to right, #1f5667, #01cbf9);
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive {
+  margin-right: 5px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .body-image .paragraph .legend .inactive div {
+  margin: 0 5px;
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  background-color: #b72f2f;
+}
+.geospatial-page #main-home .container-card .cards .card-body .list-items {
+  height: 45%;
+  margin: 0px;
+  line-height: 30px;
+  list-style: none;
+  padding-left: 0px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .list-items .items {
+  background: #484848;
+  color: white;
+  font-size: 15px;
+  margin: 3px 0;
+  padding: 10px 5px;
+  line-height: 20px;
+}
+.geospatial-page #main-home .container-card .cards .card-body .list-items .items a {
+  padding-left: 15px;
+  font-weight: bold;
+}
+.geospatial-page #main-home .container-card .cards .card-body .list-items .items a.secondary {
+  font-size: 12px;
+  color: rgb(190, 190, 190);
+}
+.geospatial-page #main-home .container-card .cards .card-body .list-items .items:hover {
+  cursor: pointer;
+  background: grey;
+}
+.geospatial-page #main-crossSection,
+.geospatial-page #main-360Aerial,
+.geospatial-page #main-AIC,
+.geospatial-page #main-contourGaneration,
+.geospatial-page #main-slopeGaneration,
+.geospatial-page #main-waterFlow,
+.geospatial-page #main-waterCatchment {
+  display: none;
+  position: relative;
+  margin: 10px;
+  /* padding: 0 20px; */
+  width: calc(100% - 340px);
+  height: calc(100vh - 90px);
+  float: right;
+  overflow: auto;
+}
+.geospatial-page #main-crossSection .mainHeader,
+.geospatial-page #main-360Aerial .mainHeader,
+.geospatial-page #main-AIC .mainHeader,
+.geospatial-page #main-contourGaneration .mainHeader,
+.geospatial-page #main-slopeGaneration .mainHeader,
+.geospatial-page #main-waterFlow .mainHeader,
+.geospatial-page #main-waterCatchment .mainHeader {
+  width: 100%;
+  height: 50px;
+  background-color: #3f3f3f;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+.geospatial-page #main-crossSection .mainHeader h3,
+.geospatial-page #main-360Aerial .mainHeader h3,
+.geospatial-page #main-AIC .mainHeader h3,
+.geospatial-page #main-contourGaneration .mainHeader h3,
+.geospatial-page #main-slopeGaneration .mainHeader h3,
+.geospatial-page #main-waterFlow .mainHeader h3,
+.geospatial-page #main-waterCatchment .mainHeader h3 {
+  margin: 0px;
+  top: 15px;
+  position: relative;
+}
+.geospatial-page #main-crossSection .headerButton,
+.geospatial-page #main-360Aerial .headerButton,
+.geospatial-page #main-AIC .headerButton,
+.geospatial-page #main-contourGaneration .headerButton,
+.geospatial-page #main-slopeGaneration .headerButton,
+.geospatial-page #main-waterFlow .headerButton,
+.geospatial-page #main-waterCatchment .headerButton {
+  top: -42px;
+  position: relative;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  right: 15px;
+}
+.geospatial-page #main-crossSection .headerButton.finance-budget,
+.geospatial-page #main-360Aerial .headerButton.finance-budget,
+.geospatial-page #main-AIC .headerButton.finance-budget,
+.geospatial-page #main-contourGaneration .headerButton.finance-budget,
+.geospatial-page #main-slopeGaneration .headerButton.finance-budget,
+.geospatial-page #main-waterFlow .headerButton.finance-budget,
+.geospatial-page #main-waterCatchment .headerButton.finance-budget {
+  top: -15px;
+}
+.geospatial-page #main-crossSection .headerButton button,
+.geospatial-page #main-360Aerial .headerButton button,
+.geospatial-page #main-AIC .headerButton button,
+.geospatial-page #main-contourGaneration .headerButton button,
+.geospatial-page #main-slopeGaneration .headerButton button,
+.geospatial-page #main-waterFlow .headerButton button,
+.geospatial-page #main-waterCatchment .headerButton button {
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+.geospatial-page #main-crossSection .headerButton button.edit,
+.geospatial-page #main-360Aerial .headerButton button.edit,
+.geospatial-page #main-AIC .headerButton button.edit,
+.geospatial-page #main-contourGaneration .headerButton button.edit,
+.geospatial-page #main-slopeGaneration .headerButton button.edit,
+.geospatial-page #main-waterFlow .headerButton button.edit,
+.geospatial-page #main-waterCatchment .headerButton button.edit {
+  display: none;
+}
+.geospatial-page #main-crossSection .checkcounter,
+.geospatial-page #main-360Aerial .checkcounter,
+.geospatial-page #main-AIC .checkcounter,
+.geospatial-page #main-contourGaneration .checkcounter,
+.geospatial-page #main-slopeGaneration .checkcounter,
+.geospatial-page #main-waterFlow .checkcounter,
+.geospatial-page #main-waterCatchment .checkcounter {
+  top: 8px;
+  position: absolute;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  left: 20px;
+}
+.geospatial-page #main-crossSection .checkcounter.package,
+.geospatial-page #main-360Aerial .checkcounter.package,
+.geospatial-page #main-AIC .checkcounter.package,
+.geospatial-page #main-contourGaneration .checkcounter.package,
+.geospatial-page #main-slopeGaneration .checkcounter.package,
+.geospatial-page #main-waterFlow .checkcounter.package,
+.geospatial-page #main-waterCatchment .checkcounter.package {
+  top: 447px;
+}
+.geospatial-page #main-crossSection .checkcounter p,
+.geospatial-page #main-360Aerial .checkcounter p,
+.geospatial-page #main-AIC .checkcounter p,
+.geospatial-page #main-contourGaneration .checkcounter p,
+.geospatial-page #main-slopeGaneration .checkcounter p,
+.geospatial-page #main-waterFlow .checkcounter p,
+.geospatial-page #main-waterCatchment .checkcounter p {
+  margin: 10px 15px;
+  display: inline-block;
+  float: left;
+  display: none;
+  color: white;
+}
+.geospatial-page #main-crossSection .searchTable,
+.geospatial-page #main-360Aerial .searchTable,
+.geospatial-page #main-AIC .searchTable,
+.geospatial-page #main-contourGaneration .searchTable,
+.geospatial-page #main-slopeGaneration .searchTable,
+.geospatial-page #main-waterFlow .searchTable,
+.geospatial-page #main-waterCatchment .searchTable {
+  top: 8px;
+  position: absolute;
+  float: right;
+  display: inline-block;
+  z-index: 1;
+  width: auto;
+  right: 20px;
+}
+.geospatial-page #main-crossSection .searchTable input,
+.geospatial-page #main-360Aerial .searchTable input,
+.geospatial-page #main-AIC .searchTable input,
+.geospatial-page #main-contourGaneration .searchTable input,
+.geospatial-page #main-slopeGaneration .searchTable input,
+.geospatial-page #main-waterFlow .searchTable input,
+.geospatial-page #main-waterCatchment .searchTable input {
+  height: 30px;
+  width: 250px;
+  padding: 5px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+.geospatial-page #main-crossSection iframe,
+.geospatial-page #main-360Aerial iframe,
+.geospatial-page #main-AIC iframe,
+.geospatial-page #main-contourGaneration iframe,
+.geospatial-page #main-slopeGaneration iframe,
+.geospatial-page #main-waterFlow iframe,
+.geospatial-page #main-waterCatchment iframe {
+  height: 100%;
+  width: 100%;
+  border: 0px;
+  margin: 0px;
+}
+.geospatial-page #main-crossSection .splitContainer,
+.geospatial-page #main-360Aerial .splitContainer,
+.geospatial-page #main-AIC .splitContainer,
+.geospatial-page #main-contourGaneration .splitContainer,
+.geospatial-page #main-slopeGaneration .splitContainer,
+.geospatial-page #main-waterFlow .splitContainer,
+.geospatial-page #main-waterCatchment .splitContainer {
+  position: relative;
+  display: flex;
+  height: calc(100% - 50px);
+}
+.geospatial-page #main-crossSection .splitContainer .leftContainer,
+.geospatial-page #main-360Aerial .splitContainer .leftContainer,
+.geospatial-page #main-AIC .splitContainer .leftContainer,
+.geospatial-page #main-contourGaneration .splitContainer .leftContainer,
+.geospatial-page #main-slopeGaneration .splitContainer .leftContainer,
+.geospatial-page #main-waterFlow .splitContainer .leftContainer,
+.geospatial-page #main-waterCatchment .splitContainer .leftContainer {
+  position: relative;
+  width: 20%;
+  height: 100%;
+}
+.geospatial-page #main-crossSection .splitContainer .leftContainer .topContainer,
+.geospatial-page #main-360Aerial .splitContainer .leftContainer .topContainer,
+.geospatial-page #main-AIC .splitContainer .leftContainer .topContainer,
+.geospatial-page #main-contourGaneration .splitContainer .leftContainer .topContainer,
+.geospatial-page #main-slopeGaneration .splitContainer .leftContainer .topContainer,
+.geospatial-page #main-waterFlow .splitContainer .leftContainer .topContainer,
+.geospatial-page #main-waterCatchment .splitContainer .leftContainer .topContainer {
+  width: calc(100% - 20px);
+  height: calc(100% - 70px);
+  margin: 10px;
+  background: #3f3f3f;
+  border-radius: 5px;
+}
+.geospatial-page #main-crossSection .splitContainer .leftContainer .topContainer select,
+.geospatial-page #main-360Aerial .splitContainer .leftContainer .topContainer select,
+.geospatial-page #main-AIC .splitContainer .leftContainer .topContainer select,
+.geospatial-page #main-contourGaneration .splitContainer .leftContainer .topContainer select,
+.geospatial-page #main-slopeGaneration .splitContainer .leftContainer .topContainer select,
+.geospatial-page #main-waterFlow .splitContainer .leftContainer .topContainer select,
+.geospatial-page #main-waterCatchment .splitContainer .leftContainer .topContainer select {
+  width: calc(100% - 10px);
+  margin: 5px;
+  border-radius: 5px;
+}
+.geospatial-page #main-crossSection .splitContainer .leftContainer .buttonContainer,
+.geospatial-page #main-360Aerial .splitContainer .leftContainer .buttonContainer,
+.geospatial-page #main-AIC .splitContainer .leftContainer .buttonContainer,
+.geospatial-page #main-contourGaneration .splitContainer .leftContainer .buttonContainer,
+.geospatial-page #main-slopeGaneration .splitContainer .leftContainer .buttonContainer,
+.geospatial-page #main-waterFlow .splitContainer .leftContainer .buttonContainer,
+.geospatial-page #main-waterCatchment .splitContainer .leftContainer .buttonContainer {
+  position: relative;
+  margin: 0 10px 10px 10px;
+  width: calc(100% - 20px);
+  height: 40px;
+  background: #3f3f3f;
+  border-radius: 5px;
+}
+.geospatial-page #main-crossSection .splitContainer .leftContainer .buttonContainer button,
+.geospatial-page #main-360Aerial .splitContainer .leftContainer .buttonContainer button,
+.geospatial-page #main-AIC .splitContainer .leftContainer .buttonContainer button,
+.geospatial-page #main-contourGaneration .splitContainer .leftContainer .buttonContainer button,
+.geospatial-page #main-slopeGaneration .splitContainer .leftContainer .buttonContainer button,
+.geospatial-page #main-waterFlow .splitContainer .leftContainer .buttonContainer button,
+.geospatial-page #main-waterCatchment .splitContainer .leftContainer .buttonContainer button {
+  margin: 10px;
+  text-align: center;
+  float: right;
+}
+.geospatial-page #main-crossSection .splitContainer .rightContainer,
+.geospatial-page #main-360Aerial .splitContainer .rightContainer,
+.geospatial-page #main-AIC .splitContainer .rightContainer,
+.geospatial-page #main-contourGaneration .splitContainer .rightContainer,
+.geospatial-page #main-slopeGaneration .splitContainer .rightContainer,
+.geospatial-page #main-waterFlow .splitContainer .rightContainer,
+.geospatial-page #main-waterCatchment .splitContainer .rightContainer {
+  position: relative;
+  width: 70%;
+  height: 95%;
+  padding: 10px 0px;
+  left: 130px;
+}
+.geospatial-page #main-crossSection .splitContainer .rightContainer .topContainer,
+.geospatial-page #main-360Aerial .splitContainer .rightContainer .topContainer,
+.geospatial-page #main-AIC .splitContainer .rightContainer .topContainer,
+.geospatial-page #main-contourGaneration .splitContainer .rightContainer .topContainer,
+.geospatial-page #main-slopeGaneration .splitContainer .rightContainer .topContainer,
+.geospatial-page #main-waterFlow .splitContainer .rightContainer .topContainer,
+.geospatial-page #main-waterCatchment .splitContainer .rightContainer .topContainer {
+  height: 95%;
+}
+.geospatial-page #main-crossSection .splitContainer .rightContainer .buttonContainer,
+.geospatial-page #main-360Aerial .splitContainer .rightContainer .buttonContainer,
+.geospatial-page #main-AIC .splitContainer .rightContainer .buttonContainer,
+.geospatial-page #main-contourGaneration .splitContainer .rightContainer .buttonContainer,
+.geospatial-page #main-slopeGaneration .splitContainer .rightContainer .buttonContainer,
+.geospatial-page #main-waterFlow .splitContainer .rightContainer .buttonContainer,
+.geospatial-page #main-waterCatchment .splitContainer .rightContainer .buttonContainer {
+  position: relative;
+  margin: 0 10px 10px 10px;
+  width: calc(100% - 20px);
+  height: 40px;
+  background: #3f3f3f;
+  border-radius: 5px;
+}
+.geospatial-page #main-crossSection .splitContainer .rightContainer .buttonContainer button,
+.geospatial-page #main-360Aerial .splitContainer .rightContainer .buttonContainer button,
+.geospatial-page #main-AIC .splitContainer .rightContainer .buttonContainer button,
+.geospatial-page #main-contourGaneration .splitContainer .rightContainer .buttonContainer button,
+.geospatial-page #main-slopeGaneration .splitContainer .rightContainer .buttonContainer button,
+.geospatial-page #main-waterFlow .splitContainer .rightContainer .buttonContainer button,
+.geospatial-page #main-waterCatchment .splitContainer .rightContainer .buttonContainer button {
+  margin: 10px;
+  text-align: center;
+  float: right;
+}
+.geospatial-page #main-crossSection .contractContainer, .geospatial-page #main-crossSection .budgetContainer, .geospatial-page #main-crossSection .claimContainer,
+.geospatial-page #main-360Aerial .contractContainer,
+.geospatial-page #main-360Aerial .budgetContainer,
+.geospatial-page #main-360Aerial .claimContainer,
+.geospatial-page #main-AIC .contractContainer,
+.geospatial-page #main-AIC .budgetContainer,
+.geospatial-page #main-AIC .claimContainer,
+.geospatial-page #main-contourGaneration .contractContainer,
+.geospatial-page #main-contourGaneration .budgetContainer,
+.geospatial-page #main-contourGaneration .claimContainer,
+.geospatial-page #main-slopeGaneration .contractContainer,
+.geospatial-page #main-slopeGaneration .budgetContainer,
+.geospatial-page #main-slopeGaneration .claimContainer,
+.geospatial-page #main-waterFlow .contractContainer,
+.geospatial-page #main-waterFlow .budgetContainer,
+.geospatial-page #main-waterFlow .claimContainer,
+.geospatial-page #main-waterCatchment .contractContainer,
+.geospatial-page #main-waterCatchment .budgetContainer,
+.geospatial-page #main-waterCatchment .claimContainer {
+  height: calc(100vh - 165px);
+  width: 100%;
+}
+.geospatial-page #main-crossSection .container-table,
+.geospatial-page #main-360Aerial .container-table,
+.geospatial-page #main-AIC .container-table,
+.geospatial-page #main-contourGaneration .container-table,
+.geospatial-page #main-slopeGaneration .container-table,
+.geospatial-page #main-waterFlow .container-table,
+.geospatial-page #main-waterCatchment .container-table {
+  position: absolute;
+  width: calc(100% - 40px);
+  overflow: auto;
+  left: 20px;
+  float: right;
+  top: 55px;
+}
+.geospatial-page #main-crossSection .container-table table,
+.geospatial-page #main-360Aerial .container-table table,
+.geospatial-page #main-AIC .container-table table,
+.geospatial-page #main-contourGaneration .container-table table,
+.geospatial-page #main-slopeGaneration .container-table table,
+.geospatial-page #main-waterFlow .container-table table,
+.geospatial-page #main-waterCatchment .container-table table {
+  border-collapse: collapse;
+  background-color: #ffffff;
+  width: 100%;
+}
+.geospatial-page #main-crossSection .container-table table td,
+.geospatial-page #main-360Aerial .container-table table td,
+.geospatial-page #main-AIC .container-table table td,
+.geospatial-page #main-contourGaneration .container-table table td,
+.geospatial-page #main-slopeGaneration .container-table table td,
+.geospatial-page #main-waterFlow .container-table table td,
+.geospatial-page #main-waterCatchment .container-table table td {
+  text-align: left;
+  padding: 8px;
+  border: none;
+  line-height: 25px;
+  vertical-align: center;
+}
+.geospatial-page #main-crossSection .container-table table td span,
+.geospatial-page #main-360Aerial .container-table table td span,
+.geospatial-page #main-AIC .container-table table td span,
+.geospatial-page #main-contourGaneration .container-table table td span,
+.geospatial-page #main-slopeGaneration .container-table table td span,
+.geospatial-page #main-waterFlow .container-table table td span,
+.geospatial-page #main-waterCatchment .container-table table td span {
+  margin-right: 10px;
+}
+.geospatial-page #main-crossSection .container-table table td span img,
+.geospatial-page #main-360Aerial .container-table table td span img,
+.geospatial-page #main-AIC .container-table table td span img,
+.geospatial-page #main-contourGaneration .container-table table td span img,
+.geospatial-page #main-slopeGaneration .container-table table td span img,
+.geospatial-page #main-waterFlow .container-table table td span img,
+.geospatial-page #main-waterCatchment .container-table table td span img {
+  height: 15px;
+  width: 15px;
+}
+.geospatial-page #main-crossSection .container-table table th:first-child,
+.geospatial-page #main-360Aerial .container-table table th:first-child,
+.geospatial-page #main-AIC .container-table table th:first-child,
+.geospatial-page #main-contourGaneration .container-table table th:first-child,
+.geospatial-page #main-slopeGaneration .container-table table th:first-child,
+.geospatial-page #main-waterFlow .container-table table th:first-child,
+.geospatial-page #main-waterCatchment .container-table table th:first-child {
+  border-top-left-radius: 5px;
+}
+.geospatial-page #main-crossSection .container-table table th:last-child,
+.geospatial-page #main-360Aerial .container-table table th:last-child,
+.geospatial-page #main-AIC .container-table table th:last-child,
+.geospatial-page #main-contourGaneration .container-table table th:last-child,
+.geospatial-page #main-slopeGaneration .container-table table th:last-child,
+.geospatial-page #main-waterFlow .container-table table th:last-child,
+.geospatial-page #main-waterCatchment .container-table table th:last-child {
+  border-top-right-radius: 5px;
+}
+.geospatial-page #main-crossSection .container-table table tr:nth-of-type(even),
+.geospatial-page #main-360Aerial .container-table table tr:nth-of-type(even),
+.geospatial-page #main-AIC .container-table table tr:nth-of-type(even),
+.geospatial-page #main-contourGaneration .container-table table tr:nth-of-type(even),
+.geospatial-page #main-slopeGaneration .container-table table tr:nth-of-type(even),
+.geospatial-page #main-waterFlow .container-table table tr:nth-of-type(even),
+.geospatial-page #main-waterCatchment .container-table table tr:nth-of-type(even) {
+  background: #f2f2f2;
+}
+.geospatial-page #main-crossSection .container-table table tr:nth-of-type(odd),
+.geospatial-page #main-360Aerial .container-table table tr:nth-of-type(odd),
+.geospatial-page #main-AIC .container-table table tr:nth-of-type(odd),
+.geospatial-page #main-contourGaneration .container-table table tr:nth-of-type(odd),
+.geospatial-page #main-slopeGaneration .container-table table tr:nth-of-type(odd),
+.geospatial-page #main-waterFlow .container-table table tr:nth-of-type(odd),
+.geospatial-page #main-waterCatchment .container-table table tr:nth-of-type(odd) {
+  background: white;
+}
+.geospatial-page #main-crossSection .container-table table tr:hover,
+.geospatial-page #main-360Aerial .container-table table tr:hover,
+.geospatial-page #main-AIC .container-table table tr:hover,
+.geospatial-page #main-contourGaneration .container-table table tr:hover,
+.geospatial-page #main-slopeGaneration .container-table table tr:hover,
+.geospatial-page #main-waterFlow .container-table table tr:hover,
+.geospatial-page #main-waterCatchment .container-table table tr:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+.geospatial-page #main-crossSection .container-table table th,
+.geospatial-page #main-360Aerial .container-table table th,
+.geospatial-page #main-AIC .container-table table th,
+.geospatial-page #main-contourGaneration .container-table table th,
+.geospatial-page #main-slopeGaneration .container-table table th,
+.geospatial-page #main-waterFlow .container-table table th,
+.geospatial-page #main-waterCatchment .container-table table th {
+  background-color: #3f3f3f;
+  color: white;
+  text-align: left;
+  padding: 8px;
+  line-height: 25px;
+}
+.geospatial-page #main-crossSection .container-table table th:hover,
+.geospatial-page #main-360Aerial .container-table table th:hover,
+.geospatial-page #main-AIC .container-table table th:hover,
+.geospatial-page #main-contourGaneration .container-table table th:hover,
+.geospatial-page #main-slopeGaneration .container-table table th:hover,
+.geospatial-page #main-waterFlow .container-table table th:hover,
+.geospatial-page #main-waterCatchment .container-table table th:hover {
+  cursor: default;
+}
+.geospatial-page #main-crossSection .container-table table th img,
+.geospatial-page #main-360Aerial .container-table table th img,
+.geospatial-page #main-AIC .container-table table th img,
+.geospatial-page #main-contourGaneration .container-table table th img,
+.geospatial-page #main-slopeGaneration .container-table table th img,
+.geospatial-page #main-waterFlow .container-table table th img,
+.geospatial-page #main-waterCatchment .container-table table th img {
+  height: 10px;
+  width: auto;
+  margin-left: 5px;
+}
+.geospatial-page #main-crossSection .container-table table th img:hover,
+.geospatial-page #main-360Aerial .container-table table th img:hover,
+.geospatial-page #main-AIC .container-table table th img:hover,
+.geospatial-page #main-contourGaneration .container-table table th img:hover,
+.geospatial-page #main-slopeGaneration .container-table table th img:hover,
+.geospatial-page #main-waterFlow .container-table table th img:hover,
+.geospatial-page #main-waterCatchment .container-table table th img:hover {
+  cursor: pointer;
+}
+.geospatial-page #main-claims,
+.geospatial-page #archived-user {
+  height: calc(100vh - 90px);
+  float: right;
+  overflow: auto;
+  padding: 0px;
+  top: 0px;
+  margin: 10px;
+}
+.geospatial-page #main-vo,
+.geospatial-page #archived-project {
+  height: calc(100vh - 90px);
+  float: right;
+  overflow: auto;
+  padding: 0px;
+  top: 0px;
+  margin: 10px;
+}
+.geospatial-page #main-vo .topcontainer {
+  height: 50vh;
+}
+.geospatial-page #main-vo .bottomcontainer {
+  height: calc(50vh - 100px);
+}/*# sourceMappingURL=geospatial.css.map */

@@ -1,0 +1,203 @@
+body {
+    background-color: #e4e4e4 !important;
+}
+
+.financePage {
+    width: calc(100% - 1000px);
+    height: 100vh;
+    background: #e4e4e4;
+    padding: 20px 500px;
+    overflow: auto;
+    height: calc(100vh - 120px);
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    transition: 0.2s;
+
+    &.active{
+        width: calc(100% - 68px);
+    }
+
+    .filterContainer {
+        margin: 0 0 35px 0;
+        padding: 25px;
+        width: calc(100% - 50px);
+        height: 40px;
+        text-align: center;
+
+        input {
+            position: relative;
+            height: 45px;
+            width: 60%;
+            outline: none;
+            padding: 10px 40px 10px 50px;
+            border-radius: 3px;
+            border: none;
+            color: black;
+            background: #cecece;
+            -webkit-box-shadow: 0px 3px 5px #cecece;
+            box-shadow: 0px 3px 5px #cecece;
+            transition: 0.2s;
+
+            &:hover {
+                background: white;
+            }
+
+            &.active{
+                width: 45%;
+            }
+        }
+
+        img.icon {
+            z-index: 1;
+            width: 23px;
+            height: 23px;
+            position: relative;
+            left: 44px;
+            top: 8px;
+        }
+
+        img.clear {
+            display: none;
+            z-index: 1;
+            width: 18px;
+            height: 18px;
+            position: relative;
+            right: 35px;
+            top: 5px;
+        }
+    }
+
+    // .cardsContainer {
+    //     overflow: auto;
+    //     display: flex;
+    //     flex-direction: row;
+    //     flex-wrap: wrap;
+    //     overflow: auto;
+    //     height: calc(100% - 220px);
+    .cardContainer{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        
+        .card {
+        position: relative;
+        height: 130px;
+        width: 130px;
+        background: rgb(245, 245, 245);
+        box-shadow: 0px 1px 5px rgba(153, 153, 153, 0.363);
+        margin: 10px;
+        text-align: center;
+        transition: 0.12s;
+        font-family: SegoeUI,Helvetica,Arial,sans-serif;
+        font-size: 14px;
+        overflow: hidden;
+        color: #3f3f3f;
+
+        &:hover {
+            z-index: 2;
+            transform: scale(1.1, 1.1);
+            box-shadow: 0px 3px 7px rgba(153, 153, 153, 0.5);
+            background: rgb(255, 255, 255);
+            cursor: pointer;
+            color: red;
+        }
+
+        &.active{
+            &:hover{
+                cursor: default;
+            }
+        }
+
+        // .notiBubble {
+        //     color: white;
+        //     position: absolute;
+        //     top: -15px;
+        //     left: -15px;
+        //     background-image: radial-gradient(#ff0303, #ca0000, #9a0000);
+        //     border-radius: 50%;
+        //     height: 35px;
+        //     width: 35px;
+        //     text-align: center;
+        //     line-height: 35px;
+        //     font-weight: bold;
+        // }
+
+        img {
+            position: relative;
+            height: 60px;
+            margin: 15px 10px 3px 10px;
+            width: 60px;
+            display: inline-block;
+            border-radius: 50%;
+        }
+
+        a.pName {
+            position: relative;
+            display: block;
+            margin: 10px;
+            height: 32px;
+            width: 110px;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        .buttonContainer {
+            position: absolute;
+            display: grid;
+            top: 0px;
+            left: 0px;
+            grid-template-columns: 65px 65px;
+            height: 100%;
+            width: 100%;
+            transition: 0.2s;
+
+            // &:hover {
+            //     background: rgba(63, 63, 63, 0.904);
+            // }
+
+            button {
+                color: rgb(160, 160, 160);
+                display: none;
+                background: rgba(63, 63, 63, 0);
+                outline: none;
+                border: 0px;
+                height: 65px;
+                width: 65px;
+                transition: 0.15s;
+
+                img.appicon {
+                    height: 37px;
+                    width: auto;
+                }
+
+                a.caption {
+                    font-size: 12px;
+                    display: none;
+                }
+
+                &:hover {
+                    color: white;
+                    background: rgba(63, 63, 63, 0.692);
+                    cursor: pointer;
+
+                    img.appicon {
+                        display: none;
+                        transition: .5s;
+                    }
+
+                    a.caption {
+                        display: block;
+                        transition: .5s;
+                    }
+                }                
+            }
+        }
+
+        // }
+    }
+    }
+    
+}

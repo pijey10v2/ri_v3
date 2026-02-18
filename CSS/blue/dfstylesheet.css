@@ -1,0 +1,158 @@
+/* for auto hide panel*/
+
+/* for left auto hide panel */
+
+.dfahpanelleft, .dfbhpanelleft, .dfchpanelleft  {
+	background-Color: rgb(66, 66, 66);
+	color: rgb(167, 167, 185);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px/30px;
+	font-weight: normal;
+}
+
+
+/* for top auto hide panel */
+
+.dfahpaneltop {
+	background-Color: rgb(66, 66, 66);
+	color: rgb(167, 167, 185);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px/30px;
+	font-weight: normal;
+}
+
+
+/* for right auto hide panel */
+
+.dfahpanelright {
+	background-Color: rgb(66, 66, 66);
+	color: rgb(167, 167, 185);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px/24px;
+    font-weight: normal;
+    font-weight: normal;
+	width: 30px;
+}
+
+
+/* for bottom auto hide panel */
+
+.dfahpanelbottom {
+	background-Color: rgb(66, 66, 66);
+	color: rgb(167, 167, 185);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px/24px;
+	font-weight: normal;
+}
+
+
+/* for tab panel global setting*/
+
+.dftabpanel {
+	background-Color: rgb(66, 66, 66);
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px/30px;
+	font-weight: normal;
+}
+
+
+/* floate frame global setting */
+
+.dffloatframe {
+	background-Color: rgb(45, 45, 45);
+	border-Radius: 8px
+}
+
+
+/* for DSXDFPanel */
+
+
+/* for title bar */
+
+.mydfaTitle, .mydfbTitle, .mydfcTitle {
+	background-Color: rgb(45, 45, 45);
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	height: 25px;
+	text-align: center;
+	padding-right: 0px;
+	vertical-align: baseline
+}
+
+
+/* for Auto Hide */
+
+.mydfaAutoHide, .mydfbAutoHide, .mydfcAutoHide {
+    border-left: 0px solid black;
+    color: Gray;
+	padding-right: 10px;
+	background-Color: rgb(45, 45, 45);
+	font-family: Arial, Helvetica, sans-serif;
+	font-style: normal;
+    font-size: 14px;
+    
+    
+}
+
+.mydfaAutoHide:hover, .mydfbAutoHide:hover,.mydfcAutoHide:hover {
+    padding-left:3px;
+	text-decoration: none;
+	color: white;
+	cursor:pointer;
+	background-Color: rgb(32, 32, 32);
+}
+
+
+/* for Pin  */
+
+.mydfaPin, .mydfbPin, .mydfcPin {
+	background-Repeat: no-repeat
+}
+
+
+/* for Close */
+
+.mydfaClose, .mydfbClose, .mydfcClose {
+	background-Repeat: no-repeat
+}
+
+
+/* for Tab Inactive */
+
+.mydfaTabInactive, .mydfbTabInactive, .mydfcTabInactive {
+    text-align: center;
+	background-Color: rgb(45, 45, 45);
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	height: 16;
+	color: Gray;
+	font-family: Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-size: 14px;
+}
+
+
+/* for Tab Active */
+
+.mydfaTabActive, .mydfbTabActive, .mydfcTabActive {
+    text-align: center;
+	background-Color: rgb(32, 32, 32);
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	height: 20;
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-size: 14px;
+}
+
+canvas.chartRI{
+	background: none;
+}
+
+canvas.dffloatframe{
+	box-shadow:0px 0px 10px 3px rgba(0, 0, 0, 0.664);
+}

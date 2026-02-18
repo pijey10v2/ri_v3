@@ -1,0 +1,92 @@
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    background: #000;
+}
+
+.fullWindow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    font-family: sans-serif;
+}
+#jsonAssetTable{
+overflow: auto;
+}
+table {
+	border-collapse: collapse;
+	background-color:#ffffff;
+	width: 100%;
+}
+td {
+	text-align: left;
+	padding: 5px;
+	border: none;
+}
+td:hover {
+	cursor: pointer;
+}
+th:first-child {
+border-top-left-radius: 5px;
+}
+th:last-child {
+border-top-right-radius: 5px;
+}
+tr:nth-of-type(even) {
+background: #f2f2f2;
+}
+tr:nth-of-type(odd) {
+background: white;
+}
+tr:hover {
+	background-color: #ddd;
+}
+tr.clickable:hover {
+	cursor: pointer;
+}
+tr.active {
+	background-color: #ddd;
+    cursor: pointer;
+}
+tr.active td {
+	font-weight: bold;
+}
+th {
+background-color: #3f3f3f;
+color: white;
+text-align: left;
+padding:8px;
+}
+
+@media screen and (max-width: 1366px){
+    table {
+        border-collapse: collapse;
+        background-color:#ffffff;
+        width: 100%;
+        font-size: 10px;
+    }
+    th {
+        background-color: #3f3f3f;
+        color: white;
+        text-align: left;
+        padding: 0 8px;
+    }
+    td {
+        text-align: left;
+        padding: 0 5px;
+        border: none;
+    }
+}

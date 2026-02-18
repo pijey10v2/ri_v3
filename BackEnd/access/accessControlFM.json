@@ -1,0 +1,107 @@
+{
+    "Senior Civil Engineer (Road Asset)": {
+        "FM": {},
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Lookup" : true,
+                "AssetType" : true,
+                "CategoryType" : true
+            },
+            "Project": true
+        }
+    },
+    "Assistant Director (Road Asset)": {
+        "FM": {},
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Lookup" : true,
+                "AssetType" : true,
+                "CategoryType" : true
+            },
+            "Project": true
+        }
+    },
+    "Civil Engineer (Road Asset)": {
+        "FM": {},
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Lookup" : true,
+                "AssetType" : true,
+                "CategoryType" : true
+            },
+            "Project": true
+        }
+    },
+    "Facilities User": {
+        "FM": {},
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Lookup" : false,
+                "AssetType" : false,
+                "CategoryType" : false
+            },
+            "Project": true
+        }
+    },
+    "Facilities Management Team": {
+        "FM": {},
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Lookup" : false,
+                "AssetType" : false,
+                "CategoryType" : false
+            },
+            "Project": true
+        }
+    },
+    "Facilities Service Provider": {
+        "FM": {},
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Lookup" : false,
+                "AssetType" : false,
+                "CategoryType" : false
+            },
+            "Project": true
+        }
+    },
+    "Mechanical Team": {
+        "FM": {},
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Lookup" : false,
+                "AssetType" : false,
+                "CategoryType" : false
+            },
+            "Project": true
+        }
+    }
+}

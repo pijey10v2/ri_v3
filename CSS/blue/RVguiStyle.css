@@ -1,0 +1,283 @@
+
+html {
+    height: 100%;
+}
+
+body {
+    --shadow: #29292933;
+    --appButtonFont: rgb(148, 148, 148);
+    --primary-lighter: #62aced;
+    --primary-light: #58a7ec;
+    --primary: #1e88e5;
+    --primary-dim:#187ad0;
+    --primary-dimmer:#156cb9;
+    --background: #E1E2E1;
+    --surface: #F5F5F6;
+    --surface-opacity: #f5f5f6b3;
+    --arrow: #ffffffb3;
+    --top: #ffff;
+    --backdrop: #ffffff8c;
+    --on-primary: #ffffff;
+    --on-surface: #4d4d4d;
+    --on-error: #ffffff;
+    --text-weight: bold;
+    --text-container: #3a3a3a14;
+    --text-container-readonly: rgb(45 45 45 / 14%);
+    --text-container-autofill: #e7e7e8;
+    --disabled: #c1c1c7;
+    --border-bottom: #dadada;
+    --loader1: #1e88e5;
+    --loader-dim: #166DBA;
+    --loader-dimmer: #11528C;
+    --wizard-iframe: #ffff;
+    --thumb: #cfcece96;
+    --thumb-track: #f1f1f1;
+    --thumb-hover: #cfcece;
+    --button-hover: rgb(255 255 255 / 90%);
+    --gantt-group: #f7f7f7;
+    --gantt-weekend: #3a3a3a14;
+    --tile-disabled: #3a3a3a14;
+    --top-transparent: rgba(255, 255, 255, 0.551);
+}
+
+body.dark {
+--shadow: #29292933;
+--appButtonFont: rgb(148, 148, 148);
+--primary-lighter: #5d9ed9;
+--primary-light: #1875c8;
+--primary: #135ea0;
+--primary-dim:#115490;
+--primary-dimmer: #0f4b80;
+--background: #0A0A0A;
+--surface: #212121;
+--surface-opacity: #212121b3;
+--top: #363636;
+--backdrop: #0000008c;
+--on-primary: #E1E2E1;
+--on-surface: #F5F5F6;
+--on-error: #ffff;
+--text-weight: 500;
+--text-container: #3a3a3a;
+--text-container-readonly: #2a2a2a;
+--text-container-autofill: #3a3a3a;
+--disabled: #1a1a1a;
+--border-bottom: #5a5a5a;
+--loader1: #135ea0;
+--loader-dim: #105189;
+--loader-dimmer: #0D4472;
+--wizard-iframe: #3b3b3b73;
+--thumb: #494848;
+--thumb-track: #5c5c5c;
+--thumb-hover: #414040;
+--button-hover: rgb(72 72 72 / 90%);
+--gantt-group: #212121;
+--gantt-weekend: #131313;
+--tile-disabled: black;
+--top-transparent: rgba(54, 54, 54, 0.469);
+}
+
+body.dark img {
+filter: brightness(0.8) contrast(1.2);
+}
+
+body.darling {
+--shadow: #29292933;
+--appButtonFont: rgb(148, 148, 148);
+--primary-lighter: #aa5f64;
+--primary-light: #a8212a;
+--primary: #861a22;
+--primary-dim:#78171e;
+--primary-dimmer: #6b141b;
+--background: #f4cdd4;
+--surface: #f7f2eb;
+--surface-opacity: #f7f2ebb3;
+--arrow: #ffffffb3;
+--top: #ffff;
+--backdrop: #FDF7F78c;
+--on-primary: #ffffff;
+--on-surface: #0b322b;
+--on-error: #ffffff;
+--text-weight: bold;
+--text-container: #3a3a3a14;
+--text-container-readonly: rgb(45 45 45 / 14%);
+--text-container-autofill: #e7e7e8;
+--disabled: #dbc5a6;
+--border-bottom: #dbc5a6;
+--loader1: #861A22;
+--loader-dim: #5B1217;
+--loader-dimmer: #300A0C;
+--wizard-iframe: #ffff;
+--thumb: #dbc5a6;
+--thumb-track: #dbc5a683;
+--thumb-hover: #dabd94;
+--button-hover: rgb(255 255 255 / 90%);
+--gantt-group: #f7f7f7;
+--gantt-weekend: #3a3a3a14;
+--tile-disabled: #3a3a3a14;
+--top-transparent: rgba(255, 255, 255, 0.551);
+}
+
+body.laser {
+--shadow: #29292933;
+--appButtonFont: rgb(148, 148, 148);
+--primary-lighter: #6e61a1;
+--primary-light: #594a93;
+--primary: #301d78;
+--primary-dim:#2b1a6c;
+--primary-dimmer:#261760;
+--background: #08040b;
+--surface: #27214d;
+--surface-opacity: #27214db3;
+--arrow: #ffffffb3;
+--top: #3c2496;
+--backdrop: #20134F8c;
+--on-primary: #d42450;
+--on-surface: #00a7b5;
+--on-error: #ffffff;
+--text-weight: bold;
+--text-container: #3a3a3a14;
+--text-container-readonly: rgb(45 45 45 / 14%);
+--text-container-autofill: #e7e7e8;
+--disabled: #1f1a3e;
+--border-bottom: #312960;
+--loader1: #d42450;
+--loader-dim: #A81D40;
+--loader-dimmer: #7D152F;
+--wizard-iframe: #ffff;
+--thumb: #362691;
+--thumb-track: #31296083;
+--thumb-hover: #291d6e;
+--button-hover: rgb(255 255 255 / 90%);
+--gantt-group: #f7f7f7;
+--gantt-weekend: #3a3a3a14;
+--tile-disabled: #3a3a3a14;
+--top-transparent: rgba(60, 36, 150, 0.469);
+}
+
+body.matcha {
+    --shadow: #29292933;
+    --appButtonFont: rgb(148, 148, 148);
+    --primary-lighter: #a1b17f;
+    --primary-light: #94af5f;
+    --primary: #789048;
+    --primary-dim:#6a7f40;
+    --primary-dimmer: #5c6e37;
+    --background: #eadab7;
+    --surface: #f0f0d8;
+    --surface-opacity: #f0f0d8b3;
+    --arrow: #ffffffb3;
+    --top: #ffffff;
+    --backdrop: #F6EEDE8c;
+    --on-primary: #f0f0d8;
+    --on-surface: #604848;
+    --on-error: #ffffff;
+    --text-weight: bold;
+    --text-container: #3a3a3a14;
+    --text-container-readonly: rgb(45 45 45 / 14%);
+    --text-container-autofill: #e7e7e8;
+    --disabled: #d7d796;
+    --border-bottom: #c0d860;
+    --loader1: #789048;
+    --loader-dim: #5C6E37;
+    --loader-dimmer: #404C26;
+    --wizard-iframe: #ffff;
+    --thumb: #d7d796;
+    --thumb-track: #d7d79683;
+    --thumb-hover: #c7c783;
+    --button-hover: rgb(255 255 255 / 90%);
+    --gantt-group: #f7f7f7;
+    --gantt-weekend: #3a3a3a14;
+    --tile-disabled: #3a3a3a14;
+    --top-transparent: rgba(255, 255, 255, 0.469);
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    background: #000;
+}
+
+.fullWindow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    font-family: sans-serif;
+}
+#jsonAssetTable{
+overflow: auto;
+}
+table {
+	border-collapse: collapse;
+	background-color:#ffffff;
+	width: 100%;
+}
+td {
+	text-align: left;
+	padding: 5px;
+	border: none;
+}
+td:hover {
+	cursor: pointer;
+}
+/* th:first-child {
+border-top-left-radius: 5px;
+}
+th:last-child {
+border-top-right-radius: 5px;
+} */
+tr:nth-of-type(even) {
+    background: var(--surface-opacity);
+    color: var(--on-surface);
+}
+tr:nth-of-type(odd) {
+    background: var(--background);
+    color: var(--on-surface);
+}
+tr:hover {
+	background-color: #ddd;
+}
+tr.clickable:hover {
+	cursor: pointer;
+}
+tr.active {
+	background-color: #ddd;
+    cursor: pointer;
+}
+tr.active td {
+	font-weight: bold;
+}
+th {
+background-color: #1565c0;
+color: white;
+text-align: left;
+padding:8px;
+text-transform: uppercase;
+}
+
+@media screen and (max-width: 1366px){
+    table {
+        border-collapse: collapse;
+        background-color:#ffffff;
+        width: 100%;
+        font-size: 10px;
+    }
+    th {
+        background-color: #1565c0;
+        color: white;
+        text-align: left;
+        padding: 0 8px;
+    }
+    td {
+        text-align: left;
+        padding: 0 5px;
+        border: none;
+    }
+}

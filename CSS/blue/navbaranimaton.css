@@ -1,0 +1,1904 @@
+.nav-bar {
+  top: 0px;
+  position: absolute;
+  width: 100%;
+  height: 70px;
+  align-items: center;
+  z-index: 6;
+  background-image: linear-gradient(#1565c0, #003c8f);
+}
+.nav-bar.index {
+  box-shadow: 0px 10px 10px rgba(13, 72, 160, 0.2);
+}
+.nav-bar .sidebarItem {
+  align-items: center;
+  text-align: center;
+  float: left;
+  height: 30px;
+  width: 30px;
+  padding: 20px 20px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.nav-bar .sidebarItem img {
+  height: 30px;
+  width: 30px;
+}
+.nav-bar .sidebarItem:hover {
+  cursor: pointer;
+  background: #5e92f3;
+}
+.nav-bar ul {
+  position: relative;
+  align-items: center;
+  margin: 0px;
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+}
+.nav-bar ul li {
+  list-style: none;
+  padding: 0;
+}
+.nav-bar ul li a {
+  height: 25px;
+  font-weight: bold;
+}
+.nav-bar ul li a img {
+  vertical-align: middle;
+  height: 41px;
+  padding: 14px 5px;
+}
+.nav-bar ul li a:visited {
+  color: black;
+}
+.nav-bar ul li a:hover {
+  color: white;
+  cursor: pointer;
+}
+.nav-bar ul li a span {
+  color: white;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 20px;
+}
+.nav-bar ul li a span:hover {
+  color: white;
+}
+.nav-bar .navbarItem {
+  align-items: center;
+  text-align: center;
+  right: 0px;
+  float: right;
+  height: 60px;
+  width: 60px;
+  padding: 5px 5px;
+  background: rgba(0, 0, 0, 0.25);
+  /*
+  &::after{
+      display: inline-block;
+      position: absolute;
+      right: 5px;
+      color: white;
+      content: "FM";
+      top: 26px;
+      height: 16px;
+      width: 60px;
+      text-align: center;
+  }
+  */
+}
+.nav-bar .navbarItem#navprojectName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+  line-height: 70px;
+  position: relative;
+  color: white;
+  height: 70px;
+  width: auto;
+  max-width: 300px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border-right: 1px solid #1565c0;
+}
+.nav-bar .navbarItem#notiIcon {
+  position: relative;
+  color: white;
+  height: 70px;
+  width: auto;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0 10px;
+  display: inline-flex;
+  background: rgba(0, 0, 0, 0.25);
+  border-right: 1px solid #1565c0;
+}
+.nav-bar .navbarItem#notiIcon:hover {
+  cursor: pointer;
+  background: #5e92f3;
+}
+.nav-bar .navbarItem#notiIcon span {
+  display: block;
+  border-radius: 50%;
+  background-color: #FFF;
+  box-shadow: 1px 1px 5px #808080;
+  padding: 10px;
+  width: 25px;
+  height: 25px;
+  margin: 0 auto;
+  line-height: 30px;
+  text-align: center;
+  position: relative;
+}
+.nav-bar .navbarItem#notiIcon span img {
+  position: relative;
+  padding: 0px;
+  height: 30px;
+  width: auto;
+  top: -2px;
+  left: -2px;
+}
+.nav-bar .navbarItem#notiIcon span mark {
+  border-radius: 50%;
+  border: 2px solid #FFF;
+  width: 20px;
+  height: 20px;
+  background-color: #FF6B6B;
+  position: absolute;
+  top: -4px;
+  left: -7px;
+  font-size: 10px;
+  line-height: 20px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  color: #FFF;
+  font-weight: 700;
+}
+.nav-bar .navbarItem#notiIcon span mark.big {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  line-height: 30px;
+  font-size: 16px;
+  top: 9px;
+  left: 9px;
+}
+.nav-bar .navbarItem#notiIcon span mark.green {
+  background-color: #27ae60;
+}
+.nav-bar .navbarItem#notiIcon span mark.blue {
+  background-color: #3498db;
+}
+.nav-bar .navbarItem .navbar-infopicture {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  top: 10px;
+  right: 10px;
+  position: absolute;
+}
+.nav-bar .navbarItem .navbar-infopicture span.initial {
+  position: absolute;
+  color: white;
+  text-transform: uppercase;
+  transform: translate(-50%, 100%);
+}
+.nav-bar .navbarItem:hover {
+  cursor: pointer;
+  background: #5e92f3;
+}
+
+.minimize {
+  display: none;
+  z-index: 6;
+  position: absolute;
+  background: rgb(221, 221, 221);
+  top: 0px;
+  right: 50%;
+  width: 80px;
+  height: 17px;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  text-align: center;
+  float: right;
+  box-shadow: 2px 3px rgba(0, 0, 0, 0.5568627451);
+}
+.minimize:hover,
+.minimize :active {
+  cursor: pointer;
+  background-image: linear-gradient(rgb(221, 221, 221), rgba(95, 95, 95, 0.5568627451));
+}
+
+.appsbar {
+  display: none;
+  z-index: 6;
+  position: absolute;
+  background: #f5f5f5;
+  height: 100%;
+  width: 480px;
+  overflow: hidden;
+  box-shadow: 5px 0px 20px 0px rgba(158, 158, 158, 0.5019607843);
+  color: black;
+}
+.appsbar .sidebarItem {
+  align-items: center;
+  text-align: center;
+  height: 30px;
+  width: 30px;
+  padding: 20px 20px;
+}
+.appsbar .sidebarItem img {
+  height: 30px;
+  width: 30px;
+}
+.appsbar .sidebarItem:hover, .appsbar .sidebarItem.active {
+  cursor: pointer;
+  background: white;
+}
+.appsbar .appscontainer {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.appsbar .appscontainer h3 {
+  border-top: 1px solid grey;
+  width: 100%;
+  padding: 10px 0;
+}
+.appsbar .appscontainer .scrollcontainer {
+  height: calc(50vh - 160px);
+  width: 100%;
+  overflow: auto;
+}
+.appsbar .appscontainer .scrollcontainer .appsbutton {
+  padding: 10px;
+  display: grid;
+  grid-gap: 0px;
+  grid-template-columns: 50% 50%;
+  margin: 0px 0;
+  margin-right: 8px;
+  padding: 5px 0;
+}
+.appsbar .appscontainer .scrollcontainer .appsbutton button {
+  position: relative;
+  outline: none;
+  text-align: left;
+  padding: 10px;
+  border: none;
+  font-size: 14px;
+  height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+}
+.appsbar .appscontainer .scrollcontainer .appsbutton button:hover {
+  cursor: pointer;
+  background: rgb(255, 255, 255);
+  box-shadow: 5px 5px 10px 0px rgba(158, 158, 158, 0.4745098039);
+  z-index: 2;
+}
+.appsbar .appscontainer .scrollcontainer .appsbutton button span.img {
+  display: inline-block;
+}
+.appsbar .appscontainer .scrollcontainer .appsbutton button span.img img {
+  vertical-align: middle;
+  height: 25px;
+  width: 25px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+.appsbar .appscontainer .scrollcontainer .appsbutton button span.atag {
+  display: inline-block;
+  width: calc(100% - 30px);
+  overflow: hidden;
+  vertical-align: middle;
+}
+.appsbar .appscontainer .scrollcontainer .appsbutton button span.atag a {
+  display: inline-block;
+  text-decoration: none;
+  color: black;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 25px;
+  width: 100%;
+  line-height: 30px;
+}
+.appsbar .projectcontainer {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.appsbar .projectcontainer h3 {
+  border-top: 1px solid grey;
+  width: 100%;
+  padding: 10px 0;
+}
+.appsbar .projectcontainer .scrollcontainer {
+  height: calc(50vh - 80px);
+  width: 100%;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton {
+  padding: 10px;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 48% 48%;
+  margin: 5px 0;
+  margin-right: 8px;
+  padding: 5px 0;
+  z-index: 2;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton#projectslist {
+  border-bottom: 1px solid grey;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton button {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  outline: none;
+  text-align: left;
+  padding: 10px;
+  border: none;
+  font-size: 14px;
+  background-color: #f5f5f5;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton button.activeProject {
+  background: white;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton button:hover {
+  cursor: pointer;
+  background: rgb(255, 255, 255);
+  box-shadow: 5px 5px 10px 0px rgba(158, 158, 158, 0.4745098039);
+  z-index: 2;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton button span.img {
+  display: inline-block;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton button span.img img {
+  vertical-align: middle;
+  height: 25px;
+  width: 25px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton button span.atag {
+  display: inline-block;
+  width: calc(100% - 30px);
+  overflow: hidden;
+  vertical-align: middle;
+}
+.appsbar .projectcontainer .scrollcontainer .appsbutton button span.atag a {
+  display: inline-block;
+  text-decoration: none;
+  color: black;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 25px;
+  width: 100%;
+  line-height: 30px;
+}
+
+.appsbar-exec {
+  width: 16rem;
+  height: calc(100% - 3.1rem);
+  background-color: rgb(255, 255, 255);
+  z-index: 5;
+  position: absolute;
+  top: 3.1rem;
+  left: -25rem;
+  transition: 0.2s;
+  overflow-x: hidden;
+}
+.appsbar-exec .projectcontainer-exec {
+  max-height: calc(100% - 6rem);
+}
+.appsbar-exec .appscontainer-exec {
+  margin: 0px 0.6rem;
+}
+.appsbar-exec .appscontainer-exec .title {
+  width: 100%;
+  font-size: 0.9rem;
+  margin-top: 0.7rem;
+  font-weight: bold;
+  border-top: 1px solid rgb(218, 218, 218);
+  padding: 0.7rem 0px;
+}
+.appsbar-exec .appscontainer-exec.bottom {
+  position: absolute;
+  bottom: 3px;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec {
+  display: grid;
+  grid-gap: 0px;
+  grid-template-columns: 50% 50%;
+  padding: 0.3rem 0;
+  overflow-y: auto;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec.grid-one {
+  grid-template-columns: none;
+  margin-right: 0;
+  width: 14.8rem;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec button {
+  position: relative;
+  outline: none;
+  text-align: left;
+  padding: 0.6rem;
+  border: none;
+  height: 100%;
+  width: 100%;
+  background-color: #ffffff;
+  background-color: #ffffff;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec button:hover {
+  cursor: pointer;
+  background-color: #f5f5f6;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec button span.img {
+  display: inline-block;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec button span.img img {
+  vertical-align: middle;
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-right: 0.3rem;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec button span.img i {
+  vertical-align: middle;
+  font-size: 1.1rem;
+  margin-right: 0.3rem;
+}
+.appsbar-exec .appscontainer-exec .appsbutton-exec button span.atag {
+  display: inline-block;
+  width: calc(100% - 2rem);
+  overflow: hidden;
+  vertical-align: middle;
+  font-size: 0.8rem;
+}
+
+.dropitem {
+  display: none;
+  font-family: Arial, Helvetica, sans-serif;
+  float: right;
+  right: 5px;
+  background: #e0e0e0;
+  position: absolute;
+  color: black;
+  top: 70px;
+  z-index: 6;
+  line-height: 25px;
+  box-shadow: 5px 0px 30px 0px rgba(0, 0, 0, 0.747);
+}
+.dropitem#notiDrop {
+  right: 180px;
+}
+.dropitem .profileitems#viewProfile,
+.dropitem .profileitems#signOut,
+.dropitem .profileitems#viewSetting,
+.dropitem .profileitems#changeUi,
+.dropitem .profileitems#viewProject,
+.dropitem .profileitems#changeUi,
+.dropitem .notiitems {
+  padding: 10px 15px;
+  width: 100%;
+  text-align: left;
+  background-color: #e0e0e0;
+  color: black;
+  border: none;
+}
+.dropitem .profileitems#viewProfile img,
+.dropitem .profileitems#signOut img,
+.dropitem .profileitems#viewSetting img,
+.dropitem .profileitems#changeUi img,
+.dropitem .profileitems#viewProject img,
+.dropitem .profileitems#changeUi img,
+.dropitem .notiitems img {
+  height: 25px;
+  width: auto;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.dropitem .profileitems#viewProfile:hover,
+.dropitem .profileitems#signOut:hover,
+.dropitem .profileitems#viewSetting:hover,
+.dropitem .profileitems#changeUi:hover,
+.dropitem .profileitems#viewProject:hover,
+.dropitem .profileitems#changeUi:hover,
+.dropitem .notiitems:hover {
+  cursor: pointer;
+  background: white;
+}
+.dropitem .profileitems#usernameEmail,
+.dropitem .projectitems#projectName {
+  padding: 10px 15px;
+  border-bottom: solid 1px rgb(104, 104, 104);
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.25) {
+  .nav-bar {
+    top: 0px;
+    position: absolute;
+    width: 100%;
+    height: 55px;
+    align-items: center;
+    z-index: 6;
+    background-image: linear-gradient(#1565c0, #003c8f);
+  }
+  .nav-bar.index {
+    box-shadow: 0px 10px 10px rgba(13, 72, 160, 0.2);
+  }
+  .nav-bar .sidebarItem {
+    align-items: center;
+    text-align: center;
+    float: left;
+    height: 25px;
+    width: 25px;
+    padding: 15px 15px;
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .nav-bar .sidebarItem img {
+    height: 25px;
+    width: 25px;
+  }
+  .nav-bar .sidebarItem:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .nav-bar ul {
+    position: relative;
+    align-items: center;
+    margin: 0px;
+    display: flex;
+    flex-direction: row;
+    padding-left: 6px;
+  }
+  .nav-bar ul li {
+    list-style: none;
+    padding: 0;
+  }
+  .nav-bar ul li a {
+    height: 60px;
+    font-weight: bold;
+  }
+  .nav-bar ul li a img {
+    vertical-align: middle;
+    height: 30px;
+    padding: 10px 5px;
+  }
+  .nav-bar ul li a:visited {
+    color: black;
+  }
+  .nav-bar ul li a:hover {
+    color: white;
+    cursor: pointer;
+  }
+  .nav-bar ul li a span {
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+  }
+  .nav-bar ul li a span:hover {
+    color: white;
+  }
+  .nav-bar .navbarItem {
+    align-items: center;
+    text-align: center;
+    right: 0px;
+    float: right;
+    height: 45px;
+    width: 45px;
+    padding: 5px 5px;
+    background: rgba(0, 0, 0, 0.25);
+    /*
+    &::after{
+        display: inline-block;
+        position: absolute;
+        right: 5px;
+        color: white;
+        content: "FM";
+        top: 26px;
+        height: 16px;
+        width: 60px;
+        text-align: center;
+    }
+    */
+  }
+  .nav-bar .navbarItem#navprojectName {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    line-height: 50px;
+    position: relative;
+    color: white;
+    height: 55px;
+    width: auto;
+    max-width: 300px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0 10px;
+    background: rgba(0, 0, 0, 0.25);
+    border-right: 1px solid #1565c0;
+  }
+  .nav-bar .navbarItem#notiIcon {
+    font-size: 12px;
+    position: relative;
+    color: white;
+    height: 55px;
+    width: auto;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0 10px;
+    display: inline-flex;
+    background: rgba(0, 0, 0, 0.25);
+    border-right: 1px solid #1565c0;
+  }
+  .nav-bar .navbarItem#notiIcon:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .nav-bar .navbarItem#notiIcon span {
+    display: block;
+    border-radius: 50%;
+    background-color: #FFF;
+    box-shadow: 1px 1px 5px #808080;
+    padding: 10px;
+    width: 15px;
+    height: 15px;
+    margin: 0 auto;
+    line-height: 30px;
+    text-align: center;
+    position: relative;
+  }
+  .nav-bar .navbarItem#notiIcon span img {
+    position: relative;
+    padding: 0px;
+    height: 20px;
+    width: auto;
+    top: -3px;
+    left: -3px;
+  }
+  .nav-bar .navbarItem#notiIcon span mark {
+    border-radius: 50%;
+    border: 2px solid #FFF;
+    width: 15px;
+    height: 15px;
+    background-color: #FF6B6B;
+    position: absolute;
+    top: -4px;
+    left: -7px;
+    font-size: 8px;
+    line-height: 15px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    color: #FFF;
+    font-weight: 700;
+  }
+  .nav-bar .navbarItem#notiIcon span mark.big {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    line-height: 30px;
+    font-size: 16px;
+    top: 9px;
+    left: 9px;
+  }
+  .nav-bar .navbarItem#notiIcon span mark.green {
+    background-color: #27ae60;
+  }
+  .nav-bar .navbarItem#notiIcon span mark.blue {
+    background-color: #3498db;
+  }
+  .nav-bar .navbarItem .navbar-infopicture {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    top: 12px;
+    right: 12px;
+    position: absolute;
+  }
+  .nav-bar .navbarItem .navbar-infopicture span.initial {
+    position: absolute;
+    color: white;
+    font-size: 10px;
+    text-transform: uppercase;
+    transform: translate(-50%, 100%);
+  }
+  .nav-bar .navbarItem:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .appsbar {
+    display: none;
+    z-index: 6;
+    position: absolute;
+    background: #f5f5f5;
+    height: 100%;
+    width: 380px;
+    overflow: hidden;
+    box-shadow: 5px 0px 20px 0px rgba(158, 158, 158, 0.5019607843);
+    color: black;
+  }
+  .appsbar .sidebarItem {
+    align-items: center;
+    text-align: center;
+    height: 25px;
+    width: 25px;
+    padding: 15px 15px;
+  }
+  .appsbar .sidebarItem img {
+    height: 25px;
+    width: 25px;
+  }
+  .appsbar .sidebarItem:hover, .appsbar .sidebarItem.active {
+    cursor: pointer;
+    box-shadow: 5px 0px 20px 0px rgba(158, 158, 158, 0.5019607843);
+  }
+  .appsbar .appscontainer {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .appsbar .appscontainer h3 {
+    border-top: 1px solid grey;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  .appsbar .appscontainer .scrollcontainer {
+    height: calc(50vh - 160px);
+    width: 100%;
+    overflow: auto;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton {
+    padding: 10px;
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 50% 50%;
+    margin: 0px 0;
+    margin-right: 8px;
+    padding: 5px 0;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button {
+    position: relative;
+    outline: none;
+    text-align: left;
+    padding: 8px;
+    border: none;
+    font-size: 10px;
+    height: 100%;
+    width: 100%;
+    background-color: #f5f5f5;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button:hover {
+    cursor: pointer;
+    background: rgb(255, 255, 255);
+    box-shadow: 5px 5px 10px 0px rgba(158, 158, 158, 0.4745098039);
+    z-index: 2;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.img {
+    display: inline-block;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.img img {
+    vertical-align: middle;
+    height: 18px;
+    width: 18px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.atag {
+    display: inline-block;
+    width: calc(100% - 30px);
+    overflow: hidden;
+    vertical-align: middle;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.atag a {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 25px;
+    width: 100%;
+    line-height: 30px;
+  }
+  .appsbar .projectcontainer {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .appsbar .projectcontainer h3 {
+    border-top: 1px solid grey;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  .appsbar .projectcontainer .scrollcontainer {
+    height: calc(50vh - 80px);
+    width: 100%;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton {
+    padding: 10px;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 48% 48%;
+    margin: 5px 0;
+    margin-right: 8px;
+    padding: 5px 0;
+    z-index: 2;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton#projectslist {
+    border-bottom: 1px solid grey;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    outline: none;
+    text-align: left;
+    padding: 8px;
+    border: none;
+    font-size: 10px;
+    background-color: #f5f5f5;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button.activeProject {
+    background: white;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button:hover {
+    cursor: pointer;
+    background: rgb(255, 255, 255);
+    box-shadow: 5px 5px 10px 0px rgba(158, 158, 158, 0.4745098039);
+    z-index: 2;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.img {
+    display: inline-block;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.img img {
+    vertical-align: middle;
+    height: 18px;
+    width: 18px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.atag {
+    display: inline-block;
+    width: calc(100% - 30px);
+    overflow: hidden;
+    vertical-align: middle;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.atag a {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 25px;
+    width: 100%;
+    line-height: 30px;
+  }
+  .dropitem {
+    display: none;
+    font-family: Arial, Helvetica, sans-serif;
+    float: right;
+    right: 5px;
+    background: #e0e0e0;
+    position: absolute;
+    color: black;
+    top: 55px;
+    z-index: 6;
+    line-height: 15px;
+    box-shadow: 5px 0px 30px 0px rgba(0, 0, 0, 0.747);
+  }
+  .dropitem#notiDrop {
+    right: 180px;
+  }
+  .dropitem .profileitems#viewProfile,
+  .dropitem .profileitems#signOut,
+  .dropitem .profileitems#viewSetting,
+  .dropitem .profileitems#viewProject,
+  .dropitem .profileitems#changeUi,
+  .dropitem .notiitems {
+    padding: 10px 15px;
+    width: 100%;
+    text-align: left;
+    background-color: #e0e0e0;
+    color: black;
+    border: none;
+    font-size: 12px;
+  }
+  .dropitem .profileitems#viewProfile img,
+  .dropitem .profileitems#signOut img,
+  .dropitem .profileitems#viewSetting img,
+  .dropitem .profileitems#viewProject img,
+  .dropitem .profileitems#changeUi img,
+  .dropitem .notiitems img {
+    height: 18px;
+    width: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .dropitem .profileitems#viewProfile:hover,
+  .dropitem .profileitems#signOut:hover,
+  .dropitem .profileitems#viewSetting:hover,
+  .dropitem .profileitems#viewProject:hover,
+  .dropitem .profileitems#changeUi:hover,
+  .dropitem .notiitems:hover {
+    cursor: pointer;
+    background: white;
+  }
+  .dropitem .profileitems#usernameEmail,
+  .dropitem .projectitems#projectName {
+    padding: 10px 15px;
+    border-bottom: solid 1px rgb(104, 104, 104);
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 1366px) {
+  .nav-bar {
+    top: 0px;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    z-index: 6;
+    background-image: linear-gradient(#1565c0, #003c8f);
+  }
+  .nav-bar.index {
+    box-shadow: 0px 10px 10px rgba(13, 72, 160, 0.2);
+  }
+  .nav-bar .sidebarItem {
+    align-items: center;
+    text-align: center;
+    float: left;
+    height: 20px;
+    width: 20px;
+    padding: 15px 15px;
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .nav-bar .sidebarItem img {
+    height: 20px;
+    width: 20px;
+  }
+  .nav-bar .sidebarItem:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .nav-bar ul {
+    position: relative;
+    align-items: center;
+    margin: 0px;
+    display: flex;
+    flex-direction: row;
+    padding-left: 6px;
+  }
+  .nav-bar ul li {
+    list-style: none;
+    padding: 0;
+  }
+  .nav-bar ul li a {
+    height: 50px;
+    font-weight: bold;
+  }
+  .nav-bar ul li a img {
+    vertical-align: middle;
+    height: 30px;
+    padding: 10px 5px;
+  }
+  .nav-bar ul li a:visited {
+    color: black;
+  }
+  .nav-bar ul li a:hover {
+    color: white;
+    cursor: pointer;
+  }
+  .nav-bar ul li a span {
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+  }
+  .nav-bar ul li a span:hover {
+    color: white;
+  }
+  .nav-bar .navbarItem {
+    align-items: center;
+    text-align: center;
+    right: 0px;
+    float: right;
+    height: 40px;
+    width: 40px;
+    padding: 5px 5px;
+    background: rgba(0, 0, 0, 0.25);
+    /*
+    &::after{
+        display: inline-block;
+        position: absolute;
+        right: 5px;
+        color: white;
+        content: "FM";
+        top: 26px;
+        height: 16px;
+        width: 60px;
+        text-align: center;
+    }
+    */
+  }
+  .nav-bar .navbarItem#navprojectName {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    line-height: 50px;
+    position: relative;
+    color: white;
+    height: 50px;
+    width: auto;
+    max-width: 300px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0 10px;
+    background: rgba(0, 0, 0, 0.25);
+    border-right: 1px solid #1565c0;
+  }
+  .nav-bar .navbarItem#notiIcon {
+    font-size: 12px;
+    position: relative;
+    color: white;
+    height: 50px;
+    width: auto;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0 10px;
+    display: inline-flex;
+    background: rgba(0, 0, 0, 0.25);
+    border-right: 1px solid #1565c0;
+  }
+  .nav-bar .navbarItem#notiIcon:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .nav-bar .navbarItem#notiIcon span {
+    display: block;
+    border-radius: 50%;
+    background-color: #FFF;
+    box-shadow: 1px 1px 5px #808080;
+    padding: 10px;
+    width: 15px;
+    height: 15px;
+    margin: 0 auto;
+    line-height: 30px;
+    text-align: center;
+    position: relative;
+  }
+  .nav-bar .navbarItem#notiIcon span img {
+    position: relative;
+    padding: 0px;
+    height: 20px;
+    width: auto;
+    top: -2px;
+    left: -2px;
+  }
+  .nav-bar .navbarItem#notiIcon span mark {
+    border-radius: 50%;
+    border: 2px solid #FFF;
+    width: 15px;
+    height: 15px;
+    background-color: #FF6B6B;
+    position: absolute;
+    top: -4px;
+    left: -7px;
+    font-size: 8px;
+    line-height: 17px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    color: #FFF;
+    font-weight: 700;
+  }
+  .nav-bar .navbarItem#notiIcon span mark.big {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    line-height: 30px;
+    font-size: 16px;
+    top: 9px;
+    left: 9px;
+  }
+  .nav-bar .navbarItem#notiIcon span mark.green {
+    background-color: #27ae60;
+  }
+  .nav-bar .navbarItem#notiIcon span mark.blue {
+    background-color: #3498db;
+  }
+  .nav-bar .navbarItem .navbar-infopicture {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    top: 10px;
+    right: 10px;
+    position: absolute;
+  }
+  .nav-bar .navbarItem .navbar-infopicture span.initial {
+    position: absolute;
+    color: white;
+    font-size: 10px;
+    text-transform: uppercase;
+    transform: translate(-50%, 100%);
+  }
+  .nav-bar .navbarItem:hover {
+    cursor: pointer;
+    background: #5e92f3;
+  }
+  .appsbar {
+    display: none;
+    z-index: 6;
+    position: absolute;
+    background: #f5f5f5;
+    height: 100%;
+    width: 380px;
+    overflow: hidden;
+    box-shadow: 5px 0px 20px 0px rgba(158, 158, 158, 0.5019607843);
+    color: black;
+  }
+  .appsbar .sidebarItem {
+    align-items: center;
+    text-align: center;
+    height: 20px;
+    width: 20px;
+    padding: 15px 15px;
+  }
+  .appsbar .sidebarItem img {
+    height: 20px;
+    width: 20px;
+  }
+  .appsbar .sidebarItem:hover, .appsbar .sidebarItem.active {
+    cursor: pointer;
+    box-shadow: 5px 0px 20px 0px rgba(158, 158, 158, 0.5019607843);
+  }
+  .appsbar .appscontainer {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .appsbar .appscontainer h3 {
+    border-top: 1px solid grey;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  .appsbar .appscontainer .scrollcontainer {
+    height: calc(50vh - 160px);
+    width: 100%;
+    overflow: auto;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton {
+    padding: 10px;
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 50% 50%;
+    margin: 0px 0;
+    margin-right: 8px;
+    padding: 5px 0;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button {
+    position: relative;
+    outline: none;
+    text-align: left;
+    padding: 8px;
+    border: none;
+    font-size: 10px;
+    height: 100%;
+    width: 100%;
+    background-color: #f5f5f5;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button:hover {
+    cursor: pointer;
+    background: rgb(255, 255, 255);
+    box-shadow: 5px 5px 10px 0px rgba(158, 158, 158, 0.4745098039);
+    z-index: 2;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.img {
+    display: inline-block;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.img img {
+    vertical-align: middle;
+    height: 18px;
+    width: 18px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.atag {
+    display: inline-block;
+    width: calc(100% - 30px);
+    overflow: hidden;
+    vertical-align: middle;
+  }
+  .appsbar .appscontainer .scrollcontainer .appsbutton button span.atag a {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 25px;
+    width: 100%;
+    line-height: 30px;
+  }
+  .appsbar .projectcontainer {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .appsbar .projectcontainer h3 {
+    border-top: 1px solid grey;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  .appsbar .projectcontainer .scrollcontainer {
+    height: calc(50vh - 80px);
+    width: 100%;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton {
+    padding: 10px;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 48% 48%;
+    margin: 5px 0;
+    margin-right: 8px;
+    padding: 5px 0;
+    z-index: 2;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton#projectslist {
+    border-bottom: 1px solid grey;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    outline: none;
+    text-align: left;
+    padding: 8px;
+    border: none;
+    font-size: 10px;
+    background-color: #f5f5f5;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button.activeProject {
+    background: white;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button:hover {
+    cursor: pointer;
+    background: rgb(255, 255, 255);
+    box-shadow: 5px 5px 10px 0px rgba(158, 158, 158, 0.4745098039);
+    z-index: 2;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.img {
+    display: inline-block;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.img img {
+    vertical-align: middle;
+    height: 18px;
+    width: 18px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.atag {
+    display: inline-block;
+    width: calc(100% - 30px);
+    overflow: hidden;
+    vertical-align: middle;
+  }
+  .appsbar .projectcontainer .scrollcontainer .appsbutton button span.atag a {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 25px;
+    width: 100%;
+    line-height: 30px;
+  }
+  .dropitem {
+    display: none;
+    font-family: Arial, Helvetica, sans-serif;
+    float: right;
+    right: 5px;
+    background: #e0e0e0;
+    position: absolute;
+    color: black;
+    top: 50px;
+    z-index: 6;
+    line-height: 15px;
+    box-shadow: 5px 0px 30px 0px rgba(0, 0, 0, 0.747);
+  }
+  .dropitem#notiDrop {
+    right: 180px;
+  }
+  .dropitem .profileitems#viewProfile,
+  .dropitem .profileitems#signOut,
+  .dropitem .profileitems#viewSetting,
+  .dropitem .profileitems#viewProject,
+  .dropitem .profileitems#changeUi,
+  .dropitem .notiitems {
+    padding: 10px 15px;
+    width: 100%;
+    text-align: left;
+    background-color: #e0e0e0;
+    color: black;
+    border: none;
+    font-size: 12px;
+  }
+  .dropitem .profileitems#viewProfile img,
+  .dropitem .profileitems#signOut img,
+  .dropitem .profileitems#viewSetting img,
+  .dropitem .profileitems#viewProject img,
+  .dropitem .profileitems#changeUi img,
+  .dropitem .notiitems img {
+    height: 18px;
+    width: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .dropitem .profileitems#viewProfile:hover,
+  .dropitem .profileitems#signOut:hover,
+  .dropitem .profileitems#viewSetting:hover,
+  .dropitem .profileitems#viewProject:hover,
+  .dropitem .profileitems#changeUi:hover,
+  .dropitem .notiitems:hover {
+    cursor: pointer;
+    background: white;
+  }
+  .dropitem .profileitems#usernameEmail,
+  .dropitem .projectitems#projectName {
+    padding: 10px 15px;
+    border-bottom: solid 1px rgb(104, 104, 104);
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 800px) {
+  .appsbar-exec {
+    width: 16rem;
+    height: calc(100% - 3.1rem);
+    background-color: rgb(255, 255, 255);
+    z-index: 5;
+    position: absolute;
+    top: 3.1rem;
+    left: -25rem;
+    transition: 0.2s;
+    overflow-x: hidden;
+  }
+  .appsbar-exec .projectcontainer-exec {
+    max-height: calc(100% - 6rem);
+  }
+  .appsbar-exec .appscontainer-exec {
+    margin: 0px 0.6rem;
+  }
+  .appsbar-exec .appscontainer-exec .title {
+    width: 100%;
+    font-size: 0.9rem;
+    margin-top: 0.7rem;
+    font-weight: bold;
+    border-top: 1px solid rgb(218, 218, 218);
+    padding: 0.7rem 0px;
+  }
+  .appsbar-exec .appscontainer-exec.bottom {
+    position: absolute;
+    bottom: 3px;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec {
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 50% 50%;
+    padding: 0.3rem 0;
+    overflow-y: auto;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec.grid-one {
+    grid-template-columns: none;
+    margin-right: 0;
+    width: 14.8rem;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button {
+    position: relative;
+    outline: none;
+    text-align: left;
+    padding: 0.6rem;
+    border: none;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    background-color: #ffffff;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button:hover {
+    cursor: pointer;
+    background-color: #f5f5f6;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.img {
+    display: inline-block;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.img img {
+    vertical-align: middle;
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.3rem;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.img i {
+    vertical-align: middle;
+    font-size: 1rem;
+    margin-right: 0.3rem;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.atag {
+    display: inline-block;
+    width: calc(100% - 2rem);
+    overflow: hidden;
+    vertical-align: middle;
+    font-size: 0.7rem;
+  }
+  .filter-list {
+    width: 100vw;
+    height: 30%;
+    background-color: rgb(255, 255, 255);
+    z-index: 1;
+    position: absolute;
+    transition: 0.2s;
+    overflow-x: hidden;
+    bottom: -18rem;
+    display: block;
+  }
+  .filter-list .filtersort-container {
+    max-height: calc(100% - 6rem);
+  }
+  .filter-list .close-btn {
+    background: rgba(199, 190, 190, 0.3490196078);
+    border: unset;
+    position: absolute;
+    right: 3px;
+    top: 4px;
+    width: 23px;
+    height: 23px;
+    font-size: 15px;
+    padding: 0.3rem;
+    border-radius: 50px;
+  }
+  .filter-list .filter-container {
+    margin: 0px 0.6rem;
+  }
+  .filter-list .filter-container .title {
+    width: 100%;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-top: 1px solid rgb(218, 218, 218);
+    padding: 0.7rem 0px;
+  }
+  .filter-list .filter-container.bottom {
+    position: absolute;
+    bottom: 3px;
+    width: calc(100% - 1.2rem);
+  }
+  .filter-list .filter-container .filterContainer {
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 50% 50%;
+    padding: 0.3rem 0;
+    overflow-y: auto;
+  }
+  .filter-list .filter-container .filterContainer.inline-flex {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .filter-list .filter-container .filterContainer button {
+    position: relative;
+    outline: none;
+    text-align: left;
+    padding: 0.5rem;
+    border: none;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #dadada;
+    background-color: #ffffff;
+  }
+  .filter-list .filter-container .filterContainer button:hover {
+    cursor: pointer;
+    background-color: #f5f5f6;
+  }
+  .filter-list .filter-container .filterContainer button button {
+    display: inline-block;
+  }
+  .filter-list .filter-container .filterContainer button button i {
+    vertical-align: middle;
+    font-size: 0.9rem;
+    margin-right: 0.3rem;
+  }
+  .filter-list .filter-container .filterContainer button span.atag {
+    display: inline-block;
+    width: calc(100% - 2rem);
+    overflow: hidden;
+    vertical-align: middle;
+    font-size: 0.7rem;
+    margin-left: 3px;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn {
+    font-size: 0.6rem;
+    font-weight: bold;
+    display: inline-flex;
+    padding-right: 0.4rem;
+    align-items: center;
+    cursor: pointer;
+    white-space: pre;
+    border-radius: 50px;
+    margin: 0.1rem 0.3rem;
+    background: white;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn::before {
+    width: 11px;
+    height: 11px;
+    padding: 3px;
+    border-radius: 50%;
+    display: flex;
+    content: "";
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.3rem;
+    position: relative;
+    top: 0px;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.all {
+    color: #777777;
+    transition: all 0.2s ease;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.all::before {
+    color: white;
+    content: "131";
+    background-color: #777777;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.all.mixitup-filter-btn-active {
+    color: white;
+    transform: scale(1.05);
+    background-color: #777777;
+    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.13);
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.completed {
+    color: #3498DB;
+    transition: all 0.2s ease;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.completed::before {
+    color: white;
+    content: "13";
+    background-color: #3498DB;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.completed.mixitup-filter-btn-active {
+    color: white;
+    transform: scale(1.05);
+    background-color: #3498DB;
+    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.13);
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.onTrack {
+    color: #52BE80;
+    transition: all 0.2s ease;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.onTrack::before {
+    color: white;
+    content: "3";
+    background-color: #52BE80;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.onTrack.mixitup-filter-btn-active {
+    color: white;
+    transform: scale(1.05);
+    background-color: #52BE80;
+    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.13);
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.alarming {
+    color: #F4D03F;
+    transition: all 0.2s ease;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.alarming::before {
+    color: white;
+    content: "8";
+    background-color: #F4D03F;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.alarming.mixitup-filter-btn-active {
+    color: white;
+    transform: scale(1.05);
+    background-color: #F4D03F;
+    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.13);
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.delay {
+    color: #E74C3C;
+    transition: all 0.2s ease;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.delay::before {
+    color: white;
+    content: "6";
+    background-color: #E74C3C;
+  }
+  .filter-list .filter-container .filterContainer .filter-btn.delay.mixitup-filter-btn-active {
+    color: white;
+    transform: scale(1.05);
+    background-color: #E74C3C;
+    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.13);
+  }
+  .filter-list .filter-container .filterContainer .filter-btn:hover {
+    transform: scale(1.05);
+  }
+}
+@media only screen and (min-width: 481px) and (max-width: 768px) {
+  .appsbar-exec {
+    width: 16rem;
+    height: calc(100% - 3.1rem);
+    background-color: rgb(255, 255, 255);
+    z-index: 5;
+    position: absolute;
+    top: 3.1rem;
+    left: -25rem;
+    transition: 0.2s;
+    overflow-x: hidden;
+  }
+  .appsbar-exec .projectcontainer-exec {
+    max-height: calc(100% - 6rem);
+  }
+  .appsbar-exec .appscontainer-exec {
+    margin: 0px 0.6rem;
+  }
+  .appsbar-exec .appscontainer-exec .title {
+    width: 100%;
+    font-size: 0.9rem;
+    margin-top: 0.7rem;
+    font-weight: bold;
+    border-top: 1px solid rgb(218, 218, 218);
+    padding: 0.7rem 0px;
+  }
+  .appsbar-exec .appscontainer-exec.bottom {
+    position: absolute;
+    bottom: 3px;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec {
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 50% 50%;
+    padding: 0.3rem 0;
+    overflow-y: auto;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec.grid-one {
+    grid-template-columns: none;
+    margin-right: 0;
+    width: 14.8rem;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button {
+    position: relative;
+    outline: none;
+    text-align: left;
+    padding: 0.6rem;
+    border: none;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    background-color: #ffffff;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button:hover {
+    cursor: pointer;
+    background-color: #f5f5f6;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.img {
+    display: inline-block;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.img img {
+    vertical-align: middle;
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.3rem;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.img i {
+    vertical-align: middle;
+    font-size: 1rem;
+    margin-right: 0.3rem;
+  }
+  .appsbar-exec .appscontainer-exec .appsbutton-exec button span.atag {
+    display: inline-block;
+    width: calc(100% - 2rem);
+    overflow: hidden;
+    vertical-align: middle;
+    font-size: 0.7rem;
+  }
+}
+@keyframes appsbar {
+  0% {
+    opacity: 0;
+  }
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 20%;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes slideup {
+  0% {
+    height: 0px;
+  }
+  100% {
+    height: px;
+  }
+}
+@keyframes slidetop {
+  0% {
+    height: 0%;
+  }
+  100% {
+    height: 100%;
+  }
+}
+.dots > span > mark {
+  animation-name: bounceIn;
+  transform-origin: center bottom;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+
+.dots > span > img {
+  animation-name: bounceIn;
+  transform-origin: center bottom;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+
+.dots:hover > span > mark {
+  animation-name: bounce;
+}
+
+.dots:hover > span > mark.rubberBand {
+  animation-name: rubberBand;
+}
+
+.dots:hover > span > mark.swing {
+  transform-origin: top center;
+  animation-name: swing;
+}
+
+.dots:hover > span > img.swing {
+  transform-origin: top center;
+  animation-name: swing;
+}
+
+.dots:hover > span > mark.tada {
+  animation-name: tada;
+}
+
+.dots:hover > span > mark.wobble {
+  animation-name: wobble;
+}
+
+li {
+  list-style-type: circle;
+}
+
+/* animation keyframes */
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transition-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transition-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+@keyframes bounceIn {
+  0%, 20%, 40%, 60%, 80%, 100% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  0% {
+    opacity: 1;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  20% {
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  40% {
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+  80% {
+    transform: scale3d(0.97, 0.97, 0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes rubberBand {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes swing {
+  20% {
+    transform: rotate3d(0, 0, 1, 15deg);
+  }
+  40% {
+    transform: rotate3d(0, 0, 1, -10deg);
+  }
+  60% {
+    transform: rotate3d(0, 0, 1, 5deg);
+  }
+  80% {
+    transform: rotate3d(0, 0, 1, -5deg);
+  }
+  100% {
+    transform: rotate3d(0, 0, 1, 0deg);
+  }
+}
+@keyframes tada {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+  10%, 20% {
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+  30%, 50%, 70%, 90% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+  40%, 60%, 80% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes wobble {
+  0% {
+    transform: none;
+  }
+  15% {
+    transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+  }
+  30% {
+    transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+  }
+  45% {
+    transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+  }
+  60% {
+    transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+  }
+  75% {
+    transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+  }
+  100% {
+    transform: none;
+  }
+}/*# sourceMappingURL=navbaranimaton.css.map */

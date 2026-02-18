@@ -1,0 +1,166 @@
+.formView {
+    font-family: Arial, Helvetica, sans-serif;
+    display:none;
+    position: absolute;
+    z-index: 5;
+    left:0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.479);
+    .formContent{
+        position: relative;
+        background: lightgrey;
+        margin: 3% auto;
+        width: 30%;
+        height: 700px;
+        box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.507), 0 7px 20px 0 black;
+        border-radius: 5px;
+        animation-name: fade;
+        animation-duration: 0.3s;
+        .newuserPicture{
+            position: absolute;
+            line-height: 25px;
+            right: 0;
+            left: calc(50% - 50px);
+            top: -70px;
+            color: black;
+            background: blue;
+            font-size: 16px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            font-weight: bold;
+            /* text-align: center; */
+            text-align: center;
+            -webkit-box-shadow: 5px, 5px, 10px, #000;
+            box-shadow: 5px, 5px, 10px, #000;
+            z-index: 2;
+            border: 3px solid #363636;
+            vertical-align: middle;
+            .newuserInitial {
+                position: relative;
+                top: calc(-11px + 50px);
+                color: red;
+                background: blue;
+                font-size: 30px;
+            }
+        }
+        .formHeader-user{
+            background-color: #363636;
+            color:white;
+            width: 100%;
+            height: 45px;
+            text-align: center;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+            padding: 25px 0 0 0;
+            h3{
+                margin: 10px 0 0 0;
+             }
+             h4{
+                margin: 0px;
+             }
+        }
+        .formHeader-project{
+            background-color: #363636;
+            color:white;
+            width: 100%;
+            height: 45px;
+            text-align: center;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+            padding: 25px 0 0 0;
+            h3{
+                margin: 0px 0 0 0;
+             }
+             h4{
+                margin: 0px;
+             }
+        }
+        .closebutton{
+            position:absolute;
+            line-height: 25px;
+            right:-12px;
+            top:-10px;
+            padding: 2em, 2em;
+            color: black;
+            background: rgb(231, 231, 231);
+            font-size: 16px;
+            width: 25px;
+            height: 25px;
+            border-radius:12px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 5px, 5px, 10px, #000;
+            z-index: 2;
+            &:hover{
+                background-image: linear-gradient(to bottom, white, grey);
+                cursor:pointer
+            }
+        }
+        .formcontainerMainBody{
+            position: relative;
+            background: white;
+            height: 560px;
+            overflow: auto;
+            padding: 10px 20px;
+            border-bottom-right-radius: 5px;
+            border-bottom-left-radius: 5px;
+            .newuserContainerBody-edit, .newprojectContainerBody-edit{
+                //padding: 10px;
+                line-height: 30px;
+                margin:0px;
+                label{
+                    font-weight: bold;
+                }
+                input{
+                    width:100%;
+                    padding:3px 0px;
+                    border-radius: 3px;
+                }
+                select{
+                    width:100%;
+                    padding:3px 0px;
+                    border-radius: 3px;
+                }
+                .doubleinput{
+                    display: flex;
+                    width:100%;
+                    .namecolumn{
+                        width: 50%;
+                    }
+                }
+            }
+            .newuserContainerBody-readonly{
+                display:none;
+                width: 100%;
+                line-height: 40px;
+                img{
+                    width: 30px;
+                    vertical-align: middle;
+                    margin: 0 15px;
+                }
+            }
+        }
+        .newuserFooter{
+            background-color: #363636;
+            height:30px;
+            padding:10px;
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius: 5px;
+            text-align:right;
+            div{
+                padding:0px;
+                margin:0px;
+                button{
+                    padding: 7.5px 15px;
+                    border-radius:5px;
+                }
+            }
+            .readonly{
+                display:none;
+            }
+        }
+    }  
+}
