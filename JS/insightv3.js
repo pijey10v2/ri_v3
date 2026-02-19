@@ -4962,6 +4962,8 @@ function LoadVideoPinData(callback) {
         type: "POST",
         url: '../BackEnd/fetchDatav3.php',
         dataType: 'JSON',
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+    	processData: true,
 
         cache: false, // prevent caching
 

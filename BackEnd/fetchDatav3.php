@@ -400,7 +400,7 @@ function getVideoCam() {
     global $response;
     global $CONN;
 
-    $pid = $_POST['project_id'];
+    $pid = $_POST['project_id'] ?? $_SESSION['project_id'] ?? null;
     $fetchVideoData = $CONN->fetchAll("SELECT * FROM videoPin WHERE projectID = :0", array($pid));
     if(!$fetchVideoData){
         $response['bool'] = false;
