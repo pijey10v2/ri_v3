@@ -4957,23 +4957,38 @@ function setCameraPosOrientv3(coordinate,orientation,image_link) {
 }
 
 function LoadVideoPinData(callback) {
-	$.ajax({
-		type: "POST",
-		url: '../BackEnd/fetchDatav3.php',
-		dataType: 'JSON',
-		data: {
-			functionName: "getVideoCam"
-		},
-		success: function (obj) {
-			if (obj.data)
-				callback(obj.data);
-			else console.log(obj.msg)
-		},
-		error: function (xhr) {
-			console.log(xhr);
-		}
-	});
+
+    $.ajax({
+        type: "POST",
+        url: '../BackEnd/fetchDatav3.php',
+        dataType: 'JSON',
+
+        cache: false, // prevent caching
+
+        data: {
+            functionName: "getVideoCam",
+            project_id: localStorage.p_id, // send project id
+            t: Date.now() // extra cache buster
+        },
+
+        success: function (obj) {
+
+            console.log("Camera Feed Response:", obj);
+
+            if (obj.data) {
+                callback(obj.data);
+            } else {
+                callback([]);
+                console.log(obj.msg);
+            }
+        },
+
+        error: function (xhr) {
+            console.log("AJAX Error:", xhr);
+        }
+    });
 }
+
 
 function addVideoPin(name, long, lat, height, show) {
 	var myVideoPin = viewer.entities.add({
@@ -5262,51 +5277,97 @@ function OnClickPowerBi() {
 }
 
 function OnClickCameraFeedv3() {
-    if (videoPinData.length == 0) {
-        LoadVideoPinData(function (data) {
-            if (!data) {
-                return
-            }
-            videoPinData = data
-            if (!data) {
-                return
-            }
-			
-			let myhtml = '';
-			if(data.length > 0){
-				for (var i = 0; i < data.length; i++) {
-					myhtml += 
-							'<div class="item justifyBetween" id="videoID_'+ data[i].videoPinID +'">'+
-							'<div id="video_name">'+ data[i].videoPinName +'</div>'+
-							'<div>'+
-								'<a onclick="flyToVideoPin('+ data[i].videoPinID +')" id="flyTo" title="Fly To"><i class="fa-solid fa-binoculars"></i></a>'+
-								'<a onclick="wizardOpenPage(this)" value="'+ data[i].videoPinID +'" rel="insight" data-page="viPage" data-width="70" data-height="75" class="toolButton videoPlay" title="Play Video"><i class="fa-solid fa-play"></i></a>';
-	
-								if(localStorage.usr_role == 'Project Manager' || localStorage.usr_role == 'Senior Civil Engineer (Road Asset)'){
-	
-					myhtml +=	'<a onclick="editVideoPinDetails('+ data[i].videoPinID +')" title="Edit"><i class="fa-solid fa-pencil"></i></a>'+
-								'<a onclick="deleteVideoPin('+ data[i].videoPinID +')" title="Remove"><i class="fa-solid fa-trash"></i></a>';
-								}
-					
-	
-					myhtml  +=	'</div>'+
-								'</div>';
 
-					var myvideoPin = addVideoPin(data[i].videoPinName, data[i].longitude, data[i].latitude, data[i].height, true);
-					videoPinsArray.push(myvideoPin);
-				}
+    console.log("Camera Feed button clicked");
+    console.log("Current Project ID:", localStorage.p_id);
 
-			}else{
-				myhtml += '<div class="item justifyBetween videoNoDetails">There are no details stored for Video</div>';
-			}
-			$('#cameraPinList').html(myhtml);
+    
+    // clear old data + pins
+    videoPinData = [];
+
+    if (videoPinsArray.length > 0) {
+        videoPinsArray.forEach(function (pin) {
+            if (pin) viewer.entities.remove(pin); // remove from cesium
         });
-    }else {
-        videoPinsArray.forEach(function (videoPin) {
-            videoPin.show = true
-        })
     }
+
+    videoPinsArray = [];
+    $('#cameraPinList').empty();
+
+
+    
+    // always load from backend
+    LoadVideoPinData(function (data) {
+
+        console.log("Returned Camera Data:", data);
+
+        if (!data || data.length === 0) {
+
+            $('#cameraPinList').html(
+                '<div class="item justifyBetween videoNoDetails">There are no details stored for Video</div>'
+            );
+            return;
+        }
+
+        videoPinData = data;
+
+        let myhtml = '';
+
+        for (var i = 0; i < data.length; i++) {
+
+            myhtml +=
+                '<div class="item justifyBetween" id="videoID_' + data[i].videoPinID + '">' +
+                    '<div id="video_name">' + data[i].videoPinName + '</div>' +
+                    '<div>' +
+
+                        '<a onclick="flyToVideoPin(' + data[i].videoPinID + ')" title="Fly To">' +
+                            '<i class="fa-solid fa-binoculars"></i>' +
+                        '</a>' +
+
+                        '<a onclick="wizardOpenPage(this)" ' +
+                            'value="' + data[i].videoPinID + '" ' +
+                            'rel="insight" ' +
+                            'data-page="viPage" ' +
+                            'data-width="70" ' +
+                            'data-height="75" ' +
+                            'class="toolButton videoPlay" ' +
+                            'title="Play Video">' +
+                            '<i class="fa-solid fa-play"></i>' +
+                        '</a>';
+
+            if (
+                localStorage.usr_role == 'Project Manager' ||
+                localStorage.usr_role == 'Senior Civil Engineer (Road Asset)'
+            ) {
+                myhtml +=
+                    '<a onclick="editVideoPinDetails(' + data[i].videoPinID + ')" title="Edit">' +
+                        '<i class="fa-solid fa-pencil"></i>' +
+                    '</a>' +
+
+                    '<a onclick="deleteVideoPin(' + data[i].videoPinID + ')" title="Remove">' +
+                        '<i class="fa-solid fa-trash"></i>' +
+                    '</a>';
+            }
+
+            myhtml += '</div></div>';
+
+
+            // Add Cesium pin
+            var myvideoPin = addVideoPin(
+                data[i].videoPinName,
+                data[i].longitude,
+                data[i].latitude,
+                data[i].height,
+                true
+            );
+
+            videoPinsArray.push(myvideoPin);
+        }
+
+        $('#cameraPinList').html(myhtml);
+    });
 }
+
 
 function OnClickAssetDataTable(e, event) {
     floatboxV3TurnOFF()
