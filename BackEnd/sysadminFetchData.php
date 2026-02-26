@@ -6,7 +6,7 @@ $sysAdminData = array();
 
 #user
 $userTotal = $CONN->fetchOne("select count(*) from users");
-$userActive = $CONN->fetchOne("select count(*) from users where user_type != 'non_active' ");
+$userActive = $CONN->fetchOne("select count(*) from users where user_type in ('user','system_admin')");
 $userInactive = $userTotal-$userActive;
 
 $userLastUpd =  $CONN->fetchOne("select max(created_time) from users");
