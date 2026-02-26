@@ -3313,7 +3313,7 @@ function refreshUserTableBody(val, varType) {
                     `<div class="row system-admin fiveColumn searchv3" rel="editUser" data-width="55" data-height="80" data-uid="${response[i].user_id}" data-name="${response[i].user_firstname} ${response[i].user_lastname}" data-title="Active User" data-activearchived="active" onclick="openWizardV3(this, event)">
                         <span class="text columnSmall"><input class="utable user-active" type="checkbox" data-page="user-active" data-table="utable" onchange="onchangeButtonVisibility(this)" data-userid= '${response[i].user_id}'></span>
                         <div class="columnMiddle textContainer">
-                            <span class="text line-clamp">${response[i].user_email}</span>
+                            <span class="text line-clamp" title="Active User Email">${response[i].user_email}</span>
                         </div>
                         <div class="columnMiddle textContainer">
                             <span class="text line-clamp">${response[i].user_firstname} ${response[i].user_lastname}</span>
@@ -3361,7 +3361,7 @@ function refreshDeleteUserTableBody() {
                 `<div class="row system-admin fourColumn searchv3" rel="editUser" data-width="55" data-height="80" data-uid="${response[i].user_id}" data-name="${response[i].user_firstname} ${response[i].user_lastname}" data-title="Archived User" data-activearchived="archived" onclick="openWizardV3(this, event)">
                     <span class="text columnSmall"><input class="utable user-inactive" type="checkbox"  data-page="user-inactive" data-table="utable" onchange="onchangeButtonVisibility(this)" id= '${response[i].user_id}'></span>
                     <div class="columnMiddle textContainer">
-                        <span class="text line-clamp">${response[i].user_email}</span>
+                        <span class="text line-clamp" title="Inactive User Email">${response[i].user_email}</span>
                     </div>
                     <div class="columnMiddle textContainer">
                         <span class="text line-clamp">${response[i].user_firstname} ${response[i].user_lastname}</span>

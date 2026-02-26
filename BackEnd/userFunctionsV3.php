@@ -967,7 +967,7 @@ function activeUsers(){
     global $CONN;
     global $response;
 
-    $getSql = $CONN->fetchAll("SELECT user_firstname, user_lastname, user_email, user_org, user_country , user_type, user_phone FROM users WHERE user_type!= 'non_active' ORDER BY user_id");
+    $getSql = $CONN->fetchAll("SELECT user_firstname, user_lastname, user_email, user_org, user_country , user_type, user_phone FROM users WHERE user_type != 'non_active' ORDER BY user_id");
     $response['data'] = $getSql;
 }
 
