@@ -34,7 +34,16 @@
         $userTypeArray = array('user','system_admin');
         for($i=1; $i<$length; $i++){
 
-            $userdetails = explode(",", $userlist[$i]);
+            $userdetails = str_getcsv($userlist[$i]);
+
+            if(count($userdetails) != 10){
+                array_push($data, (object)[
+                    'raw_row' => $userlist[$i],
+                    'column_count' => count($userdetails),
+                    'reason' => "Column count mismatch"
+                ]);
+                continue;
+            }
 
             // Check if complete 10 columns exist
             if(count($userdetails) < 10){
