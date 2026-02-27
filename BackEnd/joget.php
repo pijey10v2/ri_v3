@@ -221,7 +221,7 @@ function getListofPackages( $jogetHostIP, $api_username,  $api_password )
 }
 
 //adds new user to the joget (jehan PFS version)
-function jogetUserRegistration( $joget, $firstName, $lastName, $email,  $password,  $orgId, $orgName, $orgDesc ="") //PFS
+function jogetUserRegistration( $joget, $firstName, $lastName, $email,  $password,  $orgId, $orgName, $orgDesc = "", $userStatus = "active") //PFS
 {
    
     $payload = array(
@@ -230,7 +230,7 @@ function jogetUserRegistration( $joget, $firstName, $lastName, $email,  $passwor
         'firstName' => $firstName,
         'lastName' => $lastName,
         'email' => $email,
-        'userStatus' => "active",
+        'userStatus' => $userStatus,
         'orgId' => $orgId,
         'orgName'=> $orgName,
         'orgDesc' => $orgDesc
@@ -256,7 +256,7 @@ function jogetUserRegistration( $joget, $firstName, $lastName, $email,  $passwor
     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 // need this for KKR server as the php.ini points to another cert other than cacert.pem
-    if($joget == "https://jogetk.reveronconsulting.com/"){
+    if($joget == "https://jogetk.digile.com/"){
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $certificate_location);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $certificate_location);
@@ -308,7 +308,7 @@ function jogetUserUpdate( $joget, $firstName , $lastName, $email, $password ="",
     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 // need this for KKR server as the php.ini points to another cert other than cacert.pem
-    if($joget == "https://jogetk.reveronconsulting.com/"){
+    if($joget == "https://jogetk.digile.com/"){
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $certificate_location);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $certificate_location);
@@ -354,7 +354,7 @@ function jogetUserInactivateActivateDelete( $joget, $userList) //PFS
     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     // need this for KKR server as the php.ini points to another cert other than cacert.pem
-    if($joget == "https://jogetk.reveronconsulting.com/"){
+    if($joget == "https://jogetk.digile.com/"){
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $certificate_location);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $certificate_location);

@@ -186,17 +186,17 @@
 
                 // need to add the user and org if new to joget here first.. if user and org added then add to database
                 if(!empty($orgtype)){
-                    $resp = jogetUserRegistration($jogetHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc);
-                    $resp1 = jogetUserRegistration($jogetAssetHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc);
+                    $resp = jogetUserRegistration($jogetHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc, $userStatus = "active");
+                    $resp1 = jogetUserRegistration($jogetAssetHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc, $userStatus = "active");
                     if($supportuser == true && $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){
-                        $resp2 = jogetUserRegistration($jogetSupportHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc);
+                        $resp2 = jogetUserRegistration($jogetSupportHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc, $userStatus = "active");
                         $response['support'] = $resp2;
                     }
                 }else{
-                    $resp = jogetUserRegistration($jogetHostIP, $fname, $lname, $email, $password, $orgid, $orgname);
-                    $resp1 = jogetUserRegistration($jogetAssetHostIP, $fname, $lname, $email, $password, $orgid, $orgname);
+                    $resp = jogetUserRegistration($jogetHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc, $userStatus = "active");
+                    $resp1 = jogetUserRegistration($jogetAssetHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc, $userStatus = "active");
                     if($supportuser == true && $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){
-                        $resp2 = jogetUserRegistration($jogetSupportHostIP, $fname, $lname, $email, $password, $orgid, $orgname);
+                        $resp2 = jogetUserRegistration($jogetSupportHostIP, $fname, $lname, $email, $password, $orgid, $orgname, $orgdesc, $userStatus = "active");
                         $response['support'] = $resp2;
                     }
                 }
