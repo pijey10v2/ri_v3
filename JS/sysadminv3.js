@@ -3626,50 +3626,67 @@ function loadHandler(event) {
 }
 
 function processData(csv) {
+
     var allTextLines = csv.split(/\r\n|\n/);
     var lines = [];
+
     for (var i = 0; i < allTextLines.length; i++) {
+
+        // Skip completely empty rows
+        if (allTextLines[i].trim() === "") {
+            continue;
+        }
+
         var data = allTextLines[i].split(';');
         var tarr = "";
+
         for (var j = 0; j < data.length; j++) {
             if (j != 0) {
                 tarr += ",";
             }
-            tarr += data[j];
+            tarr += data[j].trim();
         }
+
         lines.push(tarr);
     }
-    console.log(lines);
-    if (lines[0] !== "First Name,Last Name,Email,Organization ID,Organization Name,Organization Description,Organization Type,Country,User Type") {
+
+    console.log("Clean lines:", lines);
+
+    // Updated header check (include Support User if needed)
+    if (lines[0] !== "First Name,Last Name,Email,Organization ID,Organization Name,Organization Description,Organization Type,Country,User Type,Support User") {
         window.parent.$.alert({
             boxWidth: '30%',
             useBootstrap: false,
             title: 'Message',
-            content: "The data is not given in correct order. it should be in this order : First Name,Last Name,Email,Organization ID,Organization Name,Organization Description,Organization Type,Country,User Type "
+            content: "The data is not given in correct order."
         });
         return;
     }
+
     var formdata = new FormData();
     formdata.append("users", JSON.stringify(lines));
+
     var request = new XMLHttpRequest();
     request.open("POST", "BackEnd/importUsers.php", true);
     request.send(formdata);
+
     request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == "200") {
+        if (request.readyState == 4 && request.status == 200) {
             var response = JSON.parse(request.responseText);
             var msg = response.msg;
+
             window.parent.$.alert({
                 boxWidth: '30%',
                 useBootstrap: false,
                 title: 'Message',
                 content: msg
             });
+
             refreshUserTableBody();
             updateUserCard();
-        };
+        }
     };
 }
-
 function errorHandler(evt) {
     if (evt.target.error.name == "NotReadableError") {
         window.parent.$.alert({

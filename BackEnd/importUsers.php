@@ -34,6 +34,12 @@
         $userTypeArray = array('user','system_admin');
         for($i=1; $i<$length; $i++){
 
+
+            // Skip empty rows
+            if(!isset($userlist[$i]) || trim($userlist[$i]) == ""){
+                continue;
+            }
+
             $userdetails = str_getcsv($userlist[$i]);
 
             if(count($userdetails) != 10){
