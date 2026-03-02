@@ -233,7 +233,8 @@ function jogetUserRegistration( $joget, $firstName, $lastName, $email,  $passwor
         'userStatus' => $userStatus,
         'orgId' => $orgId,
         'orgName'=> $orgName,
-        'orgDesc' => $orgDesc
+        'orgDesc' => $orgDesc,
+        'designation' => '',
  
     );
     global $PHPCACERTPATH;
