@@ -64,7 +64,6 @@ function distancePolyLine(pos) {
 			positions: pos,
 			width: 2,
 			material: Cesium.Color.RED.withAlpha(0.5),
-			clampToGround: true
 		}
 	}));
 }
@@ -85,8 +84,8 @@ function addBillboard(lon, lat, hei) {
 			image: path_prefix + 'Images/tack.png',
 			width: 20,
 			height: 20,
-			horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-			verticalOrigin: Cesium.VerticalOrigin.CENTER
+			horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+			verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
 		}
 	});
 	
@@ -99,12 +98,9 @@ function addmeasureBillboard(lon, lat, hei) {
 		name: "Measure",
 		position: Cesium.Cartesian3.fromDegrees(lon, lat, hei),
 		point: {
-			color: Cesium.Color.BLUE,
-			outlineColor: Cesium.Color.WHITE,
-			outlineWidth: 3,
-			pixelSize: 7,
+			color: Cesium.Color.WHITE,
+			pixelSize: 5,
 			heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-			disableDepthTestDistance: Number.POSITIVE_INFINITY
 		}
 	}));
 }

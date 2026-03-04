@@ -114,8 +114,6 @@ AssignmentManager = {
         var gcuCallback = {
             success : function(o){
 		if(o.username != username){
-                    var preEnc = username+'::'+hash
-                    hash = CryptoJS.MD5(preEnc).toString(CryptoJS.enc.Hex);
                     var url = baseUrl + "/web/json/directory/user/sso?username=" + username + "&hash=" + hash;
                     ConnectionManager.ajaxJsonp(url, callback, null);
                 }else {

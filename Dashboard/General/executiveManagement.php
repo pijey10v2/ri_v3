@@ -74,7 +74,7 @@ echo '
                 
                 <button class="btn filter-expand max"><i class="fa-regular fa-solid fa-arrows-to-line"></i></button>
                 <input onkeyup ="homeSearchProject(this)" placeholder="Search...">
-                <button class="filter-sort-btn" onclick="closeFilterList()"><i class="fa-solid fa-filter"></i></button>
+                <button class="filter-sort-btn" onclick="closeFilterList()"><i class="fa-sharp fa-solid fa-filter-list"></i></button>
             </div>
         </div>
         <div class="appsbar-exec">';

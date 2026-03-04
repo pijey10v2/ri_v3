@@ -8,7 +8,6 @@ function conOpLink(process, status, wolti, wtlti){
   var linkParamArr = '';
   var searchfilter = getFilterDocumentSSLR2();
   var cardName;
-  var incident_category_filter;
   
   switch (process) {
       case 'SMH':
@@ -37,16 +36,13 @@ function conOpLink(process, status, wolti, wtlti){
           linkWinTitle = 'HSET Incident'
           linkName = 'dash_cons_INC_card'
           
+          linkParamArr = processFilterParamArr([status, searchfilter.section, searchfilter.dateFrom, searchfilter.dateTo])
           if(status == 'Yes'){
             cardName = 'FATALITY'
-            incident_category_filter = 'Fatality'
-            linkParamArr = processFilterParamArr(['', searchfilter.section, searchfilter.dateFrom, searchfilter.dateTo, 'Fatality'])
           }else if(status == ''){
             cardName = 'TOTAL ACCIDENTS/INCIDENTS'
-            linkParamArr = processFilterParamArr([status, searchfilter.section, searchfilter.dateFrom, searchfilter.dateTo, ''])
           }else{
             cardName = status
-            linkParamArr = processFilterParamArr([status, searchfilter.section, searchfilter.dateFrom, searchfilter.dateTo, ''])
           }
           break;
   }
@@ -222,30 +218,20 @@ function drawTotalManHrsWOLTI(data , monthYear){
     });
     chart.updateFlag = true;
 }
-
-/**
- * changed the CUMULATIVE TOTAL MAN-HOURS WITH LTI to TOTAL MAN-HOURS
- * use the drawTotalManHrsWOLTI() function instead
- */
 function updateTtlManHrsCard(data){
-  console.log(data.length);
-    if (data) {
-      if(data.length == 0){
-        CumulTotalManHrsWithTI = `<span style="cursor:default">0</span>`;
-        CumulTotalManHrsWOLTI = `<span style="cursor:default">0</span>`;
-      }
+  var CumulTotalManHrsWOLTI = ((data.wLTI) ? parseInt(data.wLTI) : 0);
+  var CumulTotalManHrsWithTI = ((data.woLTI) ? parseInt(data.woLTI) : 0);
 
-      for (const [idx, ele] of Object.entries(data)) {
-        if(idx == "all") continue;
+  if(CumulTotalManHrsWOLTI > 0){
+      CumulTotalManHrsWOLTI = `<span style="cursor:default">`+CumulTotalManHrsWOLTI+`</span>`;
+  }
 
-        if(idx == idx){
-          CumulTotalManHrsWithTI = `<span style="cursor:default">`+ele.total_mh_wtlti+`</span>`;
-          CumulTotalManHrsWOLTI = `<span style="cursor:default">`+ele.culmulative_mh_wtlti+`</span>`;
-      }
-    }
-    $('#CumulTotalManHrsWOLTI').html(CumulTotalManHrsWOLTI); 
-    $('#CumulTotalManHrsWithTI').html(CumulTotalManHrsWithTI); 
+  if(CumulTotalManHrsWithTI > 0){
+      CumulTotalManHrsWithTI = `<span style="cursor:default">`+CumulTotalManHrsWithTI+`</span>`;
   } 
+
+  $('#CumulTotalManHrsWOLTI').html(CumulTotalManHrsWOLTI); 
+  $('#CumulTotalManHrsWithTI').html(CumulTotalManHrsWithTI); 
 }
 
 function drawOverallIncidentsAndAccidentsRecord(data, monthYear){
@@ -1038,15 +1024,16 @@ function refreshInformation(packid = 'overall', sectionId = 'overall', year = 'a
     var incidentData = (HSEData.IR && HSEData.IR[packid] && HSEData.IR[packid][sectionId]) ? HSEData.IR[packid][sectionId] : [];
     var incidentCatChartData = (incidentData.byCat && incidentData.byCat[year] && incidentData.byCat[year][month]) ? incidentData.byCat[year][month] : [];
     drawOverallIncidentsAndAccidentsRecord(incidentCatChartData, dataYearMonth);
+    var fatalityCnt = (incidentData.fatalityCnt && incidentData.fatalityCnt[year] && incidentData.fatalityCnt[year][month] && incidentData.fatalityCnt[year][month].total) ? incidentData.fatalityCnt[year][month].total :0;
     var totalCnt = (incidentData.card && incidentData.card[year] && incidentData.card[year][month] && incidentData.card[year][month].total) ? incidentData.card[year][month].total :0;
-    updateIncidentCard(incidentCatChartData.Fatality, totalCnt);
+    updateIncidentCard(fatalityCnt, totalCnt);
 
     // safety man hours
     ttlManHrsWOLtiData = (HSEData.ttlManHrsWOLTI && HSEData.ttlManHrsWOLTI[packid] && HSEData.ttlManHrsWOLTI[packid][sectionId]) ? HSEData.ttlManHrsWOLTI[packid][sectionId] : [];
     ttlManHrsWOLtiChartData = (ttlManHrsWOLtiData.chart && ttlManHrsWOLtiData.chart[year] && ttlManHrsWOLtiData.chart[year][month]) ? ttlManHrsWOLtiData.chart[year][month] : [];
     drawTotalManHrsWOLTI(ttlManHrsWOLtiChartData, dataYearMonth);
-    // ttlManHrsWOLtiCardData = (ttlManHrsWOLtiData.card && ttlManHrsWOLtiData.card[year] && ttlManHrsWOLtiData.card[year][month]) ? ttlManHrsWOLtiData.card[year][month] : [];
-    updateTtlManHrsCard(ttlManHrsWOLtiChartData);
+    ttlManHrsWOLtiCardData = (ttlManHrsWOLtiData.card && ttlManHrsWOLtiData.card[year] && ttlManHrsWOLtiData.card[year][month]) ? ttlManHrsWOLtiData.card[year][month] : [];
+    updateTtlManHrsCard(ttlManHrsWOLtiCardData);
 
     // safety activity
     var saData = (HSEData.activity && HSEData.activity[packid] && HSEData.activity[packid][sectionId]) ? HSEData.activity[packid][sectionId] : [];

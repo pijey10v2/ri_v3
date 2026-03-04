@@ -138,7 +138,7 @@ if (isset($_POST["functionName"]) && $_POST["functionName"] == "progressTableDat
             $projProgressInfo = $CONN->fetchAll($sql, array($projectID));
         }
     }else{
-        $projProgressInfo = $CONN->fetchAll("select * from project_progress_summary where pps_projectid =:0 order by pps_month_year asc", array($projectID));
+        $projProgressInfo = $CONN->fetchAll("select * from project_progress_summary where pps_projectid =:0", array($projectID));
     }
 
 	if ($projProgressInfo) {

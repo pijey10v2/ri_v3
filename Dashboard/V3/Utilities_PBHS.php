@@ -1,5 +1,4 @@
 <?php
-//Dashboard/V3/Utilities_PBHS.php v3 file
 include_once '../dashboard.class.php';
 $dashObj = new RiDashboard('utilities_PBHS', false, 0);
 
@@ -22,12 +21,12 @@ $html = '
     <body class='.$themeClass.'>
         <div class = "dashboardBody">
             <div class="layout oneRow" id="lOne">
-                <div class="RowOne twoColumn print-flex">
-                    <div class="columnOne SM twoRow print-width pagebreak">
+                <div class="RowOne twoColumn">
+                    <div class="columnOne SM twoRow">
                         <div class="rowOne L twoRow">
                             <div class="rowOne-T roundT">LIST OF REQUEST FOR INSPECTION (RFI)</div>
                             <div class="rowTwo-T roundB">
-                                <div class="tableContainer print-width scrollbar-inner">
+                                <div class="tableContainer scrollbar-inner">
                                     <table id ="ulttb"> 
                                         <thead>
                                             <th>Ref No</th>
@@ -41,7 +40,7 @@ $html = '
                             </div>
                         </div>
                         <div class="rowTwo S round white flex">
-                            <div class="tableContainer print-width scrollbar-inner round">
+                            <div class="tableContainer scrollbar-inner round">
                                 <table id ="" class="tableWidth"> 
                                     <thead class="">
                                         <th class="">Types</th>
@@ -54,7 +53,7 @@ $html = '
                             </div>
                         </div>
                     </div>
-                    <div class="columnTwo ML threeRow round tableContainer print-width scrollbar-inner">
+                    <div class="columnTwo ML threeRow round tableContainer scrollbar-inner">
                         <table id="" class="background"> 
                             <thead style="position: sticky; z-index: 100" class="procurment tableHeader">
                                 <tr>
@@ -269,25 +268,5 @@ echo $html;
 
     .highcharts-menu > li{
         list-style: none !important
-    }
-
-    /* media print style */
-    @media print{
-        .print-flex{
-            display: flex !important;
-            flex-direction: column;
-        }
-
-        .print-width{
-            width: 100% !important;
-        }
-
-        .scroll-wrapper > .scroll-content{
-            width: 100% !important;
-        }
-
-        .pagebreak{
-            page-break-after: always;
-        }
     }
 </style>

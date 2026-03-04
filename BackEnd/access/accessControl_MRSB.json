@@ -1458,8 +1458,7 @@
             },
             "PSU":{
                 "create" : true,
-                "read" : true,
-                "org": "MRSB"
+                "read" : true
             },
             "PTW": {
                 "create": false,

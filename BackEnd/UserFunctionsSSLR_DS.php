@@ -109,9 +109,8 @@ function updateUserProfileV3(){
     $country = filter_input(INPUT_POST, 'country', FILTER_SANITIZE_STRING);
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
-    $designation = filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING);
 
-    _updateUserProfile($fname, $lname, $country, $phone, $password, $designation);
+    _updateUserProfile($fname, $lname, $country, $phone, $password);
 }
 
 function updateUserForgetPwd(){
@@ -197,7 +196,6 @@ function addUser(){
         "user_type" => filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_STRING),
         "user_password" => filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING),
         "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING),
-        "user_designation" => filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING),
 
         //add code for support user
         "support_user" => filter_input(INPUT_POST, 'supuser', FILTER_VALIDATE_BOOLEAN),
@@ -208,8 +206,6 @@ function addUser(){
         "orgName" => filter_input(INPUT_POST, 'orgname', FILTER_SANITIZE_STRING),
         "orgDescription" => filter_input(INPUT_POST, 'orgdesc', FILTER_SANITIZE_STRING),
         "orgType" => filter_input(INPUT_POST, 'orgtype', FILTER_SANITIZE_STRING),
-        "Constructs" => filter_input(INPUT_POST, 'orgConstructs', FILTER_VALIDATE_BOOLEAN),
- 
     );
     //check if email, firstname, lastname and password val exist
     if (empty($userDetails['user_email']) || empty($userDetails['user_firstname']) || empty($userDetails['user_lastname']) || empty($userDetails['user_password'])) {
@@ -236,12 +232,6 @@ function addUser(){
         $str_to_insert = "'";
         $name = substr($userDetails['user_country'], 0, $pos) . $str_to_insert . substr($userDetails['user_country'], $pos + 5);
         $userDetails['user_country'] = $name;
-    } 
-    $pos = strpos($userDetails['user_designation'], "&#39;", 0);
-    if ($pos) {
-        $str_to_insert = "'";
-        $name = substr($userDetails['user_designation'], 0, $pos) . $str_to_insert . substr($userDetails['user_designation'], $pos + 5);
-        $userDetails['user_designation'] = $name;
     }
 
     if ((!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_firstname'])) || (!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_lastname']))) {
@@ -264,25 +254,17 @@ function addUser(){
     }else{
         $jogetSup = "false";
     }
-    $validation = validateUserEmail($userDetails['user_email']);
-    $response['validation'] = $validation;
-    if (!empty($validation)) { //name or id exists
-        $response['bool'] = false;
-        $response['msg'] = $validation['userEmail'];
-        return;
-    }
-   
 
     if (!empty($orgDetails['orgtype'])) { //new organization
-        $resp = jogetUserRegistration( $jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
+        $resp = jogetUserRegistration( $jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
         if($userDetails['support_user'] == true){
-            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
+            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
             $response['support'] = $resp2;
         }
     } else {
-        $resp = jogetUserRegistration($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName']);
+        $resp = jogetUserRegistration($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName']);
         if($userDetails['support_user'] == true){
-            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName'] );
+            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName'] );
             $response['support'] = $resp2;
         }
     }
@@ -359,7 +341,6 @@ function addUser(){
     }
 }
 
-
 function validateUserEmail($userEmail){ // to validate if the email already exists or not
     global $CONN;
     $return = array();
@@ -396,8 +377,7 @@ function updateUser(){
         "user_country" => filter_input(INPUT_POST, 'country', FILTER_SANITIZE_STRING),
         "user_type" => filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_STRING),
         "support_user" => filter_input(INPUT_POST, 'supuser', FILTER_VALIDATE_BOOLEAN),
-        "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING),
-        "user_designation" => filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING)
+        "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING)
     );
     if (isset($_POST['password'])) {
         $userDetails['user_password'] = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
@@ -455,12 +435,12 @@ function updateUser(){
    $resp ="";
    $resp2 = "";
     if (!empty($userDetails['user_password'])) {
-        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation'], $userDetails['user_password']);
+        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_password']);
         if(isset($support_user_change) && $support_user_change == true){ //either added or removed as support user
             if($userDetails['support_user'] == true){// user has been added as support user - add to support joget
                     //get user email,  org id , name , description from db to pass to add the user
                     $usr = $CONN->fetchRow("select u.user_org as orgID, u.user_email as user_email,  o.orgName as orgName, o.orgDescription as orgDescription from users u, organization o where user_id = ? and u.user_org = o.orgID", array($userDetails['user_id']));
-                    $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $usr['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $usr['orgID'], $usr['orgName'], $usr['orgDescription'] );
+                    $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $usr['user_email'], $jogetSup, $userDetails['user_password'], $usr['orgID'], $usr['orgName'], $usr['orgDescription'] );
                     
             }else{
                 //remove user from support joget if the joget is not the same as construct or asset
@@ -474,7 +454,7 @@ function updateUser(){
 
         }else{// there is no change - user has not been added or removed. check if support user then update the details to support joget
             if($userDetails['support_user'] == true){// user is a support user . so update the details
-                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation'], $userDetails['user_password']);
+                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_password']);
             }
 
         }
@@ -504,13 +484,13 @@ function updateUser(){
         }else{// there is no change - user has not been added or removed. check if support user then update the details to support joget
             if($userDetails['support_user'] == true){// user is a support user . so update the details
                   
-                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation']);
+                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup);
                    
                 
             }
 
         }
-        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation']);
+        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup);
     }
     $myresp = json_decode($resp);
     if ($myresp == "") { //user was not updated in joget. so exit
@@ -928,12 +908,11 @@ function updateUserProfile(){
     $country = filter_input(INPUT_POST, 'country', FILTER_SANITIZE_STRING);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
-    $designation = filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING);
 
-    _updateUserProfile($fname, $lname, $country, $phone, $password, $designation);
+    _updateUserProfile($fname, $lname, $country, $phone, $password);
 }
 
-function _updateUserProfile($fname, $lname, $country, $phone, $password, $designation){
+function _updateUserProfile($fname, $lname, $country, $phone, $password){
     if (!isset($_SESSION['email'])) {
         $response['bool'] = false;
         $response['msg'] = "Insufficient parameter";
@@ -979,11 +958,11 @@ function _updateUserProfile($fname, $lname, $country, $phone, $password, $design
     }
 
     if (isset($_POST['password'])) {
-        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup, $designation, $password);
+        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup, $password);
         //check if the user is support user first
         
         if($support_user){
-            $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup, $designation, $password);
+            $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup , $password);
             $myresp2 = json_decode($resp2);
             if ($myresp2 == "" ) { //user was not updated in joget. so exit
                 $response['msg'] = "Unable to update to the joget system. please check the joget connection.";
@@ -1003,12 +982,12 @@ function _updateUserProfile($fname, $lname, $country, $phone, $password, $design
                 $bentleyusername = filter_input(INPUT_POST, 'bentleyusername', FILTER_SANITIZE_STRING);
                 $bentleypassword = base64_encode($_POST['bentleypassword']);
                 $updSql = "UPDATE users SET user_firstname = :0, user_lastname = :1, user_country =:2, user_password = :3,updated_by = :4,
-                last_update =GETDATE(), bentley_username = :5, bentley_password = :6, user_phone =:7, user_designation =:8 WHERE user_email= :9";
-                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $password, $email, $bentleyusername, $bentleypassword, $phone, $designation, $email));
+                last_update =GETDATE(), bentley_username = :5, bentley_password = :6, user_phone =:7 WHERE user_email= :8";
+                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $password, $email, $bentleyusername, $bentleypassword, $phone, $email));
             } else {
                 $updSql = "UPDATE users SET user_firstname = :0, user_lastname = :1, user_country =:2, user_password = :3,updated_by = :4,
-                last_update =GETDATE(), user_phone =:5, user_designation =:6 WHERE user_email= :7";
-                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $password, $email, $phone, $designation, $email));
+                last_update =GETDATE(), user_phone =:5 WHERE user_email= :6";
+                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $password, $email, $phone, $email));
             }
 
             if (!$ok) {
@@ -1022,11 +1001,11 @@ function _updateUserProfile($fname, $lname, $country, $phone, $password, $design
             }
         }
     } else {
-        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup, $designation);
+        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup);
         //check if the user is support user first
         $support_user =  $CONN->fetchOne("SELECT support_user FROM users WHERE user_email =:0", array($email));
         if($support_user){
-            $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup, $designation);
+            $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup);
             $myresp2 = json_decode($resp2);
             if ($myresp2 == "" ) { //user was not updated in joget. so exit
                 $response['msg'] = "Unable to update to the joget system. please check the joget connection.";
@@ -1044,13 +1023,13 @@ function _updateUserProfile($fname, $lname, $country, $phone, $password, $design
                 $bentleyusername = filter_input(INPUT_POST, 'bentleyusername', FILTER_SANITIZE_STRING);
                 $bentleypassword = base64_encode($_POST['bentleypassword']);
                 $updSql = "UPDATE users SET user_firstname = :0, user_lastname = :1, user_country =:2,updated_by = :3,
-                    last_update =GETDATE(), bentley_username = :4, bentley_password = :5, user_phone =:6, user_designation =:7 WHERE user_email= :8";
-                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $email, $bentleyusername, $bentleypassword, $phone, $designation, $email));
+                    last_update =GETDATE(), bentley_username = :4, bentley_password = :5, user_phone =:6 WHERE user_email= :7";
+                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $email, $bentleyusername, $bentleypassword, $phone, $email));
             } else {
 
                 $updSql = "UPDATE users SET user_firstname = :0, user_lastname = :1, user_country =:2, updated_by = :3,
-                    last_update =GETDATE(), user_phone =:4, user_designation =:5 WHERE user_email= :6";
-                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $email, $phone, $designation, $email));
+                    last_update =GETDATE(), user_phone =:4 WHERE user_email= :5";
+                $ok = $CONN->execute($updSql, array($fname, $lname, $country, $email, $phone, $email));
             }
 
             if (!$ok) {

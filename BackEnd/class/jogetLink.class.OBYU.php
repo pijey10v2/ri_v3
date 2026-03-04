@@ -13,7 +13,6 @@ class JogetLink
 	var $user_email;
 	var $user_role;
 	var $parent_project_id;
-	var $parent_project_name;
 	var $pid;
 	var $jogetSupportDomain;
 	var $jogetSupportIp;
@@ -30,10 +29,6 @@ class JogetLink
 	var $jogetAppLink;
 	var $construct_package_ver = 71;
 	var $jogetConstructVersion = "latest";
-
-	// Cesium Access Token
-	var $mapboxToken;
-	var $maptilerToken;
 
 	private $admin_username;
 	private $admin_password;
@@ -60,7 +55,7 @@ class JogetLink
 		$this->admin_username = $JOGETADMINUSER;
 		$this->admin_password = $JOGETADMINPWD;
 
-		global $JOGETASSETDOMAIN, $JOGETASSETIP, $JOGETSUPPORTDOMAIN, $JOGETSUPPORTIP, $GEOSERVERDOMAIN, $GEOSERVERIP, $RIHOST, $MAPBOX_TOKEN;
+		global $JOGETASSETDOMAIN, $JOGETASSETIP, $JOGETSUPPORTDOMAIN, $JOGETSUPPORTIP, $GEOSERVERDOMAIN, $GEOSERVERIP, $RIHOST;
 
 		//add code for support user (new)
 		global $JOGETSUPPORTDOMAIN, $JOGETSUPPORTIP;
@@ -82,15 +77,8 @@ class JogetLink
 		$this->user_email = $_SESSION['email'];
 		$this->user_role = isset($_SESSION['project_role']) ?  $_SESSION['project_role']:"";
 		$this->parent_project_id = isset($_SESSION['parent_project_id']) ? $_SESSION['parent_project_id'] : '';
-		$this->parent_project_name = isset($_SESSION['parent_project_name']) ? $_SESSION['parent_project_name'] : '';
-
 		$this->pid = isset($_SESSION['project_id']) ? $_SESSION['project_id'] : '';
 		$this->isDownstream = isset($IS_DOWNSTREAM) ? $IS_DOWNSTREAM : false;
-		
-		require_once __DIR__ . "/../cesiumTokenFunctions.php";
-
-		$this->mapboxToken = getDefaultCesiumTokens() ?? (isset($MAPBOX_TOKEN) ? $MAPBOX_TOKEN : false);
-		$this->maptilerToken = getDefaultCesiumTokens('maptiler') ?? (isset($MAPTILER_TOKEN) ? $MAPTILER_TOKEN : false);
 
     	$appListsEncode = isset($_SESSION['appsLinks']) ? json_decode($_SESSION['appsLinks']) : [];
 	    if ($appListsEncode) {
@@ -183,10 +171,6 @@ class JogetLink
 		$construct_dash_LWTGStage = "";
 		$construct_dash_LWTGMile = "";
 		$construct_dash_LM_sum = "";
-
-		$construct_dash_LMAcq = "";
-		$construct_dash_LMIssues = "";
-
 	
 		switch ($this->owner_org) {
 			case 'KACC':
@@ -235,30 +219,27 @@ class JogetLink
 				$construct_dash_SD = $jsonSrcPrefix."list_mrsbSdForm?d-6693084-fn_package_id={?}&d-7743970-fn_day_date={?}&d-7743970-fn_day_date={?}";
 				$construct_dash_RA = $jsonSrcPrefix."dashRaOverall?d-4956310-fn_project_id=";
 				$construct_dash_RA_Section = $jsonSrcPrefix."dashRaSection?d-4955070-fn_package_id=";
-				$construct_dash_NCR = $jsonSrcPrefix."dashMrsbNCR?d-7077625-fn_package_id={?}&project_id={?}";
-				$construct_dash_NOI = $jsonSrcPrefix."dashMrsbNOI?d-7077652-fn_package_id={?}&project_id={?}";
+				$construct_dash_NCR = $jsonSrcPrefix."dashMrsbNCR?d-7077625-fn_package_id=";
+				$construct_dash_NOI = $jsonSrcPrefix."dashMrsbNOI?d-7077652-fn_package_id=";
 				$construct_dash_SA = $jsonSrcPrefix."dashMrsbSA?d-2359194-fn_package_id=";
-				$construct_dash_SMH = $jsonSrcPrefix."dashMrsbSMH?d-7077690-fn_package_id={?}&project_id={?}";
+				$construct_dash_SMH = $jsonSrcPrefix."dashMrsbSMH?d-7077690-fn_package_id=";
 				$construct_dash_IR = $jsonSrcPrefix."list_mrsbInc?d-6461591-fn_package_id=";
-				$construct_dash_RFI = $jsonSrcPrefix."dashMrsbRFI?d-7077661-fn_package_id={?}&project_id={?}";
-				$construct_dash_MS = $jsonSrcPrefix."dashMrsbMS?d-2359194-fn_package_id={?}&project_id={?}";
-				$construct_dash_MT = $jsonSrcPrefix."dashMrsbMA?d-2359176-fn_package_id={?}&project_id={?}";
-				$construct_dash_WIR = $jsonSrcPrefix."dashMrsbWIR?d-7077724-fn_package_id={?}&project_id={?}";
-				$construct_dash_RR = $jsonSrcPrefix."dashMrsbRR?d-2359208-fn_package_id={?}&project_id={?}";
-				$construct_dash_PBC = $jsonSrcPrefix."dashMrsbPBC?d-7077625-fn_package_id={?}&project_id={?}";
+				$construct_dash_RFI = $jsonSrcPrefix."dashMrsbRFI?d-7077661-fn_package_id=";
+				$construct_dash_MS = $jsonSrcPrefix."dashMrsbMS?d-2359194-fn_package_id=";
+				$construct_dash_MT = $jsonSrcPrefix."dashMrsbMA?d-2359176-fn_package_id=";
+				$construct_dash_WIR = $jsonSrcPrefix."dashMrsbWIR?d-7077724-fn_package_id=";
+				$construct_dash_RR = $jsonSrcPrefix."dashMrsbRR?d-2359208-fn_package_id=";
+				$construct_dash_PBC = $jsonSrcPrefix."dashMrsbPBC?d-7077625-fn_package_id=";
 				$construct_dash_EVNT = $jsonSrcPrefix."dashMrsbEVT?d-7077603-fn_package_id=";
 				// $construct_dash_LM = $jsonSrcPrefix."dashMrsbLM?d-2359185-fn_project_id=";
 				$construct_dash_LM = $jsonSrcPrefix."dashMrsbLMDuplicate?d-5715494-fn_project_id="; //change to construct_dash_LM_new
 				$construct_dash_LMS = $jsonSrcPrefix."dashMrsbLMS?d-7077638-fn_c_parent_id=";
 				$construct_dash_LTD = $jsonSrcPrefix."dashMrsbLTD?d-7077644-fn_project_id=";
-				// $construct_dash_LD = $jsonSrcPrefix."dashMrsbLD?d-2359176-fn_parent_id=";
-				$construct_dash_LD = $jsonSrcPrefix."dashMrsbLDProject?project_id=";
+				$construct_dash_LD = $jsonSrcPrefix."dashMrsbLD?d-2359176-fn_parent_id=";
 				$construct_dash_LMRS = $jsonSrcPrefix."dashMrsbLMRS?d-4455778-fn_parent_id=";
 				$construct_dash_LMRS_new = $jsonSrcPrefix."dashMrsbLMRSnew?d-2866906-fn_parent_id=";
-				// $construct_dash_LT = $jsonSrcPrefix."dashMrsbLT?d-2359192-fn_parent_id=";
-				$construct_dash_LT = $jsonSrcPrefix."dashMrsbLTProject?project_id=";
-				// $construct_dash_LAT = $jsonSrcPrefix."dashMrsbLAT?d-7077603-fn_parent_id=";
-				$construct_dash_LAT = $jsonSrcPrefix."dashMrsbLATProject?project_id=";
+				$construct_dash_LT = $jsonSrcPrefix."dashMrsbLT?d-2359192-fn_parent_id=";
+				$construct_dash_LAT = $jsonSrcPrefix."dashMrsbLAT?d-7077603-fn_parent_id=";
 				$construct_dash_LMR = $jsonSrcPrefix."dashMrsbLMR?d-7077637-fn_parent_id=";
 				$construct_dash_LMR_CTD = $jsonSrcPrefix."dashMrsbLMRCTD?d-6547746-fn_parent_id=";
 				$construct_dash_LTR = $jsonSrcPrefix."dashMrsbLTR?d-7077658-fn_parent_id=";
@@ -266,11 +247,6 @@ class JogetLink
 				$construct_dash_LWTGStage = $jsonSrcPrefix."dashMRSBLWTGStage?d-855652-fn_parent_id=";
 				$construct_dash_LWTGMile = $jsonSrcPrefix."dashMRSBLWTGMS?d-6245376-fn_parent_id=";
 				$construct_dash_LM_sum = $jsonSrcPrefix."dashMrsbLMSumData?d-644596-fn_c_project_id=";
-
-				$construct_dash_LMAcq = $jsonSrcPrefix."dashMrsbLMAcquisition?project_id=";
-				$construct_dash_LMIssues = $jsonSrcPrefix."dashMrsbLMIssues?project_id=";
-				$construct_dash_LMRS_copy = $jsonSrcPrefix."dashMrsbLMRSCopy?parent_id=";
-				$construct_dash_LMRS_list = $jsonSrcPrefix."dashMrsbLMRSList?project_id=";
 
 				break;
 		}
@@ -319,12 +295,7 @@ class JogetLink
 			'construct_dash_LWTG' => $construct_dash_LWTG,
 			'construct_dash_LWTGStage' => $construct_dash_LWTGStage,
 			'construct_dash_LWTGMile' => $construct_dash_LWTGMile,
-			'construct_dash_LM_sum' => $construct_dash_LM_sum,
-			//new
-			'construct_dash_LMAcq' => $construct_dash_LMAcq,
-			'construct_dash_LMIssues' => $construct_dash_LMIssues,
-			'construct_dash_LMRS_copy' => $construct_dash_LMRS_copy,
-			'construct_dash_LMRS_list' => $construct_dash_LMRS_list
+			'construct_dash_LM_sum' => $construct_dash_LM_sum
 		);
 		return $ret;		
 	}
@@ -448,7 +419,7 @@ class JogetLink
 				$construct_list_MOS = $srcPrefix."mrsb/_/mrsbMs_crud?d-7746253-fn_package_id=".$this->project_id."&d-7746253-fn_ref_no=".$empty."&d-7746253-fn_submission_type=".$empty."&d-7746253-fn_section=".$empty."&d-7746253-fn_submission_date=".$empty;
 				$construct_list_MS = $srcPrefix."mrsb/_/mrsbMa_crud?d-7746235-fn_package_id=".$this->project_id."&d-7746235-fn_ref_no=".$empty."&d-7746235-fn_section=".$empty."&d-7746235-fn_manufacturer=".$empty."&d-7746235-fn_manufacturer=".$empty."&d-7746235-fn_submission_date=&d-7746235-fn_submission_date=&d-7746235-fn_approval_status=&no_approval_status_flag=";
 				$construct_list_RFI = $srcPrefix."mrsb/_/mrsbRfi_crud?d-6461654-fn_package_id=".$this->project_id."&d-6461654-fn_section=".$empty."&d-6461654-fn_year=".$empty."&d-6461654-fn_month=".$empty."&d-6461654-fn_total_submitted=".$empty."&d-6461654-fn_total_open=".$empty."&d-6461654-fn_total_closed=".$empty;
-				$construct_list_LTD = $srcPrefix."mrsb/_/mrsbLtd_ins_crud?d-6461637-fn_project_id=".$this->parent_project_id;
+				$construct_list_LTD = $srcPrefix."mrsb/_/mrsbLtd_crud?d-6461637-fn_project_id=".$this->parent_project_id;
 				$construct_list_LM = $srcPrefix."mrsb/_/mrsbLm_crud?d-7746244-fn_project_id=".$this->parent_project_id."&d-7746244-fn_month=".$empty."&d-7746244-fn_year=".$empty."&d-7746244-fn_month_timeline=".$empty;
 
 				// dashboard linking to conOp
@@ -470,7 +441,7 @@ class JogetLink
 				$construct_dash_conop_rr = $srcPrefix."mrsb/_/mrsbRr_crud?d-7746267-fn_package_id=".$packageIdConOp."&d-7746267-fn_project_id=".$projectIdConOp."&d-7746267-fn_date_identified={?}&d-7746267-fn_date_identified={?}&d-7746267-fn_risk_status={?}";
 				$construct_dash_conop_land_management = $srcPrefix."mrsb/_/mrsbLm_crud?d-7746244-fn_project_id=".$projectIdConopLand."&d-7746244-fn_month_timeline=&d-7746244-fn_year={?}&d-7746244-fn_month={?}";
 				$construct_dash_conop_land_managementAiwiFoe = $srcPrefix."mrsb/_/mrsbLm_crud?d-7746244-fn_project_id=".$projectIdConopLand."&d-7746244-fn_month=&d-7746244-fn_year={?}&d-7746244-fn_month_timeline={?}";
-				$construct_dash_conop_land_timeline = $srcPrefix."mrsb/_/mrsbLtd_crud?d-3302166-fn_project_id=".$projectIdConopLand."&d-3302166-fn_year={?}&d-3302166-fn_month={?}&d-3302166-fn_category={?}";
+				$construct_dash_conop_land_timeline = $srcPrefix."mrsb/_/mrsbLtd_crud?d-6461637-fn_project_id=".$projectIdConopLand."&d-6461637-fn_id={?}";
 				
 				break;
 
@@ -688,8 +659,8 @@ class JogetLink
 				$construct_issue_PUBC = $srcPrefix. "mrsb/_/mrsbPbcCreate?package_id=".$this->project_id."&project_id=".$this->parent_project_id."&package_name=".$this->project_name;
 				$construct_issue_EVNT = $srcPrefix. "mrsb/_/mrsbEvtCreate?package_id=".$this->project_id."&project_id=".$this->parent_project_id."&package_name=".$this->project_name;
 				// Land is for project level and not at package - data to be entered /managed at any of the pacakages
-				$construct_issue_LTD = $srcPrefix. "mrsb/_/mrsbLtdCreateNew?&project_id=".$this->parent_project_id;
-				$construct_issue_LM = $srcPrefix. "mrsb/_/mrsbLmCreateNew?&project_id=".$this->parent_project_id;
+				$construct_issue_LTD = $srcPrefix. "mrsb/_/mrsbLtdCreate?&project_id=".$this->parent_project_id;
+				$construct_issue_LM = $srcPrefix. "mrsb/_/mrsbLmCreate?&project_id=".$this->parent_project_id;
 
 				// manage
 				$construct_manage_RR = $srcPrefix. "mrsb/_/mrsbRrForm_crud?d-6693975-fn_package_id=".$this->project_id."&d-6693975-fn_project_id=".$this->parent_project_id."&d-6693975-fn_ref_no=".$empty."&d-6693975-fn_risk=".$empty."&d-6693975-fn_risk_area=".$empty."&d-6693975-fn_risk_owner=".$empty."&d-6693975-fn_risk_status=".$empty."&d-6693975-fn_project_impact=".$empty."&d-6693975-fn_risk_source=".$empty;
@@ -709,8 +680,8 @@ class JogetLink
 				$construct_manage_PUBC = $srcPrefix. "mrsb/_/mrsbPbcForm_crud?d-3300702-fn_package_id=".$this->project_id."&d-3300702-fn_year=".$empty."&d-3300702-fn_month=".$empty."&d-3300702-fn_category=".$empty;
 				$construct_manage_EVNT = $srcPrefix. "mrsb/_/mrsbEvtForm_crud?d-3298920-fn_package_id=".$this->project_id."&d-3298920-fn_month=".$empty."&d-3298920-fn_year=".$empty."&d-3298920-fn_category=".$empty;
 				// Land is for project level and not at package - data to be entered /managed at any of the pacakages
-				$construct_manage_LTD = $srcPrefix. "mrsb/_/mrsbLtdForm_crud_new?project_id=".$this->parent_project_id;
-				$construct_manage_LM = $srcPrefix. "mrsb/_/mrsbLmForm_crud_new?project_id=".$this->parent_project_id."&month=".$empty."&year=".$empty;
+				$construct_manage_LTD = $srcPrefix. "mrsb/_/mrsbLtdForm_crud?d-3302241-fn_project_id=".$this->parent_project_id;
+				$construct_manage_LM = $srcPrefix. "mrsb/_/mrsbLmForm_crud?d-6692112-fn_project_id=".$this->parent_project_id."&d-6692112-fn_month=".$empty."&d-6692112-fn_year=".$empty;
 				
 				// setup
 				$construct_setup_area_RR = $srcPrefix. "mrsb/_/mrsbRrArea_crud?d-5366195-fn_project_id=".$this->parent_project_id; 
@@ -939,10 +910,10 @@ class JogetLink
 		$empty = "";
 		switch($this->user_role){
 			case "Doc Controller":
-				$drawing_list = "mrsb/_/mrsbDwg_crud?d-7045011-fn_c_package_id=".$this->project_id."&d-7045011-fn_c_project_id=".$this->parent_project_id."&d-7045011-fn_c_work_sec_contract_no=".$empty."&d-7045011-fn_c_discipline=".$empty."&d-7045011-fn_c_volume=".$empty."&d-7045011-fn_c_drawing_type=".$empty. "&d-7045011-fn_c_section=".$empty . "&d-7045011-fn_c_ref_no=" . $empty . "&d-7045011-fn_c_revision_no=" . $empty . "&d-7045011-fn_c_title=" . $empty . "&d-7045011-fn_c_created_date=" . $empty . "&d-7045011-fn_filter_keywords=" . $empty . "&d-7045011-fn_c_document_date=" . $empty;
+				$drawing_list = "mrsb/_/mrsbDwg_crud?d-3297381-fn_package_id=".$this->project_id."&d-3297381-fn_project_id=".$this->parent_project_id."&d-3297381-fn_ref_no=".$empty."&d-3297381-fn_title=".$empty."&d-3297381-fn_created_date=".$empty."&d-3297381-fn_document_date=".$empty. "&d-3297381-fn_section=".$empty;
 				break;
 			default :
-				$drawing_list = "mrsb/_/mrsbDwgView_crud?d-7073280-fn_c_package_id=".$this->project_id."&d-7073280-fn_c_project_id=".$this->parent_project_id."&d-7073280-fn_c_work_sec_contract_no=".$empty."&d-7073280-fn_c_discipline=".$empty."&d-7073280-fn_c_volume=".$empty."&d-7073280-fn_c_drawing_type=".$empty. "&d-7073280-fn_c_section=".$empty."&d-7073280-fn_c_ref_no=".$empty. "&d-7073280-fn_c_revision_no=" . $empty . "&d-7073280-fn_c_title=" . $empty . "&d-7073280-fn_c_created_date=" . $empty . "&d-7073280-fn_filter_keywords=" . $empty . "&d-7073280-fn_c_document_date=" . $empty;
+				$drawing_list = "mrsb/_/mrsbDwgView_crud?d-3297730-fn_package_id=".$this->project_id."&d-3297730-fn_project_id=".$this->parent_project_id."&d-3297730-fn_ref_no=".$empty."&d-3297730-fn_title=".$empty."&d-3297730-fn_created_date=".$empty."&d-3297730-fn_document_date=".$empty. "&d-3297730-fn_section=".$empty;
 				break;
 		}
 		
@@ -969,8 +940,6 @@ class JogetLink
 		$document_corr_list_outgoing= "";
 		$document_corr_list_incoming_conf= "";
 		$document_corr_list_outgoing_conf= "";
-		$document_corr_list_dismiss_notif = ""; //mrsb
-		$document_corr_list_dismiss_notif_utsb = ""; //utsb
 		$document_corr_inbox = "";
 		
 		$document_setup_type = "";
@@ -1050,11 +1019,8 @@ class JogetLink
 						$document_corr_inbox = $srcPrefix."kacc/_/kaccCorrCustomInbox?d-7891553-fn_package_id=".$this->project_id."&d-7891553-fn_kacc_action_user.to=".$this->user_email;
 						$document_corr_list_all = $srcPrefix."kacc/_/kaccCorrForm_crud?d-6897156-fn_package_id=".$this->project_id."&d-6897156-fn_doc_date=".$empty."&d-6897156-fn_corr_type=".$empty."&d-6897156-fn_status=".$empty."&d-6897156-fn_ext_ref_no=".$empty."&d-6897156-fn_int_ref_no=".$empty."&d-6897156-fn_reciever_sender=".$empty."&d-6897156-fn_subject=".$empty."&d-6897156-fn_dateCreated=".$empty; //pacakge id is current project id
 						$document_corr_list_incoming = $srcPrefix."kacc/_/kaccCorrInc_crud?d-7891416-fn_package_id=".$this->project_id."&d-7891416-fn_status=".$empty."&d-7891416-fn_ext_ref_no=".$empty."&d-7891416-fn_int_ref_no=".$empty."&d-7891416-fn_reciever_sender=".$empty."&d-7891416-fn_subject=".$empty."&d-7891416-fn_dateCreated=".$empty; //pacakge id is current project id
-						if(strpos($this->parent_project_name, 'HQ') === false){
-							$document_corr_list_outgoing = $srcPrefix."kacc/_/kaccCorrOut_crud?d-7892244-fn_package_id=".$this->project_id."&d-7892244-fn_status=".$empty."&d-7892244-fn_ext_ref_no=".$empty."&d-7892244-fn_int_ref_no=".$empty."&d-7892244-fn_reciever_sender=".$empty."&d-7892244-fn_subject=".$empty."&d-7892244-fn_dateCreated=".$empty; //pacakge id is current project id
-						}else{
-							$document_corr_list_outgoing = $srcPrefix."kacc/_/kaccCorrOutSite_crud?package_id=".$this->project_id."&d-1741191-fn_status=".$empty."&d-1741191-fn_ext_ref_no=".$empty."&d-1741191-fn_int_ref_no=".$empty."&d-1741191-fn_reciever_sender=".$empty."&d-1741191-fn_subject=".$empty."&d-1741191-fn_dateCreated=".$empty; //pacakge id is current project id
-						}
+						$document_corr_list_outgoing = $srcPrefix."kacc/_/kaccCorrOut_crud?d-7892244-fn_package_id=".$this->project_id."&d-7892244-fn_status=".$empty."&d-7892244-fn_ext_ref_no=".$empty."&d-7892244-fn_int_ref_no=".$empty."&d-7892244-fn_reciever_sender=".$empty."&d-7892244-fn_subject=".$empty."&d-7892244-fn_dateCreated=".$empty; //pacakge id is current project id
+						
 						// setup
 						$document_setup_type = $srcPrefix."kacc/_/kaccDocType_crud?d-2740069-fn_project_id=".$this->parent_project_id; //filter is based on parent id 
 						$document_setup_work_discipline = $srcPrefix."kacc/_/kaccWorkDisc_crud?d-8265915-fn_project_id=".$this->parent_project_id; //filter is based on parent id 
@@ -1091,8 +1057,6 @@ class JogetLink
 				$document_corr_list_outgoing = $srcPrefix."mrsb/_/mrsbCorrOut_crud?d-3296515-fn_package_id=".$this->project_id."&d-3296515-fn_project_id=".$this->parent_project_id."&d-3296515-fn_status=".$empty."&d-3296515-fn_correspondence_type=".$empty."&d-3296515-fn_int_ref_no=".$empty."&d-3296515-fn_ext_ref_no=".$empty."&d-3296515-fn_subject=".$empty."&d-3296515-fn_year=".$empty."&d-3296515-fn_received_date=".$empty."&d-3296515-fn_letter_date=".$empty."&d-3296515-fn_dateCreated=".$empty. "&d-3296515-fn_section=".$empty; //pacakge id is current project id
 				$document_corr_list_incoming_conf = $srcPrefix."mrsb/_/mrsbCorrIncCon_crud?d-7427535-fn_package_id=".$this->project_id."&d-7427535-fn_project_id=".$this->parent_project_id."&d-7427535-fn_status=".$empty."&d-7427535-fn_correspondence_type=".$empty."&d-7427535-fn_int_ref_no=".$empty."&d-7427535-fn_ext_ref_no=".$empty."&d-7427535-fn_subject=".$empty."&d-7427535-fn_year=".$empty."&d-7427535-fn_received_date=".$empty."&d-7427535-fn_letter_date=".$empty."&d-7427535-fn_dateCreated=".$empty. "&d-7427535-fn_section=".$empty;  //pacakge id is current project id
 				$document_corr_list_outgoing_conf = $srcPrefix."mrsb/_/mrsbCorrOutCon_crud?d-5988459-fn_package_id=".$this->project_id."&d-5988459-fn_project_id=".$this->parent_project_id."&d-5988459-fn_status=".$empty."&d-5988459-fn_correspondence_type=".$empty."&d-5988459-fn_int_ref_no=".$empty."&d-5988459-fn_ext_ref_no=".$empty."&d-5988459-fn_subject=".$empty."&d-5988459-fn_year=".$empty."&d-5988459-fn_received_date=".$empty."&d-5988459-fn_letter_date=".$empty."&d-5988459-fn_dateCreated=".$empty. "&d-5988459-fn_section=".$empty; //pacakge id is current project id
-				$document_corr_list_dismiss_notif = $srcPrefix."mrsb/_/mrsbCorrDismissNotif_crud?d-5812794-fn_au_to=".$this->user_email."&d-5812794-fn_package_id=".$this->project_id."&d-5812794-fn_project_id=".$this->parent_project_id."&d-5812794-fn_status=".$empty."&d-5812794-fn_correspondence_type=".$empty."&d-5812794-fn_int_ref_no=".$empty."&d-5812794-fn_ext_ref_no=".$empty."&d-5812794-fn_subject=".$empty."&d-5812794-fn_year=".$empty."&d-5812794-fn_received_date=".$empty."&d-5812794-fn_letter_date=".$empty."&d-5812794-fn_dateCreated=".$empty. "&d-5812794-fn_section=".$empty; //pacakge id is current project id
-
 				// setup
 				$document_setup_type = $srcPrefix."mrsb/_/mrsbDocType_crud?d-3295567-fn_project_id=".$this->parent_project_id."&d-3295567-fn_desc_doc_01=".$empty; //filter is based on parent id 
 				$document_setup_work_discipline = $srcPrefix."mrsb/_/mrsbDiscipline_crud?d-5098467-fn_project_id=".$this->parent_project_id; //filter is based on parent id 
@@ -1134,7 +1098,6 @@ class JogetLink
 				$document_corr_list_all = $srcPrefix."utsb/_/utsbCorrForm_crud?d-3036017-fn_package_id=".$this->project_id; //pacakge id is current project id
 				$document_corr_list_incoming = $srcPrefix."utsb/_/utsbCorrInc_crud?d-3808181-fn_package_id=".$this->project_id; //pacakge id is current project id
 				$document_corr_list_outgoing = $srcPrefix."utsb/_/utsbCorrOut_crud?d-3808273-fn_package_id=".$this->project_id; //pacakge id is current project id
-				$document_corr_list_dismiss_notif_utsb = $srcPrefix."utsb/_/utsbCorrDismissNotif_crud?d-2202932-fn_package_id=".$this->project_id."&d-2202932-fn_utsb_action_user.to=".$this->user_email;
 				// setup
 				$document_setup_type = $srcPrefix."utsb/_/utsbDocType_crud?d-3807325-fn_project_id=".$this->parent_project_id; //filter is based on parent id 
 				$document_setup_work_discipline = $srcPrefix."utsb/_/utsbDisciplineForm_crud?d-5467257-fn_project_id=".$this->parent_project_id; ///filter is based on parent id 
@@ -1228,8 +1191,6 @@ class JogetLink
 			'document_corr_list_outgoing' => $document_corr_list_outgoing,
 			'document_corr_list_incoming_conf' => $document_corr_list_incoming_conf,
 			'document_corr_list_outgoing_conf' => $document_corr_list_outgoing_conf,
-			'document_corr_list_dismiss_notif' => $document_corr_list_dismiss_notif, //mrsb
-			'document_corr_list_dismiss_notif_utsb' => $document_corr_list_dismiss_notif_utsb, //utsb
 			'document_setup_type' => $document_setup_type,
 			'document_setup_work_discipline' => $document_setup_work_discipline,
 			'document_setup_section' => $document_setup_section,
@@ -1321,11 +1282,7 @@ class JogetLink
 				$document_register = $srcPrefix."mrsb/_/mrsbDocCreate?project_id=".$this->parent_project_id."&package_id=".$this->project_id;
 				$document_bulk_upload = $srcPrefix."mrsb/_/bulkImport?project_id=".$this->parent_project_id."&package_id=".$this->project_id;
 				$document_corr_register = $srcPrefix."mrsb/_/mrsbCorrCreate?project_id=".$this->parent_project_id."&package_id=".$this->project_id;
-				if($this->parent_project_id == "NCH"){
-					$document_bulk_corr_register = $srcPrefix."mrsb/_/bulkImportCorrNCH";
-				}else{
-					$document_bulk_corr_register = $srcPrefix."mrsb/_/bulkImportCorr";
-				}
+				$document_bulk_corr_register = $srcPrefix."mrsb/_/bulkImportCorr";
         		$document_corr_inbox_res = $srcPrefix."mrsb/_/mrsbCorrAction";
 				$document_corr_view_incoming = $srcPrefix."mrsb/_/mrsbCorrInc_crud?_mode=edit&id=";
 				$document_corr_view_outgoing = $srcPrefix."mrsb/_/mrsbCorrOut_crud?_mode=edit&id=";
@@ -1450,7 +1407,7 @@ class JogetLink
 				$finance_dash_cashoutflow = $jsonSrcPrefix."cashOutflowList?d-6699393-fn_contract_id={?}&d-6699393-fn_project_id={?}";
 				break;
 			case 'MRSB':
-				$finance_dash_contract = $jsonSrcPrefix."mrsbContractList?d-4322286-fn_project_id={?}&parent_project_id={?}";
+				$finance_dash_contract = $jsonSrcPrefix."mrsbContractList?d-4322286-fn_project_id=";
 				$finance_dash_ipc = $jsonSrcPrefix."mrsbIPCList?d-7915316-fn_contract_no={?}&d-7915316-fn_project_id={?}";
 				$finance_dash_eot = $jsonSrcPrefix."mrsbEOTList?d-7913534-fn_contract_no={?}&d-7913534-fn_project_id={?}";
 				$finance_dash_vo = $jsonSrcPrefix."mrsbVOListCopy?d-4291118-fn_contract_no={?}&d-4291118-fn_project_id={?}";
@@ -1505,7 +1462,6 @@ class JogetLink
 		$ArchivedContracts ="";
 		$NewCashOutflow ="";
 		$CashOutflow = "";
-		$NewEOT = "";
 		switch($this->user_role){
 			case "Finance Officer":
 				$projectInfo = "project_fo_ul?&_mode=edit&id=";
@@ -1623,9 +1579,7 @@ class JogetLink
 				$CurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				$NewClaim = "ce_contract_claim_ul?d-2823043-fn_project_id=";
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress";
-				break;
-			case "Planning Engineer":
-				$NewEOT = "ple_contract_eot_ul?project_id=";
+				
 				break;
 		}
 		$ret = array(
@@ -1646,8 +1600,7 @@ class JogetLink
 			'finance_list_CurrentAmendments' => $CurrentAmendments,
 			'finance_list_ArchivedContracts' => $ArchivedContracts,
 			'finance_list_NewCashOutflow' => $NewCashOutflow,
-			'finance_list_CashOutflow' => $CashOutflow,
-			'finance_list_NewEOT' => $NewEOT
+			'finance_list_CashOutflow' => $CashOutflow
 
 		);
 		return $ret;	
@@ -1698,7 +1651,6 @@ class JogetLink
 		$finance_list_NewEOT = "";
 		$finance_list_ApprovedEOT = "";
 		$finance_list_ConsultantList = "";
-		$finance_list_NewEOT = "";
 		$empty = "";
 	
 		// dashboard linking to conOp
@@ -1759,8 +1711,6 @@ class JogetLink
 				$finance_list_ArchivedContracts = $srcPrefix.$srcUrl['finance_list_ArchivedContracts'].$this->project_id;
 				$finance_list_NewCashOutflow = $srcPrefix.$srcUrl['finance_list_NewCashOutflow'].$this->project_id;
 				$finance_list_CashOutflowList = $srcPrefix.$srcUrl['finance_list_CashOutflow'].$this->project_id;
-				$finance_list_NewEOT = $srcPrefix.$srcUrl['finance_list_NewEOT'].$this->project_id. "&status=Complete";
-				$finance_list_ApprovedEOT = $srcPrefix."eot_ple_list?d-6383306-fn_project_id=" .$this->project_id."&d-6383306-fn_contract_no=".$empty;
 
 				// dashboard card
 				$finance_list_contract_list_card = $srcPrefix."ContractListDashboard?d-8172624-fn_project_id=".$packageIdConOp."&d-8172624-fn_section={?}&contract_ids={?}&d-8172624-fn_contract_no={?}";
@@ -1872,19 +1822,7 @@ class JogetLink
 			'mrsbRas_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbRasDown_list?data=',
 			'mrsbNoi_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbNoiDown_list?data=',
 			'mrsbPubc_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbPbcDown_list?data=',
-			'mrsbEvnt_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbEvtDown_list?data=',
-			'kaccCar_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccCarDown_list?data=',
-			'kaccInc_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccincDown_list?data=',
-			'kaccMs_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccMsDown_list?data=',
-			'kaccMa_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccMaDown_list?data=',
-			'kaccNcr_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccNcrDown_list?data=',
-			'kaccPtw_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccPtwDown_list?data=',
-			'kaccRfi_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccRfiDown_list?data=',
-			'kaccSa_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSaDown_list?data=',
-			'kaccSi_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSiDown_list?data=',
-			'kaccSd_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSdDown_list?data=',
-			'kaccSmh_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSmhDown_list?data=',
-			'kaccWir_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccWirDown_list?data='
+			'mrsbEvnt_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbEvtDown_list?data='
 		);
 		return $ret;
 	}
@@ -1910,8 +1848,6 @@ class JogetLink
 		$finance_open_VOActivityForm = $userviewPrefixFinance. "vo_inbox?activityId=";
 
 		$document_list_section = $jsonPrefixDocument."list_kaccSection?d-2749300-fn_package_id=".$this->project_id;
-
-		$kacc_form_bulk = "?package_id=".$this->project_id."&project_id=".$this->parent_project_id."&project_name=".$this->project_name;
 		
 		$ret = array(
 			'doc_json_datalist_task' => $doc_json_datalist_task,
@@ -1940,20 +1876,7 @@ class JogetLink
 			'mrsbRas_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbRasDown_list?data=',
 			'mrsbNoi_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbNoiDown_list?data=',
 			'mrsbPubc_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbPbcDown_list?data=',
-			'mrsbEvnt_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbEvtDown_list?data=',
-			'kaccCar_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccCarDown_list?data=',
-			'kaccInc_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccincDown_list?data=',
-			'kaccMs_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccMsDown_list?data=',
-			'kaccMa_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccMaDown_list?data=',
-			'kaccNcr_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccNcrDown_list?data=',
-			'kaccPtw_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccPtwDown_list?data=',
-			'kaccRfi_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccRfiDown_list?data=',
-			'kaccSa_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSaDown_list?data=',
-			'kaccSi_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSiDown_list?data=',
-			'kaccSd_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSdDown_list?data=',
-			'kaccSmh_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccSmhDown_list?data=',
-			'kaccWir_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/kacc/_/kaccWirDown_list?data=',
-			'kacc_form_bulk' => $kacc_form_bulk
+			'mrsbEvnt_view' => $this->jogetHost.'jw/web/embed/userview/'.$this->constructApp.'/mrsb/_/mrsbEvtDown_list?data='
 		);
 		
 		return $ret;
@@ -1999,8 +1922,6 @@ class JogetLink
 		echo "var GEOHOST = '';";
 		echo "var SYSTEM = '".$this->system."';";
 		echo "var IS_DOWNSTREAM = '".$this->isDownstream."';";
-		echo "var MAPBOX_TOKEN = '".$this->mapboxToken."';";
-		echo "var MAPTILER_TOKEN = '".$this->maptilerToken."';";
 		if ($this->jogetAppLink) {
 			echo "var ".$varname." = JSON.parse('".json_encode($this->jogetAppLink, JSON_INVALID_UTF8_IGNORE)."');";
 		}
@@ -2036,3 +1957,4 @@ class JogetLink
 		return $this->jogetAppLink;
 	}
 }
+

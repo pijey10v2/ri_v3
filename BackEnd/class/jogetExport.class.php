@@ -37,111 +37,89 @@ class jogetExport
 		global $SYSTEM;
 
 		if($SYSTEM == "OBYU"){
-			if($this->projectOwner == 'MRSB'){
-				$this->processNameArr = array(
-					'mrsbNcrForm' => 'NCR',
-					'mrsbWirForm' => 'WIR',
-					'mrsbRfiForm' => 'RFI',
-					'mrsbMsForm' => 'MS',
-					'mrsbMaForm' => 'MT',
-					'mrsbIncForm' => 'INC',
-					'mrsbSdForm' => 'SD',
-					'mrsbSiForm' => 'SI',
-					'mrsbSaForm' => 'SA',
-					'mrsbSmhForm' => 'SMH',
-					'mrsbRrForm' => 'RR',
-					'mrsbRaForm' => 'RAO',
-					'mrsbRaSecForm' => 'RAS',
-					'mrsbNoiForm' => 'NOI',
-					'mrsbPbcForm' => 'PUBC',
-					'mrsbEvtForm' => 'EVNT'
-				);
-			
-				$this->linkArr = array(
-					'mrsbNcrForm' => 'mrsbNcr_view',
-					'mrsbWirForm' => 'mrsbWir_view',
-					'mrsbRfiForm' => 'mrsbRfi_view',
-					'mrsbMsForm' => 'mrsbMs_view',
-					'mrsbMaForm' => 'mrsbMt_view',
-					'mrsbIncForm' => 'mrsbInc_view',
-					'mrsbSdForm' => 'mrsbSd_view',
-					'mrsbSiForm' => 'mrsbSi_view',
-					'mrsbSaForm' => 'mrsbSa_view',
-					'mrsbSmhForm' => 'mrsbSmh_view',
-					'mrsbRrForm' => 'mrsbRr_view',
-					'mrsbRaForm' => 'mrsbRao_view',
-					'mrsbRaSecForm' => 'mrsbRas_view',
-					'mrsbNoiForm' => 'mrsbNoi_view',
-					'mrsbPbcForm' => 'mrsbPubc_view',
-					'mrsbEvtForm' => 'mrsbEvnt_view'
-				);
-			}else{
-				$this->processNameArr = array(
-					'kaccCarForm' => 'CAR',
-					'kaccIncForm' => 'INC',
-					'kaccMsForm' => 'MS',
-					'kaccMaForm' => 'MT',
-					'kaccNcrForm' => 'NCR',
-					'kaccPtwForm' => 'PTW',
-					'kaccRfiForm' => 'RFI',
-					'kaccSaForm' => 'SA',
-					'kaccSiForm' => 'SI',
-					'kaccSdForm' => 'SD',
-					'kaccSmhForm' => 'SMH',
-					'kaccWirForm' => 'WIR'
-				);
-			
-				$this->linkArr = array(
-					'kaccCarForm' => 'kaccCar_view',
-					'kaccIncForm' => 'kaccInc_view',
-					'kaccMsForm' => 'kaccMs_view',
-					'kaccMaForm' => 'kaccMa_view',
-					'kaccNcrForm' => 'kaccNcr_view',
-					'kaccPtwForm' => 'kaccPtw_view',
-					'kaccRfiForm' => 'kaccRfi_view',
-					'kaccSaForm' => 'kaccSa_view',
-					'kaccSiForm' => 'kaccSi_view',
-					'kaccSdForm' => 'kaccSd_view',
-					'kaccSmhForm' => 'kaccSmh_view',
-					'kaccWirForm' => 'kaccWir_view'
-				);
-			}
+			$this->processNameArr = array(
+				'mrsbNcrForm' => 'NCR',
+				'mrsbWirForm' => 'WIR',
+				'mrsbRfiForm' => 'RFI',
+				'mrsbMsForm' => 'MS',
+				'mrsbMaForm' => 'MT',
+				'mrsbIncForm' => 'INC',
+				'mrsbSdForm' => 'SD',
+				'mrsbSiForm' => 'SI',
+				'mrsbSaForm' => 'SA',
+				'mrsbSmhForm' => 'SMH',
+				'mrsbRrForm' => 'RR',
+				'mrsbRaForm' => 'RAO',
+				'mrsbRaSecForm' => 'RAS',
+				'mrsbNoiForm' => 'NOI',
+				'mrsbPbcForm' => 'PUBC',
+				'mrsbEvtForm' => 'EVNT'
+			);
+		
+			$this->linkArr = array(
+				'mrsbNcrForm' => 'mrsbNcr_view',
+				'mrsbWirForm' => 'mrsbWir_view',
+				'mrsbRfiForm' => 'mrsbRfi_view',
+				'mrsbMsForm' => 'mrsbMs_view',
+				'mrsbMaForm' => 'mrsbMt_view',
+				'mrsbIncForm' => 'mrsbInc_view',
+				'mrsbSdForm' => 'mrsbSd_view',
+				'mrsbSiForm' => 'mrsbSi_view',
+				'mrsbSaForm' => 'mrsbSa_view',
+				'mrsbSmhForm' => 'mrsbSmh_view',
+				'mrsbRrForm' => 'mrsbRr_view',
+				'mrsbRaForm' => 'mrsbRao_view',
+				'mrsbRaSecForm' => 'mrsbRas_view',
+				'mrsbNoiForm' => 'mrsbNoi_view',
+				'mrsbPbcForm' => 'mrsbPubc_view',
+				'mrsbEvtForm' => 'mrsbEvnt_view'
+			);
 		}else{
 			if($this->projectOwner == 'SSLR2'){
 				$this->processNameArr = array(
-					'pubcViewConOp_sslr' 	=> 'PUBC',
-					'liView_sslr' 			=> 'LI',
-					'laView_sslr' 			=> 'LA',
-					'smhView_sslr' 			=> 'SMH',
-					'saView_sslr' 			=> 'SA',
-					'rsView_sslr' 			=> 'RS',
-					'sdlView_sslr' 			=> 'SDL',
-					'incView_sslr' 			=> 'INC',
-					'maView_sslr' 			=> 'MA',
-					'msView_sslr' 			=> 'MS',
-					'rfiView_sslr' 			=> 'RFI',
-					'dcrView_sslr' 			=> 'DCR',
-					'wirView_sslr' 			=> 'WIR',
-					'ncrView_sslr' 			=> 'NCR',
-					'noiView_sslr' 			=> 'NOI',
+					'puRegister' 		=> 'PU',
+					'pubcSubmit_sslr' 	=> 'PUBC',
+					'leForm_sslr' 		=> 'LE',
+					'liRegister_sslr' 	=> 'LI',
+					'laForm_sslr' 		=> 'LA',
+					'rrSubmit_sslr' 	=> 'RR',
+					'smhForm_sslr' 		=> 'SMH',
+					'saForm_sslr' 		=> 'SA',
+					'rsSubmission_sslr' => 'RS',
+					'sdForm_sslr' 		=> 'SD',
+					'sdlSubmit_sslr' 	=> 'SDL',
+					'incForm_sslr' 		=> 'INC',
+					'maSubmission_sslr' => 'MA',
+					'msSubmit_sslr' 	=> 'MS',
+					'rfiDraftForm_sslr' => 'RFI',
+					'dcrSubmit_sslr' 	=> 'DCR',
+					'wirSubmit_sslr' 	=> 'WIR',
+					'ncrSubmit_sslr' 	=> 'NCR',
+					'noiSubmit_sslr' 	=> 'NOI',
+					'rsdlSubmit_sslr' 	=> 'RSDL'
 				);
 			
 				$this->linkArr = array(
-					'pubcViewConOp_sslr' 	=> 'pubcSubmit_view',
-					'liView_sslr' 			=> 'liRegister_view',
-					'laView_sslr' 			=> 'laForm_view',
-					'smhView_sslr' 			=> 'smhRegister_view',
-					'saView_sslr' 			=> 'saRegister_view',
-					'rsView_sslr' 			=> 'rsSubmit_view',
-					'sdlView_sslr' 			=> 'sdlSubmit_view',
-					'incView_sslr' 			=> 'incRegister_view',
-					'maView_sslr' 			=> 'maSubmission_view',
-					'msView_sslr' 			=> 'msSubmit_view',
-					'rfiView_sslr' 			=> 'rfiSubmit_view',
-					'dcrView_sslr' 			=> 'dcrSubmit_view',
-					'wirView_sslr' 			=> 'wirSubmit_view',
-					'ncrView_sslr' 			=> 'ncrSubmit_view',
-					'noiView_sslr' 			=> 'noiSubmit_view',
+					'puRegister' 		=> 'puRegister_view',
+					'pubcSubmit_sslr' 	=> 'pubcSubmit_view',
+					'leForm_sslr' 		=> 'leRegister_view',
+					'liRegister_sslr' 	=> 'liRegister_view',
+					'laForm_sslr' 		=> 'laForm_view',
+					'rrSubmit_sslr' 	=> 'rrSubmit_view',
+					'smhForm_sslr' 		=> 'smhRegister_view',
+					'saForm_sslr' 		=> 'saRegister_view',
+					'rsSubmission_sslr' => 'rsSubmit_view',
+					'sdForm_sslr' 		=> 'sdSubmit_view',
+					'sdlSubmit_sslr' 	=> 'sdlSubmit_view',
+					'incForm_sslr' 		=> 'incRegister_view',
+					'maSubmission_sslr' => 'maSubmission_view',
+					'msSubmit_sslr' 	=> 'msSubmit_view',
+					'rfiDraftForm_sslr' => 'rfiSubmit_view',
+					'dcrSubmit_sslr' 	=> 'dcrSubmit_view',
+					'wirSubmit_sslr' 	=> 'wirSubmit_view',
+					'ncrSubmit_sslr' 	=> 'ncrSubmit_view',
+					'noiSubmit_sslr' 	=> 'noiSubmit_view',
+					'rsdlSubmit_sslr' 	=> 'rsdlSubmit_view'
 				);
 			}else{
 				$this->processNameArr = array(

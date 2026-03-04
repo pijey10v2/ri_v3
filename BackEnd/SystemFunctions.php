@@ -4,7 +4,7 @@ session_start(); //session started in joget.php
 include_once '../login/include/_include.php';
 include_once ('../Login/app_properties.php');
 global $PHPCACERTPATH;
-global $IS_DOWNSTREAM;
+
 $response = array();
 $functionName = filter_input(INPUT_POST, 'functionName', FILTER_SANITIZE_STRING);
 
@@ -23,7 +23,6 @@ switch ($functionName) {
 
 function getLicenseInfo(){
     global $PHPCACERTPATH;
-    global $IS_DOWNSTREAM;
     $host = "https://ri.reveronconsulting.com/rilicenseserver/getLicenseInfo.php";
     $headers = array(
         'Content-Type: application/json'
@@ -42,42 +41,10 @@ function getLicenseInfo(){
     $err    = curl_error($ch);
     curl_close($ch);
     if ($err) {
-        
         return $err;
     } else {
-        if ($IS_DOWNSTREAM){
-            echo $return;
-        }else{
-            //for KKR license info 
-            $return_decoded = json_decode($return, true);
-
-            if (json_last_error() === JSON_ERROR_NONE){ 
-                $license_info = getLicenseInfoKKR();
-                $return_decoded['data'][0]['PurchaseDate'] = $license_info['lic_start'];
-                $return_decoded['data'][0]['ExpiryDate'] = $license_info['lic_end'];  
-                $return_decoded['data'][0]['LicenseDuration'] = $license_info['lic_duration'];
-                $return_decoded['data'][0]['LicenseType'] = $license_info['lic_type'];
-                $return = json_encode($return_decoded, JSON_PRETTY_PRINT);
-            } 
-            echo $return;
-        }
-       
+        echo $return;
     }
 }
 
 
-function getLicenseInfoKKR(){
-    global $response_db;
-    global $CONN; 
-
-    $owner = 'KKR';
-     
-    $fetchData = $CONN->fetchAll("SELECT * FROM lic_info where lic_owner = '$owner' ");
-    if(!$fetchData){
-        $response_db['bool'] = false;
-        $response_db['msg'] = " record not found";
-        return;
-    }
- 
-    return $fetchData[0];
-}

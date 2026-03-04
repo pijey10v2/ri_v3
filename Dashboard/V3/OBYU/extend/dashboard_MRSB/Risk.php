@@ -35,8 +35,8 @@ if($showFilter){
         <link rel="stylesheet" href="../../'.$dashObj->pathRel.'CSS/scrollBarCollapse.css">
         <script src="../../'.$dashObj->pathRel.'JS/JsLibrary/jquery.scrollbar.js"></script>
         <script src ="../../'.$dashObj->pathRel.'JS/scrollBarCollapse.js"></script>
-        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/highcharts-more.js"></script>
-        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/solid-gauge.js"></script>
+        <script src="https://code.highcharts.com/highcharts-more.js"></script>
+        <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
     </head>
     <body class='.$themeClass.'>';
 if($showFilter){

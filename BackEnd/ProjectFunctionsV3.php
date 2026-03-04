@@ -75,6 +75,9 @@ switch ($functionName) {
     case 'refreshProjecTableBody':
         refreshProjTableBody();
         break;
+    case 'getProjectPackages':
+        getProjectPackages();
+        break;
 }
 
 echo json_encode($response);
@@ -168,8 +171,6 @@ function createProject()
         "parent_project_id_number" => filter_input(INPUT_POST, 'parentid', FILTER_VALIDATE_INT),
         "contractor_org_id" => filter_input(INPUT_POST, 'contractorOrg', FILTER_SANITIZE_STRING),
         "consultant_org_id" => filter_input(INPUT_POST, 'consultantOrg', FILTER_SANITIZE_STRING),
-        "project_phase" => filter_input(INPUT_POST, 'projectphase', FILTER_SANITIZE_STRING),
-        "wpc_abbr" => filter_input(INPUT_POST, 'wpcabbr', FILTER_SANITIZE_STRING),
     );
 
     //check if pid and pname val exist
@@ -257,12 +258,6 @@ function createProject()
     };
     if (!empty($projectDetails['project_wpc_id'])){
         $myproject['wpc'] = $projectDetails['project_wpc_id'];
-    };
-    if (!empty($projectDetails['project_phase'])){
-        $myproject['project_phase'] = $projectDetails['project_phase'];
-    };
-    if (!empty($projectDetails['wpc_abbr'])){
-        $myproject['wpc_abbr'] = $projectDetails['wpc_abbr'];
     };
     if (!empty($projectDetails['location'])){
         $myproject['location'] = $projectDetails['location'];
@@ -387,9 +382,7 @@ function updateProject()
         "parent_project_id_number" => filter_input(INPUT_POST, 'parentid', FILTER_VALIDATE_INT),
         "contractor_org_id" => filter_input(INPUT_POST, 'contractorOrg', FILTER_SANITIZE_STRING),
         "consultant_org_id" => filter_input(INPUT_POST, 'consultantOrg', FILTER_SANITIZE_STRING),
-        "region" => filter_input(INPUT_POST, 'region', FILTER_SANITIZE_STRING),
-        "project_phase" => filter_input(INPUT_POST, 'projectphase', FILTER_SANITIZE_STRING),
-        "wpc_abbr" => filter_input(INPUT_POST, 'wpcabbr', FILTER_SANITIZE_STRING),
+        "region" => filter_input(INPUT_POST, 'region', FILTER_SANITIZE_STRING)
     );
 
     $checkSql = "SELECT project_id, project_type FROM projects WHERE project_id_number=:0";
@@ -616,31 +609,18 @@ function archiveProject()
     // archive projects in joget first ..need project_id info to archive from joget
     $updatedProjects = [];
     $jogetresult = [];
-    $checkRunningProcessArray =[];
     $unUpdatedProjects = [];
     $updatedProjectIDs = [];
     $fetchedProjectIds = $CONN->fetchAll("SELECT project_id, project_id_number, project_type FROM projects WHERE project_id_number IN ($idsStr)");
     $operation = "archive";
     foreach ($fetchedProjectIds as $key => $pid) {
-        //***************** */
-        // first check if any process in asset construct or asset pfs is running before calling jogetProjectCleanUp 
-        //service as this plugin only checks for normal pfs contract, claim and vo only
-        //********************* */
-        $package_uuid = $pid['project_id_number']."_".$pid['project_id']."_".$pid['project_id_number'];
-        $checkRunningProcess = checkProjectRunningProcess($package_uuid, $pid['project_id'], $pid['project_type']);
-        $response['check'] = $checkRunningProcess ;
-        if($checkRunningProcess == true){
-            $jogetresult[$key] = jogetProjectCleanUpService($operation, $pid['project_id'], $pid['project_type']);
-            $joget_response = json_decode($jogetresult[$key]);
-            if ($joget_response->message == "Cleanup Completed") {
-                array_push($updatedProjects, $pid['project_id_number']);
-                array_push($updatedProjectIDs, $pid['project_id']);
-            } else {
-                array_push($unUpdatedProjects, $pid['project_id']);
-            }
-        }else{
+        $jogetresult[$key] = jogetProjectCleanUpService($operation, $pid['project_id'], $pid['project_type']);
+        $joget_response = json_decode($jogetresult[$key]);
+        if ($joget_response->message == "Cleanup Completed") {
+            array_push($updatedProjects, $pid['project_id_number']);
+            array_push($updatedProjectIDs, $pid['project_id']);
+        } else {
             array_push($unUpdatedProjects, $pid['project_id']);
-            array_push($checkRunningProcessArray, $checkRunningProcess."-".$pid['project_id']);
         }
     }
 
@@ -668,7 +648,6 @@ function archiveProject()
         $response['msg'] = $message;
         $response['upprojects'] = $updatedProjects;
         $response['unprojects'] = $unUpdatedProjects;
-        $response['checkRunningProcessArray'] = $checkRunningProcessArray;
         $response['joget'] = $jogetresult;
         return $response;
 
@@ -678,7 +657,6 @@ function archiveProject()
     $response['msg'] = "Project/Projects successfully deactivated";
     $response['projects'] = $updatedProjects;
     $response['joget'] = $jogetresult;
-    $response['checkRunningProcessArray'] = $checkRunningProcessArray;
     return $response;
 }
 
@@ -1188,42 +1166,6 @@ function ProjectUsersUpdate($project_id, $pidnumber, $functionType, $projectType
             }
         }
     }
-    if(isset($_POST['usersReporting']) && $_SESSION['is_Parent'] == "isParent"){
-        $usersReporting = json_decode($_POST['usersReporting']);
-
-        foreach($usersReporting as $userReporting){
-
-            if (!filter_var($userReporting->user_id, FILTER_VALIDATE_INT)) {
-                $response['bool'] = false;
-                $response['msg'] = "Invalid user parameter";
-                array_push($idEmails, $userReporting->user_email);
-                return $response;
-                continue;
-            }
-            if (!filter_var($userReporting->user_email, FILTER_VALIDATE_EMAIL)) {
-                $response['bool'] = false;
-                $response['msg'] = "Invalid user parameter1";
-                array_push($idEmails, $userReporting->user_email);
-                return $response;
-                continue;
-            }
-
-            $userId = $userReporting->user_id;
-            $userEmail = $userReporting->user_email;
-            $userAccess = $userReporting->user_reporting;
-
-            $assignUser = assignUserAccessDigitalReporting($userId, $userAccess);
-            if(isset($assignUser)){
-                if($assignUser == false){
-                    array_push($idEmails, (object) [
-                        'user' => $userEmail,
-                        'msg' => "Unable to asign user for Digital Reporting",
-                    ]);
-                    continue;
-                }
-            }
-        }
-    }
     if ($proUsers) { //check if we got records to add
         $jog_pro_usr_result = jogetUserProjectAssign($project_id, $proUsers, $projectType);
         $usersUpdated = json_decode($jog_pro_usr_result); // check for ""
@@ -1638,6 +1580,20 @@ function getParentProjectIDList(){
     parent_project_id_number IS NULL ORDER BY project_id_number", array());
 }
 
+function getProjectPackages(){
+    global $response;
+    global $CONN;
+    $parentProjectID = $_SESSION['project_id'];
+
+    //check if this is a parent project,
+    if ($_SESSION['is_Parent'] !== "isParent") {
+        return;
+    }
+
+    //get and return list
+    $response = $CONN->fetchAll("SELECT CONCAT(project_id_number, '_', project_id, '_', project_id_number) as package_uuid_bumi, project_id as pid, project_name as pname, project_wpc_id as wpc_id from projects WHERE parent_project_id_number =:0", array($parentProjectID));
+}
+
 function createGeoserverWorkspace($workspaceName){
     global $JOGETLINKOBJ;
     $geoUser = $JOGETLINKOBJ->getAdminUserName('geoServer');
@@ -1683,19 +1639,5 @@ function deleteGeoserverWorkspace($workspaceName){
     curl_close($ch);
     return $httpCode;
     
-}
-
-function assignUserAccessDigitalReporting($userId, $userAccess){
-    global $CONN;
-    $return = array();
-
-    $updateSQL = "UPDATE users SET show_reporting = :0 WHERE user_id = :1";
-    $ok = $CONN->execute($updateSQL, array($userAccess, $userId));
-
-    if (!$ok) {
-        return false;
-    }
-
-    return true;
 }
 ?>

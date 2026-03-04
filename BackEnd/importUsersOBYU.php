@@ -30,139 +30,49 @@
         $orgTypeArray = array('owner','contractor','consultant');
         $userTypeArray = array('user','system_admin');
         for($i=1; $i<$length; $i++){
-            
-            // Skip empty rows
-            if(!isset($userlist[$i]) || trim($userlist[$i]) == ""){
+            $userdetails = explode(",",$userlist[$i]);
+            if(count($userdetails) < 2){
                 continue;
             }
-
-            $userdetails = str_getcsv($userlist[$i]);
-
-            if(count($userdetails) != 11){
-                array_push($data, (object)[
-                    'raw_row' => $userlist[$i],
-                    'column_count' => count($userdetails),
-                    'reason' => "Column count mismatch"
-                ]);
-                continue;
-            }
-
-            // Check if complete 10 columns exist
-            if(count($userdetails) < 11){
-                array_push($data, (object)[
-                    'email' => isset($userdetails[2]) ? $userdetails[2] : 'N/A',
-                    'reason' => "Incomplete row. All 10 columns are required."
-                ]);
-                continue;
-            }
-
-            // Trim all values
-            $fname      = trim($userdetails[0]);
-            $lname      = trim($userdetails[1]);
-            $email      = trim($userdetails[2]);
-            $orgid      = trim($userdetails[3]);
-            $orgname    = trim($userdetails[4]);
-            $orgdesc    = trim($userdetails[5]);
-            $orgtype    = trim($userdetails[6]);
-            $country    = trim($userdetails[7]);
-            $usertype   = trim($userdetails[8]);
-            $phone      = trim($userdetails[9]);
-            $supportRaw = trim($userdetails[10]);
-
-            // Required Field Validation
-            $requiredFields = [
-                'First Name' => $fname,
-                'Last Name' => $lname,
-                'Email' => $email,
-                'Organization ID' => $orgid,
-                'Organization Name' => $orgname,
-                'Organization Description' => $orgdesc,
-                'Organization Type' => $orgtype,
-                'Country' => $country,
-                'User Type' => $usertype,
-                'Phone Number' => $phone
-            ];
-
-            $missingFields = [];
-
-            foreach ($requiredFields as $fieldName => $value) {
-                if ($value === "" || is_null($value)) {
-                    $missingFields[] = $fieldName;
-                }
-            }
-
-            if (!empty($missingFields)) {
-                array_push($data, (object)[
-                    'email' => $email ?: 'N/A',
-                    'reason' => "Missing required field(s): " . implode(", ", $missingFields)
-                ]);
-                continue;
-            }
-
-            // Validate Email Format
+            $fname = $userdetails[0];
+            $lname = $userdetails[1];
+            $email = $userdetails[2];
+            $orgid= $userdetails[3];
+            $orgname = $userdetails[4];
+            $orgdesc = $userdetails[5];
+            $orgtype = $userdetails[6];
+            $country = $userdetails[7];
+            $usertype = $userdetails[8];
+            $userphoneno = $userdetails[9];
+            $supportuser = filter_var($userdetails[10], FILTER_VALIDATE_BOOLEAN);
+            $password = "Reveron21+"; // initial password generate
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                array_push($data, (object)[
+                array_push($data, array(
                     'email' => $email,
-                    'reason' => "Invalid email format"
-                ]);
+                    'reason' =>"Invalid email format"
+
+                ));
                 continue;
             }
-
-            // Validate Phone Number (digits only)
-            if (!preg_match('/^[0-9]+$/', $phone)) {
-                array_push($data, (object)[
-                    'email' => $email,
-                    'reason' => "Phone Number must contain digits only."
-                ]);
-                continue;
-            }
-
-            // Validate Organization Type
+            //$orgtype = trim($orgtype);
             $orgtype = strtolower($orgtype);
-            $orgTypeArray = array('owner','contractor','consultant');
-
+            
             if(!in_array($orgtype, $orgTypeArray, true)){
-                array_push($data, (object)[
+                array_push($data, array(
                     'email' => $email,
-                    'reason' => "Invalid orgtype. It must be owner, contractor or consultant.",
+                    'reason' =>"Invalid orgtype. it needs to be owner, contractor or consultant.",
                     'orgtype' => $orgtype
-                ]);
-                continue;
+                ));
+                 continue; // orgtype needs to be owner, contractor or consultant.. not any other string
             }
-
-            // Validate User Type
             $usertype = strtolower($usertype);
-            $userTypeArray = array('user','system_admin');
-
             if(!in_array($usertype, $userTypeArray, true)){
-                array_push($data, (object)[
+                array_push($data, array(
                     'email' => $email,
-                    'reason' => "Invalid user type. Must be either user or system_admin."
-                ]);
-                continue;
+                    'reason' =>"Invalid user type, ".$usertype.". Can be either user or system_admin only!"
+                ));
+                continue; //usertype needs to be either user or system_admin 
             }
-
-            // Support User Default Handling
-            if ($supportRaw === "" || is_null($supportRaw)) {
-                $supportuserValue = 0; // default
-                $supportuser = false;
-            } else {
-                if ($supportRaw == "1") {
-                    $supportuserValue = 1;
-                    $supportuser = true;
-                } elseif ($supportRaw == "0") {
-                    $supportuserValue = 0;
-                    $supportuser = false;
-                } else {
-                    array_push($data, (object)[
-                        'email' => $email,
-                        'reason' => "Support User must be 1 (true) or 0 (false) only."
-                    ]);
-                    continue;
-                }
-            }
-
-            $password = "Reveron21+";
 
             $sql = "SELECT * FROM users WHERE user_email='$email'";
             $result = sqlsrv_query($conn,$sql);
@@ -254,7 +164,7 @@
         
                         $sql = "INSERT INTO users ( [user_firstname], [user_lastname], [user_email], [user_org], [user_country], [user_password],[user_type], [created_by], [created_time], [user_phone], [support_user]) 
                         OUTPUT Inserted.user_id
-                        VALUES ('$fname','$lname','$email','$orgid','$country','$passwordHashed','$usertype', '$admin', GETDATE(),'$userphoneno', '$supportuserValue');";
+                        VALUES ('$fname','$lname','$email','$orgid','$country','$passwordHashed','$usertype', '$admin', GETDATE(),'$userphoneno', '$supportuser');";
                         
                         $result = sqlsrv_query($conn,$sql);
                         if($result === false){

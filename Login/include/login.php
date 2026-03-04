@@ -1,10 +1,9 @@
 <?php
-//V3 file
 session_start();
 if(isset($_POST['login'])){
 	require 'db_connect.php';
 	$email = $_POST['email'];
-	$password =  base64_decode($_POST['password']);
+	$password = $_POST['password'];
 	if(empty($email)||empty($password)){
 		header('Location: ../../?err=empty'.((isset($_GET['redirect'])) ? '&redirect='.urlencode($_GET['redirect']) : ''));
 		exit();
@@ -30,7 +29,6 @@ if(isset($_POST['login'])){
 					$_SESSION['firstname'] = $row['user_firstname'];
 					$_SESSION['lastname'] = $row['user_lastname'];
 					$_SESSION['user_org'] = $row['user_org'];
-					$_SESSION['user_designation'] = $row['user_designation'];
 					$_SESSION['password'] = $password;
 					$_SESSION['created'] = time();
 					$_SESSION['lastlogin']= $row['last_login'];
@@ -45,8 +43,6 @@ if(isset($_POST['login'])){
 					$user_email = $row['user_email'];
 					$_SESSION['is_Parent'] = '';
 					$_SESSION['construct_license'] = $row['Constructs'];
-					$_SESSION['view_pref'] = $row['view_pref'];
-					$_SESSION['show_reporting'] = $row['show_reporting'];
 
 					if ($row['user_type'] == 'system_admin') {
 						$_SESSION['isSysadmin'] = true;
@@ -111,7 +107,6 @@ if(isset($_POST['login'])){
 								?> 
 								<script src="../../JS/JsLibrary/jquery-3.5.1.js"></script>
 								<script src="../../JS/JsLibrary/jogetUtil.js" ></script>
-								<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js"></script>
 								<script>
 									var v3_flag = true;
 									var jogetHost = JOGETHOST+'jw';
@@ -127,7 +122,7 @@ if(isset($_POST['login'])){
 												//sign out of joget first to signin so the joget session time is in sync with RI session timing
 												async function logoutLogin(){
 													await AssignmentManager.logout(jogetHost);
-													AssignmentManager.loginWithHash(jogetHost, username, password, loginCallback);
+													AssignmentManager.login(jogetHost, username, password, loginCallback);
 												}
 												logoutLogin();
 											}
@@ -151,14 +146,14 @@ if(isset($_POST['login'])){
 												//logout of joget from asset joget is causing a problem. so not doing for joget.reveron for now
 												//only logging out of construct joget
 												await AssignmentManager.logout(jogetHost);
-												AssignmentManager.loginWithHash(jogetAssetHost, username, password, loginCallbackAsset);
+												AssignmentManager.login(jogetAssetHost, username, password, loginCallbackAsset);
 											}
 											logoutLoginAsset();
 										}else{
 											//sign out of joget first to signin so the joget session time is in sync with RI session timing
 											async function logoutLogin(){
 												await AssignmentManager.logout(jogetHost);
-												AssignmentManager.loginWithHash(jogetHost, username, password, loginCallback);
+												AssignmentManager.login(jogetHost, username, password, loginCallback);
 											}
 											logoutLogin();	
 										}
@@ -246,7 +241,6 @@ if(isset($_POST['login'])){
 							?> 
 							<script src="../../JS/JsLibrary/jquery-3.5.1.js"></script>
 							<script src="../../JS/JsLibrary/jogetUtil.js" ></script>
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js"></script>
 							<script>
 								var v3_flag = true;
 								var jogetHost = JOGETHOST+'jw';
@@ -258,7 +252,7 @@ if(isset($_POST['login'])){
 										success : function(response){
 											if(response.username == username){
 												//logout of construct joget already done below
-												AssignmentManager.loginWithHash(jogetHost, username, password, loginCallback);
+												AssignmentManager.login(jogetHost, username, password, loginCallback);
 											}else{
 												alert("Login fail. Please try again.");
 												window.location.href = "logout?signOut=1";
@@ -287,7 +281,7 @@ if(isset($_POST['login'])){
 											//logout of joget from asset joget is causing a problem. so not doing for joget.reveron for now
 											//only logging out of construct joget
 											await AssignmentManager.logout(jogetHost);
-											AssignmentManager.loginWithHash(jogetAssetHost, username, password, loginCallbackAsset);
+											AssignmentManager.login(jogetAssetHost, username, password, loginCallbackAsset);
 										}
 										logoutLoginAsset();
 										
@@ -295,7 +289,7 @@ if(isset($_POST['login'])){
 										//sign out of joget first to signin so the joget session time is in sync with RI session timing
 										async function logoutLogin(){
 											await AssignmentManager.logout(jogetHost);
-											AssignmentManager.loginWithHash(jogetHost, username, password, loginCallback);
+											AssignmentManager.login(jogetHost, username, password, loginCallback);
 										}
 										logoutLogin();
 										
@@ -311,7 +305,6 @@ if(isset($_POST['login'])){
 							?> 
 							<script src="../../JS/JsLibrary/jquery-3.5.1.js"></script>
 							<script src="../../JS/JsLibrary/jogetUtil.js" ></script>
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js"></script>
 							<script>
 								var v3_flag = true;
 								var jogetHost = JOGETHOST+'jw';
@@ -323,7 +316,7 @@ if(isset($_POST['login'])){
 										success : function(response){
 											if(response.username == username){
 												//logout of construct joget already done below
-												AssignmentManager.loginWithHash(jogetHost, username, password, loginCallback);
+												AssignmentManager.login(jogetHost, username, password, loginCallback);
 											}else{
 												alert("Login fail. Please try again.");
 												window.location.href = "logout?signOut=1";
@@ -350,14 +343,14 @@ if(isset($_POST['login'])){
 											//logout of joget from asset joget is causing a problem. so not doing for joget.reveron for now
 											//only logging out of construct joget
 											await AssignmentManager.logout(jogetHost);
-											AssignmentManager.loginWithHash(jogetAssetHost, username, password, loginCallbackAsset);
+											AssignmentManager.login(jogetAssetHost, username, password, loginCallbackAsset);
 										}
 										logoutLoginAsset();
 									}else{
 										//sign out of joget first to signin so the joget session time is in sync with RI session timing
 										async function logoutLogin(){
 											await AssignmentManager.logout(jogetHost);
-											AssignmentManager.loginWithHash(jogetHost, username, password, loginCallback);
+											AssignmentManager.login(jogetHost, username, password, loginCallback);
 										}
 										logoutLogin();	
 									}	

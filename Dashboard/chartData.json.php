@@ -14,11 +14,6 @@ if (!isset($_POST['page'])) {
 	$res['errorMessage'] = 'Invalid Data!';	
 }
 
-$currYr = (isset($_POST['currYr'])) ? $_POST['currYr'] : '';
-$currMth = (isset($_POST['currMth'])) ? $_POST['currMth'] : '';
-$prevMth = (isset($_POST['prevMth'])) ? $_POST['prevMth'] : '';
-$prevYr = (isset($_POST['prevYr'])) ? $_POST['prevYr'] : '';
-
 switch ($_POST['page']) {
 	case 'risk':
 		$dashObj = new RiDashboard('risk', true, false);
@@ -38,10 +33,7 @@ switch ($_POST['page']) {
 		break;
 	case 'land':
 		$dashObj = new RiDashboard('land', true, false);
-		$packageId = (isset($_POST['packageId'])) ? $_POST['packageId'] : '';
-		$year = (isset($_POST['year'])) ? $_POST['year'] : '';
-		$month = (isset($_POST['month'])) ? $_POST['month'] : '';
-		$ret = $dashObj->getLandInfo($packageId,$year,$month);	
+		$ret = $dashObj->getLandInfo();	
 		if ($ret) {
 			$res['status'] = 'ok';	
 			$res['data'] = $ret;		
@@ -105,7 +97,7 @@ switch ($_POST['page']) {
 		break;
 	case 'planningManagement':
 		$dashObj = new RiDashboard('planningManagement', true, false);
-		$ret = $dashObj->getReportSubmissionInfo($currYr, $currMth, $prevMth, $prevYr);	
+		$ret = $dashObj->getReportSubmissionInfo();	
 		if ($ret) {
 			$res['status'] = 'ok';	
 			$res['data'] = $ret;		

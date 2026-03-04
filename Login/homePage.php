@@ -160,7 +160,7 @@ $fetchSystemAdminFlag = $CONN->fetchOne($sqlGetSystemAdminFlag, array($email));
 
 $_SESSION['USER_TYPE'] = $fetchSystemAdminFlag;
 
-$sql = "SELECT * FROM users u left join pro_usr_rel pur on u.user_ID = pur.Usr_ID left join projects p on p.project_id_number=pur.Pro_ID where u.user_email=:0 AND u.user_type != 'non_active' AND p.status = 'active' AND pur.Pro_Role != 'non_Member' ORDER BY p.project_name ASC";
+$sql = "SELECT * FROM users u left join pro_usr_rel pur on u.user_ID = pur.Usr_ID left join projects p on p.project_id_number=pur.Pro_ID where u.user_email=:0 AND u.user_type != 'non_active' AND p.status = 'active' ORDER BY p.project_name ASC";
 $fetchUserProject = $CONN->fetchAll($sql, array($email));
 
 $proid_array = array();
@@ -177,7 +177,6 @@ $sysAdminUserHTML = '';
 $sysAdminProjectHTML = '';
 $funcOpen = '';
 $yearHTML = '';
-$systemTabsHTML = '';
 
 // ============ For Digital Reporting ================//
 
@@ -198,7 +197,7 @@ if($org == 'KKR'){
                         <div class="columnOne M twoRow round shadow container-full-screen">
                             <div class="rowOne-T roundT" style="position: relative">
                                 PROJECT PROGRESS
-                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                             </div>
                             <div class="rowTwo-T scrollbar-inner roundB" id = "projectProgressTable">
                             </div>
@@ -206,7 +205,7 @@ if($org == 'KKR'){
                         <div class="columnTwo M twoRow shadow round container-full-screen">
                             <div class="rowOne-T roundT" style="position: relative">
                                 SITE DIARY (WEATHER)
-                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                             </div>
                             <div class="rowTwo-T roundB" id = "weatherSDL">
                             </div>
@@ -216,7 +215,7 @@ if($org == 'KKR'){
                         <div class="columnOne M twoRow shadow round container-full-screen">
                             <div class="rowOne-T roundT" style="position: relative">
                                 OVERALL ACCIDENT / INCIDENTS RECORD
-                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                             </div>
                             <div class="rowTwo-T roundB" id = "OverallIncidentsAndAccidentsRecord">
                             </div>
@@ -224,7 +223,7 @@ if($org == 'KKR'){
                         <div class="columnTwo M twoRow shadow round container-full-screen">
                             <div class="rowOne-T roundT" style="position: relative">
                                 PUBLIC COMPLAINT
-                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                             </div>
                             <div class="rowTwo-T roundB" id = "pcCatChart">
                             </div>
@@ -236,7 +235,7 @@ if($org == 'KKR'){
                         <div class="columnOne M twoRow round shadow container-full-screen">
                             <div class="rowOne-T roundT" style="position: relative">
                                 PROJECT FEATURE
-                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
 
                             </div>
                             <div class="rowTwo-T roundB scrollbar-inner" id = "projectFeatureTable">
@@ -253,7 +252,7 @@ if($org == 'KKR'){
                             <div class="rowTwo ML twoRow round shadow container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     FILE ATTACHMENT
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                                 </div>
                                 <div class="rowTwo-T roundB scrollbar-inner" id="insert-nofile" style="padding: 0; width: 100%; height: calc(100% - 30px);">
                                     <table style="width: 100%;">
@@ -275,7 +274,7 @@ if($org == 'KKR'){
                     <div class="columnTwo M60 twoRow round shadow round container-full-screen">
                         <div class="rowOne-T roundT" style="position: relative">
                             PAYMENT MADE FOR LAND
-                            <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                            <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                         </div>
                         <div class="rowTwo-T roundB twoColumn white-bg">
                             <div class="columnOne L" id = "offerIssuedChart">
@@ -401,7 +400,7 @@ if($org == 'KKR'){
                             <div class="columnOne M twoRow round shadow container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     PROJECT PROGRESS
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                                 </div>
                                 <div class="rowTwo-T scrollbar-inner roundB" id = "projectProgressTable">
                                 </div>
@@ -409,7 +408,7 @@ if($org == 'KKR'){
                             <div class="columnTwo M twoRow shadow round container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     SITE DIARY (WEATHER)
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                                 </div>
                                 <div class="rowTwo-T roundB" id = "weatherSDL">
                                 </div>
@@ -419,7 +418,7 @@ if($org == 'KKR'){
                             <div class="columnOne M twoRow shadow round container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     OVERALL ACCIDENT / INCIDENTS RECORD
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                                 </div>
                                 <div class="rowTwo-T roundB" id = "OverallIncidentsAndAccidentsRecord">
                                 </div>
@@ -427,7 +426,7 @@ if($org == 'KKR'){
                             <div class="columnTwo M twoRow shadow round container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     PUBLIC COMPLAINT
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                                 </div>
                                 <div class="rowTwo-T roundB" id = "pcCatChart">
                                 </div>
@@ -439,7 +438,7 @@ if($org == 'KKR'){
                             <div class="columnOne M twoRow round shadow container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     PROJECT FEATURE
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
 
                                 </div>
                                 <div class="rowTwo-T roundB scrollbar-inner" id = "projectFeatureTable">
@@ -456,7 +455,7 @@ if($org == 'KKR'){
                                 <div class="rowTwo ML twoRow round shadow container-full-screen">
                                     <div class="rowOne-T roundT" style="position: relative">
                                         FILE ATTACHMENT
-                                        <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                        <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                                     </div>
                                     <div class="rowTwo-T roundB scrollbar-inner" id="insert-nofile" style="padding: 0; width: 100%; height: calc(100% - 30px);">
                                         <table style="width: 100%;">
@@ -478,7 +477,7 @@ if($org == 'KKR'){
                         <div class="columnTwo M60 twoRow round shadow round container-full-screen">
                             <div class="rowOne-T roundT" style="position: relative">
                                 PAYMENT MADE FOR LAND
-                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn"></i></button>
+                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn"></i></button>
                             </div>
                             <div class="rowTwo-T roundB twoColumn white-bg">
                                 <div class="columnOne L" id = "offerIssuedChart">
@@ -1030,16 +1029,6 @@ if ($_SESSION['is_Parent'] !== "isParent") {
 //-----------------END RISK UPLOAD--------------------//
 
 $projectManager = false;
-
-$sqlGetDRAccess = "SELECT show_reporting FROM users WHERE user_id = :0";
-$fetchAccessDR = $CONN->fetchOne($sqlGetDRAccess, array($_SESSION['user_id']));
-
-$_SESSION['DR_ACCESS'] = $fetchAccessDR;
-
-if($_SESSION['DR_ACCESS'] == 1){
-    $projectManager = true;
-}
-
 function buildTree(array $elements, $parentId = 0) {
     global $projectManager;
     $branch = array();
@@ -1144,9 +1133,9 @@ foreach ($projectPackageTree as $project) {
     $checkingApp = $CONN->fetchRow($sqlApps, array($project['project_id_number']));
 
     if($checkingApp){
-        $checkConstruct = $checkingApp['constructPackage_name'];
-        $checkFinance = $checkingApp['financePackage_name'];
-        $checkDocument = $checkingApp['documentPackage_name'];
+        $checkConstruct = $checkingApp['constructPackage_name'] ?? '';
+        $checkFinance = $checkingApp['financePackage_name'] ?? '';
+        $checkDocument = $checkingApp['documentPackage_name'] ?? '';
 
         if (strpos($checkConstruct, 'ri_asset') !== false) {
             $flagAssetProject = true;
@@ -1180,10 +1169,10 @@ foreach ($projectPackageTree as $project) {
 
     if($project['project_id'] ==  'eLibrary'){
         $listButtonProject = '
-            <button class="appButton projectDoc" title="'.$p_Name.'" data-projectid = "' . $p_ID . '" rel="'.$project['project_id'].'" data-color="#d7ae35" onclick=\'openAppProject(this)\'><i class="fa-solid fa-book" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>'.$p_Name.'</a></button>
+            <button class="appButton projectDoc" title="'.$p_Name.'" data-projectid = "' . $p_ID . '" rel="'.$project['project_id'].'" data-color="#d7ae35" onclick=\'openAppProject(this)\'><i class="fa-solid fa-books" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>'.$p_Name.'</a></button>
         ';
         $tileButtonProject = '
-            <button class="appButton projectDoc" title="'.$p_Name.'" data-projectid = "' . $p_ID . '" rel="'.$project['project_id'].'" data-color="#d7ae35" onclick=\'openAppProject(this)\'><i class="fa-solid fa-book" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>'.$p_Name.'</a></button>
+            <button class="appButton projectDoc" title="'.$p_Name.'" data-projectid = "' . $p_ID . '" rel="'.$project['project_id'].'" data-color="#d7ae35" onclick=\'openAppProject(this)\'><i class="fa-solid fa-books" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>'.$p_Name.'</a></button>
         ';
     }else if($project['project_id'] ==  'projectInformation'){
         $listButtonProject = '
@@ -1288,7 +1277,7 @@ foreach ($projectPackageTree as $project) {
             </div>
             <div class="buttonContainer">
                 '.$listButtonProject.'
-                <button class="appButton favBtn'.$favClass.'" title="Add as Favourite" data-projectid = "' . $p_ID . '" onclick=\'favProject(event, this)\'><i class="fa-solid fa-star" style="--fa-secondary-opacity: 1; --fa-primary-color: #dbdbdb; --fa-secondary-color: #dbdbdb; font-size:18px;"></i><a></a></button>
+                <button class="appButton favBtn'.$favClass.'" title="Add as Favourite" data-projectid = "' . $p_ID . '" onclick=\'favProject(this)\'><i class="fa-solid fa-star" style="--fa-secondary-opacity: 1; --fa-primary-color: #dbdbdb; --fa-secondary-color: #dbdbdb; font-size:18px;"></i><a></a></button>
             </div>
             <div class="columnThird textContainer" onclick="openMobileAppBtn()"><span class="center"><i class="fa-solid fa-ellipsis-vertical"></i></span></div>
             <div class="columnSecond textContainer"><span class="fontSmall">'.$project['last_login_date'].'</span></div>
@@ -1348,11 +1337,6 @@ foreach ($projectPackageTree as $project) {
                 }
             };
 
-            $flagObyuFinance = true;
-            if(isset($package['Pro_Role']) && $package['Pro_Role'] == 'Planning Engineer' && $package['owner_org_id'] != 'KACC'){
-                $flagObyuFinance = false;
-            }
-
             $listButtonPackage = '
                 <button class="appButton riConstruct" title="Insights" data-projectid = "' . $p_ID . '" rel="myInsights" data-color="#198901" onclick=\'openAppProject(this)\'><i class="fa-solid fa-earth-americas" style="--fa-primary-opacity: 0.6; --fa-secondary-opacity: 1; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Insights</a></button>
                 <button class="appButton myDashboard" title="Dashboard" data-projectid = "' . $p_ID . '" rel="myDashboard" data-color="#b51173" onclick=\'openAppProject(this)\'><i class="fa-solid fa-gauge" style="--fa-primary-opacity: 0.6; --fa-secondary-opacity: 1; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Dashboard</a></button>
@@ -1388,43 +1372,18 @@ foreach ($projectPackageTree as $project) {
 
             if($flagFinanceProject){
                 if(!$flagAssetPackage){
-                    if($SYSTEM == 'KKR'){
-                        if (isset($access_control[$package['Pro_Role']]) && isset($access_control[$package['Pro_Role']]["PFS"])){
-                            $listButtonPackage .= '
-                                <button class="appButton finance" title="Finance" data-projectid = "' . $p_ID . '" rel="myFinance" data-color="#008f8e" onclick=\'openAppProject(this)\'><i class="fa-solid fa-coins" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Finance</a></button>
-                            ';
-                            $tileButtonPackage .= '
-                                <button class="appButton finance" title="Finance" data-projectid = "' . $p_ID . '" rel="myFinance" data-color="#008f8e" onclick=\'openAppProject(this)\'><i class="fa-solid fa-coins" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Finance</a></button>
-                            ';
-                        }else{
-                            $flagFinancePackage = false;
-                            $tileButtonPackage .= '
-                                <button class="empty"></button>
-                            ';
-                        }
+                    if (isset($access_control[$package['Pro_Role']]) && isset($access_control[$package['Pro_Role']]["PFS"])){
+                        $listButtonPackage .= '
+                            <button class="appButton finance" title="Finance" data-projectid = "' . $p_ID . '" rel="myFinance" data-color="#008f8e" onclick=\'openAppProject(this)\'><i class="fa-solid fa-coins" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Finance</a></button>
+                        ';
+                        $tileButtonPackage .= '
+                            <button class="appButton finance" title="Finance" data-projectid = "' . $p_ID . '" rel="myFinance" data-color="#008f8e" onclick=\'openAppProject(this)\'><i class="fa-solid fa-coins" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Finance</a></button>
+                        ';
                     }else{
-                        if (isset($access_control[$package['Pro_Role']]) && isset($access_control[$package['Pro_Role']]["PFS"])){
-                            if($flagObyuFinance){
-                                if($package['Pro_Role'] == 'Project Manager' && $project['project_id'] == 'NCH' && $package['owner_org_id'] == 'MRSB'){        
-                                    $tileButtonPackage .= '
-                                        <button class="empty"></button>
-                                    ';
-                                }
-                                else{
-                                    $listButtonPackage .= '
-                                        <button class="appButton finance" title="Finance" data-projectid = "' . $p_ID . '" rel="myFinance" data-color="#008f8e" onclick=\'openAppProject(this)\'><i class="fa-solid fa-coins" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Finance</a></button>
-                                    ';
-                                    $tileButtonPackage .= '
-                                        <button class="appButton finance" title="Finance" data-projectid = "' . $p_ID . '" rel="myFinance" data-color="#008f8e" onclick=\'openAppProject(this)\'><i class="fa-solid fa-coins" style="--fa-secondary-opacity: 0.6; --fa-primary-color: var(--icon); --fa-secondary-color: var(--icon); font-size:21px;"></i><a>Finance</a></button>
-                                    ';
-                                }
-                            }
-                        }else{
-                            $flagFinancePackage = false;
-                            $tileButtonPackage .= '
-                                <button class="empty"></button>
-                            ';
-                        }
+                        $flagFinancePackage = false;
+                        $tileButtonPackage .= '
+                            <button class="empty"></button>
+                        ';
                     }
                 }else{
                     if (isset($access_control_asset[$package['Pro_Role']]) && isset($access_control_asset[$package['Pro_Role']]["PFS"])){
@@ -1499,7 +1458,7 @@ foreach ($projectPackageTree as $project) {
                     </div>
                     <div class="buttonContainer">
                         '.$listButtonPackage.'
-                        <button class="appButton favBtn'.$favClassPackage.'" title="Add as Favourite" data-projectid = "' . $p_ID . '" onclick=\'favProject(event, this)\'><i class="fa-solid fa-star" style="--fa-secondary-opacity: 1; --fa-primary-color: #dbdbdb; --fa-secondary-color: #dbdbdb; font-size:18px;"></i><a></a></button>
+                        <button class="appButton favBtn'.$favClassPackage.'" title="Add as Favourite" data-projectid = "' . $p_ID . '" onclick=\'favProject(this)\'><i class="fa-solid fa-star" style="--fa-secondary-opacity: 1; --fa-primary-color: #dbdbdb; --fa-secondary-color: #dbdbdb; font-size:18px;"></i><a></a></button>
                     </div>
                     <div class="columnThird textContainer" onclick="openMobileAppBtn()"><span class="center"><i class="fa-solid fa-ellipsis-vertical"></i></span></div>
                     <div class="columnSecond textContainer"><span class="fontSmall">'.$last_login_date.'</span></div>
@@ -1526,7 +1485,7 @@ foreach ($projectPackageTree as $project) {
 
             if($package['project_type'] == 'ASSET'){
                 $assetProcessPackageHTML .= '
-                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner="'.$package['project_owner'].'" onclick="projectClick(this)">
+                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
                         <div class="columnIndex"><img src="'.$imgUrlPackage.'"></div>
                             <div class="columnFirst textContainer wizard">
                                 <span class="text ellipsis">'.$package['project_name'].'</span>
@@ -1538,7 +1497,7 @@ foreach ($projectPackageTree as $project) {
             }
             else{
                 $processPackageHTML .= '
-                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner="'.$package['project_owner'].'" data-projectphase="'.$package['project_phase'].'" onclick="projectClick(this)">
+                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
                         <div class="columnIndex"><img src="'.$imgUrlPackage.'"></div>
                             <div class="columnFirst textContainer wizard">
                                 <span class="text ellipsis">'.$package['project_name'].'</span>
@@ -1551,7 +1510,7 @@ foreach ($projectPackageTree as $project) {
 
             if($package['project_type'] == 'ASSET'){
                 $assetProcessPackageBulkHTML .= '
-                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner="'.$package['project_owner'].'" onclick="projectClick(this)">
+                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
                         <div class="columnIndex"><img src="'.$imgUrlPackage.'"></div>
                             <div class="columnFirst textContainer wizard">
                                 <span class="text ellipsis">'.$package['project_name'].'</span>
@@ -1563,7 +1522,7 @@ foreach ($projectPackageTree as $project) {
             }
             else{
                 $processPackageBulkHTML .= '
-                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner="'.$package['project_owner'].'" data-projectphase="'.$package['project_phase'].'" onclick="projectClick(this)">
+                    <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
                         <div class="columnIndex"><img src="'.$imgUrlPackage.'"></div>
                             <div class="columnFirst textContainer wizard">
                                 <span class="text ellipsis">'.$package['project_name'].'</span>
@@ -1675,7 +1634,6 @@ foreach ($noParentPackage_array as $noParentPackage) {
 
     $project_ID = $noParentPackage['project_id_number'];
     $parent_Project_ID = $noParentPackage['parent_project_id_number'];
-    $project_phase = $noParentPackage['project_phase'];
     $fav_projArr = explode(",", $_SESSION['fav_proj']);
     $favClass = '';
     $imgUrl = (file_exists('../../' . $noParentPackage['icon_url'])) ? '../../' . $noParentPackage['icon_url'] : '';
@@ -1829,7 +1787,7 @@ foreach ($noParentPackage_array as $noParentPackage) {
     array_push($proid_array, $object);
 
     $projpackListHTML .= '
-        <div class="row package homeProjSearch'.$favClass.'" style="display: flex;" rel="'.$noParentPackage['project_id'].'" data-projectid = "' . $project_ID . ' data-projectphase = "' . $project_phase . '">
+        <div class="row package homeProjSearch'.$favClass.'" style="display: flex;" rel="'.$noParentPackage['project_id'].'" data-projectid = "' . $project_ID . '">
             <div class="columnIndex"><img src="'.$imgUrl.'"></div>
             <div class="columnFirst textContainer">
                 <div class="nameContainer">
@@ -1838,14 +1796,14 @@ foreach ($noParentPackage_array as $noParentPackage) {
             </div>
             <div class="buttonContainer">
                 '.$listButtonHTML.'
-                <button class="appButton favBtn'.$favClass.'" title="Add as Favourite" data-projectid = "' . $project_ID . '" onclick=\'favProject(event, this)\'><i class="fa-solid fa-star" style="--fa-secondary-opacity: 1; --fa-primary-color: #dbdbdb; --fa-secondary-color: #dbdbdb; font-size:18px;"></i><a></a></button>
+                <button class="appButton favBtn'.$favClass.'" title="Add as Favourite" data-projectid = "' . $project_ID . '" onclick=\'favProject(this)\'><i class="fa-solid fa-star" style="--fa-secondary-opacity: 1; --fa-primary-color: #dbdbdb; --fa-secondary-color: #dbdbdb; font-size:18px;"></i><a></a></button>
             </div>
             <div class="columnThird textContainer" onclick="openMobileAppBtn()"><span class="center"><i class="fa-solid fa-ellipsis-vertical"></i></span></div>
             <div class="columnSecond textContainer"><span class="fontSmall">'.$last_login_date.'</span></div>
         </div>';
 
     $packageTileHTML .= '
-        <div class="tile package homeProjSearch active'.$favClass.'" data-id = "'.$noParentPackage['project_id'].'" data-parentid="'.$noParentPackage['parent_project_id_number'].'" data-projectid = "' . $project_ID . ' data-projectphase = "' . $project_phase . '">
+        <div class="tile package homeProjSearch active'.$favClass.'" data-id = "'.$noParentPackage['project_id'].'" data-parentid="'.$noParentPackage['parent_project_id_number'].'" data-projectid = "' . $project_ID . '">
             <div class="imgContainer">
                 <img class="projectTitle" src="'.$imgUrl.'">
             </div>
@@ -1865,7 +1823,7 @@ foreach ($noParentPackage_array as $noParentPackage) {
 
     if ($noParentPackage['project_type'] == 'ASSET') {
         $assetProcessPackageHTML .= '
-            <div class="row wizard processProjSearch" rel='.$noParentPackage['project_id'].' data-parentprojectidnumber='.$noParentPackage['parent_project_id_number'].' data-projectid='.$noParentPackage['project_id'].' data-projectidnumber='.$noParentPackage['project_id_number'].' data-projectowner="'.$noParentPackage['project_owner'].'" onclick="projectClick(this)">
+            <div class="row wizard processProjSearch" rel='.$noParentPackage['project_id'].' data-parentprojectidnumber='.$noParentPackage['parent_project_id_number'].' data-projectid='.$noParentPackage['project_id'].' data-projectidnumber='.$noParentPackage['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
                 <div class="columnIndex"><img src="'.$imgUrl.'"></div>
                     <div class="columnFirst textContainer wizard">
                         <span class="text ellipsis">'.$noParentPackage['project_name'].'</span>
@@ -1876,7 +1834,7 @@ foreach ($noParentPackage_array as $noParentPackage) {
             </div>';
     } else {
         $processPackageHTML .= '
-            <div class="row wizard processProjSearch" rel='.$noParentPackage['project_id'].' data-parentprojectidnumber='.$noParentPackage['parent_project_id_number'].' data-projectid='.$noParentPackage['project_id'].' data-projectidnumber='.$noParentPackage['project_id_number'].' data-projectowner="'.$noParentPackage['project_owner'].'" data-projectphase = "'.$project_phase.'" onclick="projectClick(this)" >
+            <div class="row wizard processProjSearch" rel='.$noParentPackage['project_id'].' data-parentprojectidnumber='.$noParentPackage['parent_project_id_number'].' data-projectid='.$noParentPackage['project_id'].' data-projectidnumber='.$noParentPackage['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
                 <div class="columnIndex"><img src="'.$imgUrl.'"></div>
                     <div class="columnFirst textContainer wizard">
                         <span class="text ellipsis">'.$noParentPackage['project_name'].'</span>
@@ -1890,28 +1848,28 @@ foreach ($noParentPackage_array as $noParentPackage) {
     //skip SSLR2 in bulk register as it is not in the URS
     if(isset($project['project_owner']) && $project['project_owner'] == 'SSLR2'){continue;}
 
-    if($noParentPackage['project_type'] == 'ASSET'){
+    if($package['project_type'] == 'ASSET'){
         $assetProcessPackageBulkHTML .= '
-            <div class="row wizard processProjSearch" rel='.$noParentPackage['project_id'].' data-parentprojectidnumber='.$noParentPackage['parent_project_id_number'].' data-projectid='.$noParentPackage['project_id'].' data-projectidnumber='.$noParentPackage['project_id_number'].' data-projectowner="'.$noParentPackage['project_owner'].'" onclick="projectClick(this)">
-                <div class="columnIndex"><img src="'.$imgUrl.'"></div>
+            <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
+                <div class="columnIndex"><img src="'.$imgUrlPackage.'"></div>
                     <div class="columnFirst textContainer wizard">
-                        <span class="text ellipsis">'.$noParentPackage['project_name'].'</span>
+                        <span class="text ellipsis">'.$package['project_name'].'</span>
                     </div>
-                    <div class="columnSecond textContainer wizard"><span class="fontSmall">'.$noParentPackage['last_login_date'].'</span></div>
+                    <div class="columnSecond textContainer wizard"><span class="fontSmall">'.$package['last_login_date'].'</span></div>
                 </div>
-                <div id='.$noParentPackage['project_id'].'>
+                <div id='.$package['project_id'].'>
             </div>';
     }
     else{
         $processPackageBulkHTML .= '
-            <div class="row wizard processProjSearch" rel='.$noParentPackage['project_id'].' data-parentprojectidnumber='.$noParentPackage['parent_project_id_number'].' data-projectid='.$noParentPackage['project_id'].' data-projectidnumber='.$noParentPackage['project_id_number'].' data-projectowner="'.$noParentPackage['project_owner'].'" data-projectphase="'.$noParentPackage['project_phase'].'" onclick="projectClick(this)">
-                <div class="columnIndex"><img src="'.$imgUrl.'"></div>
+            <div class="row wizard processProjSearch" rel='.$package['project_id'].' data-parentprojectidnumber='.$package['parent_project_id_number'].' data-projectid='.$package['project_id'].' data-projectidnumber='.$package['project_id_number'].' data-projectowner='.$package['project_owner'].' onclick="projectClick(this)">
+                <div class="columnIndex"><img src="'.$imgUrlPackage.'"></div>
                     <div class="columnFirst textContainer wizard">
-                        <span class="text ellipsis">'.$noParentPackage['project_name'].'</span>
+                        <span class="text ellipsis">'.$package['project_name'].'</span>
                     </div>
                     <div class="columnSecond textContainer wizard"><span class="fontSmall">'.$last_login_date.'</span></div>
                 </div>
-                <div id='.$noParentPackage['project_id'].'>
+                <div id='.$package['project_id'].'>
             </div>';
     }
 }
@@ -1957,25 +1915,24 @@ echo '<!DOCTYPE html>
     <script src="../JS/RICore/Compass/viewerCesiumNavigationMixin.js"></script>    <!--     Js for cesium compas (top left of screen)-->
     <link rel="stylesheet" type="text/css" href="../JS/JSLibrary/spectrum.css">
     <script type="text/javascript" src="../JS/JSLibrary/spectrum.js"></script>
-    <!-- <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/> -->
-    <link rel="stylesheet" href="../CSS/fontawesome7/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="../CSS/fontawesome7/fontawesome-free/css/fontawesome.min.css">
-    <link rel="stylesheet" href="../CSS/fontawesome7/fontawesome-free/css/solid.min.css">
-    <link rel="stylesheet" href="../CSS/fontawesome7/fontawesome-free/css/regular.min.css">
-    <link rel="stylesheet" href="../CSS/fontawesome7/fontawesome-free/css/brands.min.css">
+    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
     <!-- PHOTOSPHERE -->
-    <link rel="stylesheet" href="../CSS/photo-sphere-viewer.min.css" />
-    <script src="../JS/JsLibrary/openLayer/three.min.js"></script>
-    <script src="../JS/JsLibrary/openLayer/photo-sphere-viewer.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/three/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.js"></script>
 
     <!-- GANTT CHART -->
     <script src="../JS/ganttV3/gantt.js"></script>                                   <!--     JS for gantt chart-->
     <link rel="stylesheet" href="../JS/ganttV3/gantt.css" type="text/css"/>
 
     <!-- OPENLAYER -->
-    <link rel="stylesheet" href="../CSS/openLayer.css" type="text/css"/>
-    <script src="../JS/JsLibrary/openLayer/openLayer.js"></script>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
+        type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
         
 
     <!-- multi select  -->
@@ -1989,7 +1946,6 @@ echo '<!DOCTYPE html>
 
 </head>';
 
-$prodFlag = (isset($PRODUCTION_FLAG) && $PRODUCTION_FLAG == true) ? 'true' : 'false';
 $themeClass = (isset($_SESSION['theme_mode'])) ? $_SESSION['theme_mode'] : 'light';
 $radioTheme = '';
 
@@ -2336,7 +2292,7 @@ echo '
         <div class="themeSection">
             <div class="themeChange">
                 <div class="head">
-                    <span><i class="fa-solid fa-palette" style="font-size: 13px; margin-right: 5px;"></i>    System Mode</span>
+                    <span><i class="fa-regular fa-palette" style="font-size: 13px; margin-right: 5px"></i>    System Mode</span>
                 </div>
                 <div class="buttonContainer">
                     '.$radioTheme.'
@@ -2344,18 +2300,16 @@ echo '
             </div>
         </div>';
         if($SYSTEM == 'OBYU'){
-            if(isset($_SESSION['user_org']) && $_SESSION['user_org'] != 'MRSB'){
-                echo '<div class="uiSection">
-                        <div class="interfaceChange">
-                            <div class="head">
-                                <span class="atag"><a>Prefer the old user interface?</a></span>
-                            </div>
-                            <div class="buttonContainer">
-                                <span><button class="btn" onclick="oldUI()">Yes, please!</button></span>
-                            </div>
+            echo '<div class="uiSection">
+                    <div class="interfaceChange">
+                        <div class="head">
+                            <span class="atag"><a>Prefer the old user interface?</a></span>
                         </div>
-                    </div>';
-            }
+                        <div class="buttonContainer">
+                            <span><button class="btn" onclick="oldUI()">Yes, please!</button></span>
+                        </div>
+                    </div>
+                </div>';
         }
         echo'
         <div class="newsSection '.(($SYSTEM == 'KKR') ? 'noUIPref' : '').'">
@@ -2366,7 +2320,7 @@ echo '
             </div>
         </div>
         <form class="formLogout" action ="include/logout">
-            <button type = "submit" id="signOut" name="signOut"><span class="atag"><i class="fa-solid fa-door-open" style="font-size: 13px; margin-right: 5px"></i><a style="text-decoration: none">  Sign Out</a></span></button>
+            <button type = "submit" id="signOut" name="signOut"><span class="atag"><i class="fa-regular fa-door-open" style="font-size: 13px; margin-right: 5px"></i><a style="text-decoration: none">  Sign Out</a></span></button>
         </form>
     </div>
 
@@ -2416,21 +2370,16 @@ echo '
                 <span class="parentTagName">Archived Project</span>
             </div>
         ';
-        $systemTabsHTML = '
-            <div class="subButton" id = "tokenMgmt" rel = "main-tokenmgmt-project" onclick = "onFunctionSysAdmin(this, \'mySysAdmin\')">
-                <span class="parentTagName">Manage Tokens</span>
-            </div>
-        ';
         $_SESSION['isSysadmin'] = true;
     }
     
     echo'
         <div class="mainAppButton show '.$projMenu.' '.$classActive.'" rel="myProject" onclick = "changeApps(this)" data-color="#1e88e5">
-            <i class="fa-solid fa-puzzle-piece"></i>
+            <i  class="fa-solid fa-puzzle-piece"></i>
             <span class="active">Project</span>
         </div>
         <div class="mainAppButton eLibrary" rel="eLibrary" onclick = "changeApps(this)" data-color="#1e88e5">
-            <i class="fa-solid fa-book"></i>
+            <i class="fa-solid fa-books"></i>
             <span class="active">E-Library</span>
         </div>
         <div class="mainAppButton projectInformation" rel="projectInformation" onclick = "changeApps(this)" data-color="#1e88e5">
@@ -2464,131 +2413,9 @@ echo '
         '. $sysAdminHTML .'
     </div>
 
-<div id="print-modal-overlay" style="background-color: #c1bdbdd6; display: none; position: fixed; top: 0;left: 0;width: 100%;height: 100%; align-items:center;justify-content:center;z-index: 9999;">
-
-        <div id="print-chart-container" style="border-radius: 10px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); width: 700px; height: 55px; padding: 12px; background-color: #e1e2e1;">
-            <div id="print-chart-filter" style="display: flex; gap: 4px; justify-content: end; align-items: center;">
-                <button onClick="closeModal()"
-                        style="border-radius: 100%; 
-                        position: absolute; z-index: 10; 
-                        border: none; background-color: red; height: 30px; width: 30px; margin-top: -70px; margin-right:-20px; color: white; font-size: 20px;">&times;</button>
-                <div id="print-note">
-                    <span style="margin-right: auto;"> Select Filter Range: </span> <br>
-                    <small style="color: red; font-size: 10px;">* This filter applies only to horizontal bar charts to improve data readability</small>
-                </div>
-
-                <select 
-                    id="from-date-js" 
-                    name="from-date-js" 
-                    style="height: 26px; margin: 0; border: 1px solid gray; padding: 2px 4px; border-radius: 5px;">
-                </select>
-                <p>-</p>
-                <select 
-                    id="to-date-js" 
-                    name="to-date-js" 
-                    style="height: 26px; margin: 0; border: 1px solid gray; padding: 2px 4px; border-radius: 5px;">
-                </select>    
-                <button 
-                    id="apply-filter"
-                    style="height: 26px; width:90px; padding: 0 8px; margin-left: 4px; border: 1px solid gray; border-radius: 5px;" 
-                    onclick="applyDateRangeAndPrint()">Print
-                    <i class="fa fa-print printClassHehe" style="margin-right: 6px;"></i>
-                </button>
-            </div>
-
-            <p id="print-chart-error" style="margin: -10px 0 0 0; text-align: end; color: red; font-size: 10px;"></p>
-            <div id="print-chart-content">
-                <div id="land-chart-content" style="display: flex; flex-direction: column; gap: 10px; height: 95vh; width: 100%; box-sizing: border-box; padding: 10px; visibility: hidden; overflow: hidden;">
-                    <div class="land-row" style="display: flex; flex: 1; gap: 10px; min-height: 0;">
-                        <div id="offerIssuedChart" style="width: 70%; height: 100%;"></div>
-                        <div id="land-summ-1" style="width: 30%; height: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center;">
-                            <div style=" font-weight: bold; color: gray; font-size: 16px;">Land</div>
-                            <div id="offerLand" style="margin-bottom: 8px; color: gray;"></div>
-                            <div class="structureHeader" style="font-weight: bold; color: gray; font-size: 16px;">Structure</div>
-                            <div id="offerStructure" style="color: gray;"></div>
-                        </div>
-                    </div>
- 
-                    <div class="land-row" style="display: flex; flex: 1; gap: 10px; min-height: 0;">
-                        <div id="paymentChart" style="width: 70%; height: 100%;"></div>
-                        <div id="land-summ-2" style="width: 30%; height: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center;">
-                            <div style="font-weight: bold; color: gray; font-size: 16px;">Land</div>
-                            <div id="paymentLand" style="margin-bottom: 8px; color: gray;"></div>
-                            <div class="structureHeader" style="font-weight: bold; color: gray; font-size: 16px;">Structure</div>
-                            <div id="paymentStructure" style="color: gray;"></div>
-                        </div>
-                    </div>
- 
-                    <div class="land-row" style="display: flex; flex: 1; gap: 10px; min-height: 0;">
-                        <div id="demolisedChart" style="width: 70%; height: 100%;"></div>
-                        <div id="land-summ-3" style="width: 30%; height: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center;">
-                            <div style="font-weight: bold; color: gray; font-size: 16px;">Structure</div>
-                            <div id="demolishedStructure" style="color: gray;"></div>
-                        </div>
-                    </div>
- 
-                </div>
-
-                <!-- HSET Dashboard -->
-                <div id="hset-chart-content" style="display: none; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(6, 1fr); gap: 4px; width: 100%; height: 90%;">
-                    <div style="display: flex; flex-direction: column; grid-column: span 9 / span 9; grid-row: span 2 / span 2;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase;">Total Man Hours Without LTI (HRS)</div>
-                        <div id="p-hset-1" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 4px; grid-column: span 3 / span 3; grid-row: span 2 / span 2; grid-column-start: 10;">
-                        <div style="display: flex; flex-direction: column;">
-                            <div style="min-height: 56px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px; padding: 1px;">Cumulative Total Man Hours Without LTI (HRS)</div>
-                            <div id="p-hset-2-1" style="display: flex; align-items: center; justify-content: center; background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                        </div>
-                        <div style="display: flex; flex-direction: column;">
-                            <div style="min-height: 56px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px; padding: 1px;">Cumulative Total Man Hours With LTI (HRS)</div>
-                            <div id="p-hset-2-2" style="display: flex; align-items: center; justify-content: center; background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                        </div>
-                        <div style="display: flex; flex-direction: column;">
-                            <div style="min-height: 56px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px; padding: 1px;">Total Accidents/Incidents</div>
-                            <div id="p-hset-2-3" style="display: flex; align-items: center; justify-content: center; background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                        </div>
-                        <div style="display: flex; flex-direction: column;">
-                            <div style="min-height: 56px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px; padding: 1px;">Fatality</div>
-                            <div id="p-hset-2-4" style="display: flex; align-items: center; justify-content: center; background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                        </div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; grid-column: span 9 / span 9; grid-row: span 2 / span 2; grid-row-start: 3;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase;">HSET walkabout and induction</div>
-                        <div id="p-hset-3" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; grid-column: span 3 / span 3; grid-row: span 2 / span 2; grid-column-start: 10; grid-row-start: 3;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase;">Overall Accidents/Incidents</div>
-                        <div id="p-hset-4" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; grid-column: span 2 / span 2; grid-row: span 2 / span 2; grid-row-start: 5;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px;">HSET COMMITTEE MEETING</div>
-                        <div id="p-hset-5" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; grid-column: span 2 / span 2; grid-row: span 2 / span 2; grid-column-start: 3; grid-row-start: 5;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px;">HSET TOOLBOX MEETING</div>
-                        <div id="p-hset-6" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; grid-column: span 2 / span 2; grid-row: span 2 / span 2; grid-column-start: 5; grid-row-start: 5;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px;">SAFETY STAND DOWN</div>
-                        <div id="p-hset-7" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; grid-column: span 2 / span 2; grid-row: span 2 / span 2; grid-column-start: 7; grid-row-start: 5;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-size: 12px;">PRE-TOOLBOX MEETING</div>
-                        <div id="p-hset-8" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; grid-column: span 4 / span 4; grid-row: span 2 / span 2; grid-column-start: 9; grid-row-start: 5;">
-                        <div style="height: 30px; color: white; text-align: center; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #2f3e5a; display: flex; justify-content: center; align-items: center; text-transform: uppercase;">HSET PROGRAM AND RESPONSE</div>
-                        <div id="p-hset-9" style="background-color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; height: 100%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>    
-
     <div class="mainContainer '.$subMenuOpened.'" id="mainContainer">
         <div class="enlargeContainer myInsights myDashboard myDocument myFinanace myAdmin myTask mySysAdmin" id="enlargeContainer">
-            <button class="printButton myDashboard" onclick="printContent(this)" data-general-print="true" id="genPrint" style="display: none"><img src="../Images/icons/form/printer.png"></button>
+            <button class="printButton myDashboard" onclick="printContent(this)" style="display: none"><img src="../Images/icons/form/printer.png"></button>
             <button class="enlargeButton" onclick="enlargeMainContainer(this)">
                 <img src="../Images/icons/form/maximizeLightv3.png">
             </button>
@@ -2601,7 +2428,7 @@ echo '
             <div id="resizableDetach" class="ui-widget-content detach">
                 <div class="headerContainer detach">
                     <div class="title">ConOp List</div>
-                    <div class="detachButtonContainer" onclick="detachWidgetClose(this)"><i style="transform: rotate(180deg); " class="fa-solid fa-square-arrow-up-right"></i></div>
+                    <div class="detachButtonContainer" onclick="detachWidgetClose(this)"><i class="fa-solid fa-square-arrow-down-left"></i></div>
                 </div>
                 <div class="headerContainer detach" id="detachWidgetConopList">
                 </div>
@@ -2669,11 +2496,13 @@ echo '
                                 <button class="sort-btn asc" data-sort="contract-amount:desc"><i class="fa-solid fa-sort-up"></i> <span>Contract Amount</span></button>
                                 <button class="sort-btn desc" data-sort="contract-amount:asc" style="display: none"><i class="fa-solid fa-sort-down"></i> <span>Contract Amount</span></button>
                             </div>
-                            <button class="btn filter-expand max"><i class="fa-solid fa-arrows-up-to-line"></i></button>
+                            <button class="btn filter-expand max"><i class="fa-regular fa-solid fa-arrows-to-line"></i></button>
                             <input onkeyup ="homeSearchExecutive(this)" placeholder="Search...">
-                            <button class="filter-sort-btn" onclick="closeFilterList()"><i class="fa-solid fa-filter"></i></button>
+                            <button class="filter-sort-btn" onclick="closeFilterList()"><i class="fa-sharp fa-solid fa-filter-list"></i></button>
                         </div>
                     </div>
+                    
+                    <div class = "dashboardBodyExec">
                         '.$divisionHTML.'
                 </div>
             </div>
@@ -2681,11 +2510,6 @@ echo '
         <div class="mainPage myProject swiper swiper-h '.$classActive.'" style="'.$displayBlock.'; opacity: 0">
             <div class="title">
                 <h3 id="">Hi, ' . $firstName . ' ' . $lastName . '</h3>
-                <!--Toggle For View Pref-->
-                <label class="switch view" id="toggleView" title="Toggle View">
-                    <input type="checkbox" checked>
-                    <span class="slider view"></span>
-                </label>
             </div>
             <div class="contentContainer multiColumn header swiper-wrapper">
                 <div class="columnOne swiper-slide">
@@ -2694,7 +2518,7 @@ echo '
                     </div>
                     <div class="tableContainer">
                         <div class="searchContainer">
-                            <!--Toggle For myProject Card Pref-->
+                            <!--<button id="toggleContainer">Toggle</button>-->
                             <label class="switch" id="toggleContainer">
                                 <input type="checkbox" checked>
                                 <span class="slider"></span>
@@ -2771,21 +2595,6 @@ echo '
                                 <button type="button" class="control asc" data-sort="mytask-pending:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
                                 <button type="button" class="control desc" data-sort="mytask-pending:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                             </span> 
-                            <span class="columnSecond columnHidden">Section
-                                <button type="button" class="control unset" data-sort="mytask-section:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="mytask-section:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="mytask-section:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
-                            <span class="columnFirst columnHidden">Work Discipline
-                                <button type="button" class="control unset" data-sort="mytask-workdiscipline:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="mytask-workdiscipline:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="mytask-workdiscipline:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
-                            <span class="columnFirst columnHidden">Created By
-                                <button type="button" class="control unset" data-sort="mytask-createdbyname:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="mytask-createdbyname:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="mytask-createdbyname:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
                         </div>
                         <div class="tableBody myTask '.$myTaskClassHeight.'" id="sortTask">
                             <div class="loadingRowContainer" style="display:block;">
@@ -2852,9 +2661,9 @@ echo '
                                     <button class="toolButton mid inventory" rel="list" title="Inventory List" data-process="allListInventory" style="display: none;">
                                     <i class="fa-solid fa-boxes-stacked"></i><div class="label">Asset<br>Table</div>
                                     </button>
-                                    <button class="toolButton mid manageAsset" rel="insight" title="Manage Asset Process" data-width="70" data-page="manageAsset"><i class="fa-solid fa-hexagon-nodes"></i><div class="label">Manage</div></button>
+                                    <button class="toolButton mid manageAsset" rel="insight" title="Manage Asset Process" data-width="70" data-page="manageAsset"><i class="fa-solid fa-chart-network"></i><div class="label">Manage</div></button>
                                     <button class="toolButton mid pavement" rel="insight" title="Pavement Analysis" data-width="70" data-page="pavementAnalysis"><i class="fa-solid fa-chart-area"></i><div class="label">Pavement<br>Analysis</div></button>
-                                    <button class="toolButton mid bulk" rel="insight" title="Bulk Export Process" data-width="55" data-page="bulkAsset"><i class="fa-solid fa-paste"></i><div class="label">Bulk<br>Export</div></button>
+                                    <button class="toolButton mid bulk" rel="insight" title="Bulk Export Process" data-width="55" data-page="bulkAsset"><i class="fa-solid fa-files"></i><div class="label">Bulk<br>Export</div></button>
                                     <button class="toolButton mid" rel="list" title="Maintenance Browser" data-process="maintenanceBrowser"><i class="fa-solid fa-wrench"></i><div class="label">Maintenance<br>Browser</div></button>
                                     <button class="toolButton mid" rel="insight" title="Setup" data-width="70" data-page="setupList"><i class="fa-solid fa-gear"></i><div class="label">Setup</div></button>
                                 </div>
@@ -2867,8 +2676,8 @@ echo '
                                     <button class="toolButton mid" rel="insight" title="New Construction Process" data-width="70" data-page="process"><i class="fa-solid fa-file-circle-plus"></i><div class="label">New<br>Process</div></button>
                                     <button class="toolButton mid setup" rel="insight" title="Setup" data-width="55" data-page="setupPage"><i class="fa-solid fa-gear"></i><div class="label">Setup</div></button>
                                     <button class="toolButton mid conop" rel="list" title="ConOp List" data-process="allListConstruct"><i class="fa-solid fa-list"></i><div class="label">ConOp<br>List</div></button>
-                                    <button class="toolButton mid manage" rel="insight" title="Manage Construction Process" data-width="55" data-page="manage"><i class="fa-solid fa-hexagon-nodes"></i><div class="label">Manage<br>Process</div></button>
-                                    <button class="toolButton mid bulk" rel="insight" title="Bulk Register Process" data-width="55" data-page="bulk"><i class="fa-solid fa-paste"></i><div class="label">Bulk<br>Register</div></button>
+                                    <button class="toolButton mid manage" rel="insight" title="Manage Construction Process" data-width="55" data-page="manage"><i class="fa-solid fa-chart-network"></i><div class="label">Manage<br>Process</div></button>
+                                    <button class="toolButton mid bulk" rel="insight" title="Bulk Register Process" data-width="55" data-page="bulk"><i class="fa-solid fa-files"></i><div class="label">Bulk<br>Register</div></button>
                                     <button class="toolButton mid bumi" rel="list" title="Bumi List" data-process="bumiList"><i class="fa-solid fa-globe"></i><div class="label">Bumi<br>List</div></button>
                                     <button class="toolButton mid" rel="insight" title="Link Lot Parcel" data-width="70" data-page="linkLotParcel"><i class="fa-solid fa-link"></i><div class="label">Link Lot<br>Parcel</div></button>
                                     <button class="toolButton mid bulkapproval" rel="list" title="Bulk Assignment Approvals" data-width="70" data-process="bulkApprovals" style="display:none;"><i class="fa fa-list-alt"></i><div class="label">Bulk <br>Approvals</div></button>';
@@ -2878,11 +2687,8 @@ echo '
                                             echo'
                                             <button class="toolButton mid statistic" rel="insight" title="Statistic" data-width="55" data-page="statisticPage"><i class="fa-solid fa-line-chart"></i><div class="label">Statistic</div></button>';
                                         }
-                                        
                                     }
-
-                                    $aic_show_btn = ($SYSTEM == 'OBYU') ? 'style = "display: none;"' : "" ;
-
+                                    
                                     echo '
                                     
                                 </div>
@@ -2893,11 +2699,14 @@ echo '
                             <div class="flexContainer">
                                 <div class="buttonContainer eight">
                                     <button class="toolButton mid" rel="insight" title="New Asset Process" data-width="55" data-page="asset"><i class="fa-solid fa-file-circle-plus"></i><div class="label">New<br>Asset Process</div></button>
-                                    <button class="toolButton mid assetlist" rel="list" title="Asset Data List" data-process="assetListInventory">
+                                    <button class="toolButton mid assetlist" rel="list" title="Asset Data List" data-process="assetListInventory" id="assetListInventory">
                                     <i class="fa-solid fa-boxes-stacked"></i><div class="label">Asset<br>Table</div>
                                     </button>
-                                    <button class="toolButton mid manageAsset" rel="insight" title="Manage Asset Process" data-width="70" data-page="manageAsset"><i class="fa-solid fa-hexagon-nodes"></i><div class="label">Manage</div></button>
-                                    <button class="toolButton mid bulk" rel="insight" title="Bulk Export Process" data-width="55" data-page="bulkAsset"><i class="fa-solid fa-paste"></i><div class="label">Bulk<br>Export</div></button>
+                                    <button class="toolButton mid assetlistTemp" rel="list" title="Asset Data List" data-process="assetListInventoryTemp" id="assetListInventoryTemp">
+                                    <i class="fa-solid fa-boxes-stacked"></i><div class="label">Asset<br>Table - Temp</div>
+                                    </button>
+                                    <button class="toolButton mid manageAsset" rel="insight" title="Manage Asset Process" data-width="70" data-page="manageAsset"><i class="fa-solid fa-chart-network"></i><div class="label">Manage</div></button>
+                                    <button class="toolButton mid bulk" rel="insight" title="Bulk Export Process" data-width="55" data-page="bulkAsset"><i class="fa-solid fa-files"></i><div class="label">Bulk<br>Export</div></button>
                                     <button class="toolButton mid" rel="list" title="Maintenance Browser" data-process="maintenanceBrowser"><i class="fa-solid fa-wrench"></i><div class="label">Maintenance<br>Browser</div></button>
                                     <button class="toolButton mid" rel="insight" title="Setup" data-width="70" data-page="fmSetupList"><i class="fa-solid fa-gear"></i><div class="label">Setup</div></button>
                                     </div>
@@ -2908,7 +2717,7 @@ echo '
                             <div class="buttonContainer">
                                 <button class="toolButton mid" rel="layer" title="layer"><i class="fa-solid fa-layer-group"></i><div class="label">Layer</div></button>
                                 <button class="toolButton mid" id="refreshList" rel="reviewTool" title="Review Tool" onclick="getReviewv3()"><i class="fa-solid fa-magnifying-glass-location"></i><div class="label">Review<br>Tool</div></button>
-                                <button class="toolButton mid" '.$aic_show_btn.' rel="aic" data-measure="aic" title="Aerial Image Compare" onClick="initializeECW(this)"><i class="fa-solid fa-plane"></i><div class="label">Aerial<br>Image</div></button>
+                                <button class="toolButton mid" rel="aic" data-measure="aic" title="Aerial Image Compare" onClick="initializeECW(this)"><i class="fa-solid fa-drone-front"></i><div class="label">Aerial<br>Image</div></button>
                                 <button class="toolButton mid" rel="markupTool" id="markupTool" title="Markup"><i class="fa-solid fa-marker"></i><div class="label">Markup</div></button>
                             </div>
                             <div class="text">Main</div>
@@ -2927,21 +2736,22 @@ echo '
                             <div class="buttonContainer">
                                 <button class="toolButton mid" rel="measureTool" data-measure="point" title="Point" onClick="openMeasureTool(this)"><i class="fa-solid fa-map-pin"></i><div class="label">Point</div></button>
                                 <button class="toolButton mid" rel="measureTool" data-measure="distance" title="Distance" onClick="openMeasureTool(this)"><i class="fa-solid fa-ruler"></i><div class="label">Distance</div></button>
-                                <button class="toolButton mid" rel="measureTool" data-measure="area" title="Area" onClick="openMeasureTool(this)"><i class="fa-solid fa-draw-polygon"></i><div class="label">Area</div></button>
+                                <button class="toolButton mid" rel="measureTool" data-measure="area" title="Area" onClick="openMeasureTool(this)"><i class="fa-solid fa-vector-square"></i><div class="label">Area</div></button>
                             </div>
                             <div class="text">Measure</div>
                         </div>
                         <div class="tool admin">
                             <div class="buttonContainer ten">
-                                <button class="toolButton mid" rel="manageLayer" title="Manage Layer" onclick="manageLayer(this)"><i class="fa-solid fa-copy"></i><div class="label">Manage<br>Layer</div></button>
-                                <button class="toolButton mid" rel="drawTool" title="Add Video" id="addvideocam" data-page="cameraItem" onclick="OnClickAddCamera()"><i class="fa-solid fa-video"></i><div class="label">Add<br>Video</div></button>
+                                <button class="toolButton mid" rel="manageLayer" title="Manage Layer" onclick="manageLayer(this)"><i class="fa-solid fa-bring-forward"></i><div class="label">Manage<br>Layer</div></button>
+                                <button class="toolButton mid" rel="drawTool" title="Add Video" id="addvideocam" data-page="cameraItem" onclick="OnClickAddCamera()"><i class="fa-solid fa-video-plus"></i><div class="label">Add<br>Video</div></button>
                                 <button class="toolButton mid" rel="drawTool" title="Mark Asset" data-page="pinPoint" data-width="55"><i class="fa-solid fa-paintbrush"></i><div class="label">Mark<br>Asset</div></button>
                                 <button class="toolButton mid" rel="locationDirectory" title="Mark Location" data-page="markEntity" onclick="openDrawTool(this)"><i class="fa-solid fa-location-pin"></i><div class="label">Mark<br>Location</div></button>
-                                <button class="toolButton mid" rel="uploadTool" title="Upload Layer"><i class="fa-solid fa-upload"></i><div class="label">Upload<br>Layer</div></button>
+                                <button class="toolButton mid" id="uploadTool" rel="uploadTool" title="Upload Layer"><i class="fa-solid fa-upload"></i><div class="label">Upload<br>Layer</div></button>
                                 <button class="toolButton mid" rel="adjustElevation" title="Adjust Layers Elevation" onclick="adjustLayer(this)"><i class="fa-sharp fa-solid fa-sliders"></i><div class="label">Adjust<br>Elevation</div></button>
-                                <button class="toolButton mid" rel="drawTool" title="Add 360 Image" data-page="earthViewItem"><i class="fa-solid fa-image"></i><div class="label">Add<br>360 Image</div></button>
+                                <button class="toolButton mid" rel="drawTool" title="Add 360 Image" data-page="earthViewItem"><i class="fa-solid fa-360-degrees"></i><div class="label">Add<br>360 Image</div></button>
                                 <button class="toolButton mid" rel="insight" title="Edit Marked Asset/Location" data-page="editentityForm" data-width="30" onclick="OnClickEdit(this)"><i class="fa-solid fa-pencil"></i><div class="label">Edit<br>Asset / Location</div></button>
                                 <button class="toolButton mid" rel="delete" title="Remove Marked Asset/Location" onclick="OnClickDelete(this)"><i class="fa-solid fa-trash-can"></i><div class="label">Remove<br>Asset / Location</div></button>
+                                <button class="toolButton mid" id="uploadAssetData" rel="uploadAssetData" title="Upload Asset Data"><i class="fa-solid fa-upload"></i><div class="label">Upload<br>Asset Data</div></button>
                             </div>
                             <div class="text">Admin</div>
                         </div>
@@ -2951,9 +2761,9 @@ echo '
                                 <button class="toolButton mid" rel="thematic" title="Thematic"><i class="fa-solid fa-brush"></i><div class="label">Thematic</div></button>
                                 <button class="toolButton mid" rel="folderDirectory" title="Folder Directory" onclick=""><i class="fa-solid fa-folder-tree"></i><div class="label">Folder<br>Directory</div></button>
                                 <button class="toolButton mid" rel="cameraFeed" title="Camera Feed" data-page="cameraItem" onclick = "OnClickCameraFeedv3()"><i class="fa-solid fa-video"></i><div class="label">Camera<br>Feed</div></button>
-                                <button class="toolButton mid" rel="trackAnimation" title="Fly Through Animation"><i class="fa-solid fa-magnifying-glass-location"></i><div class="label">Fly<br>Through</div></button>
-                                <button class="toolButton mid" rel="insight" title="Gantt Chart" data-width="70" onclick="wizardOpenPageGantt(\'insights\')"><i class="fa-solid fa-chart-gantt"></i><div class="label">Gantt<br>Chart</div></button>
-                                <button class="toolButton mid" rel="markAsset" title="Asset List"><i class="fa-solid fa-table"></i><div class="label">Asset<br>List</div></button>';
+                                <button class="toolButton mid" rel="insight" title="Gantt Chart" onclick="wizardOpenPageGantt(\'insights\')"><i class="fa-solid fa-chart-gantt"></i><div class="label">Gantt<br>Chart</div></button>
+                                <button class="toolButton mid" rel="markAsset" title="Asset List"><i class="fa-solid fa-table"></i><div class="label">Asset<br>List</div></button>
+                                <button class="toolButton mid" rel="myTasks" title="My Tasks"><i class="fa-solid fa-table"></i><div class="label">My Tasks</div></button>';
                                 if ($projectManager) {
                                     echo'
                                     <button class="toolButton mid" rel="insight" title="Power BI" data-process="powerBi" data-page="powerBi" data-width="70" onclick="OnClickPowerBi()"><i class="fa-solid fa-chart-simple"></i><div class="label">Power BI</div></button>';
@@ -2979,38 +2789,13 @@ echo '
                         <div id="RIContainer">
                             <div class="blinkDiv"></div>
                             <div class="buttonContainer" id="insightsToolContainer">
-                                <button class="icon" rel="" id="switchTerrainMod" title="Switch Terrain Mode"><i class="onPrimary fa-solid fa-image-landscape fa-lg"></i><span>TERRAIN OFF</span></button>
+                                <button class="icon" rel="" id="switchTerrainMod" title="Switch Terrain Mode"><i class="onPrimary fa-solid fa-image-landscape fa-lg"></i></button>
                                 <button class="icon" rel="" id="SwitchSceneMod" title="Switch Scene Mode"><i class="onPrimary fa-solid fa-toggle-on fa-lg"></i></button>
                                 <button class="icon" rel="lastminutetool" title="Move" onclick="openRIContainerTool(this)"><i class="onPrimary fa-solid fa-up-down-left-right fa-lg"></i></button>
                                 <button class="icon" rel="" id="changeToGlobe" title="Globe"><i class="onPrimary fa-solid fa-earth-asia fa-lg"></i></button>
                                 <button class="icon" rel="" id="flyToHome" title="Home"><i class="onPrimary fa-solid fa-house fa-lg"></i></button>
                                 <button class="icon" rel="" id="changeBaseMap" title="Base Map Toggle"><i class="onPrimary fa-solid fa-map fa-lg"></i>
                                 </button>
-                            </div>
-                            <div id="toolbarTransparency">
-                                <table>
-                                    <tbody>
-                                    <tr>
-                                        <td>Translucency enabled</td>
-                                        <td>
-                                            <input type="checkbox" data-bind="checked: translucencyEnabled">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Fade by distance</td>
-                                        <td>
-                                            <input type="checkbox" data-bind="checked: fadeByDistance">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Alpha</td>
-                                        <td class="alpha">
-                                            <input type="range" min="0.0" max="1.0" step="0.1" data-bind="value: alpha, valueUpdate: \'input\'">
-                                            <input type="text" size="5" data-bind="value: alpha">
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
                             </div>
                             <div id="ScreenSpaceTool" class="lastminutetool">
                                 <div class="flexColumn">
@@ -3019,7 +2804,7 @@ echo '
                                 <div class="flexColumn">
                                     <input class="slider" type="range" min="-1.0" max="1.0" step="0.02" data-bind="value: brightness, valueUpdate: \'input\'">
                                 </div>
-                                <div class="flexColumn alpha">
+                                <div class="flexColumn">
                                     <input type="text" size="5" data-bind="value: brightness">
                                 </div>
                             </div>
@@ -3045,9 +2830,6 @@ echo '
                                 </div>
                                 <div class="floatBoxFooter">
                                     <a class="folderMoreInfo" rel="folderMoreInfo" style="display: none">Show more info --></a>
-                                </div>
-                                 <div class="floatBoxFooter">
-                                    <a class="floatBoxActionLink" rel="floatBoxActionLink" style="display: none">Component</a>
                                 </div>
                             </div>
                         </div>
@@ -3398,8 +3180,8 @@ echo '
                             <div class="infoBody">
                                 <div class="buttonTab sticky sortHandler">
                                     <span class="sort">Name
-                                        <div class="control unset" date-sort="insightslayer-name:desc" style="display:none"><i class="fa-solid fa-sort"></i></div>
-                                        <div class="control asc" date-sort="insightslayer-name:desc" style="display:inline-block"><i class="fa-solid fa-sort-up"></i></div>
+                                        <div class="control unset" date-sort="insightslayer-name:desc" style="display:inline-block"><i class="fa-solid fa-sort"></i></div>
+                                        <div class="control asc" date-sort="insightslayer-name:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></div>
                                         <div class="control desc" date-sort="insightslayer-name:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></div>
                                     </span>
                                     <span class="sort">Date
@@ -3541,6 +3323,94 @@ echo '
                             <div class="infoFooter">
                             </div>
                         </div>
+                        <div class="navbox myTasks">
+                            <div class="infoHeader">
+                                <div class="header">My Tasks</div>
+                                <div class="closeButton"><i class="fa-solid fa-xmark"></i></div>
+                            </div>
+                            <div class="infoBody">
+                                <div class="tableContainer">
+                                    <div class="searchContainer myTask">
+                                        <input onkeyup="homeSearchTask(this)" placeholder="Search Task"/>
+                                    </div>
+                            
+                                    <div class="tableHeader sortHandler">
+                                        <span class="columnIndex"></span>
+                                        <span class="columnFirst">Reference No.
+                                            <button type="button" class="control unset" data-sort="mytask-refno:desc"><i class="fa-solid fa-sort"></i></button>
+                                            <button type="button" class="control asc" data-sort="mytask-refno:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                                            <button type="button" class="control desc" data-sort="mytask-refno:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
+                                        </span>
+                                        <span class="columnFirst">Project
+                                            <button type="button" class="control unset" data-sort="mytask-project:desc"><i class="fa-solid fa-sort"></i></button>
+                                            <button type="button" class="control asc" data-sort="mytask-project:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                                            <button type="button" class="control desc" data-sort="mytask-project:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
+                                        </span>
+                                        <span class="columnSecond">Modified
+                                            <button id="myTaskModifiedAsc" type="button" class="control unset" data-sort="mytask-modifieddate:desc"><i class="fa-solid fa-sort"></i></button>
+                                            <button type="button" class="control asc" data-sort="mytask-modifieddate:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                                            <button type="button" class="control desc" data-sort="mytask-modifieddate:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
+                                        </span>
+                                        <span class="columnSecond">Pending Task
+                                            <button type="button" class="control unset" data-sort="mytask-pending:desc"><i class="fa-solid fa-sort"></i></button>
+                                            <button type="button" class="control asc" data-sort="mytask-pending:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                                            <button type="button" class="control desc" data-sort="mytask-pending:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
+                                        </span> 
+                                    </div>
+                                    
+                                    <div class="tableBody myTask '.$myTaskClassHeight.'" id="sortTask">
+                                        <div class="loadingRowContainer" style="display:block;">
+                                            <div class="row loadingRow">
+                                                <div class="timeline-item-row">
+                                                    <div class="animated-background-row">
+                                                        <div class="background-masker header-top"></div>
+                                                        <div class="background-masker header-left"></div>
+                                                        <div class="background-masker header-right"></div>
+                                                        <div class="background-masker header-bottom"></div>
+                                                        <div class="background-masker subheader-left"></div>
+                                                        <div class="background-masker subheader-right"></div>
+                                                        <div class="background-masker subheader-bottom"></div>  
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="row loadingRow">
+                                                <div class="timeline-item-row">
+                                                    <div class="animated-background-row">
+                                                        <div class="background-masker header-top"></div>
+                                                        <div class="background-masker header-left"></div>
+                                                        <div class="background-masker header-right"></div>
+                                                        <div class="background-masker header-bottom"></div>
+                                                        <div class="background-masker subheader-left"></div>
+                                                        <div class="background-masker subheader-right"></div>
+                                                        <div class="background-masker subheader-bottom"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="row loadingRow">
+                                                <div class="timeline-item-row">
+                                                    <div class="animated-background-row">
+                                                        <div class="background-masker header-top"></div>
+                                                        <div class="background-masker header-left"></div>
+                                                        <div class="background-masker header-right"></div>
+                                                        <div class="background-masker header-bottom"></div>
+                                                        <div class="background-masker subheader-left"></div>
+                                                        <div class="background-masker subheader-right"></div>
+                                                        <div class="background-masker subheader-bottom"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="infoFooter">
+                                <div class="tableFooter '.$myTaskClassHeight.'">
+                                    <a id="myTaskPendingCounts" rel="myTaskList" data-title="My Task List" onclick="wizardOpenPage(this)" data-width="55"></a>
+                                </div>
+                            </div>
+                        </div>
                         <div class="navbox folderDirectory">
                             <div class="infoHeader">
                                 <div class="header">Folder Directory</div>
@@ -3618,6 +3488,7 @@ echo '
                                     <div class="tab" rel="upload" data-page="shpdiv" onclick="navBoxTabClick(this)">SHP</div>
                                     <div class="tab" rel="upload" data-page="b3dmdiv" onclick="navBoxTabClick(this)">B3DM</div>
                                     <div class="tab" id="xmldiv" rel="upload" data-page="xmldiv" onclick="navBoxTabClick(this)" style="display: none;">XML</div>
+                                    <div class="tab" id="exceldiv" rel="upload" data-page="exceldiv" onclick="navBoxTabClick(this)" style="display: none;">EXCEL</div>
                                 </div>
                                 <div class="multiPage">
                                     <div class="page upload kmldiv active">
@@ -3643,7 +3514,6 @@ echo '
                                                 <span class="middleBigColumn text-ellipsis">Layer</span>
                                                 <span class="middleMediumColumn text-ellipsis">Display</span>
                                                 <span class="middleMediumColumn text-ellipsis">Share</span>
-                                                <span class="middleMediumColumn text-ellipsis">Animation</span>
                                                 <span class="middleColumn text-ellipsis">Status</span>
                                             </div>
                                             <div class="tableBody" id="fileTBody"></div>
@@ -3754,6 +3624,30 @@ echo '
                                             <div class="tableBody" id="xmlFileTBody"></div>
                                         </div>
                                     </div>
+                                    <div class="page upload excelDiv active">
+                                        <div>
+                                            <div class="header">Upload Excel file</div>
+                                            <div class="buttonTab insidePage">
+                                                <button id="add-file-btn-excel">Add File</button>
+                                                <button class="hidden" type="button" onClick="$(\'#start-upload-btn\').trigger(\'click\')">Upload File</button>
+                                                <button class="hidden" type="button" onClick="geoDataClear()">Reset</button>
+                                            </div>
+                                        </div>
+                                        <div class="indicatorContainer">
+                                            <div class="progress-bar-container">
+                                                <div class="progress-bar"></div>
+                                            </div>
+                                            <span id="b3dmstatus" class="b3dmstatus"></span>
+                                        </div>
+                                        <div class="tableContainer" id = "csvfiletb" style="display:none">
+                                            <div class="tableHeader insight">
+                                                <span class="middleColumn text-ellipsis">File Name</span>
+                                                <span class="middleBigColumn text-ellipsis">CSV Name</span>
+                                                <span class="middleColumn text-ellipsis">Status</span>
+                                            </div>
+                                            <div class="tableBody" id="csvFileTBody"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="infoFooter">
@@ -3778,9 +3672,9 @@ echo '
                                 </div>
                                 <div class="buttonTab noBorder">
                                     <button class="icon" onclick="wizardOpenPage(this)" rel="insight" data-width="75" data-page="aicPage" title="Aerial Image Comparison"><i class="onPrimary fa-regular fa-images"></i></button>';
-                                    if(isset($_SESSION['email']) && $_SESSION['email'] ==  "dionnald.manager@gmail.com" || $_SESSION['email'] == "pbh.sabah@gmail.com" || $_SESSION['email'] == "pbh.sarawak@gmail.com" || $_SESSION['email'] == "sslr2.support@digile.com" || $_SESSION['email'] == "sslr2.gis@digile.com"){
+                                    if(isset($_SESSION['email']) && $_SESSION['email'] ==  "dionnald.manager@gmail.com" || $_SESSION['email'] == "pbh.sabah@gmail.com" || $_SESSION['email'] == "pbh.sarawak@gmail.com"){
                                         echo '
-                                        <button class="icon" onclick="wizardOpenPage(this)" rel="insight" data-width="75" data-page="aicEditPage" title="Aerial Image Edit" data-aicedit="Weekly" id="aerialEditBtn"><i class="onPrimary fa-solid fa-file-pen"></i></button>';
+                                        <button class="icon" onclick="wizardOpenPage(this)" rel="insight" data-width="75" data-page="aicEditPage" title="Aerial Image Edit" data-aicedit="Weekly" id="aerialEditBtn"><i class="onPrimary fa-regular fa-file-pen"></i></button>';
                                     }
                                     echo'
                                 </div>
@@ -4010,33 +3904,6 @@ echo '
                             <div class="infoFooter moreInfo twoRow" id="IotNotiDetail">
                             </div>
                         </div>
-                        <div class="navbox trackAnimation">
-                            <div class="infoHeader">
-                                <div class="header">Fly Through Animation Feed</div>
-                                <div class="closeButton"><i class="fa-solid fa-xmark"></i></div>
-                            </div>
-                            <div class="infoBody">
-                                <div class="groupItem trackItem ungroup" id="trackList">
-                                </div>
-                            </div>
-                            <div class="infoFooter moreInfo extraSmall twoRow">
-                                <div class="header">
-                                    <input disabled value="Animation Tool">
-                                </div>
-                                <div class="content">
-                                    <div class="col1">
-                                        <div>Duration(s)</div>
-                                        <div>Camera Height (m)</div>
-                                        <div style="display: none">Date</div>
-                                    </div>
-                                    <div class="col2 no-col3">
-                                        <input id="trackDuration" type="number" min="0" step="1">
-                                        <input id="trackLevel" type="number" min="5" step="1">
-                                        <input style="display: none" id="trackDate" type="date">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <input type="text" id="input-text" style="display: none;
                         position: absolute;
@@ -4133,12 +4000,8 @@ echo '
                             <div class="closeButton"><i class="fa-solid fa-xmark"></i></div>
                         </div>
                         <div class="infoBody">
-                            <div class="buttonTab asset parentTab" id = "assetList">
-                                
-                            </div>
-                            <div class="buttonTab" id = "facilityBrowser" style="display:none">
-                               
-                            </div>
+                            <div class="buttonTab asset parentTab" id = "assetList"></div>
+                            <div class="buttonTab" id = "facilityBrowser" style="display:none"></div>
                             <table id="assetDataTable" style="display:none">
                                 <thead>
                                     <tr id = "assetTableHeader">
@@ -4150,9 +4013,41 @@ echo '
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="assetData";>
+                                <tbody id="assetData">
                                 </tbody>
-                            </table>     
+                            </table>   
+                            <div style="overflow-x:auto;">
+                                <table id="tblAssetData">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Project ID</th>
+                                            <th>Extidentifier</th>
+                                            <th>Gross Area</th>
+                                            <th>Gross Area Unit</th>
+                                            <th>Level Name</th>
+                                            <th>Net Area</th>
+                                            <th>Net Area Unit</th>
+                                            <th>Partof</th>
+                                            <th>Room Tag</th>
+                                            <th>Spacetype Name</th>
+                                            <th>Usable Height</th>
+                                            <th>X</th>
+                                            <th>Y</th>
+                                            <th>Z</th>
+                                            <th>QR Code</th>
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="assetDataRow">
+                                    </tbody>
+                                </table>
+                                <div id="tempContainer" style="display: none;"></div>
+                                <button data-tblName="tblAssetData" data-filename="asset-data" onclick="exportSelectedToExcel(this)">Export Selected Row</button>
+                                <button data-tblName="tblAssetDataAll" data-filename="asset-data" onclick="exportAllToExcel(this)">Export All</button>
+                            </div>
+                            
+                            <iframe class="fullFrame jogetDatalist" id = "assetListIframe" src="" frameBorder="0" style="display:none"></iframe>
                         </div>
                         <div class="infoFooter">
                         </div>
@@ -4209,23 +4104,13 @@ echo '
                             <option value="Dec">December</option>
                         </select>
                         <select class = "sectFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
-                        </select>';
-
-                        if($SYSTEM == 'KKR'){
-                            echo '
-                                <select class = "categoryFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
-                                </select>';
-                        }else{
-                            echo '
-                                <select class = "categoryFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
-                                    <option value="overall">Select Category</option>
-                                    <option value="Designated">Designated</option>
-                                    <option value="Domestic">Domestic</option>
-                                    <option value="Nominated">Nominated</option>
-                                </select>';
-                        }
-                        
-                        echo '
+                        </select>
+                        <select class = "categoryFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
+                            <option value="overall">Select Category</option>
+                            <option value="Designated">Designated</option>
+                            <option value="Domestic">Domestic</option>
+                            <option value="Nominated">Nominated</option>
+                        </select>
                         <select class = "statusPubcFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
                             <option value="allstatus">Select Status</option>
                             <option value="CLOSED">Close</option>
@@ -4279,9 +4164,15 @@ echo '
                             <option value="Good">Good</option>
                         </select>
                         <select class = "assetRoutineActivityFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
-                        </select>
-                        <select class = "subActivityFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
-                            <option value="default">Select Sub Activity</option>
+                            <option value="default">Select Routine Activity</option>
+                            <option value="R01 : PAVEMENT">R01 : PAVEMENT</option>
+                            <option value="R02 : ROAD SHOULDER">R02 : ROAD SHOULDER</option>
+                            <option value="R03 : GRASS CUTTING">R03 : GRASS CUTTING</option>
+                            <option value="R04 : MAINTENANCE OF ROAD FURNITURES">R04 : MAINTENANCE OF ROAD FURNITURES</option>
+                            <option value="R05 : MAINTENANCE OF BRIDGES/CULVERT">R05 : MAINTENANCE OF BRIDGES/CULVERT</option>
+                            <option value="R06: PAINTING OF ROAD MARKING">R06: PAINTING OF ROAD MARKING</option>
+                            <option value="R07 : CLEANING OF DRAINS">R07 : CLEANING OF DRAINS</option>
+                            <option value="B : ROUTINE INSPECTION">B : ROUTINE INSPECTION</option>
                         </select>
                         <select class = "assetTypeFilter myDashboard" onchange="refreshDash(\'myDashboard\')">
                             <option value="default">Select Asset Type</option>
@@ -4417,9 +4308,9 @@ echo '
                 <iframe class="iframe" id="myAdmin" src=""></iframe>
             </div>
         </div>
-        <div class="mainPage myTask swiper swiper-h">
-            <div class="contentContainer multiColumn swiper-wrapper">
-                <div class="column swiper-slide" id="constTask" style="display: none">
+        <div class="mainPage myTask">
+            <div class="contentContainer multiColumn">
+                <div class="column" id="constTask" style="display: none">
                     <div class="head">
                         <h2>Construction</h2>
                     </div>
@@ -4443,21 +4334,6 @@ echo '
                                 <button type="button" class="control unset" data-sort="construct-pending:desc"><i class="fa-solid fa-sort"></i></button>
                                 <button type="button" class="control asc" data-sort="construct-pending:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
                                 <button type="button" class="control desc" data-sort="construct-pending:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span>
-                            <span class="columnSecond columnHidden">Section
-                                <button type="button" class="control unset" data-sort="construct-section:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="construct-section:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="construct-section:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
-                            <span class="columnFirst columnHidden">Work Discipline
-                                <button type="button" class="control unset" data-sort="construct-workdiscipline:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="construct-workdiscipline:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="construct-workdiscipline:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
-                            <span class="columnFirst columnHidden">Created By
-                                <button type="button" class="control unset" data-sort="construct-createdbyname:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="construct-createdbyname:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="construct-createdbyname:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                             </span> 
                         </div>
                         <div class="tableBody taskConstruct sortTable">
@@ -4505,7 +4381,7 @@ echo '
                         </div>
                     </div>
                 </div>
-                <div class="column swiper-slide" id="docTask" style="display: none">
+                <div class="column" id="docTask" style="display: none">
                     <div class="head">
                         <h2>Document</h2>
                     </div>
@@ -4529,16 +4405,6 @@ echo '
                                 <button type="button" class="control unset" data-sort="document-pending:desc"><i class="fa-solid fa-sort"></i></button>
                                 <button type="button" class="control asc" data-sort="document-pending:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
                                 <button type="button" class="control desc" data-sort="document-pending:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span>
-                            <span class="columnSecond columnHidden">Section
-                                <button type="button" class="control unset" data-sort="document-section:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="document-section:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="document-section:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
-                            <span class="columnFirst columnHidden">Created By
-                                <button type="button" class="control unset" data-sort="document-createdbyname:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="document-createdbyname:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="document-createdbyname:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                             </span> 
                         </div>
                         <div class="tableBody taskDocument sortTable">
@@ -4586,7 +4452,7 @@ echo '
                         </div>
                     </div>
                 </div>
-                <div class="column swiper-slide" id="pfsTask" style="display: none">
+                <div class="column" id="pfsTask" style="display: none">
                     <div class="head">
                         <h2>Finance</h2>
                     </div>
@@ -4610,16 +4476,6 @@ echo '
                                 <button type="button" class="control unset" data-sort="finance-pending:desc"><i class="fa-solid fa-sort"></i></button>
                                 <button type="button" class="control asc" data-sort="finance-pending:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
                                 <button type="button" class="control desc" data-sort="finance-pending:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span>
-                            <span class="columnSecond columnHidden">Section
-                                <button type="button" class="control unset" data-sort="finance-section:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="finance-section:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="finance-section:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span>
-                            <span class="columnFirst columnHidden">Created By
-                                <button type="button" class="control unset" data-sort="finance-createdbyname:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="finance-createdbyname:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="finance-createdbyname:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                             </span> 
                         </div>
                         <div class="tableBody taskFinance sortTable">
@@ -4667,7 +4523,7 @@ echo '
                         </div>
                     </div>
                 </div>
-                <div class="column swiper-slide" id="assetTask" style="display: none">
+                <div class="column" id="assetTask" style="display: none">
                     <div class="head">
                         <h2>Asset</h2>
                     </div>
@@ -4692,16 +4548,6 @@ echo '
                                 <button type="button" class="control asc" data-sort="asset-pending:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
                                 <button type="button" class="control desc" data-sort="asset-pending:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                             </span>
-                            <span class="columnFirst columnHidden">Work Discipline
-                                <button type="button" class="control unset" data-sort="asset-workdiscipline:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="asset-workdiscipline:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="asset-workdiscipline:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
-                            <span class="columnFirst columnHidden">Created By
-                                <button type="button" class="control unset" data-sort="asset-createdbyname:desc"><i class="fa-solid fa-sort"></i></button>
-                                <button type="button" class="control asc" data-sort="asset-createdbyname:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
-                                <button type="button" class="control desc" data-sort="asset-createdbyname:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
-                            </span> 
                         </div>
                         <div class="tableBody taskAsset sortTable">
                             <div class="loadingRowContainer" style="display:block;">
@@ -4748,7 +4594,7 @@ echo '
                         </div>
                     </div>
                 </div>
-                <div class="column swiper-slide" id="fmTask" style="display: none">
+                <div class="column" id="fmTask" style="display: none">
                     <div class="head">
                         <h2>Asset</h2>
                     </div>
@@ -4879,7 +4725,6 @@ echo '
                     </div>
                 </div>
             </div>
-            <div class="swiper-pagination"></div>
         </div>
         <div class="mainPage eLibrary">
             <div class="contentContainer">
@@ -4908,7 +4753,7 @@ echo '
     </div>
     
     <div class="subMenuButtonContainer '.$subMenuActive.'" style="opacity:0">
-        <div class="closeSubMenuButtonContainer"><div class="closeSubMenu"><i class="fa-solid fa-square-caret-left"></i></div></div>                        
+        <div class="closeSubMenuButtonContainer"><div class="closeSubMenu"><i class="fa-solid fa-arrow-left-to-line"></i></div></div>                        
         <div class="menuSubButtonContainer">
             <div class="buttonContainer myHome myProject show">
                 <div class="mainButton" title="New">
@@ -5059,13 +4904,6 @@ echo '
                 <div class="subButtonContainer" id="claimPeriodicSideMenu">
                 </div>
             </div>
-            <div class="buttonContainer myFinance claimsInventory">
-                <div class="mainButton" title="Claim Asset Inventory">
-                    <span class="tagName">Claim Asset Inventory</span>
-                </div>
-                <div class="subButtonContainer" id="claimInventorySideMenu">
-                </div>
-            </div>
             <div class="buttonContainer myFinance vo">
                 <div class="mainButton" title="">
                     <span class="tagName"></span>
@@ -5074,17 +4912,10 @@ echo '
                 </div>
             </div>
             <div class="buttonContainer myFinance ammendment">
-                <div class="mainButton" title="Contract Amendments">
-                    <span class="tagName">Contract Amendments</span>
+                <div class="mainButton" title="Contract Ammendments">
+                    <span class="tagName">Contract Ammendments</span>
                 </div>
                 <div class="subButtonContainer" id="amendmentSideMenu">
-                </div>
-            </div>
-            <div class="buttonContainer myFinance eotSabah hide">
-                <div class="mainButton" title="Approved Extension of Time">
-                    <span class="tagName">Approved Extension of Time</span>
-                </div>
-                <div class="subButtonContainer" id="eotSabahSideMenu">
                 </div>
             </div>
             <div class="buttonContainer myFinance acs obyu">
@@ -5175,12 +5006,6 @@ echo '
                 </div>
                 <div class="subButtonContainer" id="sysProjectSideMenu">'.$sysAdminProjectHTML.'</div>
             </div>
-            <div class="buttonContainer mySysAdmin sysProject">
-                <div class="mainButton" title="Project">
-                    <span class="tagName">System</span>
-                </div>
-                <div class="subButtonContainer" id="sysProjectSideMenu">'.$systemTabsHTML.'</div>
-            </div>
         </div>
     </div>
 
@@ -5198,7 +5023,7 @@ echo '
                         <span class="columnSecond">Last Update</span>
                         <div class="columnSecond">
                             <div class="searchContainer">
-                                <input class="processSearch"  placeholder="Search Project" onkeyup="processSearchProject(this)"/>
+                                <input id="processSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
                             </div>
                         </div>
                     </div>
@@ -5525,7 +5350,7 @@ echo '
                         <span class="columnSecond">Last Update</span>
                         <div class="columnSecond">
                             <div class="searchContainer">
-                                <input  class="processSearch"  placeholder="Search Project"  onkeyup="processSearchProject(this)"/>
+                                <input placeholder="Search Project"/>
                             </div>
                         </div>
                     </div>
@@ -5541,7 +5366,7 @@ echo '
                                 <option value="default" selected>Please Select...</option>
                                 <option value="bulkImport">Bulk Import</option>';
                                 if($SYSTEM == 'OBYU'){
-                                    if($_SESSION['user_org'] != 'UTSB'){
+                                    if($_SESSION['user_org'] == 'MRSB'){
                                         echo '<option value="bulkExport">Bulk Export</option>';
                                     }else{
                                         '';
@@ -5563,7 +5388,7 @@ echo '
                     </div>
                     <div class="projectProcessSelect buttonConfig import" style="display:none">
                         <button class="circle config" title="Bulk Config" data-page="bulkProj" onclick="onClickBulkConfig(this)"><i class="fa-solid fa-gear"></i></button>
-                        <button class="circle import" title="Bulk Import Form" data-page="bulkProj" onclick="onClickBulkConfig(this)"><i class="fa-solid fa-file-import"></i></button>
+                        <button class="circle import" title="Bulk Import Form" data-page="bulkProj" onclick="onClickBulkConfig(this)"><i class="fa-solid fa-file-check"></i></button>
                     </div>
                     <div class="projectProcessContainer bulkImportContainer" id="ImportIframeDivbulkProj" style="display:none">
                         <iframe id="importContentIframebulkProj" src=""></iframe>
@@ -5595,7 +5420,7 @@ echo '
                             <option value="default" selected>Please Select...</option>
                             <option value="bulkImport">Bulk Import</option>';
                             if($SYSTEM == 'OBYU'){
-                                if($_SESSION['user_org'] != 'UTSB'){
+                                if($_SESSION['user_org'] == 'MRSB'){
                                 echo '<option value="bulkExport">Bulk Export</option>';
                                 }else{
                                 '';
@@ -5648,7 +5473,7 @@ echo '
                         <span class="columnSecond">Last Update</span>
                         <div class="columnSecond">
                             <div class="searchContainer">
-                                <input class="projectSearchInput"  placeholder="Search Project" onkeyup="processSearchProject(this)"/>
+                                <input id="processSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
                             </div>
                         </div>
                     </div>
@@ -5737,7 +5562,7 @@ echo '
                         <span class="columnSecond">Last Update</span>
                         <div class="columnSecond">
                             <div class="searchContainer">
-                                <input class="processSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
+                                <input id="processSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
                             </div>
                         </div>
                     </div>
@@ -5828,7 +5653,7 @@ echo '
                         <span class="columnSecond">Last Update</span>
                         <div class="columnSecond">
                             <div class="searchContainer">
-                                <input class="manageSearch"  placeholder="Search Project" onkeyup="processSearchProject(this)"/>
+                                <input id="manageSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
                             </div>
                         </div>
                     </div>
@@ -5859,7 +5684,7 @@ echo '
                         <span class="columnSecond">Last Update</span>
                         <div class="columnSecond">
                             <div class="searchContainer">
-                                <input class="manageSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
+                                <input id="manageSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
                             </div>
                         </div>
                     </div>
@@ -5918,16 +5743,7 @@ echo '
                                     <span class="labelTitle">Last Name</span>
                                     <br>
                                     <input type="text" required id="lastnameprofile" name="lastnameprofile"  pattern="[A-Za-z]\S.*" autocomplete="off"> </div>
-                            </div>';
-                            if($IS_DOWNSTREAM){
-                                echo '
-                                    <span class="labelTitle">Designation</span>
-                                    <br>
-                                    <input type="text" id="designationprofile" name="designationprofile" required="" placeholder="Enter your designation">';
-                            }
-                            echo '
-                            <input style="display: none" type="text" id="designationprofile" name="designationprofile" required="" placeholder="Enter your designation">
-                            <br>
+                            </div>
                             <span class="labelTitle">Country</span>
                             <br>
                             <select type="text" id="countryprofile" class="marginBottom" name="countryprofile">';
@@ -5984,11 +5800,7 @@ echo '
                         </div>
                         <div class="infoContainerBody-readonly">
                             <div class="readOnlyContainer"><i class="fa-solid fa-user"></i><span title ="Name" id="img_fullname">Name</span></div>
-                            <div class="readOnlyContainer"><i class="fa-solid fa-envelope"></i><span title ="Email" id="img_email">Email</span></div>';
-                            if($IS_DOWNSTREAM){
-                                echo '<div class="readOnlyContainer"><i class="fa-solid fa-briefcase"></i><span title ="Designation" id="img_designation"></span></div>';
-                                }
-                            echo '    
+                            <div class="readOnlyContainer"><i class="fa-solid fa-envelope"></i><span title ="Email" id="img_email">Email</span></div>
                             <div class="readOnlyContainer"><i class="fa-solid fa-phone"></i><span title ="Phone Number" id="img_mobileno">0123456789</span></div>
                             <div class="readOnlyContainer"><i class="fa-solid fa-sitemap"></i><span title ="Organization" id="img_org" title ="Organization">Company</span></div>
                             <div class="readOnlyContainer"><i class="fa-solid fa-earth-asia"></i></i><span title ="Country" id="img_country">Country</span></div>
@@ -6143,12 +5955,10 @@ echo '
                                 </div>
                                 <div class="fieldcontainer marginBottom">
                                     <div class="column1">
-                                        <strong><span id="aicProjectName"></span></strong><br>
-                                        Image Captured Date: <strong><span id="projectImageCaptureDate"></strong></span>
+                                        <span id="aicProjectName"></span>
                                     </div>
                                     <div class="column1">
-                                        <strong><span id="aicPackageName"></span></strong><br>
-                                        Image Captured Date: <strong><span id="packageImageCaptureDate"></strong></span>
+                                        <span id="aicPackageName"></span>
                                     </div>
                                 </div>
                             </div>
@@ -6175,12 +5985,10 @@ echo '
                                 </div>
                                 <div class="fieldcontainer marginBottom">
                                     <div class="column1">
-                                        <strong><span id="aicProjectName"></span></strong><br>
-                                        Image Captured Date: <strong><span id="projectImageCaptureDate"></strong></span>
+                                        <span id="aicProjectName"></span>
                                     </div>
                                     <div class="column1">
-                                        <strong><span id="aicPackageName"></span></strong><br>
-                                        Image Captured Date: <strong><span id="packageImageCaptureDate"></strong></span>
+                                        <span id="aicPackageName"></span>
                                     </div>
                                 </div>
                             </div>
@@ -6249,7 +6057,7 @@ echo '
 
                 <div class="page inputForm newEntityForm entityForm">
                     <div class="contentContainer noBackground">
-                        <p>Do you want to Save the location? Please enter the Location name and Region name to save.</p>
+                        <p>Do you want to Save the model? Please enter the Layer name and Asset name to save.</p>
                         <div class="content">
                             <span class="labelTitle required">Location Name:</span>
                             <input type="text" placeholder="Enter Name" id="lName">
@@ -6393,11 +6201,14 @@ echo '
                         <div class="customOption">
                             <select type="text" class="selectOption fmAssetTableProcessOption" onchange="fmAssetTableOptionOnchange(this)">
                                 <option value = "default">Please Choose</option>
+                                <option value = "Work Order">Work Order</option>
                                 <option value = "Service Request">Service Request</option>
+                                <option value = "PPM">PPM</option>
                             </select>
                         </div>
                     </div>
                     <iframe class="bottom bottomContainer" id = "assetTableProcessIframe" src=""></iframe>
+                        
                 </div>
 
                 <div class="page pavementAnalysis">
@@ -6479,7 +6290,7 @@ echo '
                                 </tr>
                             </thead>
                             <tbody id="metadataEditList">
-                                <tr class=" fa-copy" style="cursor: pointer">
+                                <tr class=" fa-bring-forward" style="cursor: pointer">
                                     <td style="border-bottom: 1px solid; border-right: 1px solid" >Magazzini</td>
                                     <td style="border-bottom: 1px solid; border-right: 1px solid">Giovanni Rovelli Alimentari</td>
                                     <td style="border-bottom: 1px solid; border-right: 1px solid">Ita ly</td>
@@ -6562,7 +6373,13 @@ echo '
                         <div class="infoContainerBody-readonly">
                             <div class="page projectView general active">
                                 <div class="menuTitle">Contact Project Admin <i class="fa-solid fa-info alert" id="notiMessage"></i></div>
-                                    <div id="adminUsersList" class="notiMessage notiContainer"> 
+                                    <div class="notiMessage notiContainer">';
+                                        if (isset($_SESSION['Project Manager'])) {
+                                            foreach($_SESSION['Project Manager'] as $admin){
+                                                echo "<div class=\"notiLabel\"><a href=\"mailto:".$admin."\" class=\"notiText\">".$admin."</a></div>";
+                                            }
+                                        }
+                                        echo '
                                     </div>
                                 <div class="doublefield">
                                     <div class="readOnlyContainer flex"><i class="fa-solid fa-puzzle-piece"></i>
@@ -6579,7 +6396,7 @@ echo '
                                     </div>
                                 </div>
                                 <div class="doublefield">
-                                    <div class="readOnlyContainer flex"><i class="fa-solid fa-industry"></i>
+                                    <div class="readOnlyContainer flex"><i class="fa-solid fa-industry-windows"></i>
                                         <div class="twoLabel">
                                             <span class="textEllipsis headerTitle">Industry</span>
                                             <span class="textEllipsis projectIndustry"></span>
@@ -6593,7 +6410,7 @@ echo '
                                     </div>
                                 </div>
                                 <div class="doublefield">
-                                    <div class="readOnlyContainer flex"><i class="fa-solid fa-clock"></i>
+                                    <div class="readOnlyContainer flex"><i class="fa-solid fa-clock-two"></i>
                                         <div class="twoLabel">
                                             <span class="textEllipsis headerTitle">Timezone</span>
                                             <span class="textEllipsis timeZone"></span>
@@ -6613,7 +6430,7 @@ echo '
                                             <span class="textEllipsis projectCreatedBy"></span>
                                         </div>
                                     </div>
-                                    <div class="readOnlyContainer flex"><i class="fa-solid fa-hourglass"></i>
+                                    <div class="readOnlyContainer flex"><i class="fa-solid fa-calendar-time"></i>
                                         <div class="twoLabel">
                                             <span class="textEllipsis headerTitle">Last Update</span>
                                             <span class="textEllipsis projectUpdatedBy"></span>
@@ -6672,13 +6489,6 @@ echo '
                             <label class="required">Last Name</label>
                             <br>
                             <input type="text" id="userLastName" name="userLastName" required placeholder="Enter your last name here" pattern="[A-Za-z]\S.*">
-                        </div>
-                    </div>
-                    <div class="inputContent">
-                        <div class="column-one single">
-                            <label>Designation</label>
-                            <br>
-                            <input type="text" id="userDesignation" name= "userDesignation" required placeholder = "Enter your designation here">
                         </div>
                     </div>
                     <div class="inputContent twoColumn">
@@ -6820,13 +6630,6 @@ echo '
                                 <i class="fa-solid fa-envelope"></i>
                                 <div class="twoLabel">
                                     <span class="textEllipsis headerTitle">User Email</span>
-                                    <span class="textWrap"></span>
-                                </div>
-                            </div>
-                            <div class="readOnlyContainer designation">
-                                <i class="fa-solid fa-briefcase"></i>
-                                <div class="twoLabel">
-                                    <span class="textEllipsis headerTitle">User Designation</span>
                                     <span class="textWrap"></span>
                                 </div>
                             </div>
@@ -7020,20 +6823,6 @@ echo '
                         </div>';
                     }
                     echo'
-
-                    <div class="inputContent projectPhase">
-                        <div class="phaseType column-two S flex center">
-                            <div class="customCheckbox">
-                                <label class="container resetcheck labelTitle">Project Phase 1B
-                                    <input type="checkbox" class="resetcheck" id="projectPhase" name="projectPhase" value="1B" onclick="onclickProjectPhase(this)"><span class="checkmark" for=""></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="wpcAbbr column-two L flex center">
-                            <label class="nowrap marginRight" id="label-projectwpcabbr" > WPC Abbreviation</label>
-                            <input type="text"  id="projectWpcAbbr"  required placeholder="e.g. PAJ" pattern="[A-Z0-9]*" maxlength="5">
-                        </div>
-                    </div>
 
                     <div class="inputContent">
                         <div class="column-one single">
@@ -7527,18 +7316,6 @@ echo '
                                                 </div>';
                                         }
                                         echo'
-                                        <div class="content-sub" id="projectphasedisplaycont" style="display: none">
-                                            <div class="content-right"><span class="textWrap">Project Phase</span></div>
-                                            <div class="content-left">
-                                                <span class="textWrap projectInfo  projectPhase" id="projectphasedisplay"></span>
-                                            </div>
-                                        </div>
-                                        <div class="content-sub" id="projectwpcabbrdisplaycont" style="display: none">
-                                            <div class="content-right"><span class="textWrap">WPC Abbrev</span></div>
-                                            <div class="content-left">
-                                                <span class="textWrap projectInfo  projectWpcAbbr" id="projectwpcabbrdisplay"></span>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -7733,12 +7510,6 @@ echo '
                 </div>
             </div>
 
-            <div class="modal-container claimListUpload" rel="claimListUpload">
-                <div data-page="1" class="page projectProcess">
-                    <iframe class="bottom" id = "claimListUploadiFrame" src=""></iframe>
-                </div>
-            </div>
-
             <div class="modal-container manageAssetProj" rel="manageAssetProj">
                 <div data-page="1" class="page projectList">
                     <div class="tableHeader wizard">
@@ -7747,7 +7518,7 @@ echo '
                         <span class="columnSecond">Last Update</span>
                         <div class="columnSecond">
                             <div class="searchContainer">
-                                <input class="manageSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
+                                <input id="manageSearch" placeholder="Search Project" onkeyup="processSearchProject(this)"/>
                             </div>
                         </div>
                     </div>
@@ -7784,6 +7555,29 @@ echo '
                     <iframe class="bottom bottomContainer" id = "manageAssetIframe" src=""></iframe>
                 </div>
             </div>
+
+            <div class="modal-container uploadAssetData" rel="">
+                <div data-page="1" class="page assetDataContainerPage">
+                    <table style="width: 100%;" border = "1">
+                        <thead id="">
+                            <tr>
+                                <th>Joget Attributes</th>
+                                <th>File Columns</th>
+                            </tr>
+                        </thead>
+                        <tbody id = "assetDataMappingBody">
+                            
+                        </tbody>
+                    </table>
+                    <input type="hidden" value="" id="assetMappingFileUrl">
+                </div>
+                <div class="modal-footer">
+                    
+                    <button type="button" class="primary" onclick="saveAssetDataMapping()">Save</button>
+                </div>
+            </div>
+
+            
         </div>
 
         <div class="digitalContentModal">
@@ -8093,41 +7887,8 @@ echo '
         </div>
     </div>
 
-    <div id="bimModelList" class="modal">
-        <div class="modal-content">
-            <span id="wizardClose" class ="closebuttonWizard" rel ="" onclick="wizardCancelPageBimModel()">&times;</span>
-            <span id="wizardMaximize" class ="maximizebutton" rel =""><img src="../Images/icons/form/maximize.png"></span>
-            <div id="ganttHeader"><a id="bimModelHeader">Bim Models</a></div>
-
-            <div class="modal-container" style="display: block !important">
-                <div id = "datapreviewbimmodel" style="width: 100%;height: 300px; display:none;">
-                </div>
-
-               
-                <div class="container-table">
-                    <div id = "">
-                        <div class="tableHeader summary fiveColumn">
-                            <span class="M">Data Layer Name</span>
-                            <span class="M">Data Type</span>
-                            <span class="M">File name</span>
-                            <span class="M">File Date</span>
-                            <span class="M">Action</span>
-                        </div>
-                        <div class="tableBody summary" id="dataTable">
-                        </div>
-
-                        <div id="parkContainer">
-                        </div>    
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="print-me">
     </div>
-
-    <div id="prodFlag" data-prodflag="'.$prodFlag.'"></div>
 
     <div class="loader '.$themeClass.' " style="display:none;" id="loaderHome">
         <div class="cube-wrapper">
@@ -8140,6 +7901,8 @@ echo '
             <span class="loading" data-name="Loading">Working</span>
         </div>
     </div>
+
+    
     
     <script src="../JS/DefineAreaExtent.js"></script>
     <script src="../JS/onClickFunctionv3.js"></script>
@@ -8161,8 +7924,15 @@ echo '
     <script src="../JS/uploader/progressSummaryUploaderv3.js"></script>
     <script src="../JS/bulkImportConfigv3.js"></script>
     <script src="../JS/main.js"></script> <!-- Resource jQuery -->
-    <script src="../JS/claimbimLinking.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js"></script> ';
+    <link href="../JS/datatables/datatables.min.css" rel="stylesheet">
+    <script src="../JS/datatables/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>';
+
+    
+
     
     
     if(in_array($SYSTEM, ['KKR'])){
@@ -8189,115 +7959,7 @@ echo '
             $("body").removeClass("dark")
         }
     }
-
-    var prodFlag = '<?php echo $prodFlag; ?>';
-    localStorage.inspectFlag = prodFlag;
-
-    if(prodFlag == 'true'){
-        document.addEventListener("contextmenu", function(event) {
-            event.preventDefault();
-        });
-    
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "C") || (event.ctrlKey && event.shiftKey && event.key === "J")) {
-                event.preventDefault();
-            }
-        });
-    }
-
-    // sample change this laterr
-    const START_YEAR = 2019;
-    // Get the current year dynamically
-    const CURRENT_YEAR = new Date().getFullYear();
-    const END_YEAR = CURRENT_YEAR; // Use the current year as the end year
-
-    /**
-     * Generates the <option> elements for the month/year range and appends
-     * to the specified select element
-     */
-    function populateDateDropdown(selectElementId, placeholderText) {
-        const selectElement = document.getElementById(selectElementId);
-
-        const defaultOption = document.createElement('option');
-        defaultOption.value = "";
-        defaultOption.text = placeholderText;
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        selectElement.appendChild(defaultOption);
-
-        // 2. Loop through the years and months to create all options
-        // The loop now goes up to the dynamically set END_YEAR (which is CURRENT_YEAR)
-        for (let year = START_YEAR; year <= END_YEAR; year++) {
-
-            // Determine the maximum month to loop up to
-            // If it's the current year, only loop up to the current month.
-            // Otherwise, loop through all 12 months.
-            let maxMonth = 12;
-
-            if (year === CURRENT_YEAR) {
-                // Get the current month (0-indexed, so we add 1 for 1-12)
-                maxMonth = new Date().getMonth() + 1;
-            }
-
-            for (let month = 1; month <= maxMonth; month++) {
-                const monthString = String(month).padStart(2, '0');
-                const dateValue = `${monthString}-${year}`;
-
-                const option = document.createElement('option');
-                option.value = dateValue;
-                option.text = dateValue;
-
-                selectElement.appendChild(option);
-            }
-        }
-    }
-
-    // Call the function for both dropdowns
-    populateDateDropdown('from-date-js', 'Select a start month');
-    populateDateDropdown('to-date-js', 'Select an end month');
-
 </script>
 
 <style type="text/css">
-#print-chart-container {
-    position: relative; /* REQUIRED: Anchor the overlay to this div */
-}
-
-/* 1. The Button Hover State */
-#apply-filter:hover {
-   /*  background-color: #172a4e !important; Changes button background */
-    background: var(--primary);
-    color: #ffffff !important;              /* Changes text color */
-    border-color: #172a4e !important;
-    cursor: pointer;
-    transition: all 0.3s ease;             /* Makes the change smooth */
-    
-}
-
-/* 2. The Icon Hover State (Targeting your custom class) */
-#apply-filter:hover .printClassHehe {
-    color: #f4f4f4ff !important; /* Changes icon color (if it's a font) */
-    fill: #f4f4f4ff !important;  /* Changes icon color (if it's an SVG) */
-    transition: all 0.3s ease;
-    
-}
-
-#chart-loading-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 780px;
-    height: 580px;
-    transform: translate(-50%, -50%); /* Pulls the element back by half its width/height */
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-/* If using Font Awesome for the spinner */
-.fa-spin {
-    margin-right: 10px;
-}
 </style>

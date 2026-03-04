@@ -16,13 +16,23 @@ session_start();
 		}
 	}else if($dataType == "XML"){
 		foreach($fileArray as $xmlfile){
-			$dir = "../../../Data/Others/PLC/".$xmlfile;
+			$dir = "../../../Data/Others/AssetData/".$_SESSION['project_id']."/".$xmlfile;
 			if (file_exists($dir)) {
 				$folderResult['result'] = true;
 				array_push($xmlExist,$xmlfile);
 			} 
 		}
-	$folderResult['kmlarray'] = $xmlExist;
+		$folderResult['kmlarray'] = $xmlExist;
+	}
+	else if($dataType == "EXCEL"){
+		// foreach($fileArray as $xmlfile){
+		// 	$dir = "../../../Data/Others/PLC/".$xmlfile;
+		// 	if (file_exists($dir)) {
+		// 		$folderResult['result'] = true;
+		// 		array_push($xmlExist,$xmlfile);
+		// 	} 
+		// }
+		// $folderResult['kmlarray'] = $xmlExist;
 	}
 	else{
 		foreach($fileArray as $kmlfile){

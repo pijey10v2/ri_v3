@@ -35,103 +35,6 @@ function searching (inpt){
     })
 }
 
-function deleteToken(el) {
-    const isActive = Number(el.dataset.is_active);
-
-
-    if (isActive) {
-        alert("Cannot delete an active token.");
-        return;
-    }
-
-    if (confirm("Are you sure you want to delete this token?")) {
-
-        const formData = new URLSearchParams();
-        const token = el.value;
-        const tokenId = el.dataset.token_id;
-        const tokenType = el.dataset.token_type;
-
-        formData.append('token', token);
-        formData.append('token_type', tokenType);
-        formData.append('op', 'delete');
-
-        fetch('BackEnd/cesiumTokenMgmt.php', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            return response.json();
-        })
-        .then((data) => {
-            $('#token-row-' + tokenId + '-' + tokenType).remove();
-
-            alert(data.message);
-        })
-        .catch((error) => {
-            alert("Failed to delete token. Please try again.");
-
-            console.log("Error:", error);
-        });
-    }
-}
-
-function updateToken(el) {
-    if (confirm("Are you sure you want to set this token as active?")) {
-        const tokenId = el.dataset.token_id;
-        const token = el.value;
-        const tokenType = el.dataset.token_type;
-
-        const formData = new URLSearchParams();
-
-        formData.append('token', token);
-        formData.append('token_type', tokenType);
-        formData.append('op', 'updateToken');
-
-        fetch('BackEnd/cesiumTokenMgmt.php', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
-        }).then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                el.dataset.is_active = "1";
-
-                const btnDelete = document.getElementById('delTokenBtn-' + tokenId);
-                const prevBtnDelete = document.querySelector(`button[data-is_active='1'][data-token_type='${tokenType}']`);
-
-                btnDelete.dataset.is_active = "1";
-                prevBtnDelete.dataset.is_active = "0";
-
-                alert(data.message);
-            } else {
-                alert("Failed to update token. Please try again.");
-            }
-        }).catch((error) => {
-            alert("Error updating token.");
-        });
-    } else {    
-        const prevActive = document.querySelector(`input[name='${el.name}'][checked]`);
-
-        el.checked = !el.checked;
-        prevActive.checked = true;
-    }
-}
-
-function resetTokenMgmtForm() {
-    $('#tokenType').val('mapbox'); // select element
-    $('#tokenInput').val(''); // text area
-    $('input[name="useToken"][value="no"]').prop('checked', true); // radio button
-}
-
 $(document).ready (function (){    
     //refreshUserTableBody()
     $('input[name="project_type"]').change(refreshUserTableBody)
@@ -140,78 +43,6 @@ $(document).ready (function (){
 $(function () {
     /////     Navigation bar click item     //////
     //noti message button
-
-    $("#hideTokenFormBtn, #showTokenFormBtn").click(function(){
-        resetTokenMgmtForm();
-        
-        const showId = this.id === 'hideTokenFormBtn' ? 'token-mgmt-table' : 'token-mgmt-form';
-
-        $("#showTokenFormBtn").css("display", this.id === 'showTokenFormBtn' ? "none" : "block");
-
-        $("#token-mgmt-table, #token-mgmt-form").css("display", "none");
-        $("#" + showId).css("display", "block");
-    });
-
-    $("#createTokenBtn").click(function(){
-        const formData = new URLSearchParams();
-        const tokenType = $('#tokenType').val();
-
-        formData.append('token_type', tokenType);
-        formData.append('token', $('#tokenInput').val());
-        formData.append('isActive', $('input[name="useToken"]:checked').val() === 'yes' ? 1 : 0);
-        formData.append('op', 'save');
-
-        fetch('BackEnd/cesiumTokenMgmt.php', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            return response.json();
-        })
-        .then((data) => {
-            alert(data.message);
-
-            if (!data.success) {
-                resetTokenMgmtForm();
-                return;
-            }
-
-            const formData = new URLSearchParams();
-
-            formData.append('op', 'getFirstRow');
-            formData.append('token_type', tokenType);
-
-            const payload = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData.toString()
-            };
-
-            fetch('BackEnd/cesiumTokenMgmt.php', payload)
-                .then((response) => response.text())
-                .then((data) => {
-                    const tblId = $('#tokenType').val() === 'mapbox' ? '#mapBoxTbl' : '#mapTilerTbl';
-
-                    $(tblId).children().first().after(data);
-                    $('#hideTokenFormBtn').click();
-                });
-        })
-        .catch((error) => {
-            alert("Failed to add token. Please try again.");
-
-            console.log("Error:", error);
-        });
-    });
-
     $('#notiMessage').hover(function(){
         if(!$(this).hasClass('active')){
             $(this).addClass('active')
@@ -233,20 +64,6 @@ $(function () {
         }
     })
 
-    //disable dev tool
-	var prodFlag = localStorage.inspectFlag;
-
-    if(prodFlag == 'true'){
-        document.addEventListener("contextmenu", function(event) {
-            event.preventDefault();
-        });
-    
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "C") || (event.ctrlKey && event.shiftKey && event.key === "J")) {
-                event.preventDefault();
-            }
-        });
-    }
 
     hideLoader()
 })
@@ -2096,7 +1913,7 @@ archiveUsers = () => {
                             ajaxUrl = 'BackEnd/userFunctionsOBYU.php';
                         }else{
                             if(IS_DOWNSTREAM){
-                                ajaxUrl = 'BackEnd/userFunctionsOBYU.php';
+                                ajaxUrl = 'BackEnd/UserFunctionsSSLR_DS.php';
                             }else{
                                 ajaxUrl = 'BackEnd/UserFunctionsV3.php';
                             }
@@ -2221,7 +2038,7 @@ deleteUsers = () =>{
         ajaxUrl = 'BackEnd/UserFunctionsOBYU.php';
     }else{
         if(IS_DOWNSTREAM){
-            ajaxUrl = 'BackEnd/UserFunctionsOBYU.php';
+            ajaxUrl = 'BackEnd/UserFunctionsSSLR_DS.php';
         }else{
             ajaxUrl = 'BackEnd/UserFunctionsV3.php';
         }
@@ -3313,7 +3130,7 @@ function refreshUserTableBody(val, varType) {
                     `<div class="row system-admin fiveColumn searchv3" rel="editUser" data-width="55" data-height="80" data-uid="${response[i].user_id}" data-name="${response[i].user_firstname} ${response[i].user_lastname}" data-title="Active User" data-activearchived="active" onclick="openWizardV3(this, event)">
                         <span class="text columnSmall"><input class="utable user-active" type="checkbox" data-page="user-active" data-table="utable" onchange="onchangeButtonVisibility(this)" data-userid= '${response[i].user_id}'></span>
                         <div class="columnMiddle textContainer">
-                            <span class="text line-clamp" title="Active User Email">${response[i].user_email}</span>
+                            <span class="text line-clamp">${response[i].user_email}</span>
                         </div>
                         <div class="columnMiddle textContainer">
                             <span class="text line-clamp">${response[i].user_firstname} ${response[i].user_lastname}</span>
@@ -3361,7 +3178,7 @@ function refreshDeleteUserTableBody() {
                 `<div class="row system-admin fourColumn searchv3" rel="editUser" data-width="55" data-height="80" data-uid="${response[i].user_id}" data-name="${response[i].user_firstname} ${response[i].user_lastname}" data-title="Archived User" data-activearchived="archived" onclick="openWizardV3(this, event)">
                     <span class="text columnSmall"><input class="utable user-inactive" type="checkbox"  data-page="user-inactive" data-table="utable" onchange="onchangeButtonVisibility(this)" id= '${response[i].user_id}'></span>
                     <div class="columnMiddle textContainer">
-                        <span class="text line-clamp" title="Inactive User Email">${response[i].user_email}</span>
+                        <span class="text line-clamp">${response[i].user_email}</span>
                     </div>
                     <div class="columnMiddle textContainer">
                         <span class="text line-clamp">${response[i].user_firstname} ${response[i].user_lastname}</span>
@@ -3538,11 +3355,7 @@ function refreshContractConsultantOrgList() {
     if(SYSTEM == 'OBYU'){
         ajaxUrl = 'BackEnd/UserFunctionsOBYU.php';
     }else{
-        if(IS_DOWNSTREAM){
-            ajaxUrl = 'BackEnd/UserFunctionsOBYU.php';
-        }else{
-            ajaxUrl = 'BackEnd/UserFunctionsV3.php';
-        }
+        ajaxUrl = 'BackEnd/UserFunctionsV3.php';
     }
     $.ajax({
         url: ajaxUrl,
@@ -3626,67 +3439,50 @@ function loadHandler(event) {
 }
 
 function processData(csv) {
-
     var allTextLines = csv.split(/\r\n|\n/);
     var lines = [];
-
     for (var i = 0; i < allTextLines.length; i++) {
-
-        // Skip completely empty rows
-        if (allTextLines[i].trim() === "") {
-            continue;
-        }
-
         var data = allTextLines[i].split(';');
         var tarr = "";
-
         for (var j = 0; j < data.length; j++) {
             if (j != 0) {
                 tarr += ",";
             }
-            tarr += data[j].trim();
+            tarr += data[j];
         }
-
         lines.push(tarr);
     }
-
-    console.log("Clean lines:", lines);
-
-    // Updated header check (include Support User if needed)
-    if (lines[0] !== "First Name,Last Name,Email,Organization ID,Organization Name,Organization Description,Organization Type,Country,User Type,Support User") {
+    console.log(lines);
+    if (lines[0] !== "First Name,Last Name,Email,Organization ID,Organization Name,Organization Description,Organization Type,Country,User Type") {
         window.parent.$.alert({
             boxWidth: '30%',
             useBootstrap: false,
             title: 'Message',
-            content: "The data is not given in correct order."
+            content: "The data is not given in correct order. it should be in this order : First Name,Last Name,Email,Organization ID,Organization Name,Organization Description,Organization Type,Country,User Type "
         });
         return;
     }
-
     var formdata = new FormData();
     formdata.append("users", JSON.stringify(lines));
-
     var request = new XMLHttpRequest();
     request.open("POST", "BackEnd/importUsers.php", true);
     request.send(formdata);
-
     request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
+        if (request.readyState == 4 && request.status == "200") {
             var response = JSON.parse(request.responseText);
             var msg = response.msg;
-
             window.parent.$.alert({
                 boxWidth: '30%',
                 useBootstrap: false,
                 title: 'Message',
                 content: msg
             });
-
             refreshUserTableBody();
             updateUserCard();
-        }
+        };
     };
 }
+
 function errorHandler(evt) {
     if (evt.target.error.name == "NotReadableError") {
         window.parent.$.alert({
@@ -4035,8 +3831,7 @@ function getLicenseInfo() {
             if(res && res.data && res.data[0]){
                 //compute date duration from purchaseDate and expiryDate
                 var duration = dateDiff(res.data[0]['PurchaseDate'], res.data[0]['ExpiryDate'])
-                var duration_display = '' 
-
+                
                 $("#lic_accountId").html(res.data[0]['AccountId'])
                 $("#lic_accountName").html(res.data[0]['Company'])
                 $("#lic_accountContact").html(res.data[0]['ContactPerson'])
@@ -4045,13 +3840,7 @@ function getLicenseInfo() {
                 $("#lic_accountPosition").html(res.data[0]['ContactPosition'])
                 $("#lic_licenseType").html(res.data[0]['LicenseType'])
                 $("#lic_hostingType").html(res.data[0]['HostingType'])
-                
-                if (res.data[0]['LicenseDuration'] && res.data[0]['LicenseDuration'] != ''){
-                    duration_display = res.data[0]['LicenseDuration']
-                }else{
-                    duration_display = duration.years+' years'
-                }
-                $("#lic_licenseDuration").html(duration_display)
+                $("#lic_licenseDuration").html(`${duration.years} years`)
                 $("#lic_licenseStart").html(res.data[0]['PurchaseDate'])
                 $("#lic_licenseEnd").html(res.data[0]['ExpiryDate'])
                 $("#licenseDatesLabel").html(`You had licensed Reveron Insights for a period of ${duration.years} year(s), started from ${res.data[0]['PurchaseDate']} to ${res.data[0]['ExpiryDate']}`)
@@ -4232,7 +4021,7 @@ drawProjctUserChart = (data) =>{
     if(data.warning){
         if(data.warning.projNoDuration){
             warnHTML += `<div class="notiLabel">
-                            <span class="notiSmallLabel"><i class="fa-solid fa-calendar-xmark"></i><i class="fa-solid fa-circle small"></i>
+                            <span class="notiSmallLabel"><i class="fa-solid fa-calendar-xmark"></i><i class="fa-duotone fa-circle small"></i>
                                 Duration
                             </span>
                             <span>${data.warning.projNoDuration} Projects not set with project duration</span>
@@ -4241,7 +4030,7 @@ drawProjctUserChart = (data) =>{
         
         if(data.warning.projNoLoc){
             warnHTML += `<div class="notiLabel">
-                            <span class="notiSmallLabel"><i class="fa-solid fa-location-dot"></i><i class="fa-solid fa-circle small"></i>
+                            <span class="notiSmallLabel"><i class="fa-solid fa-location-xmark"></i><i class="fa-duotone fa-circle small"></i>
                                 Location
                             </span>
                             <span>${data.warning.projNoLoc} Projects are missing area of extent (location)</span>
@@ -4250,7 +4039,7 @@ drawProjctUserChart = (data) =>{
 
         if(data.warning.projNoUser){
             warnHTML += `<div class="notiLabel">
-                            <span class="notiSmallLabel"><i class="fa-solid fa-users"></i><i class="fa-solid fa-circle small"></i>
+                            <span class="notiSmallLabel"><i class="fa-duotone fa-users"></i><i class="fa-duotone fa-circle small"></i>
                                 User
                             </span>
                             <span>${data.warning.projNoUser}  Projects with no user defined</span>
@@ -4259,7 +4048,7 @@ drawProjctUserChart = (data) =>{
 
         if(data.warning.projNoAdminUser){
             warnHTML += `<div class="notiLabel">
-                            <span class="notiSmallLabel"><i class="fa-solid fa-user-xmark"></i><i class="fa-solid fa-circle small"></i>
+                            <span class="notiSmallLabel"><i class="fa-solid fa-user-xmark"></i><i class="fa-duotone fa-circle small"></i>
                                 Admin
                             </span>
                             <span>${data.warning.projNoAdminUser}  Projects has no admin</span>
@@ -4268,7 +4057,7 @@ drawProjctUserChart = (data) =>{
 
         // if(data.warning.projFinInTwoMon){
         //     warnHTML += `<div class="notiLabel">
-        //                     <span class="notiSmallLabel"><i class="fa-solid fa-question"></i><i class="fa-solid fa-circle small"></i>
+        //                     <span class="notiSmallLabel"><i class="fa-duotone fa-question"></i><i class="fa-duotone fa-circle small"></i>
         //                         Finish Project
         //                     </span>
         //                     <span>${data.warning.projFinInTwoMon} Projects are about to complete in two months</span>

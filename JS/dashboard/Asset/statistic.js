@@ -79,7 +79,7 @@ function updateCardType(br, cu, dr, pv, rf, sl, el){
   var sizeCU = 0;
 
   if(cu){
-    sizeCU = Object.values(cu).reduce((sum, val) => sum + Number(val), 0);
+    sizeCU = Object.keys(cu).length;
   }
 
   var allBridgeCard = br;
@@ -511,7 +511,7 @@ function drawRoadFurnitureType(data, parentFilter){
 		},
 		yAxis: {
       allowDecimals: false,
-      type: 'linear',
+      type: 'logarithmic',
       minorTickInterval: 0.1,
       startOnTick: false,
 		  title: {

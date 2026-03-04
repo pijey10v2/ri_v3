@@ -1,5 +1,4 @@
 <?php
-//V3 FILE
 session_start();
 include_once('class/jogetLink.class.php');
 global $api_username, $api_password, $jogetHost, $jogetSupportHost, $JOGETLINKOBJ;
@@ -43,52 +42,6 @@ if (isset($_POST['functionName'])) {
         // break;
     }
 }
-
-// check if user already exists in joget support
-function userExists($email) {
-    global $PHPCACERTPATH;
-    global $jogetSupportHost;
-    global $JOGETSUPPORTADMINUSER, $JOGETSUPPORTADMINPWD;
-    $certificate_location = $PHPCACERTPATH;
-
-    $host = $jogetSupportHost."jw/web/json/data/list/sysSuppApp/list_user_directory?j_username=".$JOGETSUPPORTADMINUSER."&j_password=".$JOGETSUPPORTADMINPWD."&rows=9999&email=".$email;
-
-    $headers = array(
-        'Content-Type: application/json',
-        'API_KEY: 90c1491d-1ecd-4642-a8fd-855babcce15a'
-    );
-
-    $ch = curl_init($host);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-    // curl_setopt($ch, CURLOPT_CAINFO, $certificate_location);
-    
-    $response = curl_exec($ch);
-    $info = curl_getinfo($ch);
-    $err = curl_error($ch);
-    curl_close($ch);
-
-    if ($err) {
-        return false;
-    }
-
-    $result = json_decode($response, true);
-    if (isset($result['data']) && is_array($result['data'])) {
-        foreach ($result['data'] as $user) {
-            if (
-                isset($user['email']) &&
-                strtolower(trim($user['email'])) === strtolower(trim($email))
-            ) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 //#demonoti
 function getCoordinate()
 {
@@ -297,11 +250,6 @@ function getListofPackages()
 //adds new user to the joget (jehan PFS version)
 function jogetUserRegistration( $firstName, $lastName, $email, $supportUser, $password,  $orgId, $orgName, $orgDesc ="", $type = "") //PFS
 {
-    global $jogetHost, $jogetSupportHost, $PHPCACERTPATH;
-    $certificate_location = $PHPCACERTPATH;
-    $isSupportHost = false;
-    $host              = $jogetHost."jw/web/json/plugin/org.joget.custom.webservices.UserRegistrationApi/service?";
-
     $payload = array(
         'userName' => $email,
         'password' => $password,
@@ -311,11 +259,15 @@ function jogetUserRegistration( $firstName, $lastName, $email, $supportUser, $pa
         'userStatus' => "active",
         'orgId' => $orgId,
         'orgName'=> $orgName,
-        'orgDesc' => $orgDesc,
-        'designation' => ""
+        'orgDesc' => $orgDesc
  
     );
-
+   
+    global $jogetHost, $jogetSupportHost;
+    $host              = $jogetHost."jw/web/json/plugin/org.joget.custom.webservices.UserRegistrationApi/service?";
+    if ($type == "SUPPORT") {
+        $host              = $jogetSupportHost."jw/web/json/plugin/org.joget.custom.webservices.UserRegistrationApi/service?";
+    }
     $payload = json_encode($payload);
 
     $headers = array(
@@ -324,55 +276,23 @@ function jogetUserRegistration( $firstName, $lastName, $email, $supportUser, $pa
         //'Authorization: Basic ' . base64_encode("$api_username:$api_password")
     );
 
-    $type = strtoupper(trim($type));
-    $isSupportHost = ($type === "SUPPORT");
+    $ch = curl_init($host);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    $return = curl_exec($ch);
+    $err    = curl_error($ch);
+    curl_close($ch);
 
-    if($isSupportHost){
-        $host              = $jogetSupportHost."jw/web/json/plugin/org.joget.custom.webservices.UserRegistrationApi/service?";
-
-        if(userExists($email)){
-            echo "User already exists. Continuing...";
-        }else{
-            $ch = curl_init($host);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            // need this for KKR server as the php.ini points to another cert other than cacert.pem
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $certificate_location);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $certificate_location);
-            $return = curl_exec($ch);
-            $err    = curl_error($ch);
-            curl_close($ch);
-
-            if ($err) {
-                return $err;
-            } else {
-                return $return;
-            }
-        }
-    }else{
-        $ch = curl_init($host);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        $return = curl_exec($ch);
-        $err    = curl_error($ch);
-        curl_close($ch);
-
-        if ($err) {
-            return $err;
-        } else {
-            return $return;
-        }
+    if ($err) {
+        return $err;
+    } else {
+        return $return;
     }
-
-    
 }
 
 //updates user password, name and status (jehan PFS version)

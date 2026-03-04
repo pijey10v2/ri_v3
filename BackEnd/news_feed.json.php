@@ -18,9 +18,11 @@ function time_elapsed_string($datetime, $full = false) {
     $now = new DateTime;
     $ago = new DateTime($datetime);
     $diff = $now->diff($ago);
-    $diff->w = floor($diff->d / 7);
-    $diff->d -= $diff->w * 7;
-    $string = array(
+
+    $weeks = floor($diff->d / 7);
+    $days = $diff->d - ($weeks * 7);
+
+    $string = [
         'y' => 'yr',
         'm' => 'mo',
         'w' => 'w',
@@ -28,16 +30,31 @@ function time_elapsed_string($datetime, $full = false) {
         'h' => 'h',
         'i' => 'm',
         's' => 's',
-    );
-    foreach ($string as $k => &$v) {
-        if ($diff->$k) {
-            $v = $diff->$k . '' . $v;
-        } else {
-            unset($string[$k]);
+    ];
+
+    $values = [
+        'y' => $diff->y,
+        'm' => $diff->m,
+        'w' => $weeks,
+        'd' => $days,
+        'h' => $diff->h,
+        'i' => $diff->i,
+        's' => $diff->s,
+    ];
+
+    $result = [];
+
+    foreach ($string as $k => $v) {
+        if ($values[$k]) {
+            $result[] = $values[$k] . $v;
         }
     }
-    if (!$full) $string = array_slice($string, 0, 1);
-    return $string ? implode(',', $string) : 'just now';
+
+    if (!$full) {
+        $result = array_slice($result, 0, 1);
+    }
+
+    return $result ? implode(',', $result) : 'just now';
 }
 
 function getnewsfeed($start, $end){
@@ -118,7 +135,7 @@ function likeFeed($nfid, $liked){
     return ['result' => true, 'newcnt' => $new_cnt];
 }
 
-$fn = filter_input(INPUT_POST, 'fn', FILTER_SANITIZE_STRING);
+$fn = filter_input(INPUT_POST, 'fn', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 switch ($fn) {
     case 'getnewsfeed':
         $start = filter_input(INPUT_POST, 'nstart', FILTER_SANITIZE_NUMBER_INT);

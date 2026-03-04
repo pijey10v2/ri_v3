@@ -1,15 +1,7 @@
 var qualityData;
-var sdlData = [];
 var monthHalftext = { 1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec" };
 var textMonthtoNum = { "Jan": "1", "Feb": "2", "Mar": "3", "Apr": "4", "May": "5", "Jun": "6", "Jul": "7", "Aug": "8", "Sep": "9", "Oct": "10", "Nov": "11", "Dec": "12" };
 var textMonthtoNumForFilter = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12};
-var inPackageUuid = initInPackageUuid()
-  
-
-function initInPackageUuid(){
-  return localStorage.inPackageUuid ? localStorage.inPackageUuid : ''
-}
-    
 
 function conOpLink(process, status = '', param1 = '') {
     if(localStorage.ui_pref != "ri_v3") return;
@@ -20,7 +12,7 @@ function conOpLink(process, status = '', param1 = '') {
     var cardName;
     var searchilter = getSearchFilterSabah();
     var dateFrom = searchilter.dateFrom;
-    
+
     switch (process) {
         case 'MA':
             linkWinTitle = 'Material Acceptance'
@@ -78,9 +70,7 @@ function conOpLink(process, status = '', param1 = '') {
         break;
     }
 
-    var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-    window.parent.widgetConopOpen(process, linkName, linkParamArr, linkWinTitle + " - " + cardName, addtlparam);
+    window.parent.widgetConopOpen(process, linkName, linkParamArr, linkWinTitle + " - " + cardName);
 
 }
 
@@ -216,9 +206,7 @@ function drawNOIReceivedChart(monthYear, data, dataNOIYear) {
             dateTo = lastdayMnth.getDate()+'-'+monthFromChart+'-'+yearUsed;
 
             var linkParamArr = processFilterParamArr([dateFrom, dateTo]);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr,"Notice of Improvement - " + event.point.category.name + " " + yearUsed, addtlparam);
+            window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr,"Notice of Improvement - " + event.point.category.name + " " + yearUsed);
         }
       }
     }],
@@ -336,9 +324,7 @@ function RFIStatusChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Closed'])
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Request for Inspection", "dash_cons_RFI_card", linkParamArr, "Request for Inspection - Closed", addtlparam);
+            window.parent.widgetConopOpen("Request for Inspection", "dash_cons_RFI_card", linkParamArr, "Request for Inspection - Closed");
         }
       }
     }, {
@@ -352,9 +338,7 @@ function RFIStatusChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Pending'])
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Request for Inspection", "dash_cons_RFI_card", linkParamArr, "Request for Inspection - Open", addtlparam);
+            window.parent.widgetConopOpen("Request for Inspection", "dash_cons_RFI_card", linkParamArr, "Request for Inspection - Open");
         }
       }
     }
@@ -487,9 +471,7 @@ function drawSdlWeatherChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo])
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Site Daily Log", "dash_cons_SDL_card", linkParamArr, "Site Daily Log - " + event.point.name, addtlparam);
+            window.parent.widgetConopOpen("Site Daily Log", "dash_cons_SDL_card", linkParamArr, "Site Daily Log - " + event.point.name);
         }
       }
     }],
@@ -609,9 +591,7 @@ function drawMMStatusChart(monthYear, data) {
                 approval_status = category
             }
             linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Acknowledged', approval_status])
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Method Statement", "dash_cons_MS_card", linkParamArr, "Method Statement - " + category, addtlparam);
+            window.parent.widgetConopOpen("Method Statement", "dash_cons_MS_card", linkParamArr, "Method Statement - " + category);
         }
       }
     }]
@@ -751,9 +731,7 @@ function drawNewMSSubmissionChart(monthYear, data, dataMsYear) {
             dateTo = lastdayMnth.getDate()+'-'+monthFromChart+'-'+yearUsed;
 
             var linkParamArr = processFilterParamArr([dateFrom, dateTo]);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Method Statement", "dash_cons_MS_card", linkParamArr, "Method Statement - " + event.point.category.name + " " + yearUsed, addtlparam);
+            window.parent.widgetConopOpen("Method Statement", "dash_cons_MS_card", linkParamArr, "Method Statement - " + event.point.category.name + " " + yearUsed);
         }
       }
     }],
@@ -957,9 +935,7 @@ function drawMAStatusChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, event.point.name, 'Acknowledged']);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Material Approval", "dash_cons_MT_card", linkParamArr, 'Material Acceptance - '+event.point.name, addtlparam);
+            window.parent.widgetConopOpen("Material Approval", "dash_cons_MT_card", linkParamArr, 'Material Acceptance - '+event.point.name);
         }
       }
     }]
@@ -1098,9 +1074,7 @@ function drawNewMASubmissionChart(monthYear, data, dataMaYear) {
             dateTo = lastdayMnth.getDate()+'-'+monthFromChart+'-'+yearUsed;
 
             var linkParamArr = processFilterParamArr([dateFrom, dateTo]);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Material Approval", "dash_cons_MT_card", linkParamArr, "Material Approval - " + event.point.category.name + " " + yearUsed, addtlparam);
+            window.parent.widgetConopOpen("Material Approval", "dash_cons_MT_card", linkParamArr, "Material Approval - " + event.point.category.name + " " + yearUsed);
         }
       },
       showInLegend: false
@@ -1454,9 +1428,7 @@ function drawNCRReceivedChart(monthYear, data, dataNcrYear) {
             dateTo = lastdayMnth.getDate()+'-'+monthFromChart+'-'+yearUsed;
 
             var linkParamArr = processFilterParamArr([dateFrom, dateTo]);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("NCR", "dash_cons_NCR_card_dashboard", linkParamArr, "Non Conformance Report - " + event.point.category.name + " " + yearUsed, addtlparam);
+            window.parent.widgetConopOpen("NCR", "dash_cons_NCR_card_dashboard", linkParamArr, "Non Conformance Report - " + event.point.category.name + " " + yearUsed);
         }
       }
     }],
@@ -1574,9 +1546,7 @@ function drawNOIHSETStatusChart(monthYear, data) {
 
           var filter = getSearchFilterSabah();
           var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Health & Safety', 'Environment', 'Traffic', 'Closed']);
-          var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Closed", addtlparam);
+          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Closed");
         }
       }
     }, {
@@ -1590,9 +1560,7 @@ function drawNOIHSETStatusChart(monthYear, data) {
 
           var filter = getSearchFilterSabah();
           var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Health & Safety', 'Environment', 'Traffic', 'Pending']);
-          var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Open", addtlparam);
+          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Pending");
         }
       }
     }
@@ -1708,9 +1676,7 @@ function drawNOIQualityStatusChart(monthYear, data) {
           
           var filter = getSearchFilterSabah();
           var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Quality', '', '', 'Closed']);
-          var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Close", addtlparam);
+          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Close");
         }
       }
     }, {
@@ -1723,9 +1689,7 @@ function drawNOIQualityStatusChart(monthYear, data) {
 
           var filter = getSearchFilterSabah();
           var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Quality', '', '', 'Pending']);
-          var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Open", addtlparam);
+          window.parent.widgetConopOpen("Notice of Improvement", "dash_cons_NOI_card", linkParamArr, "Notice of Improvement - Pending");
         }
       }
     }
@@ -1936,9 +1900,7 @@ function drawNCRQualityStatusChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Closed', 'Quality']);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report - Close", addtlparam);
+            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report - Close");
         }
       }
     }, {
@@ -1952,9 +1914,7 @@ function drawNCRQualityStatusChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Pending', 'Quality']);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report (Quality) - Open", addtlparam);
+            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report (Quality) - Open");
         }
       }
     }
@@ -2072,9 +2032,7 @@ function drawNCRHSETStatusChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Closed', 'Health & Safety', 'Environment', 'Traffic']);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report (HSET) - Close", addtlparam);
+            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report (HSET) - Close");
         }
       }
     }, {
@@ -2088,9 +2046,7 @@ function drawNCRHSETStatusChart(monthYear, data) {
 
             var filter = getSearchFilterSabah();
             var linkParamArr = processFilterParamArr([filter.dateFrom, filter.dateTo, 'Pending', 'Health & Safety', 'Environment', 'Traffic']);
-            var addtlparam = '&inPackageUuid='+inPackageUuid;
-
-            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report (HSET) - Open", addtlparam);
+            window.parent.widgetConopOpen("Non-Conformance Report", "dash_cons_NCR_card_dashboard", linkParamArr, "Non-Conformance Report (HSET) - Open");
         }
       }
     }
@@ -2224,7 +2180,7 @@ function refreshInformation(packId = 'overall', year = 'all', month = 'all', fro
 	drawNewMASubmissionChart(dataYearMonth, tempMaReceived, dataMaYear);
 
 	// sdl
-	var sdData = (sdlData.sd && sdlData.sd[packId]) ? sdlData.sd[packId] : [];
+	var sdData = (qualityData.sd && qualityData.sd[packId]) ? qualityData.sd[packId] : [];
 	var sdTbData = (sdData[year] && sdData[year][month] && sdData[year][month].raw) ? sdData[year][month].raw : [];
 	updateSDLTable(sdTbData);
 	var ttl_machinery = (sdData[year] && sdData[year][month] && sdData[year][month].card && sdData[year][month].card.ttl_machinery) ? sdData[year][month].card.ttl_machinery : 0;
@@ -2289,6 +2245,8 @@ function refreshInformation(packId = 'overall', year = 'all', month = 'all', fro
 
 }
 
+
+
 function refreshDashboard() {
 	var selWPC = $("#wpcFilter").val();
 	var selYr = $('#yearFilter').val();
@@ -2301,7 +2259,6 @@ function refreshDashboard() {
 	var selMonth = $('#monthFilter').val();
 
 	refreshInformation(selWPC, selYr, selMonth);
-	refreshInformationSDL(selWPC, selYr, selMonth);
 }
 
 function refreshFromv3(filterArr) {
@@ -2310,79 +2267,10 @@ function refreshFromv3(filterArr) {
     var month = filterArr.month;
 
     refreshInformation(wpc, year, month, true);
-    refreshInformationSDL(wpc, year, month, true, false);
 
 }
-
-function refreshInformationSDL(packId = 'overall', year = 'all', month = 'all', fromV3 = false, flag = true){
-    var dataYearMonth = "Month:" + month + " - " + "Year:" + year;
-
-    var sdData = (sdlData[1].sd && sdlData[1].sd[packId]) ? sdlData[1].sd[packId] : [];
-    var sdTbData = (sdData[year] && sdData[year][month] && sdData[year][month].raw) ? sdData[year][month].raw : [];
-    var sdTtl;
-    if(flag == true){
-      sdTtl = (sdlData[1].sd_ttl && sdlData[1].sd_ttl[packId]) ? sdlData[1].sd_ttl[packId] : [];
-    }else{
-      sdTtl = (sdlData[1].sd && sdlData[1].sd[packId]) ? sdlData[1].sd[packId] : [];
-    }
-    updateSDLTable(sdTbData);
-    var ttl_machinery = (sdTtl[year] && sdTtl[year][month] && sdTtl[year][month].card && sdTtl[year][month].card.ttl_machinery) ? sdTtl[year][month].card.ttl_machinery : 0;
-    var ttl_manpower = (sdTtl[year] && sdTtl[year][month] && sdTtl[year][month].card && sdTtl[year][month].card.ttl_manpower) ? sdTtl[year][month].card.ttl_manpower : 0;
-    updateSDLCard(ttl_machinery, ttl_manpower);
-    var sdWeatherData = (sdData[year] && sdData[year][month] && sdData[year][month].weather) ? sdData[year][month].weather : [];
-    drawSdlWeatherChart(dataYearMonth, sdWeatherData)
-
-}
-
-$(".yrFilter").change(function () {
-    var mthToNum = { "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12" };
-    var year = $(this).val();
-    var mth = window.parent.$('.mthFilter').val()
-    var month = (mth == 'all') ? 'all' : mthToNum[mth]
-
-    loadData(100, 0, year, month);
-})
 
 $(function () {
-  var mthToNum = { "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12" };
-  var year = window.parent.$('.yrFilter').val()
-  var mth = window.parent.$('.mthFilter').val()
-
-  setTimeout(function() {
-    loadData(100)
-  }, 80); 
-
-  function loadData(limit, offset = 0, year, mth) {
-
-    $.ajax({
-        type: "POST",
-        url: 'chartData.json.php',
-        dataType: 'json',
-        data: {
-            page: "sdl",
-            limit: limit,
-            offset : offset,
-            year : year,
-            month : (mth == 'all') ? 'all' : mthToNum[mth]
-        },
-        success: function (obj) {
-            if (obj.status && obj.status == 'ok') {
-                sdlData = [sdlData, obj.data];
-                refreshInformationSDL();
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error loading data: " + status + " " + error);
-        }
-    });
-  }
-
-  // After 2 seconds, load the remaining records
-  if(year == 'all' && mth == 'all'){
-    setTimeout(function() {
-      loadData(100000, 100);
-    }, 2000); 
-  }
 
   $.ajax({
     type: "POST",

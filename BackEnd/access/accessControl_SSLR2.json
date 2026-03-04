@@ -254,8 +254,8 @@
             },
             "SETUP": {
                 "workDiscipline_SSLR2": true,
-                "riskCategory": false,
-                "riskDescription": false,
+                "riskCategory": true,
+                "riskDescription": true,
                 "machinery": false,
                 "manpower": false,
                 "assignUser": false,
@@ -2107,8 +2107,7 @@
                 "delete": false
             },
             "RS": {
-                "create": true,
-                "org":"allOrg",
+                "create": false,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -6487,8 +6486,8 @@
             },
             "SETUP": {
                 "workDiscipline_SSLR2": false,
-                "riskCategory": false,
-                "riskDescription": false,
+                "riskCategory": true,
+                "riskDescription": true,
                 "machinery": false,
                 "manpower": false,
                 "assignUser": false,
@@ -11359,7 +11358,8 @@
                 "delete": false
             },
             "RS": {
-                "create": false,
+                "create": true,
+                "org":"MAUJV",
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -13161,8 +13161,8 @@
                 "delete": false
             },
             "WIR": {
-                "create": true,
-                "org": "MAUJV",
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,

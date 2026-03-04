@@ -252,43 +252,29 @@ function updateAcsCard(data, contract){
     $('#DSApprovedNetAdj').html(Amthtml)
 }
 
-function updateEotCard(data, vo){
+function updateEotCard(data){
 
     var data = data.calculateCard;
-    var total = "0";
-    
-    if(data != undefined){
-      var noHtml = '';
-      var Amthtml = '';
-
-      var num =  (data.eotNo)? data.eotNo : "N/A";
-      total =  (data.eotDays)? data.eotDays : "0";
-
-      if(num != "N/A"){
-          noHtml = `<span class="clickableCard" onclick="conOpLink('Eot', '`+data.id+`', '`+num+`')">`+num+`</span>`;
-      }
-
-      if(total != "0"){
-          Amthtml = `<span class="clickableCard" onclick="conOpLink('Eot', '`+data.id+`', '`+num+`')">`+total+`</span>`;
-      }
-      
-      $('#ApprovedEOT').html(noHtml)
-      $('#ApprovedEOTDays').html(Amthtml)
+    if(data == undefined){
+        return;
     }
 
-    var vo = vo.calculateCard;
+    var noHtml = '';
+    var Amthtml = '';
 
-    if(vo != undefined){
-      var totalEot = parseInt(total) + parseInt(vo.totalEot);
-      $('#totalApprovedEOTDays').html(totalEot)
+    var num =  (data.eotNo)? data.eotNo : "N/A";
+    var total =  (data.eotDays)? data.eotDays : "0";
 
-      var contract_id = vo.contract_id;
+    if(num != "N/A"){
+        noHtml = `<span class="clickableCard" onclick="conOpLink('Eot', '`+data.id+`', '`+num+`')">`+num+`</span>`;
+    }
 
-      var voeot = `<span class="clickableCard" onclick="conOpLink('VO', '`+contract_id+`', '')">`+vo.totalEot+`</span>`;
-
-      $('#ApprovedEOTfromVO').html(voeot)
+    if(total != "0"){
+        Amthtml = `<span class="clickableCard" onclick="conOpLink('Eot', '`+data.id+`', '`+num+`')">`+formatCurrency(total)+`</span>`;
     }
     
+    $('#ApprovedEOT').html(noHtml)
+    $('#ApprovedEOTDays').html(Amthtml)
 }
 
 function drawClaimVoChart(claim, data, contract){
@@ -531,7 +517,7 @@ function refreshInformation(projid = 'overall',  year = 'all') {
     updateAcsCard(acsDetails, contractDetails);
 
     var eotDetails = (procurement.eot_detail && procurement.eot_detail[projid] && procurement.eot_detail[projid][year]) ? procurement.eot_detail[projid][year] : [];
-    updateEotCard(eotDetails, voDetails);
+    updateEotCard(eotDetails);
 
     var dataClaim = (procurement.claim_detail && procurement.claim_detail[projid]  && procurement.claim_detail[projid][year]) ? procurement.claim_detail[projid][year] : [];
     var claimDetails =  (dataClaim && dataClaim.raw) ? dataClaim.raw : [];

@@ -1,10 +1,9 @@
 
 //Cesium for defining area extent
 Cesium.BingMapsApi.defaultKey = 'AgWzRGyO26urfR6O6qFMkOAvSW8TZxds6jR_yPiTvbO_Dx9t-s5sheKO0m9vL_SJ';
-Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzOTg5ZWFlMS1jZGZiLTQ5OGUtYjY3Ni1mMDJmNGNmNWIwY2UiLCJpZCI6MzA1MjAzLCJpYXQiOjE3NDc5MDMzMzF9._AllgIQ2JG23BGarvbIRTv-ZNpkoDj-W0VMRlN1pTuQ';
-var mapBoxAccessToken = MAPBOX_TOKEN;
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4YTU2OTcxMC0wNzdmLTQyZDItOWVkNy0xZjU4NTgzYTVjNTUiLCJpZCI6NzI3Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0ODg2ODEwM30.Lc-IQBDSPyhqgPR2v-Ejcb34ksKJLr23mXsOhszBcHI';
 
-var viewer4 = new Cesium.Viewer('RIContainer1', {
+var viewerAdmin = new Cesium.Viewer('RIContainer1', {
      baseLayerPicker: false
     , timeline: false
     , animation: false
@@ -15,14 +14,14 @@ var viewer4 = new Cesium.Viewer('RIContainer1', {
     , sceneModePicker: false
     , navigationHelpButton: false
     , infoBox: false
-    , imageryProvider: new Cesium.MapboxStyleImageryProvider({
-			styleId: 'satellite-v9', 
-        	accessToken: mapBoxAccessToken
-		})
+    , imageryProvider: new Cesium.BingMapsImageryProvider({
+                    url : 'https://dev.virtualearth.net',
+                    mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                })
  });
 
 var defaultview = Cesium.Rectangle.fromDegrees(93.0, -15.0, 133.0, 30.0); // S.E.A. extent 
-viewer4.camera.setView({
+viewerAdmin.camera.setView({
     destination: defaultview
 });
 
@@ -37,16 +36,16 @@ var viewer2 = new Cesium.Viewer('RIContainer2', {
     , sceneModePicker: false
     , navigationHelpButton: false
     , infoBox: false
-    , imageryProvider: new Cesium.MapboxStyleImageryProvider({
-        styleId: 'satellite-v9', 
-        accessToken: mapBoxAccessToken
-    }),
+    , imageryProvider: new Cesium.BingMapsImageryProvider({
+        url : 'https://dev.virtualearth.net',
+        mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+    })
 });
 
 Cesium.Camera.DEFAULT_VIEW_RECTANGLE = defaultview;
 Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
 
-viewer4._cesiumWidget._creditContainer.style.display = "none";
+viewerAdmin._cesiumWidget._creditContainer.style.display = "none";
 viewer2._cesiumWidget._creditContainer.style.display = "none";
 function radians_to_degrees(radians) {
     var pi = Math.PI;
@@ -56,23 +55,23 @@ var selector;
 var selector2;
 var selector3;
 var rectangleSelector = new Cesium.Rectangle();
-var screenSpaceEventHandler = new Cesium.ScreenSpaceEventHandler(viewer4.scene.canvas);
+var screenSpaceEventHandler = new Cesium.ScreenSpaceEventHandler(viewerAdmin.scene.canvas);
 var cartesian = new Cesium.Cartesian3();
 var tempCartographic = new Cesium.Cartographic();
 var firstPoint = new Cesium.Cartographic();
 var firstPointSet = false;
 var mouseDown = false;
-var camera = viewer4.camera;
-viewer4.scene.screenSpaceCameraController.enableTranslate = false;
-viewer4.scene.screenSpaceCameraController.enableTilt = false;
-viewer4.scene.screenSpaceCameraController.enableLook = false;
-viewer4.scene.screenSpaceCameraController.enableCollisionDetection = false;
+var camera = viewerAdmin.camera;
+viewerAdmin.scene.screenSpaceCameraController.enableTranslate = false;
+viewerAdmin.scene.screenSpaceCameraController.enableTilt = false;
+viewerAdmin.scene.screenSpaceCameraController.enableLook = false;
+viewerAdmin.scene.screenSpaceCameraController.enableCollisionDetection = false;
 //Draw the selector while the user drags the mouse while holding shift
 screenSpaceEventHandler.setInputAction(function drawSelector(movement) {
     if (!mouseDown) {
         return;
     }
-    cartesian = camera.pickEllipsoid(movement.endPosition, viewer4.scene.globe.ellipsoid, cartesian);
+    cartesian = camera.pickEllipsoid(movement.endPosition, viewerAdmin.scene.globe.ellipsoid, cartesian);
     if (cartesian) {
         //mouse cartographic
         tempCartographic = Cesium.Cartographic.fromCartesian(cartesian, Cesium.Ellipsoid.WGS84, tempCartographic);
@@ -132,7 +131,7 @@ screenSpaceEventHandler.setInputAction(function hideSelector() {
     }
 
 }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-selector = viewer4.entities.add({
+selector = viewerAdmin.entities.add({
     selectable: false
     , show: false
     , rectangle: {

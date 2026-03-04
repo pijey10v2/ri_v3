@@ -2,16 +2,12 @@ $(document).ready(function () {
 
 })
 
-function floatboxV3TurnON(title, content, layerPath="") {
-	//html cannot read undefined
-	title = (title == undefined) ? '' : title;
+function floatboxV3TurnON(title, content) {
 	$("#floatBoxId").fadeIn(150)
 	$("#floatBoxId").css("top", movePosition.y)
 	$("#floatBoxId").css("left", movePosition.x)
 	$(".floatBoxHeader .header").html(title)
 	$(".floatBoxBody").html(content);
-
-
 	var ellipsoid = viewer.scene.globe.ellipsoid;
 	var cartesian = viewer.scene.camera.pickEllipsoid(movePosition, ellipsoid);
 	if (!cartesian || !cartesian.x || !cartesian.y) {
@@ -128,9 +124,12 @@ function assetDataFloatBox(infoContID, docContID, elementID, fromList = false) {
 						$(".floatBoxHeader .header").html(nameHTML)
 						$(".floatBoxBody").html(moreInfoHTML);
 						// coordinate will be either from agile or set it somewhere as for now
-						let lon = response.CSV.data.Coordinate.long;
-						let lat = response.CSV.data.Coordinate.lat;
+						// let lon = response.CSV.data.Coordinate.long;
+						// let lat = response.CSV.data.Coordinate.lat;
 						let alt = response.CSV.data.Coordinate.alt;
+						var lon = "80.030722";
+						var lat = "15.008572";
+
 						viewer.camera.flyTo({
 							destination: new Cesium.Cartesian3.fromDegrees(lon, lat, alt + 100),
 							complete: function () {
@@ -228,3 +227,4 @@ function floatboxV3B3DMTurnON(title, content, position) {
 		alt: alt
 	};
 }
+

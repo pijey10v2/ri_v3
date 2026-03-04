@@ -7,6 +7,7 @@ class JogetLink
 {
 	var $jogetHost;
 	var $jogetAssetHost;
+	var $jogetSupportHost;
 	var $geoServerHost;
 
 	var $jogetDomain;
@@ -45,10 +46,6 @@ class JogetLink
 
 	var $isDownstream;
 
-	// Cesium Access Token
-	var $mapboxToken;
-	var $maptilerToken;
-
 	private $conn;
 	// joget
 	private $jogetAdminUser;
@@ -77,7 +74,7 @@ class JogetLink
 		}
 
 		include_once dirname(__FILE__).'/../../Login/app_properties.php';
-		global $JOGETDOMAIN, $JOGETIP, $JOGETASSETDOMAIN, $JOGETASSETIP, $JOGETSUPPORTDOMAIN, $JOGETSUPPORTIP, $GEOSERVERDOMAIN, $GEOSERVERIP, $RIHOST, $IS_DOWNSTREAM, $MAPBOX_TOKEN;
+		global $JOGETDOMAIN, $JOGETIP, $JOGETASSETDOMAIN, $JOGETASSETIP, $JOGETSUPPORTDOMAIN, $JOGETSUPPORTIP, $GEOSERVERDOMAIN, $GEOSERVERIP, $RIHOST, $IS_DOWNSTREAM;
 
 		$this->jogetDomain = $JOGETDOMAIN;
 		$this->jogetAssetDomain = $JOGETASSETDOMAIN;
@@ -105,14 +102,9 @@ class JogetLink
 		$this->geoServerHost = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? $this->geoserverDomain : $this->geoserverIp;
 		$this->isDownstream = isset($IS_DOWNSTREAM) ? $IS_DOWNSTREAM : false;
 
-		require_once __DIR__ . "/../cesiumTokenFunctions.php";
-
-		$this->mapboxToken = getDefaultCesiumTokens() ?? (isset($MAPBOX_TOKEN) ? $MAPBOX_TOKEN : false);
-		$this->maptilerToken = getDefaultCesiumTokens('maptiler') ?? (isset($MAPTILER_TOKEN) ? $MAPTILER_TOKEN : false);
-
 		$appListsEncode = isset($_SESSION['appsLinks']) ? json_decode($_SESSION['appsLinks']) : [];
 	    if ($appListsEncode) {
-    		$constructpackageInfoArr = explode('::', $appListsEncode->constructPackage_name);
+    		$constructpackageInfoArr = explode('::', $appListsEncode->constructPackage_name ?? '');
 
 			if(isset($_SESSION['Project_type']) && $_SESSION['Project_type'] == "CONSTRUCT"){
     			$this->constructApp = $constructpackageInfoArr[0];
@@ -121,10 +113,10 @@ class JogetLink
 			}else{
 				$this->fmApp = $constructpackageInfoArr[0];
 			}
-    		$documentpackageInfoArr = explode('::', $appListsEncode->documentPackage_name);
+    		$documentpackageInfoArr = explode('::', $appListsEncode->documentPackage_name ?? '');
     		$this->documentApp = $documentpackageInfoArr[0];
 
-    		$financepackageInfoArr = explode('::', $appListsEncode->financePackage_name);
+    		$financepackageInfoArr = explode('::', $appListsEncode->financePackage_name ?? '');
     		$this->financeApp = $financepackageInfoArr[0];
 
 			if(isset($appListsEncode->app_CP_level) && $appListsEncode->app_CP_level){
@@ -144,8 +136,6 @@ class JogetLink
 		$this->pid = isset($_SESSION['project_id_number']) ? $_SESSION['project_id_number'] : '';
 		$this->currPackageUuid = (isset($_SESSION['projectID']) && isset($_SESSION['project_id_number'])) ? $_SESSION['project_id_number']."_". $_SESSION['projectID']. "_" . $_SESSION['project_id_number']: "";
 		$this->currLocation = (isset($_SESSION['location'])) ? $_SESSION['location'] : '';
-		$this->currProjectPhase = isset($_SESSION['project_phase']) ? $_SESSION['project_phase'] : '';
-		$this->currWpcAbbr = isset($_SESSION['wpc_abbr']) ? $_SESSION['wpc_abbr'] : '';
 
 	    $this->loadUrl();
 
@@ -239,7 +229,6 @@ class JogetLink
 		$temp_NOI_IdLink ="";
 		$temp_NCR_IdLink ="";
 		$temp_SD_IdLink ="";
-		$temp_DCR_IdLink ="";
 		
 		switch($this->currUserRole){
 			case "Zone Manager":
@@ -257,10 +246,6 @@ class JogetLink
 					}else if($this->currUserOrg == 'JKR'){
 						$temp_NCR_IdLink = "new_ncrSabah01";
 						$temp_SD_IdLink = "new_sdSabah02";
-						$temp_DCR_IdLink = "new_dcrSabah1B02";
-					}else if($this->currUserOrg == 'pmc_1b'){
-						$temp_SD_IdLink = "new_sdSabah01";
-						$temp_DCR_IdLink = "new_dcrSabah1B02";
 					}
 				}
 				break;
@@ -272,8 +257,6 @@ class JogetLink
 				}else if($this->currProjectOwner == "JKR_SABAH"){
 					$temp_NOI_IdLink = "new_noiSabah03";
 					if ($this->currUserOrg == 'HSSI') {
-						$temp_NCR_IdLink = "new_ncrSabah03";
-					} else if ($this->currUserOrg == 'pmc_1b') {
 						$temp_NCR_IdLink = "new_ncrSabah03";
 					}
 				}
@@ -292,13 +275,6 @@ class JogetLink
 					$temp_SD_IdLink = "new_sdSabah01";
 					$temp_NCR_IdLink = "new_ncrSabah02";
 					$temp_NOI_IdLink = "new_noiSabah02";
-					$temp_DCR_IdLink = "new_dcrSabah1B01";
-				}
-				break;
-
-			case "Contractor PM":
-				if ($this->currProjectOwner == "JKR_SABAH") {
-					$temp_DCR_IdLink = "new_dcrSabah1B02";
 				}
 				break;
 		
@@ -306,9 +282,7 @@ class JogetLink
 		$ret = array(
 			'temp_NOI_IdLink' => $temp_NOI_IdLink,
 			'temp_NCR_IdLink' => $temp_NCR_IdLink,
-			'temp_SD_IdLink' => $temp_SD_IdLink,
-			'temp_DCR_IdLink' => $temp_DCR_IdLink,
-
+			'temp_SD_IdLink' => $temp_SD_IdLink
 
 		);
 		return $ret;	
@@ -334,7 +308,7 @@ class JogetLink
 		$asset_list_networkSection = $userviewPrefix."list_networkSection?d-2075694-fn_c_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 		$asset_list_bridge = $userviewPrefix."list_bridge?d-3004726-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&d-3004726-fn_asset_id=".$empty."&d-3004726-fn_asset_name=".$empty."&d-3004726-fn_river_navigable=".$empty."&d-3004726-fn_asset_status=".$empty."&d-3004726-fn_bridge_type=".$empty."&d-3004726-fn_asset_position=".$empty."&d-3004726-fn_asset_position=".$empty;
 		$asset_list_culvert = $userviewPrefix."list_culvert?d-627894-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&d-627894-fn_asset_id=".$empty."&d-627894-fn_asset_name=".$empty."&d-627894-fn_culvert_type=".$empty."&d-627894-fn_asset_status=".$empty."&d-627894-fn_chainage=".$empty."&d-627894-fn_asset_position=".$empty;
-		$asset_list_drainage = $userviewPrefix."list_drainage?package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&d-1880108-fn_asset_id=".$empty."&d-1880108-fn_asset_status=".$empty."&d-1880108-fn_drainage_type=".$empty."&d-1880108-fn_asset_position=".$empty;
+		$asset_list_drainage = $userviewPrefix."list_drainage?d-1880108-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&d-1880108-fn_asset_id=".$empty."&d-1880108-fn_asset_status=".$empty."&d-1880108-fn_drainage_type=".$empty."&d-1880108-fn_asset_position=".$empty;
 		$asset_list_pavement = $userviewPrefix."list_pavement?d-1898783-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&d-1898783-fn_asset_id=".$empty."&d-1898783-fn_asset_status=".$empty."&d-1898783-fn_pavement_type=".$empty."&d-1898783-fn_asset_position=".$empty;
 		$asset_list_furniture = $userviewPrefix."list_furniture?d-5673989-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&d-5673989-fn_asset_id=".$empty."&d-5673989-fn_asset_status=".$empty."&d-5673989-fn_road_furniture_type=".$empty."&d-5673989-fn_chainage=".$empty."&d-5673989-fn_asset_position=".$empty;
 		$asset_list_slope = $userviewPrefix."list_slope?d-6595250-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&d-6595250-fn_asset_id=".$empty."&d-6595250-fn_asset_status=".$empty."&d-6595250-fn_slope_type=".$empty."&d-6595250-fn_asset_position=".$empty;
@@ -432,15 +406,12 @@ class JogetLink
 		//notification of Defects
 		$asset_NotificationOfDefect = $userviewPrefix."list_nod?d-1846919-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$asset_NotificationOfDefectEmergency = $userviewPrefix."list_nod_emergency?d-3769126-fn_package_uuid=".$this->currPackageUuid."&d-3769126-fn_ref_no=".$empty."&d-3769126-fn_nod_type=".$empty."&d-3769126-fn_year=".$empty;
-		$asset_maint_view_nod_periodic = $userviewPrefix."list_nod_periodic?package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
-		$asset_maint_view_nod_emergency = $userviewPrefix."list_nod_emergency?package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
-
+		
 		//notification of Damage
 		$asset_NotificationOfDamage = $userviewPrefix."list_nodRoutine?d-6657964-fn_package_uuid=".$this->currPackageUuid."&d-6657964-fn_ref_no=".$empty."&d-6657964-fn_month=".$empty."&d-6657964-fn_year=".$empty;
 		
 		//Pictorial Report
-		$asset_PictorialReport = $userviewPrefix."list_pict_report?d-4323255-fn_package_uuid=".$this->currPackageUuid."&d-4323255-fn_c_activity=".$empty; //sarawak
-		$asset_PictorialReport_sbh = $userviewPrefix."list_pict_report_sbh?d-6254725-fn_package_uuid=".$this->currPackageUuid."&d-6254725-fn_c_activity=".$empty; //sabah
+		$asset_PictorialReport = $userviewPrefix."list_pict_report?d-4323255-fn_package_uuid=".$this->currPackageUuid."&d-4323255-fn_c_activity=".$empty;
 		
 		//Non Conformance Product
 		$asset_NonConformanceProduct = $userviewPrefix."list_ncp?d-4015084-fn_package_uuid=".$this->currPackageUuid."&d-4015084-fn_ref_no=".$empty."&d-4015084-fn_category=".$empty."&d-4015084-fn_maintenance_category=".$empty."&d-4015084-fn_verification_rectification=".$empty."&d-4015084-fn_status=".$empty."&d-4015084-fn_dateCreated=".$empty."&d-4015084-fn_dateCreated=".$empty;
@@ -455,8 +426,7 @@ class JogetLink
 		$asset_site_routine = $userviewPrefix."list_site_routine_inspection?d-7271054-fn_c_package_uuid=".$this->currPackageUuid;
 		
 		//Defect Detection
-		$asset_defect_detection = $userviewPrefix."list_defect?d-565738-fn_package_uuid=".$this->currPackageUuid."&d-565738-fn_category=".$empty; //sarawak
-		$asset_defect_detection_sbh = $userviewPrefix."list_defect_sbh?d-3885736-fn_package_uuid=".$this->currPackageUuid."&d-3885736-fn_category=".$empty; //sabah
+		$asset_defect_detection = $userviewPrefix."list_defect?d-565738-fn_package_uuid=".$this->currPackageUuid."&d-565738-fn_category=".$empty;
 		
 		//asset conop link from dashboard
 		$asset_dash_NonConformanceProduct = $userviewPrefix."list_ncp?d-4015084-fn_project_id=".$projectIdConOp."&d-4015084-fn_package_uuid=".$packageUuidIdConOp."&d-4015084-fn_category=".$empty."&d-4015084-fn_maintenance_category=".$empty."&d-4015084-fn_ref_no=".$empty."&d-4015084-fn_dateCreated={?}&d-4015084-fn_dateCreated={?}&d-4015084-fn_ncp_status={?}";
@@ -494,8 +464,7 @@ class JogetLink
 		$dash_asset_rfi_ttl_card = $userviewPrefix."list_wo_rfi_dashboard?d-2088542-fn_package_uuid=".$packageUuidIdConOp."&project_id=".$projectIdConOp."&d-2088542-fn_contract_no={?}&d-2088542-fn_contract_name={?}";
 
 		//Schedule Inspection
-		$asset_ScheduleInspection = $userviewPrefix."list_schedule_inspection?d-5068073-fn_package_uuid=".$this->currPackageUuid."&d-5068073-fn_year=".$empty."&d-5068073-fn_month=".$empty; //sarawak
-		$asset_ScheduleInspection_sbh = $userviewPrefix."list_schedule_inspection_sbh?d-7864727-fn_package_uuid=".$this->currPackageUuid."&d-7864727-fn_year=".$empty."&d-7864727-fn_month=".$empty; //sabah
+		$asset_ScheduleInspection = $userviewPrefix."list_schedule_inspection?d-5068073-fn_package_uuid=".$this->currPackageUuid."&d-5068073-fn_year=".$empty."&d-5068073-fn_month=".$empty;
 		
 		//inspection form from floatbox
 		$asset_insp_form_bridge = $userviewPrefix. "list_insp_inv_bridge?d-6596122-fn_package_uuid=".$this->currPackageUuid; // bridge inspection opens to a list and not form as got several components
@@ -537,17 +506,15 @@ class JogetLink
 			$asset_insp_culvert = $userviewPrefix."list_insp_inv_culvert?d-4254305-fn_package_uuid=".$this->currPackageUuid."&d-4254305-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
 			$asset_insp_drainage = $userviewPrefix."list_insp_inv_drainage?d-4759361-fn_package_uuid=".$this->currPackageUuid."&d-4759361-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
 			$asset_insp_pavement = $userviewPrefix."list_insp_inv_pavement?d-3658546-fn_package_uuid=".$this->currPackageUuid."&d-3658546-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
-			$asset_insp_roadfurniture = $userviewPrefix."asset_furniture_process?package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&package_name=".$this->currPackageName."&project_id=".$this->currProjectId."&project_owner=".$this->currProjectOwner;
+			$asset_insp_roadfurniture = $userviewPrefix."assessment_furniture?package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&package_name=".$this->currPackageName."&project_id=".$this->currProjectId."&project_owner=".$this->currProjectOwner;
 			$asset_insp_slope = $userviewPrefix."list_insp_inv_slope?d-4770194-fn_package_uuid=".$this->currPackageUuid."&d-4770194-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
-			$asset_submit_maint_gar =  $userviewPrefix."gar?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
-			$asset_manage_maint_equipment = $userviewPrefix."EquipmentLookup?d-6421139-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 
 		}else if($this->currProjectOwner == "JKR_SABAH"){
 
 			$asset_maintain_rfi_sabah = $userviewPrefix."rfi_sabah?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 			$asset_maintain_ncp_sabah = $userviewPrefix."ncp_sabah?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 			$asset_maintain_schedule_inspection_sabah = $userviewPrefix."schedule_inspection_sabah?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
-			$asset_submit_maint_work_program_sabah =  $userviewPrefix."work_program_submission_sbh?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
+			$asset_submit_maint_work_program =  $userviewPrefix."work_program_submission?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 			$asset_create_defect_detection =  $userviewPrefix."create_defect?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 			$asset_create_NODefect =  $userviewPrefix."create_nod?d-570502-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 			$asset_maintain_site_routine = $userviewPrefix."site_routine_inspection?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
@@ -559,9 +526,8 @@ class JogetLink
 			$asset_insp_culvert = $userviewPrefix."list_insp_inv_culvert?d-4254305-fn_package_uuid=".$this->currPackageUuid."&d-4254305-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
 			$asset_insp_drainage = $userviewPrefix."list_insp_inv_drainage?d-4759361-fn_package_uuid=".$this->currPackageUuid."&d-4759361-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
 			$asset_insp_pavement = $userviewPrefix."list_insp_inv_pavement?d-3658546-fn_package_uuid=".$this->currPackageUuid."&d-3658546-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
-			$asset_insp_roadfurniture = $userviewPrefix."assessment_furniture_sabah?package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&package_name=".$this->currPackageName."&project_id=".$this->currProjectId."&project_owner=".$this->currProjectOwner;
+			$asset_insp_roadfurniture = $userviewPrefix."assessment_furniture?package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&package_name=".$this->currPackageName."&project_id=".$this->currProjectId."&project_owner=".$this->currProjectOwner;
 			$asset_insp_slope = $userviewPrefix."list_insp_inv_slope?d-4770194-fn_package_uuid=".$this->currPackageUuid."&d-4770194-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
-			$asset_manage_maint_equipment = $userviewPrefix."EquipmentLookup_sbh?d-22561-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 
 		}
 
@@ -569,15 +535,14 @@ class JogetLink
 		$asset_maintain_nod = $userviewPrefix."nod?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_maintain_nod_emergency = $userviewPrefix."nod_emergency?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_manage_maint_work_activity =  $userviewPrefix."list_maintenanceActivity?d-7779575-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
-		$asset_manage_maint_work_activity_sabah =  $userviewPrefix."list_maintenanceActivity_sabah?d-647463-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 		$asset_manage_maint_work_instruction =  $userviewPrefix."list_workInstructionManage?d-5021799-fn_package_uuid=".$this->currPackageUuid."&d-5021799-fn_ref_no=&d-5021799-fn_type_of_activity=";
-		$asset_manage_maint_work_instruction_sabah =  $userviewPrefix."list_workInstructionManage_sabah?d-3494679-fn_package_uuid=".$this->currPackageUuid."&d-3494679-fn_ref_no=&d-3494679-fn_type_of_activity=";
 		$asset_inbox_maint_work_program =  $userviewPrefix."inboxWorkProgram?d-233716-fn_package_uuid=".$this->currPackageUuid."&d-233716-fn_ResourceId=".$this->currUserEmail;
 		$asset_inbox_maint_work_order =  $userviewPrefix."inboxWO?d-4008231-fn_package_uuid=".$this->currPackageUuid."&d-4008231-fn_ResourceId=".$this->currUserEmail;
 		$asset_inbox_maint_noe =  $userviewPrefix."inboxNOE?d-3636105-fn_package_uuid=".$this->currPackageUuid."&d-3636105-fn_ResourceId=".$this->currUserEmail;
 		$asset_inbox_maint_work_daily_report =  $userviewPrefix."inboxDailyWork?d-7990414-fn_package_uuid=".$this->currPackageUuid."&d-7990414-fn_ResourceId=".$this->currUserEmail;
 		$asset_maintain_nod_routine = $userviewPrefix."nod_routine?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_work_order = $userviewPrefix."work_order?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
+		$asset_manage_maint_equipment = $userviewPrefix."EquipmentLookup?d-6421139-fn_project_id=".$this->currProjectId;
 		$asset_manage_work_order_emergency =  $userviewPrefix."list_workOrderManage?d-4220438-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$asset_inbox_maint_work_order_emergency =  $userviewPrefix."inboxWOEmergency?d-342337-fn_package_uuid=".$this->currPackageUuid."&d-342337-fn_ResourceId=".$this->currUserEmail;
 		$asset_inbox_maint_work_budget_approval =  $userviewPrefix."inboxWBPeriodic?d-3636104-fn_ResourceId=".$this->currUserEmail."&d-3636104-fn_package_uuid=".$this->currPackageUuid;
@@ -585,9 +550,7 @@ class JogetLink
 		$asset_inbox_maint_work_budget_approval_emergency =  $userviewPrefix."inboxWBEmergency?d-4768074-fn_ResourceId=".$this->currUserEmail."&d-4768074-fn_package_uuid=".$this->currPackageUuid;
 		$asset_submit_work_order_emergency =  $userviewPrefix."work_order_emergency?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$asset_manage_defect_detection =  $userviewPrefix."list_defectManage?d-7015122-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
-		$asset_manage_defect_detection_sabah =  $userviewPrefix."list_defectManage_sbh?d-6192144-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$asset_manage_NODefect =  $userviewPrefix."list_nodManage?d-3413492-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;		
-		$asset_manage_NOE =  $userviewPrefix."list_noeManage?package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;		
 
 		// maintenance view
 		$asset_maint_view_work_instruction = $userviewPrefix."list_workInstruction?d-1123026-fn_package_uuid=".$this->currPackageUuid."&d-1123026-fn_ref_no=".$empty."&d-1123026-fn_dateCreated=".$empty."&d-1123026-fn_dateCreated=".$empty."&d-1123026-fn_type_of_activity=".$empty."&d-1123026-fn_wi_status=".$empty."&d-1123026-fn_work_status=".$empty."&d-1123026-fn_activity=".$empty."&d-1123026-fn_work_date=".$empty."&d-1123026-fn_work_date=".$empty;
@@ -709,16 +672,12 @@ class JogetLink
 				//notification of defects
 				'asset_NotificationOfDefect' => $asset_NotificationOfDefect,
 				'asset_NotificationOfDefectEmergency' => $asset_NotificationOfDefectEmergency,
-				'asset_maint_view_nod_periodic' => $asset_maint_view_nod_periodic,
-				'asset_maint_view_nod_emergency' => $asset_maint_view_nod_emergency,
 				//notification of damage
 				'asset_NotificationOfDamage' => $asset_NotificationOfDamage,
 				//pictorial report
 				'asset_PictorialReport' => $asset_PictorialReport,
-				'asset_PictorialReport_sbh' => $asset_PictorialReport_sbh,
 				'asset_site_routine' => $asset_site_routine,
 				'asset_defect_detection' => $asset_defect_detection,
-				'asset_defect_detection_sbh' => $asset_defect_detection_sbh,
 				//Non Conformance Product
 				'asset_NonConformanceProduct' => $asset_NonConformanceProduct,
 				//asset dashboard conop link
@@ -756,7 +715,6 @@ class JogetLink
 				'asset_LPA' => $asset_LPA,
 				//Schedule Inspection
 				'asset_ScheduleInspection' => $asset_ScheduleInspection,
-				'asset_ScheduleInspection_sbh' => $asset_ScheduleInspection_sbh,
 				//inspection form
 				'asset_insp_form_bridge' => $asset_insp_form_bridge,
 				'asset_insp_form_culvert' => $asset_insp_form_culvert,
@@ -782,14 +740,11 @@ class JogetLink
 				'asset_maintain_nod' => $asset_maintain_nod,
 				'asset_maintain_nod_emergency' => $asset_maintain_nod_emergency,
 				'asset_manage_maint_work_activity' => $asset_manage_maint_work_activity,
-				'asset_manage_maint_work_activity_sabah' => $asset_manage_maint_work_activity_sabah,
 				'asset_manage_maint_work_instruction' => $asset_manage_maint_work_instruction,
-				'asset_manage_maint_work_instruction_sabah' => $asset_manage_maint_work_instruction_sabah,
 				'asset_submit_maint_work_program' => $asset_submit_maint_work_program,
 				'asset_inbox_maint_work_program' => $asset_inbox_maint_work_program,
 				'asset_inbox_maint_work_order' => $asset_inbox_maint_work_order,
 				'asset_submit_maint_noe' => $asset_submit_maint_noe,
-				'asset_submit_maint_gar' => $asset_submit_maint_gar,
 				'asset_inbox_maint_noe' => $asset_inbox_maint_noe,
 				'asset_submit_maint_work_daily_report' => $asset_submit_maint_work_daily_report,
 				'asset_inbox_maint_work_daily_report' => $asset_inbox_maint_work_daily_report,
@@ -827,10 +782,8 @@ class JogetLink
 				'asset_maint_view_defect_detection_emergency' => $asset_maint_view_defect_detection_emergency,
 				'asset_create_defect_detection' => $asset_create_defect_detection,
 				'asset_manage_defect_detection' => $asset_manage_defect_detection,
-				'asset_manage_defect_detection_sabah' => $asset_manage_defect_detection_sabah,
 				'asset_create_NODefect' => $asset_create_NODefect,
-				'asset_manage_NODefect' => $asset_manage_NODefect,
-				'asset_manage_NOE' => $asset_manage_NOE,
+				'asset_manage_NODefect' => $asset_manage_NODefect
 			);
 
 		}else if($this->currProjectOwner == "JKR_SABAH"){
@@ -939,10 +892,8 @@ class JogetLink
 				'asset_NotificationOfDamage' => $asset_NotificationOfDamage,
 				//pictorial report
 				'asset_PictorialReport' => $asset_PictorialReport,
-				'asset_PictorialReport_sbh' => $asset_PictorialReport_sbh,
 				'asset_site_routine' => $asset_site_routine,
 				'asset_defect_detection' => $asset_defect_detection,
-				'asset_defect_detection_sbh' => $asset_defect_detection_sbh,
 				//Non Conformance Product
 				'asset_NonConformanceProduct' => $asset_NonConformanceProduct,
 				//asset dashboard conop link
@@ -980,7 +931,6 @@ class JogetLink
 				'asset_LPA' => $asset_LPA,
 				//Schedule Inspection
 				'asset_ScheduleInspection' => $asset_ScheduleInspection,
-				'asset_ScheduleInspection_sbh' => $asset_ScheduleInspection_sbh,
 				//inspection form
 				'asset_insp_form_bridge' => $asset_insp_form_bridge,
 				'asset_insp_form_culvert' => $asset_insp_form_culvert,
@@ -1006,10 +956,8 @@ class JogetLink
 				'asset_maintain_nod' => $asset_maintain_nod,
 				'asset_maintain_nod_emergency' => $asset_maintain_nod_emergency,
 				'asset_manage_maint_work_activity' => $asset_manage_maint_work_activity,
-				'asset_manage_maint_work_activity_sabah' => $asset_manage_maint_work_activity_sabah,
 				'asset_manage_maint_work_instruction' => $asset_manage_maint_work_instruction,
-				'asset_manage_maint_work_instruction_sabah' => $asset_manage_maint_work_instruction_sabah,
-				'asset_submit_maint_work_program_sabah' => $asset_submit_maint_work_program_sabah,
+				'asset_submit_maint_work_program' => $asset_submit_maint_work_program,
 				'asset_inbox_maint_work_program' => $asset_inbox_maint_work_program,
 				'asset_inbox_maint_work_order' => $asset_inbox_maint_work_order,
 				'asset_inbox_maint_noe' => $asset_inbox_maint_noe,
@@ -1047,7 +995,6 @@ class JogetLink
 				'asset_maint_view_defect_detection_emergency' => $asset_maint_view_defect_detection_emergency,
 				'asset_create_defect_detection' => $asset_create_defect_detection,
 				'asset_manage_defect_detection' => $asset_manage_defect_detection,
-				'asset_manage_defect_detection_sabah' => $asset_manage_defect_detection_sabah,
 				'asset_create_NODefect' => $asset_create_NODefect,
 				'asset_manage_NODefect' => $asset_manage_NODefect,
 				'asset_submit_work_order_sabah' => $asset_submit_work_order_sabah,
@@ -1071,9 +1018,6 @@ class JogetLink
 		$cons_json_get_coordinate = $this->jogetHost."jw/web/json/plugin/JogetConstructsAPIs.GetConstructsProcessData/service";
 		$cons_json_datalist_inbox = $jsonPrefix."generalInbox_KKR?start=0&rows=5&d-7840943-fn_ResourceId=".$this->currUserEmail."&d-7840943-fn_package_id=".$this->currPackageId; //need package id as its used in the jdbc sql
 		$cons_json_datalist_inboxv3 = $jsonPrefix."generalInbox_KKR?d-7840943-fn_ResourceId=".$this->currUserEmail."&d-7840943-fn_package_id=".$this->currPackageId; //need package id as its used in the jdbc sql
-		
-		// my task for edit changes closed RFI
-		$rfi_closed_json_datalist_inbox = $jsonPrefix."list_editMyTask_inside?ResourceId=".$this->currUserEmail."&package_id=".$this->currPackageId; //need package id as its used in the jdbc sql
 
 		$cons_json_open_inbox = $userviewPrefix."general_inbox/_/general_inbox?";
 		// joget.php getJogetProcessRecords()
@@ -1135,16 +1079,12 @@ class JogetLink
 		$cons_issue_SDL_Manpower_Setup = $userviewPrefix."lookup/_/lookupManpower_crud?d-2659912-fn_package_uuid=".$this->currPackageUuid;
 		$cons_issue_NOI_WD_Setup = $userviewPrefix."lookup/_/lookupWorkDiscipline_crud?d-7447270-fn_package_uuid=".$this->currPackageUuid;
 		$cons_issue_District_Setup = $userviewPrefix."lookup/_/lookupDistrict_crud?d-2647551-fn_package_uuid=".$this->currPackageUuid;
-		$cons_issue_PBC_CC_Setup = $userviewPrefix."lookup/_/pubcCCuser_crud?package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId;
 
 		// manage ConOp_Coordless.js
 		$cons_manage_SMH = $userviewPrefix."smh/_/smhAction_crud?d-7837829-fn_package_uuid=".$this->currPackageUuid;
 		$cons_manage_DA = $userviewPrefix."da/_/daAction_crudSabah?d-2469409-fn_package_uuid=".$this->currPackageUuid;
 		$cons_manage_LI = $userviewPrefix."land/_/liAction_crud?d-2588002-fn_c_package_uuid=".$this->currPackageUuid;
 		$cons_manage_LE = $userviewPrefix."land/_/leAction_crud?d-2585086-fn_package_uuid=".$this->currPackageUuid;
-		$cons_manage_WIR = $userviewPrefix."wir/_/rfiAction_crudSabah?package_uuid=".$this->currPackageUuid;
-		//phase 1B
-		$cons_manage_SMH_1B = $userviewPrefix."smh/_/smhAction_crud1B?package_uuid=".$this->currPackageUuid;
 
 		//markup review
 		$cons_issue_markup = $userviewPrefix."markup/_/markUpForm?project_id_number=".$this->pid."&package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId;
@@ -1154,7 +1094,7 @@ class JogetLink
 		if($this->currProjectOwner == "JKR_SARAWAK"){
 			$cons_form_bulk = "Sarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 		}else if($this->currProjectOwner == "JKR_SABAH"){
-			$cons_form_bulk = "Sabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
+			$cons_form_bulk = "Sabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 		}
 		//Land Process for Link Lot ID
 		$cons_linkLot_LR = $userviewPrefix."land/_/la_linkUpdate?d-7743734-fn_package_uuid=".$this->currPackageUuid;
@@ -1163,10 +1103,8 @@ class JogetLink
 
 		//for Project Progress
 		$cons_issue_PPU = $userviewPrefix."projectprogress/_/newProjectProgress?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
-		$cons_issue_OPU = $userviewPrefix."projectprogress/_/newOverallProgress?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 		$cons_issue_PF = $userviewPrefix."projectprogress/_/newProjectFeature?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 		$cons_datalist_PF = $userviewPrefix."projectprogress/_/pfForm_crud?d-7745017-fn_package_uuid=".$this->currPackageUuid;
-		$cons_datalist_exportPP = $userviewPrefix."projectprogress/_/list_proj_progress_export";
 
 		$dash_cons_PBS_card = '';
 		$dash_cons_RR_card = '';
@@ -1189,11 +1127,7 @@ class JogetLink
 		$dash_cons_NCR_card_dashboard = '';
 		$dash_cons_INC_cat_card = '';
 		$dash_cons_RFI = "";
-		$dash_cons_RFI_opt = "";
 		$dash_cons_RFI_urw = "";
-		//phase 1B
-		$dash_cons_PBS_card_1B = "";
-		$dash_cons_RS_card_1B = "";
 
 		//dashboard card
 		if($_SESSION['is_Parent'] == "isParent" ){
@@ -1231,13 +1165,6 @@ class JogetLink
 		    $cons_issue_WIR = $userviewPrefix."wir/_/new_wirSarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 		    $cons_issue_DA = "";//not there for Sarawak
 			$cons_issue_PU = ""; //not there for Sarawak
-			$cons_issue_SA_1B = "";
-			$cons_issue_SMH_1B = "";
-			$cons_issue_PBC_1B = "";
-			$cons_issue_DCR_1B = "";
-			$cons_issue_RS_1B = "";
-			$cons_issue_SDL_1B = "";
-			$cons_issue_RFI_1B = "";
 
 			$cons_issue_NOI = $userviewPrefix."noi/_/".$srcUrl['temp_NOI_IdLink']."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_NCR = $userviewPrefix."ncr/_/". $srcUrl['temp_NCR_IdLink'] ."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
@@ -1425,9 +1352,6 @@ class JogetLink
 				'd-6463467-fn_c_year' => '',
 				'd-6463467-fn_c_month' => ''
 			));
-			$cons_datalist_PBC_1B = ""; //not there for Sarawak
-			$cons_datalist_RS_1B = ""; //not there for Sarawak
-			$cons_datalist_SDL_1B = ""; //not there for Sarawak
 
 			// open close form from email
 			$cons_form_RFI = $userviewPrefix."rfi/_/rfiForm_crudSarawak/?_mode=edit&hide=hideBack&id=";
@@ -1455,7 +1379,6 @@ class JogetLink
 			$cons_manage_SA = $userviewPrefix."sa/_/saAction_crud?d-2597479-fn_c_package_uuid=".$this->currPackageUuid;
 			$cons_manage_IR = $userviewPrefix."inc/_/incAction_crud?d-7770761-fn_c_package_uuid=".$this->currPackageUuid;
 			$cons_manage_RR = $userviewPrefix."rr/_/rrAction_crud?d-2607685-fn_c_package_uuid=".$this->currPackageUuid;
-			$cons_manage_SA_1B = ""; //not there for Sarawak
 
 			//dashboard
 			$dash_cons_PBS = $jsonPrefix."dashPublicComplaintSarawak?d-3340546-fn_package_uuid={?}&project_id={?}";
@@ -1475,17 +1398,12 @@ class JogetLink
 			$dash_cons_WIR = $jsonPrefix."dashWorkInspectionRequestSarawak?d-3857990-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_LS = "";
 			$dash_cons_RFIT = "";
-			$dash_cons_RFIT_opt = "";
 			$dash_cons_PU = "";
 			$dash_cons_DCR = "";
 			$dash_cons_RS = "";
 			$dash_cons_MSurw = "";
 			$dash_cons_NCRurw = "";
 			$dash_cons_NOIurw = "";
-			$dash_cons_RS_1B = "";
-			$dash_cons_RFI_opt = "";
-			$dash_cons_SDL_opt = "";
-
 
 			//dashboard Card ConOpLink
 			$dash_cons_PBS_card = $userviewPrefix."pubc/_/dashboardPUBCFormList?d-1887555-fn_package_uuid=".$packageUuidIdConOp."&d-1887555-fn_c_project_id=".$projectIdConOp."&d-1887555-fn_status={?}&d-1887555-fn_c_date_received={?}&d-1887555-fn_c_date_received={?}&d-1887555-fn_c_type={?}";
@@ -1500,9 +1418,7 @@ class JogetLink
 			$dash_cons_SMH_card = $userviewPrefix."smh/_/dashboardTotalManHoursSarawak?d-4523661-fn_package_uuid=".$packageUuidIdConOp."&d-4523661-fn_project_id=".$projectIdConOp."&d-4523661-fn_section={?}&d-4523661-fn_year={?}&d-4523661-fn_month={?}&d-4523661-fn_total_mh_wtlti={?}&d-4523661-fn_culmulative_mh_wlti={?}&d-4523661-fn_culmulative_mh_wtlti={?}";
 			$dash_cons_INC_card = $userviewPrefix."inc/_/dashboardIncidentSarawak?d-3168424-fn_package_uuid=".$packageUuidIdConOp."&d-3168424-fn_project_id=".$projectIdConOp."&d-3168424-fn_c_fatality_filter={?}&d-3168424-fn_section={?}&d-3168424-fn_search_date_incident={?}&d-3168424-fn_search_date_incident={?}&d-3168424-fn_c_incident_category_filter={?}";
 			$dash_cons_SA_card = $userviewPrefix."sa/_/dashboardSafetyActSarawak?d-5759682-fn_package_uuid=".$packageUuidIdConOp."&d-5759682-fn_project_id=".$projectIdConOp."&d-5759682-fn_section={?}&d-5759682-fn_year={?}&d-5759682-fn_month={?}&d-5759682-fn_package_id={?}&d-5759682-fn_committee_filter={?}&d-5759682-fn_toolbox_filter={?}&d-5759682-fn_traffic_filter={?}";
-			$dash_cons_BP_card = $userviewPrefix."bp/_/dashListBumi?project_uuid=".$this->currPackageUuid."&d-2265349-fn_package_uuid=".$packageIdConOp."&category={?}&d-2265349-fn_id={?}"; 
-			$dash_cons_PBS_card_1B = "";
-			$dash_cons_RS_card_1B = "";
+			$dash_cons_BP_card = $userviewPrefix."bp/_/dashListBumi?d-2265349-fn_project_uuid=".$this->currPackageUuid."&d-2265349-fn_package_uuid=".$packageIdConOp."&d-2265349-fn_category={?}&d-2265349-fn_id={?}"; 
 
 			// inbox datalist InitAsgnmtBox() ConOp.js
 			$cons_datalist_inbox_RFI = $userviewPrefix."rfi/_/rfiInbox?d-927618-fn_package_uuid=".$this->currPackageUuid."&d-927618-fn_ResourceId=".$this->currUserEmail;
@@ -1522,44 +1438,35 @@ class JogetLink
 			$cons_datalist_inbox_RSDL = $userviewPrefix."rsdl/_/rsdlInbox?d-2793184-fn_package_uuid=".$this->currPackageUuid."&d-2793184-fn_ResourceId=".$this->currUserEmail;
 		
 			$cons_datalist_PPU = $userviewPrefix."projectprogress/_/ppuForm_crud?d-6463062-fn_package_uuid=".$this->currPackageUuid;
-			$cons_datalist_OPU = "";
 
 			$cons_datalist_bulk_WIR = $userviewPrefix."wir/_/inbox_wirBulkAction?d-450749-fn_package_uuid=".$this->currPackageUuid."&d-450749-fn_label={?}";
 
 		}else if($this->currProjectOwner == "JKR_SABAH"){
 			//issuance
 			$cons_issue_PBC = $userviewPrefix."pubc/_/new_pubcSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
-			$cons_issue_RR = $userviewPrefix."rr/_/new_rrSarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
+			$cons_issue_RR = $userviewPrefix."rr/_/new_rrSarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_LR = $userviewPrefix."land/_/laFormSarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_LE = $userviewPrefix."land/_/leFormSarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
-			$cons_issue_LI = $userviewPrefix."land/_/liFormSarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
+			$cons_issue_LI = $userviewPrefix."land/_/liFormSarawak?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_LS = $userviewPrefix."land/_/ls_FormSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_SA = $userviewPrefix."sa/_/saFormSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
-			$cons_issue_IR = $userviewPrefix."inc/_/incFormSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			$cons_issue_BP = $userviewPrefix."bp/_/new_bpSarawak?package_id=".$this->currPackageId."&project_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&project_phase=".$this->currProjectPhase;
+			$cons_issue_IR = $userviewPrefix."inc/_/incFormSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
+			$cons_issue_BP = $userviewPrefix."bp/_/new_bpSarawak?package_id=".$this->currPackageId."&project_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 			$cons_issue_SMH = $userviewPrefix."smh/_/smhForm?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_SD = $userviewPrefix."sd/_/".$srcUrl['temp_SD_IdLink']."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_SDL = $userviewPrefix."sdl/_/new_sdlSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_RS = $userviewPrefix."rs/_/new_rsSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&coordinates=";
   	  		$cons_issue_RFI = $userviewPrefix."rfi/_/new_rfitSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_DCR = $userviewPrefix."dcr/_/new_dcrSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
-			$cons_issue_MS = $userviewPrefix."ma/_/new_maSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
+			$cons_issue_MS = $userviewPrefix."ma/_/new_maSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_MOS =  $userviewPrefix."ms/_/new_msSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
-		    $cons_issue_WIR = $userviewPrefix."wir/_/new_wirSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
+		    $cons_issue_WIR = $userviewPrefix."wir/_/new_wirSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_PU = $userviewPrefix."pu/_/new_puSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 		    $cons_issue_DA = $userviewPrefix."da/_/new_daSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 			$cons_issue_RR_CLOSE = $userviewPrefix."rr/_/rrAction_crudSabah?d-4532474-fn_c_package_uuid=".$this->currPackageUuid;
 			$cons_issue_RSDL = "";
-			$cons_issue_NOI = $userviewPrefix."noi/_/".$srcUrl['temp_NOI_IdLink']."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			$cons_issue_NCR = $userviewPrefix."ncr/_/".$srcUrl['temp_NCR_IdLink']."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			//phase 1B
-			$cons_issue_SA_1B = $userviewPrefix."sa/_/saFormSabah1B?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			$cons_issue_SMH_1B = $userviewPrefix."smh/_/smhForm1B?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			$cons_issue_PBC_1B = $userviewPrefix."pubc/_/new_pubcSabah1B?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			$cons_issue_DCR_1B = $userviewPrefix."dcr/_/".$srcUrl['temp_DCR_IdLink']."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			$cons_issue_RS_1B = $userviewPrefix."rs/_/new_rsSabah1B?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&coordinates=&project_phase=".$this->currProjectPhase."&wpc_abbr=".$this->currWpcAbbr;
-			$cons_issue_SDL_1B = $userviewPrefix."sdl/_/new_sdlSabah_1B?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
-			$cons_issue_RFI_1B = $userviewPrefix."rfi/_/new_rfitSabah_1b?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation."&project_phase=".$this->currProjectPhase;
+			$cons_issue_NOI = $userviewPrefix."noi/_/".$srcUrl['temp_NOI_IdLink']."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
+			$cons_issue_NCR = $userviewPrefix."ncr/_/".$srcUrl['temp_NCR_IdLink']."?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_location=".$this->currLocation;
 
 			// datalist
 			$cons_datalist_SDL = $userviewPrefix."sdl/_/sdlForm_crudSabah?d-1510695-fn_package_uuid=".$this->currPackageUuid.'&d-1510695-fn_subject=&d-1510695-fn_ref_no=&d-1510695-fn_contractor_name=&d-1510695-fn_contractor_company=&d-1510695-fn_dateCreated=&d-1510695-fn_dateCreated=';
@@ -1582,11 +1489,6 @@ class JogetLink
 			$cons_datalist_RR = $userviewPrefix."rr/_/rrForm_crudSabah?d-3355852-fn_c_package_uuid=".$this->currPackageUuid.'&d-3355852-fn_c_ref_no=&d-3355852-fn_c_risk_category=&d-3355852-fn_c_risk_subCategory=&d-3355852-fn_c_risk_owner=&d-3355852-fn_c_risk_description=&d-3355852-fn_c_risk=&d-3355852-fn_dateCreated=&d-3355852-fn_dateCreated=';
 			$cons_datalist_SMH = $userviewPrefix."smh/_/smhForm_crudSabah?d-1963404-fn_package_uuid=".$this->currPackageUuid;
 			$cons_datalist_RSDL = "";
-			
-			//phase 1B
-			$cons_datalist_PBC_1B = $userviewPrefix."pubc/_/pubcForm_crudSabah1B?d-634755-fn_package_uuid=".$this->currPackageUuid.'&d-634755-fn_c_date_received=&d-634755-fn_c_source=&d-634755-fn_c_aging=&d-634755-fn_date_acknowledgement=&d-634755-fn_date_acknowledgement=&d-634755-fn_chainage_from=&d-634755-fn_chainage_to=&d-634755-fn_category=&d-634755-fn_priority=&d-634755-fn_c_update_action=&d-634755-fn_c_updated_by=';
-			$cons_datalist_RS_1B = $userviewPrefix."rs/_/rsForm_crudSabah1B?package_uuid=".$this->currPackageUuid;
-			$cons_datalist_SDL_1B = $userviewPrefix."sdl/_/sdlForm_crudSabah1B?package_uuid=".$this->currPackageUuid.'&subject=&ref_no=&contractor_name=&contractor_company=&dateCreated=&dateCreated=';
 
 			// open close form
 			$cons_form_RFI = $userviewPrefix."rfi/_/rfiForm_crudSabah/?_mode=edit&hide=hideBack&id=";
@@ -1613,8 +1515,6 @@ class JogetLink
 			$cons_manage_SA = $userviewPrefix."sa/_/saAction_crudSabah?d-2052416-fn_c_package_uuid=".$this->currPackageUuid;
 			$cons_manage_IR = $userviewPrefix."inc/_/incAction_crudSabah?d-868742-fn_c_package_uuid=".$this->currPackageUuid;
 			$cons_manage_RR = $userviewPrefix."rr/_/rrAction_crudSabah?d-4532474-fn_c_package_uuid=".$this->currPackageUuid;
-			//phase 1B
-			$cons_manage_SA_1B = $userviewPrefix."sa/_/saAction_crudSabah1B?c_package_uuid=".$this->currPackageUuid;
 
 			//dashboard
 			$dash_cons_PBS = $jsonPrefix."dashPublicComplaintSabah?d-7827509-fn_package_uuid={?}&project_id={?}";
@@ -1632,16 +1532,12 @@ class JogetLink
 			$dash_cons_MSurw = $jsonPrefix."dashMethodStatementSabah?d-7266225-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_MS = $jsonPrefix."dashMethodStatementSarawak?d-6677598-fn_package_uuid={?}&project_id={?}"; //quality dashboard used same datalist with Sarawak
 			$dash_cons_RFI = $jsonPrefix."dashReqForInfoSabah?d-5685182-fn_package_uuid={?}&project_id={?}";
-			$dash_cons_RFI_opt = $jsonPrefix."dashReqForInfoSabah_opt?d-7518926-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_RFI_urw = $jsonPrefix."rfiSabahUtilitiesDash?d-6150084-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_PU = $jsonPrefix."dashProgressUpdateSabah?d-6266333-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_RFIT = $jsonPrefix."dashReqForInfoTechSabah?d-7534844-fn_package_uuid={?}&project_id={?}";
-			$dash_cons_RFIT_opt = $jsonPrefix."dashReqForInfoTechSabah_opt?d-6346604-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_DCR = $jsonPrefix."dashDesignChangeReqSabah?d-6698847-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_SDL = $jsonPrefix."dashSiteDailyLogSarawak?d-3277002-fn_package_uuid={?}&project_id={?}";
-			$dash_cons_SDL_opt = $jsonPrefix."dashSiteDailyLogSbh_total?d-4322220-fn_package_uuid={?}&project_id={?}";
 			$dash_cons_RS = $jsonPrefix."dashReportSubSabah?d-4235183-fn_package_uuid={?}&project_id={?}";
-			$dash_cons_RS_1B = $jsonPrefix."dashRsSabah1b?package_uuid={?}&project_id={?}&dateFrom={?}&dateTo={?}";
 			$dash_cons_WIR = "";
 			$dash_cons_LE = "";
 			$dash_cons_LI = "";
@@ -1664,10 +1560,9 @@ class JogetLink
 			$cons_datalist_inbox_RSDL = $userviewPrefix."rsdl/_/rsdlInbox?d-2793184-fn_package_uuid=".$this->currPackageUuid."&d-2793184-fn_ResourceId=".$this->currUserEmail;
 
 			$cons_datalist_PPU = $userviewPrefix."projectprogress/_/ppuForm_crudSabah?d-1864989-fn_package_uuid=".$this->currPackageUuid;
-			$cons_datalist_OPU = $userviewPrefix."projectprogress/_/opuForm_crud?d-3358966-fn_package_uuid=".$this->currPackageUuid;
 
-			$dash_cons_PBS_card = $userviewPrefix."pubc/_/dashboardPublicComplaintSabah?d-7827509-fn_package_uuid=".$packageUuidIdConOp."&project_id=".$projectIdConOp."&d-7827509-fn_status={?}&d-7827509-fn_search_date_received={?}&d-7827509-fn_search_date_received={?}&d-7827509-fn_search_category={?}&inPackageUuid={?}";
-			$dash_cons_RR_card = $userviewPrefix."rr/_/dashboardRiskSabah?d-1980266-fn_package_uuid=".$packageUuidIdConOp."&d-1980266-fn_project_id=".$projectIdConOp."&d-1980266-fn_c_status={?}&d-1980266-fn_dateCreated={?}&d-1980266-fn_dateCreated={?}&d-1980266-fn_c_risk_category={?}&d-1980266-fn_risk={?}&d-1980266-fn_id={?}";
+			$dash_cons_PBS_card = $userviewPrefix."pubc/_/dashboardPublicComplaintSabah?d-7827509-fn_package_uuid=".$packageUuidIdConOp."&d-7827509-fn_project_id=".$projectIdConOp."&d-7827509-fn_status={?}&d-7827509-fn_search_date_received={?}&d-7827509-fn_search_date_received={?}&d-7827509-fn_search_category={?}";
+			$dash_cons_RR_card = $userviewPrefix."rr/_/dashboardRiskSabah?d-4995432-fn_package_uuid=".$packageUuidIdConOp."&d-4995432-fn_project_id=".$projectIdConOp."&d-4995432-fn_c_status={?}&d-4995432-fn_dateCreated={?}&d-4995432-fn_dateCreated={?}&d-4995432-fn_c_risk_category={?}&d-4995432-fn_risk={?}&d-4995432-fn_id={?}";
 			$dash_cons_RS_card = $userviewPrefix."rs/_/dashReportSubSabah?d-4235183-fn_package_uuid=".$packageUuidIdConOp."&d-4235183-fn_project_id=".$projectIdConOp."&d-4235183-fn_month={?}&d-4235183-fn_year={?}&d-4235183-fn_search_status={?}&d-4235183-fn_category={?}";
 			$dash_cons_LS_card = $userviewPrefix."land/_/dashLandSummarySabah?d-4220774-fn_package_uuid=".$packageUuidIdConOp."&d-4220774-fn_project_id=".$projectIdConOp."&d-4220774-fn_month={?}&d-4220774-fn_year={?}&d-4220774-fn_lcm_no={?}&d-4220774-fn_district={?}";
 			$dash_cons_SMH_card = $userviewPrefix."smh/_/dashTotalManHoursSabah?d-3884178-fn_package_uuid=".$packageUuidIdConOp."&d-3884178-fn_project_id=".$projectIdConOp."&d-3884178-fn_year={?}&d-3884178-fn_month={?}&d-3884178-fn_month={?}"; 
@@ -1683,12 +1578,9 @@ class JogetLink
 			$dash_cons_NOI_card = $userviewPrefix."noi/_/dashNoticeOfImprovementSabah?d-4718410-fn_package_uuid=".$packageUuidIdConOp."&d-4718410-fn_project_id=".$projectIdConOp."&d-4718410-fn_date_issued={?}&d-4718410-fn_date_issued={?}&d-4718410-fn_type={?}&d-4718410-fn_type={?}&d-4718410-fn_type={?}&d-4718410-fn_search_status={?}&d-4718410-fn_nature_work={?}&d-4718410-fn_aging={?}&d-4718410-fn_aging={?}";
 			$dash_cons_SDL_card = $userviewPrefix."sdl/_/dashSiteDailyLogSabah?d-2776963-fn_package_uuid=".$packageUuidIdConOp."&d-2776963-fn_project_id=".$projectIdConOp."&d-2776963-fn_submission_date={?}&d-2776963-fn_submission_date={?}&d-2776963-fn_ref_no={?}";
 			$dash_cons_DCR_card = $userviewPrefix."dcr/_/dashboardDesignChangeReqSabah?d-7262369-fn_package_uuid=".$packageUuidIdConOp."&d-7262369-fn_project_id=".$projectIdConOp."&d-7262369-fn_dateCreated={?}&d-7262369-fn_dateCreated={?}&d-7262369-fn_status={?}&d-7262369-fn_work_discipline={?}";
-			$dash_cons_BP_card = $userviewPrefix."bp/_/dashListBumi?project_uuid=".$this->currPackageUuid."&d-2265349-fn_package_uuid=".$packageIdConOp."&category={?}&d-2265349-fn_id={?}&inPackageUuid={?}";
+			$dash_cons_BP_card = $userviewPrefix."bp/_/dashListBumi?d-2265349-fn_project_uuid=".$this->currPackageUuid."&d-2265349-fn_package_uuid=".$packageIdConOp."&d-2265349-fn_category={?}&d-2265349-fn_id={?}";
 			$dash_cons_NCR_card_dashboard = $userviewPrefix."ncr/_/dashListNonConSabahStatus?d-7197238-fn_package_uuid=".$packageUuidIdConOp."&d-7197238-fn_project_id=".$projectIdConOp."&d-7197238-fn_date_issued={?}&d-7197238-fn_date_issued={?}&d-7197238-fn_status={?}&d-7197238-fn_type={?}&d-7197238-fn_type={?}&d-7197238-fn_type={?}&d-7197238-fn_work_discipline={?}&d-7197238-fn_aging={?}&d-7197238-fn_aging={?}"; 
-			//phase 1B
-			$dash_cons_PBS_card_1B = $userviewPrefix."pubc/_/dashboardPublicComplaintSabah1B?d-3338930-fn_package_uuid=".$packageUuidIdConOp."&d-3338930-fn_project_id=".$projectIdConOp."&d-3338930-fn_status={?}&d-3338930-fn_search_date_received={?}&d-3338930-fn_search_date_received={?}&d-3338930-fn_search_category={?}&inPackageUuid={?}";
-			$dash_cons_RS_card_1B = $userviewPrefix."rs/_/dashReportSubSabah1B?package_uuid=".$packageUuidIdConOp."&project_id=".$projectIdConOp."&action={?}&dateFrom={?}&dateTo={?}&wpc={?}";
-
+			
 			// datalist bulk approval
 			$cons_datalist_bulk_WIR = $userviewPrefix."wir/_/inbox_wirBulkAction?d-450749-fn_package_uuid=".$this->currPackageUuid."&d-450749-fn_label={?}";
 
@@ -1699,7 +1591,6 @@ class JogetLink
 			'cons_json_datalist_inbox' => $cons_json_datalist_inbox,
 			'cons_json_datalist_inboxv3' => $cons_json_datalist_inboxv3,
 			'cons_json_open_inbox' => $cons_json_open_inbox,
-			'rfi_closed_json_datalist_inbox' => $rfi_closed_json_datalist_inbox,
 			// joget.php getJogetProcessRecords()
 			'cons_json_datalist_NOI' => $cons_json_datalist_NOI,
 			'cons_json_datalist_NCR' => $cons_json_datalist_NCR,
@@ -1740,10 +1631,6 @@ class JogetLink
 			'cons_datalist_PU' => $cons_datalist_PU,
 			'cons_datalist_BP' => $cons_datalist_BP,
 			'cons_datalist_RSDL' => $cons_datalist_RSDL,
-			//phase 1B
-			'cons_datalist_PBC_1B' => $cons_datalist_PBC_1B,
-			'cons_datalist_RS_1B' => $cons_datalist_RS_1B,
-			'cons_datalist_SDL_1B' => $cons_datalist_SDL_1B,
 			// form openCloseForm() ConOp.js,
 			'cons_form_NCR' => $cons_form_NCR,
 			'cons_form_WIR' => $cons_form_WIR,
@@ -1798,15 +1685,6 @@ class JogetLink
 			'cons_issue_PU' => $cons_issue_PU,
 			'cons_issue_NOI_WD_Setup' => $cons_issue_NOI_WD_Setup,
 			'cons_issue_District_Setup' => $cons_issue_District_Setup,
-			'cons_issue_PBC_CC_Setup' => $cons_issue_PBC_CC_Setup,
-			//phase 1B
-			'cons_issue_SA_1B' => $cons_issue_SA_1B,
-			'cons_issue_SMH_1B' => $cons_issue_SMH_1B,
-			'cons_issue_PBC_1B' => $cons_issue_PBC_1B,
-			'cons_issue_DCR_1B' => $cons_issue_DCR_1B,
-			'cons_issue_RS_1B' => $cons_issue_RS_1B,
-			'cons_issue_SDL_1B' => $cons_issue_SDL_1B,
-			'cons_issue_RFI_1B' => $cons_issue_RFI_1B,
 			// issuance assetWiseGuiProject.js
 			'cons_issue_RFI' => $cons_issue_RFI,
 			'cons_issue_RS' => $cons_issue_RS,
@@ -1833,10 +1711,6 @@ class JogetLink
 			'cons_manage_LS' => $cons_manage_LS,
 			'cons_manage_IR' => $cons_manage_IR,
 			'cons_manage_RR' => $cons_manage_RR,
-			'cons_manage_WIR' => $cons_manage_WIR,
-			//phase 1B
-			'cons_manage_SA_1B' => $cons_manage_SA_1B,
-			'cons_manage_SMH_1B' => $cons_manage_SMH_1B,
 			//dashboard
 			'dash_cons_PBS' => $dash_cons_PBS,
 			'dash_cons_RR' => $dash_cons_RR,
@@ -1852,20 +1726,16 @@ class JogetLink
 			'dash_cons_MT' => $dash_cons_MT,
 			'dash_cons_MS' => $dash_cons_MS,
 			'dash_cons_RFI' => $dash_cons_RFI,
-			'dash_cons_RFI_opt' => $dash_cons_RFI_opt,
 			'dash_cons_RFI_urw' => $dash_cons_RFI_urw,
 			'dash_cons_SDL' => $dash_cons_SDL,
-			'dash_cons_SDL_opt' => $dash_cons_SDL_opt,
 			'dash_cons_PU' => $dash_cons_PU,
 			'dash_cons_RFIT' => $dash_cons_RFIT,
-			'dash_cons_RFIT_opt' => $dash_cons_RFIT_opt,
 			'dash_cons_DCR' => $dash_cons_DCR,
 			'dash_cons_RS' => $dash_cons_RS,
 			'dash_cons_MSurw' => $dash_cons_MSurw,
 			'dash_cons_NCRurw' => $dash_cons_NCRurw,
 			'dash_cons_NOIurw' => $dash_cons_NOIurw,
 			'dash_cons_WIR' => $dash_cons_WIR,
-			'dash_cons_RS_1B' => $dash_cons_RS_1B,
 			//markup
 			'cons_issue_markup' => $cons_issue_markup,
 			'cons_datalist_markup' => $cons_datalist_markup,
@@ -1877,12 +1747,9 @@ class JogetLink
 			'cons_linkLot_LE' => $cons_linkLot_LE,
 			//For Digital Reporting
 			'cons_issue_PPU' => $cons_issue_PPU,
-			'cons_issue_OPU' => $cons_issue_OPU,
 			'cons_datalist_PPU' => $cons_datalist_PPU,
-			'cons_datalist_OPU' => $cons_datalist_OPU,
 			'cons_issue_PF' => $cons_issue_PF,
 			'cons_datalist_PF' => $cons_datalist_PF,
-			'cons_datalist_exportPP' => $cons_datalist_exportPP,
 			//dashboard card
 			'dash_cons_PBS_card' => $dash_cons_PBS_card,
 			'dash_cons_RR_card' => $dash_cons_RR_card,
@@ -1917,9 +1784,6 @@ class JogetLink
 			'dash_cons_SA_card' => $dash_cons_SA_card,
 			'dash_cons_INC_card' => $dash_cons_INC_card,
 			'dash_cons_NCR_card_dashboard' => $dash_cons_NCR_card_dashboard,
-			//phase 1B
-			'dash_cons_PBS_card_1B' => $dash_cons_PBS_card_1B,
-			'dash_cons_RS_card_1B' => $dash_cons_RS_card_1B,
 			// datalist bulk approval
 			'cons_datalist_bulk_WIR' => $cons_datalist_bulk_WIR 
 		);
@@ -1958,13 +1822,19 @@ class JogetLink
 		$fm_new_service_request =  $userviewPrefix."new_serviceRequest?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$fm_view_list_service_request =  $userviewPrefix."list_serviceRequestView";
 		$fm_category_manage = $userviewPrefix.'sr_categoryForm_crud';
-
+		$fm_new_ppm =  $userviewPrefix."new_ppm?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
+		$fm_view_list_ppm =  $userviewPrefix."list_ppmView";
+		$fm_work_order =  $userviewPrefix."workOrderFormFM?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
+		$fm_omni_class_datalist = $jsonPrefix.'list_fmOmniForm?start=0&rows=9999';
+		$fm_omni_class = $userviewPrefix.'fmOmniForm_crud';
+		$fm_omni_class_form = $userviewPrefix.'omniClassForm';
 		// notifications
-		$fm_json_notifications = $jsonPrefix."generalInbox?d-5171348-fn_assign_to=".$this->currUserEmail.'&dateModifiedFrom={?}&dateModifiedTo={?}';
-		$fm_json_notifications_count =  $jsonPrefix."generalInbox_count?d-5171348-fn_assign_to=";
-		$fm_json_notifications_package = $jsonPrefix."generalInbox?start=0&d-5171348-fn_package_id=".urlencode($this->currPackageId)."&d-5171348-fn_c_assign_to=".$this->currUserEmail;
-		
 
+		// FM Data
+		$fm_asset_data_list = $userviewPrefix."list_assetData";
+		$fm_asset_data_list_json = $jsonPrefix."list_assetData";
+		$fm_asset_data_mapping_list = $jsonPrefix."list_mappingAssetData";
+		
 		$fmLinkArr = [
 			// setup lookup list
 			'fm_lookup_list_currency' => $fm_lookup_list_currency,
@@ -1975,14 +1845,19 @@ class JogetLink
 			'fm_sor_management_setup' => $fm_sor_management_setup,
 			//asset type
 			'fm_asset_type_manage' => $fm_asset_type_manage,
-			//notifications
-			'fm_json_notifications' => $fm_json_notifications,
-			'fm_json_notifications_count' => $fm_json_notifications_count,
-			'fm_json_notifications_package' => $fm_json_notifications_package,
 			// service request
 			'fm_new_service_request' => $fm_new_service_request,
 			'fm_view_list_service_request' => $fm_view_list_service_request,
-			'fm_category_manage' => $fm_category_manage
+			'fm_category_manage' => $fm_category_manage,
+			'fm_new_ppm' => $fm_new_ppm,
+			'fm_view_list_ppm' => $fm_view_list_ppm,
+			'fm_work_order' => $fm_work_order,
+			'fm_omni_class' => $fm_omni_class,
+			'fm_omni_class_datalist' => $fm_omni_class_datalist,
+			'fm_omni_class_form' => $fm_omni_class_form,
+			'fm_asset_data_list' => $fm_asset_data_list,
+			'fm_asset_data_list_json' => $fm_asset_data_list_json,
+			'fm_asset_data_mapping_list' => $fm_asset_data_mapping_list
 		];
 	   
 		$this->jogetAppLink = array_merge($this->jogetAppLink, $fmLinkArr);
@@ -2126,12 +2001,12 @@ class JogetLink
 
 		// Conop link
 		$dash_cons_PBS_card = $userviewPrefix."pubc/_/dashboardPUBCFormList_sslr?d-5703306-fn_package_uuid=".$packageUuidIdConOp."&d-5703306-fn_c_project_id=".$projectIdConOp."&d-5703306-fn_status={?}&d-5703306-fn_c_date_received={?}&d-5703306-fn_c_date_received={?}&d-5703306-fn_c_type={?}&d-5703306-fn_c_category={?}";
-		$dash_cons_LI_card = $userviewPrefix."land/_/dashLandIssue_sslr?d-277541-fn_package_uuid=".$packageUuidIdConOp."&d-277541-fn_project_id=".$projectIdConOp."&d-277541-fn_c_issue_date={?}&d-277541-fn_c_issue_date={?}&d-277541-fn_c_section={?}&d-277541-fn_view_issue_status={?}";
-		$dash_cons_LI_table = $userviewPrefix."land/_/dashLandIssue_sslr?d-277541-fn_package_uuid=".$packageUuidIdConOp."&d-277541-fn_project_id=".$projectIdConOp."&d-277541-fn_c_issue_date={?}&d-277541-fn_c_issue_date={?}&d-277541-fn_c_title={?}";
-		$dash_cons_LE_card = $userviewPrefix."land/_/dashLandEnc_sslr?d-4673600-fn_package_uuid=".$packageUuidIdConOp."&d-4673600-fn_project_id=".$projectIdConOp."&d-4673600-fn_issue_date={?}&d-4673600-fn_issue_date={?}&d-4673600-fn_section={?}&d-4673600-fn_issue_status={?}";
+		$dash_cons_LI_card = $userviewPrefix."land/_/dashLandIssue_sslr?d-277541-fn_package_uuid=".$packageUuidIdConOp."&d-277541-fn_project_id=".$projectIdConOp."&d-277541-fn_dateCreated={?}&d-277541-fn_dateCreated={?}&d-277541-fn_c_section={?}&d-277541-fn_view_issue_status={?}";
+		$dash_cons_LI_table = $userviewPrefix."land/_/dashLandIssue_sslr?d-277541-fn_package_uuid=".$packageUuidIdConOp."&d-277541-fn_project_id=".$projectIdConOp."&d-277541-fn_dateCreated={?}&d-277541-fn_dateCreated={?}&d-277541-fn_c_title={?}";
+		$dash_cons_LE_card = $userviewPrefix."land/_/dashLandEnc_sslr?d-4673600-fn_package_uuid=".$packageUuidIdConOp."&d-4673600-fn_project_id=".$projectIdConOp."&d-4673600-fn_dateCreated={?}&d-4673600-fn_dateCreated={?}&d-4673600-fn_section={?}&d-4673600-fn_issue_status={?}";
 		$dash_cons_BP_card = $userviewPrefix."bp/_/dashListBumi_sslr?d-4913494-fn_project_uuid=".$this->currPackageUuid."&d-4913494-fn_package_uuid=".$packageIdConOp."&d-4913494-fn_category={?}&d-4913494-fn_id={?}";
 		$dash_cons_SMH_card = $userviewPrefix."smh/_/dashboardTotalManHours_sslr?d-4232350-fn_package_uuid=".$packageUuidIdConOp."&d-4232350-fn_project_id=".$projectIdConOp."&d-4232350-fn_section={?}&d-4232350-fn_year={?}&d-4232350-fn_month={?}&d-4232350-fn_total_mh_wtlti={?}&d-4232350-fn_culmulative_mh_wlti={?}&d-4232350-fn_culmulative_mh_wtlti={?}";
-		$dash_cons_INC_card = $userviewPrefix."inc/_/dashboardIncident_sslr?d-2217633-fn_package_uuid=".$packageUuidIdConOp."&d-2217633-fn_project_id=".$projectIdConOp."&d-2217633-fn_c_fatality_filter={?}&d-2217633-fn_section={?}&dateFrom={?}&dateTo={?}&d-2217633-fn_c_incident_category_filter={?}";
+		$dash_cons_INC_card = $userviewPrefix."inc/_/dashboardIncident_sslr?d-2217633-fn_package_uuid=".$packageUuidIdConOp."&d-2217633-fn_project_id=".$projectIdConOp."&d-2217633-fn_c_fatality_filter={?}&d-2217633-fn_section={?}&d-2217633-fn_search_date_incident={?}&d-2217633-fn_search_date_incident={?}&d-2217633-fn_c_incident_category_filter={?}";
 		$dash_cons_SA_card = $userviewPrefix."sa/_/dashboardSafetyAct_sslr?d-1573483-fn_package_uuid=".$packageUuidIdConOp."&d-1573483-fn_project_id=".$projectIdConOp."&d-1573483-fn_section={?}&d-1573483-fn_year={?}&d-1573483-fn_month={?}&d-1573483-fn_package_id={?}&d-1573483-fn_committee_filter={?}&d-1573483-fn_toolbox_filter={?}&d-1573483-fn_traffic_filter={?}";
 		$dash_cons_MS_card = $userviewPrefix."ms/_/dashMethodStatement_sslr?d-1354093-fn_package_uuid=".$packageUuidIdConOp."&d-1354093-fn_project_id=".$projectIdConOp."&d-1354093-fn_issued_date={?}&d-1354093-fn_issued_date={?}&d-1354093-fn_c_approval_status_filter={?}&d-1354093-fn_section={?}&d-1354093-fn_aging_filter={?}&d-1354093-fn_aging_filter={?}&d-1354093-fn_review_filter={?}";
 		$dash_cons_MT_card = $userviewPrefix."ma/_/dashboardMaterialApproval_sslr?d-5423157-fn_package_uuid=".$packageUuidIdConOp."&d-5423157-fn_project_id=".$projectIdConOp."&d-5423157-fn_submission_date={?}&d-5423157-fn_submission_date={?}&d-5423157-fn_section={?}&d-5423157-fn_c_approval_code_filter={?}&d-5423157-fn_aging_filter={?}&d-5423157-fn_aging_filter={?}";
@@ -2309,7 +2184,7 @@ class JogetLink
 		$finance_list_PublishedContracts_SSLR2 = $userviewPrefix.$srcUrl['finance_list_ContractsUrl_SSLR2']."d-3731655-fn_project_id=".$this->currPackageId.$srcUrl['finance_list_PublishedContractsFilter_SSLR2'];
 		$finance_list_ContractInbox_SSLR2 = $userviewPrefix."contract_inbox_sslr?d-2073383-fn_project_id=".$this->currPackageId;
 		$finance_list_ContractActivityForm_SSLR2 = $userviewPrefix."contract_inbox_sslr?activityId=";
-		$finance_list_RejectedContracts_SSLR2 = $userviewPrefix.$srcUrl['finance_list_ContractsUrl_SSLR2']."d-3731655-fn_project_id=".$this->currPackageId."&status1=Draft&status2=Upload%20BoQ";
+		$finance_list_RejectedContracts_SSLR2 = $userviewPrefix.$srcUrl['finance_list_ContractsUrl_SSLR2']."d-3731655-fn_project_id=".$this->currPackageId."&status1=Draft";
 		$finance_list_BulkUploadContracts_SSLR2 = $userviewPrefix."bulkImportContractSSLR?project_id=".$this->currPackageId."&project_owner=".$this->currProjectOwner."&contract_level=".$this->currContractLevel;
 
 		// Claims
@@ -2338,7 +2213,8 @@ class JogetLink
 		//dashboard conOpLink
 		$finance_contract_dash_card_SSLR2 = $userviewPrefix."dashboardContractList_sslr?d-2000815-fn_project_id=".$projectIdConOp."&d-2000815-fn_contract_id={?}";
 		$finance_dash_claim_card_SSLR2 = $userviewPrefix."claimDashboardViewList_sslr?d-8200904-fn_project_id=".$projectIdConOp."&d-8200904-fn_claim_id={?}";
-		$finance_dash_vo_card_SSLR2 = $userviewPrefix."voDashboardList_sslr?d-4070284-fn_project_id=".$projectIdConOp."&d-4070284-fn_contract_string_id={?}&d-4070284-fn_vo_type={?}";
+		$finance_dash_vo_card_SSLR2 = $userviewPrefix."voDashboardList_sslr?d-4070284-fn_project_id=".$projectIdConOp."&d-4070284-fn_contract_string_id={?}&
+		d-4070284-fn_vo_type={?}";
 		
 		// Lookup
 		$finance_list_leadConsultantList_SSLR2 = $userviewPrefix. "lookup_leadConsultant_sslr?contract_level=".$this->currContractLevel.'&d-1855237-fn_project_id='.$projectIdConOp;
@@ -2390,7 +2266,7 @@ class JogetLink
 			// Notifications
 			'finance_json_Notificationsv3' => $finance_json_Notificationsv3
 		);
-
+		
 		$this->jogetAppLink = array_merge($this->jogetAppLink, $financeLinkArr);
 	
 		return;
@@ -2803,7 +2679,6 @@ class JogetLink
 		$NewEOT = "";
 		//$eotNew = "";
 		//$eotList = "";
-		$VoEotUrl = "";
 
 		switch($this->currUserRole){
 			case "Contract Executive":
@@ -2846,8 +2721,8 @@ class JogetLink
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status3=Upload%20BoQ&status4=Document%20Upload&status5=info";
 				$acsNew = "ce_acs_new_sslr?d-4145608-fn_project_id=";
 				$acsList = "ce_acs_list_sslr?d-6072065-fn_project_id=";
-				$EOTsUrl = "ce_eot_list_sslr?";
-				$VoEotUrl = "ce_vo_eot_list_sslr?";
+				$EOTsUrl = "rep_eot_list_sslr?";
+				$VoEotUrl = "rep_vo_eot_list_sslr?";
 				$CurrentEOTsFilter ="&status1=New&status2=In%20Progress&status3=info";
 				$NewEOT = "rep_eot_new_sslr?d-3039819-fn_project_id=";
 				// $eotNew = "ce_eot_new_sslr?d-3039819-fn_project_id=";
@@ -2952,8 +2827,7 @@ class JogetLink
 		$CurrentVOsFilter ="";
 		$CurrentAmendments ="";
 		$ArchivedContracts ="";
-		$EOTList = "";
-
+	
 		switch($this->currUserRole){
 			case "Finance Officer":
 				$projectInfo = "project_fo_ul?&_mode=edit&id=";
@@ -2972,7 +2846,6 @@ class JogetLink
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status3=Upload%20BoQ&status4=Document%20Upload&status5=info";
 				$CurrentAmendments = "contract_amend_fo_ul?d-6113688-fn_project_id=";
 				$ArchivedContracts = "fo_archive_contracts_ul?d-4920353-fn_project_id=";
-				$EOTList = "eot_fo_ul?project_id=";
 				break;
 			case "Project Manager":
 			case "Project Monitor":
@@ -3007,7 +2880,6 @@ class JogetLink
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status4=Document%20Upload&status5=info";
 				$CurrentAmendments = "contract_amend_fh_ul?d-6113688-fn_project_id=";
 				$ArchivedContracts = "fh_archive_contracts_ul?d-4920353-fn_project_id=";
-				$EOTList = "eot_fh_ul?project_id=";
 				break;
 			case "Director":
 				$projectInfo = "project_dir_ul?&_mode=edit&id=";
@@ -3024,7 +2896,6 @@ class JogetLink
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status4=Document%20Upload&status5=info";
 				$CurrentAmendments = "contract_amend_dir_ul?d-6113688-fn_project_id=";
 				$ArchivedContracts = "dir_archive_contracts_ul?d-4920353-fn_project_id=";
-				$EOTList = "eot_fd_ul?project_id=";
 				break;
 			case "Construction Engineer":
 				$ContractsUrl = "contracts_ce_ul?";
@@ -3033,7 +2904,6 @@ class JogetLink
 				$VOsUrl = "vo_ce_ul?";
 				$CurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status4=Document%20Upload&status5=info";
-				$EOTList = "eot_ce_ul?project_id=";
 				break;
 			case "Contractor PM":
 				$ContractsUrl = "cpm_contract_ul?";
@@ -3053,7 +2923,6 @@ class JogetLink
 				$CurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				$NewClaim = "ce_contract_claim_ul?d-2823043-fn_project_id=";
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status4=Document%20Upload&status5=info";
-				$EOTList = "eot_cce_ul?project_id=";
 				break;
 			case "Consultant CRE":
 				$ContractsUrl = "contracts_ccre_ul?";
@@ -3111,9 +2980,7 @@ class JogetLink
 			'finance_list_NewVO' => $NewVO,
 			'finance_list_CurrentVOsFilter' => $CurrentVOsFilter,
 			'finance_list_CurrentAmendments' => $CurrentAmendments,
-			'finance_list_ArchivedContracts' => $ArchivedContracts,
-			'finance_list_EOTList' => $EOTList
-			
+			'finance_list_ArchivedContracts' => $ArchivedContracts
 
 		);
 		return $ret;	
@@ -3146,12 +3013,6 @@ class JogetLink
 		}else{
 			$projectIdConOp = $this->currPackageId;
 		}
-
-		if($this->currProjectPhase){
-			$projectPhaseParam = '&project_phase='.$this->currProjectPhase;
-		}else{
-			$projectPhaseParam = '';
-		}
 		
 
 		$finance_list_ProjectInfo = $userviewPrefix.$srcUrl['finance_list_ProjectInfo'].$this->currPackageId;
@@ -3170,27 +3031,20 @@ class JogetLink
 		$finance_list_ContractApprovedRejected = $userviewPrefix.$srcUrl['finance_list_ContractsUrl']."id=";
 		$finance_list_ClaimApprovedRejected = $userviewPrefix.$srcUrl['finance_list_ClaimsUrl']."id=";
 		$finance_list_VOApprovedRejected = $userviewPrefix.$srcUrl['finance_list_VOsUrl']."id=";
-		$finance_list_NewContract = $userviewPrefix."create_contract?project_id=".$this->currPackageId."&project_owner=".$this->currProjectOwner.$projectPhaseParam;
-		$finance_list_RejectedContracts = $userviewPrefix.$srcUrl['finance_list_ContractsUrl']."d-4882770-fn_project_id=".$this->currPackageId."&status1=Reject&status2=Upload BoQ";
-		$finance_list_BulkUploadContracts = $userviewPrefix."bulkImportContract?project_id=".$this->currPackageId."&project_owner=".$this->currProjectOwner;
-		$finance_list_ExportContracts = $userviewPrefix."list_contract_export";
-
+		$finance_list_NewContract = $userviewPrefix."create_contract?project_id=".$this->currPackageId."&project_owner=".$this->currProjectOwner;
+		$finance_list_RejectedContracts = $userviewPrefix.$srcUrl['finance_list_ContractsUrl']."d-4882770-fn_project_id=".$this->currPackageId."&status1=Reject";
 		$finance_list_CurrentClaims = $userviewPrefix.$srcUrl['finance_list_ClaimsUrl']."d-6787268-fn_project_id=".$this->currPackageId.$srcUrl['finance_list_CurrentClaimsFilter'];
 		$finance_list_RejectedClaims = $userviewPrefix.$srcUrl['finance_list_ClaimsUrl']."d-6787268-fn_project_id=".$this->currPackageId."&status1=Reject";
 		$finance_list_ApprovedClaims = $userviewPrefix.$srcUrl['finance_list_ClaimsUrl']."d-6787268-fn_project_id=".$this->currPackageId."&status1=Complete&status2=Updated&status3=IPC Approved&status4=Payment Received";
-		$finance_list_ExportClaims = $userviewPrefix."list_claim_export";
-
 		$finance_list_NewClaim = $userviewPrefix.$srcUrl['finance_list_NewClaim'].$this->currPackageId. "&d-2823043-fn_status=Complete";
 		$finance_list_ClaimInbox = $userviewPrefix."claim_inbox?d-2380059-fn_project_id=".$this->currPackageId;
 		$finance_list_NewVO = $userviewPrefix.$srcUrl['finance_list_NewVO'].$this->currPackageId. "&d-4828409-fn_status=Complete";
 		$finance_list_CurrentVOs = $userviewPrefix.$srcUrl['finance_list_VOsUrl']."d-6410841-fn_project_id=" .$this->currPackageId.$srcUrl['finance_list_CurrentVOsFilter'];
 		$finance_list_ApprovedVOs = $userviewPrefix.$srcUrl['finance_list_VOsUrl']."d-6410841-fn_project_id=" .$this->currPackageId. "&status1=complete";
-		$finance_list_ExportVOs = $userviewPrefix."list_vo_export";
 		$finance_list_RejectedVOs = $userviewPrefix.$srcUrl['finance_list_VOsUrl']."d-6410841-fn_project_id=" .$this->currPackageId. "&status1=reject";
 		$finance_list_VOInbox = $userviewPrefix."vo_inbox?d-447905-fn_project_id=".$this->currPackageId;
 		$finance_list_ScheduleData = $userviewPrefix."import_schedule_data";
 		$finance_list_ImportUnit = $userviewPrefix."import_unit_data";
-		$finance_list_organization = $userviewPrefix."orgList";
 		$finance_list_NewAmendment = $userviewPrefix."fo_contract_amend_ul?d-122886-fn_project_id=" .$this->currPackageId. "&d-122886-fn_status=Complete";
 		$finance_list_AmendmentInbox = $userviewPrefix."contract_amend_data_inbox?d-5152114-fn_project_id=".$this->currPackageId;
 		$finance_list_CurrentAmendments = $userviewPrefix.$srcUrl['finance_list_CurrentAmendments'].$this->currPackageId;
@@ -3199,7 +3053,7 @@ class JogetLink
 		$finance_list_RatesData_view = $userviewPrefix."listviewRates";
 		$finance_list_LocationFactorData = $userviewPrefix."listLocationFactor";
 		$finance_list_LocationFactorData_view = $userviewPrefix."listviewLocationFactor";
-		
+
 		//dashboard card Sabah
 		$finance_dash_contract_card = $userviewPrefix."dashboardContractDisplay?d-1181898-fn_status=complete&d-1181898-fn_project_id={?}&d-1181898-fn_contract_id={?}";
 		
@@ -3209,9 +3063,7 @@ class JogetLink
 
 		//dashboard conOpLink Asset
 		
-		// Sabah 1B
-		$finance_list_NewEOT_Sabah = $userviewPrefix."contract_eot_fo_ul?project_id=" .$this->currPackageId. "&status=Complete";
-		$finance_list_EOTList_Sabah = $userviewPrefix.$srcUrl['finance_list_EOTList'].$this->currPackageId;
+		
 
 		$financeLinkArr = array(
 			//json urls
@@ -3247,13 +3099,10 @@ class JogetLink
 			'finance_list_ContractInbox' => $finance_list_ContractInbox,
 			'finance_list_ContractActivityForm' => $finance_list_ContractActivityForm,
 			'finance_list_ContractApprovedRejected' => $finance_list_ContractApprovedRejected,
-			'finance_list_BulkUploadContracts' => $finance_list_BulkUploadContracts,
-			'finance_list_ExportContracts' => $finance_list_ExportContracts,
 			//Claim Urls
 			'finance_list_CurrentClaims' => $finance_list_CurrentClaims,
 			'finance_list_RejectedClaims' => $finance_list_RejectedClaims,
 			'finance_list_ApprovedClaims' => $finance_list_ApprovedClaims,
-			'finance_list_ExportClaims' => $finance_list_ExportClaims,
 			'finance_list_NewClaim' => $finance_list_NewClaim,
 			'finance_list_ClaimInbox' => $finance_list_ClaimInbox,
 			'finance_list_ClaimActivityForm' => $finance_list_ClaimActivityForm,
@@ -3261,7 +3110,6 @@ class JogetLink
 			//VO Urls
 			'finance_list_CurrentVOs' => $finance_list_CurrentVOs,
 			'finance_list_ApprovedVOs'=> $finance_list_ApprovedVOs,
-			'finance_list_ExportVOs'=> $finance_list_ExportVOs,
 			'finance_list_RejectedVOs'=> $finance_list_RejectedVOs,
 			'finance_list_NewVO' => $finance_list_NewVO,
 			'finance_list_VOInbox'=> $finance_list_VOInbox,
@@ -3276,15 +3124,12 @@ class JogetLink
 			//Look up Data Urls
 			'finance_list_ScheduleData'=> $finance_list_ScheduleData,
 			'finance_list_ImportUnit'=> $finance_list_ImportUnit,
-			'finance_list_organization' => $finance_list_organization,
 			'finance_list_RatesData'=> $finance_list_RatesData,
 			'finance_list_RatesData_view'=> $finance_list_RatesData_view,
 			'finance_list_LocationFactorData'=> $finance_list_LocationFactorData,
-			'finance_list_LocationFactorData_view'=> $finance_list_LocationFactorData_view,
+			'finance_list_LocationFactorData_view'=> $finance_list_LocationFactorData_view
 			//dashboard card
-			// EOT
-			'finance_list_NewEOT_Sabah' => $finance_list_NewEOT_Sabah,
-			'finance_list_EOTList_Sabah' => $finance_list_EOTList_Sabah
+			
 		);
 		$this->jogetAppLink = array_merge($this->jogetAppLink, $financeLinkArr);
 	
@@ -3311,7 +3156,6 @@ class JogetLink
 		$HqCurrentClaimsFilter ="";
 		$HqCurrentClaimsPerFilter ="";
 		$NewClaim = "";
-		$NewClaimSwk = "";
 		$NewClaimPeriodic ="";
 		$NewClaimHq = "";
 		$NewClaimPerHq = "";
@@ -3338,7 +3182,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_sce_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_sce_ul?";
 				$VOsUrl = "vo_sce_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3362,7 +3206,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_ce_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_ce_ul?";
 				$VOsUrl = "vo_ce_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3386,7 +3230,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_sced_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_sced_ul?";
 				$VOsUrl = "vo_sced_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3410,7 +3254,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_cera_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_cera_ul?";
 				$VOsUrl = "vo_cera_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3434,7 +3278,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_ad_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_ad_ul?";
 				$VOsUrl = "vo_ad_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3458,7 +3302,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_ae_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_ae_ul?";
 				$VOsUrl = "vo_ae_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3482,7 +3326,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_qs_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_qs_ul?";
 				$VOsUrl = "vo_qs_ul?";
-				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status=Draft";
@@ -3509,7 +3353,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_sqs_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_sqs_ul?";
 				$VOsUrl = "vo_sqs_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3534,7 +3378,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_de_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_de_ul?";
 				$VOsUrl = "vo_de_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3552,12 +3396,11 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_ca_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_ca_ul?";
 				$VOsUrl = "vo_ca_ul?";
-				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				$HqCurrentClaimsFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$NewClaim = "ca_contract_claim_ul?";
-				$NewClaimSwk = "ca_contract_claim_ul_sarawak?";
 				$NewClaimPeriodic= "ca_contract_per_claim_ul?";
 				$NewVO = "ca_contract_vo_ul?d-4828409-fn_project_id=";
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status3=Upload%20BoQ&status4=Document%20Upload&status5=info";
@@ -3572,7 +3415,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_hoc_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_hoc_ul?";
 				$VOsUrl = "vo_hoc_ul?";
-				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				$HqCurrentClaimsFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3582,7 +3425,6 @@ class JogetLink
 				$CurrentVOsFilter ="&status1=New&status2=In%20Progress&status3=Upload%20BoQ&status4=Document%20Upload&status5=info";
 				$finance_list_RoutineContractsAmendList = "list_routine_amend_hoc?d-5864550-fn_project_id=";
 				$NewClaim = "ca_contract_claim_ul?";
-				$NewClaimSwk = "ca_contract_claim_ul_sarawak?";
 				$NewClaimPeriodic= "ca_contract_per_claim_ul?";
 				break;
 			case "Head of Finance":
@@ -3593,7 +3435,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_hof_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_hof_ul?";
 				$VOsUrl = "vo_hof_ul?";
-				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				$HqCurrentClaimsFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
@@ -3609,7 +3451,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_hos_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_hos_ul?";
 				$VOsUrl = "vo_hos_ul?";
-				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status1=Draft&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				$HqCurrentClaimsFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
@@ -3631,7 +3473,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_kkr_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_kkr_ul?";
 				$VOsUrl = "vo_kkr_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3655,7 +3497,7 @@ class JogetLink
 				$HqClaimsUrl = "hq_claims_fmd_ul?";
 				$HqClaimsPerUrl = "hq_per_claims_fmd_ul?";
 				$VOsUrl = "vo_fmd_ul?";
-				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted&status5=Verified";
+				$CurrentClaimsFilter = "&status2=Submitted&status3=Checked&status4=Resubmitted";
 				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress";
 				$HqCurrentClaimsFilter = "&status5=Draft&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted";
 				$HqCurrentClaimsPerFilter = "&status1=Submitted&status2=Checked&status3=Resubmit&status4=Resubmitted&status5=Draft";
@@ -3664,13 +3506,6 @@ class JogetLink
 				$CurrentAmendments = "contract_amend_fmd_ul?d-6113688-fn_project_id=";
 				$ArchivedContracts = "fmd_archive_contracts_ul?d-4920353-fn_project_id=";
 				$finance_list_RoutineContractsAmendList = "list_routine_amend_fmd?d-5864550-fn_project_id=";
-				break;
-			case "District Engineer":
-				$projectInfo = "project_de_ul?&_mode=edit&id=";
-				$projectUserInfo = "project_user_de_ul?&_mode=edit&id=";
-				$AuditInfo = "audit_de_ul?&_mode=edit&id=";
-				$PeriodicClaimsUrl = "periodic_claims_de_ul?";
-				$PeriodicCurrentClaimsFilter = "&status1=New&status2=In%20Progress&status3=Draft";
 				break;
 			
 		}
@@ -3693,7 +3528,6 @@ class JogetLink
 			'finance_list_HqCurrentClaimsFilter' => $HqCurrentClaimsFilter,
 			'finance_list_HqCurrentClaimsPerFilter' => $HqCurrentClaimsPerFilter,
 			'finance_list_NewClaim' => $NewClaim,
-			'finance_list_NewClaim_Swk' => $NewClaimSwk,
 			'finance_list_NewClaimPeriodic' => $NewClaimPeriodic,
 			'finance_list_NewClaimHq' => $NewClaimHq,
 			'finance_list_NewClaimPerHq' => $NewClaimPerHq,
@@ -3772,20 +3606,9 @@ class JogetLink
 		}
 
 		//routine claims
-		if($this->currProjectOwner == "JKR_SARAWAK"){
-			$finance_list_NewClaim = $userviewPrefix.$srcUrl['finance_list_NewClaim_Swk']."&package_id=".$this->currPackageId."&parent_project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
-			$finance_list_ClaimInboxPeriodic = $userviewPrefix."periodic_claim_sarawak_inbox?d-2380059-fn_project_id=".$this->currPackageId;
-			$finance_list_ClaimActivityForm = $userviewPrefix. "periodic_claim_sarawak_inbox?activityId=";
-			$finance_list_ClaimInbox = $userviewPrefix."claim_sarawak_inbox?d-7023879-fn_package_id=".$this->currPackageId."&d-7023879-fn_ResourceId=".$this->currUserEmail;
-			$finance_list_ClaimActivityFormRoutine = $userviewPrefix. "claim_sarawak_inbox?activityId=";
-		}else if($this->currProjectOwner == "JKR_SABAH"){
-			$finance_list_NewClaim = $userviewPrefix.$srcUrl['finance_list_NewClaim']."&package_id=".$this->currPackageId."&parent_project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&package_uuid=".$this->currPackageUuid;
-			$finance_list_ClaimInboxPeriodic = $userviewPrefix."periodic_claim_inbox?d-2380059-fn_project_id=".$this->currPackageId;
-			$finance_list_ClaimActivityForm = $userviewPrefix. "periodic_claim_inbox?activityId=";
-			$finance_list_ClaimInbox = $userviewPrefix."claim_inbox?d-7023879-fn_package_id=".$this->currPackageId."&d-7023879-fn_ResourceId=".$this->currUserEmail;
-			$finance_list_ClaimActivityFormRoutine = $userviewPrefix. "claim_inbox?activityId=";
-		}
-
+		$finance_list_NewClaim = $userviewPrefix.$srcUrl['finance_list_NewClaim']."&package_id=".$this->currPackageId."&parent_project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&package_uuid=".$this->currPackageUuid;
+		$finance_list_ClaimInbox = $userviewPrefix."claim_inbox?d-7023879-fn_package_id=".$this->currPackageId."&d-7023879-fn_ResourceId=".$this->currUserEmail;
+		$finance_list_ClaimActivityFormRoutine = $userviewPrefix. "claim_inbox?activityId=";
 		$finance_list_ClaimApprovedRejected = $userviewPrefix.$srcUrl['finance_list_ClaimsUrl']."id=";
 		$finance_list_CurrentClaims = $userviewPrefix.$srcUrl['finance_list_ClaimsUrl']."d-3726679-fn_package_id=".$this->currPackageId.$srcUrl['finance_list_CurrentClaimsFilter'];
 		$finance_list_RejectedClaims = $userviewPrefix.$srcUrl['finance_list_ClaimsUrl']."d-3726679-fn_package_id=".$this->currPackageId."&status1=Reject";
@@ -3793,13 +3616,12 @@ class JogetLink
 		
 		// periodic claims
 		$finance_list_NewClaimPeriodic = $userviewPrefix.$srcUrl['finance_list_NewClaimPeriodic']."d-2823043-fn_project_id=".$this->currPackageId."&package_name=".$this->currPackageName."&package_uuid=".$this->currPackageUuid;
+		$finance_list_ClaimInboxPeriodic = $userviewPrefix."periodic_claim_inbox?d-2380059-fn_project_id=".$this->currPackageId;
+		$finance_list_ClaimActivityForm = $userviewPrefix. "periodic_claim_inbox?activityId=";
 		$finance_list_ClaimApprovedRejectedPeriodic = $userviewPrefix.$srcUrl['finance_list_PeriodicClaimsUrl']."id=";
 		$finance_list_CurrentClaimsPeriodic = $userviewPrefix.$srcUrl['finance_list_PeriodicClaimsUrl']."d-6787268-fn_project_id=".$this->currPackageId.$srcUrl['finance_list_PeriodicCurrentClaimsFilter'];
 		$finance_list_RejectedClaimsPeriodic = $userviewPrefix.$srcUrl['finance_list_PeriodicClaimsUrl']."d-6787268-fn_project_id=".$this->currPackageId."&status1=Reject";
 		$finance_list_ApprovedClaimsPeriodic = $userviewPrefix.$srcUrl['finance_list_PeriodicClaimsUrl']."d-6787268-fn_project_id=".$this->currPackageId."&status1=Complete&status2=Updated&status3=IPC Approved&status4=Payment Received";
-		$finance_list_claimInventory_SPPT = $userviewPrefix."claimAssetSubmissionSPPT_crud?package_id=".$this->currPackageId."&package_name=".$this->currPackageName;
-		$finance_list_claimInventory_BRTB = $userviewPrefix."claimAssetSubmissionBRTB_crud?package_id=".$this->currPackageId."&package_name=".$this->currPackageName;
-		$finance_list_claimInventory_PBBKPR = $userviewPrefix."claimAssetSubmissionPBBKPR_crud?package_id=".$this->currPackageId."&package_name=".$this->currPackageName;
 
 		//hq claims
 		$finance_list_NewClaimHq = $userviewPrefix.$srcUrl['finance_list_NewClaimHq']."&d-8373272-fn_c_project_id=".$this->currPackageId;
@@ -3837,7 +3659,7 @@ class JogetLink
 		$finance_list_RatesDataImport = $userviewPrefix."import_rates";
 		$finance_list_LocationFactorDataImport = $userviewPrefix."import_location_factor";
 
-		$finance_list_BudgetList = $userviewPrefix."budget_list?d-2422665-fn_project_id=".$this->currPackageId."&project_owner=".$this->currProjectOwner;
+		$finance_list_BudgetList = $userviewPrefix."budget_list?d-2422665-fn_project_id=".$this->currPackageId;
 		$finance_list_BudgetListView = $userviewPrefix."budget_list_view?d-2422665-fn_project_id=".$this->currPackageId;
 
 		//contract Amendments
@@ -3908,9 +3730,6 @@ class JogetLink
 			'finance_list_CurrentClaimsPeriodic' => $finance_list_CurrentClaimsPeriodic,
 			'finance_list_RejectedClaimsPeriodic' => $finance_list_RejectedClaimsPeriodic,
 			'finance_list_ApprovedClaimsPeriodic' => $finance_list_ApprovedClaimsPeriodic,
-			'finance_list_claimInventory_SPPT' => $finance_list_claimInventory_SPPT,
-			'finance_list_claimInventory_BRTB' => $finance_list_claimInventory_BRTB,
-			'finance_list_claimInventory_PBBKPR' => $finance_list_claimInventory_PBBKPR,
 			//hq consolidated urls
 			'finance_list_NewClaimHq' => $finance_list_NewClaimHq,
 			'finance_list_ClaimInboxHq' => $finance_list_ClaimInboxHq,
@@ -4002,8 +3821,6 @@ class JogetLink
 		$dash_doc_register_corr_cardIncParent = '';
 		$dash_doc_register_corr_cardOutParent = '';
 		$dash_doc_register_corr_cardType = '';
-		$doc_list_doc_export = '';
-		$doc_list_corr_export = '';
 
 		if($_SESSION['is_Parent'] == "isParent" ){
 			// if parent need to send extra variable as package will be chosen from filter
@@ -4052,24 +3869,22 @@ class JogetLink
 				break;
 			case "JKR_SABAH":
 				//doc
-				$doc_form_doc_register = $userviewPrefix."registerDocumentSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_phase=".$this->currProjectPhase; //doc register
+				$doc_form_doc_register = $userviewPrefix."registerDocumentSabah?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId; //doc register
 				$doc_list_doc_my = $userviewPrefix."documentMySabah_crud?d-6597657-fn_package_uuid=".$this->currPackageUuid."&d-6597657-fn_department=".$empty."&d-6597657-fn_doc_type=".$empty."&d-6597657-fn_doc_subtype=".$empty."&d-6597657-fn_ref_no=".$empty."&d-6597657-fn_title=".$empty."&d-6597657-fn_doc_date=".$empty."&d-6597657-fn_superseded=".$empty;  //Document (My)
 				$doc_list_doc_open = $userviewPrefix."documentOpenSabah_crud?d-667503-fn_package_uuid=".$this->currPackageUuid."&d-667503-fn_department=".$empty."&d-667503-fn_doc_type=".$empty."&d-667503-fn_doc_subtype=".$empty."&d-667503-fn_ref_no=".$empty."&d-667503-fn_title=".$empty."&d-667503-fn_doc_date=".$empty."&d-667503-fn_superseded=".$empty; // Document (Open)
 				$doc_list_doc_restricted = $userviewPrefix."documentRestrictedSabah_crud?d-7453662-fn_package_uuid=".$this->currPackageUuid."&d-7453662-fn_department=".$empty."&d-7453662-fn_doc_type=".$empty."&d-7453662-fn_doc_subtype=".$empty."&d-7453662-fn_ref_no=".$empty."&d-7453662-fn_title=".$empty."&d-7453662-fn_doc_date=".$empty."&d-7453662-fn_superseded=".$empty; //Document (Restricted)
-				$doc_list_doc_export = $userviewPrefix."list_doc_export?"; 
 				$doc_list_doc_confidental = $userviewPrefix."documentConfidentialSabah_crud?d-8016369-fn_package_uuid=".$this->currPackageUuid."&d-8016369-fn_department=".$empty."&d-8016369-fn_doc_type=".$empty."&d-8016369-fn_doc_subtype=".$empty."&d-8016369-fn_ref_no=".$empty."&d-8016369-fn_title=".$empty."&d-8016369-fn_doc_date=".$empty."&d-8016369-fn_superseded=".$empty; //Document (Confidential)
 				$doc_list_doc_arch = $userviewPrefix."documentArchivedSabah_crud?d-4998007-fn_package_uuid=".$this->currPackageUuid."&d-4998007-fn_department=".$empty."&d-4998007-fn_doc_type=".$empty."&d-4998007-fn_doc_subtype=".$empty."&d-4998007-fn_ref_no=".$empty."&d-4998007-fn_title=".$empty."&d-4998007-fn_doc_date=".$empty."&d-4998007-fn_superseded=".$empty; //Document (Archived)
 				$doc_bulk_doc_register = $userviewPrefix."bulkImportSabah";
 
 				//correspondence
-				$doc_form_corr_register = $userviewPrefix."correspondenceSabah_run?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId."&project_phase=".$this->currProjectPhase;
+				$doc_form_corr_register = $userviewPrefix."correspondenceSabah_run?package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId;
 				$doc_list_corr_my = $userviewPrefix."correspondenceSabah_my?d-8132249-fn_package_uuid=".$this->currPackageUuid."&d-8132249-fn_corr_type=".$empty."&d-8132249-fn_doc_id=".$empty."&d-8132249-fn_doc_subtype=".$empty."&d-8132249-fn_doc_date=".$empty."&d-8132249-fn_doc_subject=".$empty."&d-8132249-fn_action_required=".$empty."&d-8132249-fn_status=".$empty;
 				$doc_list_corr_int_all = $userviewPrefix."correspondenceSabah_crud?d-490849-fn_c_package_uuid=".$this->currPackageUuid."&d-490849-fn_c_corr_type=".$empty."&d-490849-fn_c_doc_id=".$empty."&d-490849-fn_c_doc_subtype=".$empty."&d-490849-fn_c_doc_date=".$empty."&d-490849-fn_c_doc_subject=".$empty."&d-490849-fn_c_action_required=".$empty."&d-490849-fn_c_status=".$empty;
 				$doc_list_corr_tp_incoming = $userviewPrefix."incCorrespondenceSabah_crud?d-5525861-fn_package_uuid=".$this->currPackageUuid."&d-5525861-fn_corr_type=".$empty."&d-5525861-fn_doc_id=".$empty."&d-5525861-fn_doc_subtype=".$empty."&d-5525861-fn_doc_date=".$empty."&d-5525861-fn_doc_subject=".$empty."&d-5525861-fn_action_required=".$empty."&d-5525861-fn_status=".$empty;
 				$doc_list_corr_tp_outgoing	= $userviewPrefix."outCorrespondenceSabah_crud?d-932225-fn_package_uuid=".$this->currPackageUuid."&d-932225-fn_corr_type=".$empty."&d-932225-fn_doc_id=".$empty."&d-932225-fn_doc_subtype=".$empty."&d-932225-fn_doc_date=".$empty."&d-932225-fn_doc_subject=".$empty."&d-932225-fn_action_required=".$empty."&d-932225-fn_status=".$empty;
 				$doc_list_corr_open = $userviewPrefix."openCorrSabah_crud?d-4758564-fn_package_uuid=".$this->currPackageUuid."&d-4758564-fn_status=".$empty."&d-4758564-fn_doc_subject=".$empty."&d-4758564-fn_doc_date=".$empty."&d-4758564-fn_doc_id=".$empty."&d-4758564-fn_section=".$empty;
 				$doc_list_corr_restricted= $userviewPrefix."restCorrSabah_crud?d-3492683-fn_package_uuid=".$this->currPackageUuid."&d-3492683-fn_status=".$empty."&d-3492683-fn_doc_subject=".$empty."&d-3492683-fn_doc_date=".$empty."&d-3492683-fn_doc_id=".$empty."&d-3492683-fn_section=".$empty."&d-3492683-fn_doc_subtype=".$empty;
-				$doc_list_corr_export= $userviewPrefix."list_corr_export?";
 				$doc_list_corr_conf= $userviewPrefix."conCorrSabah_crud?d-5921990-fn_package_uuid=".$this->currPackageUuid."&d-5921990-fn_status=".$empty."&d-5921990-fn_doc_subject=".$empty."&d-5921990-fn_doc_date=".$empty."&d-5921990-fn_doc_id=".$empty."&d-5921990-fn_section=".$empty."&d-5921990-fn_doc_subtype=".$empty;
 
 				$doc_setup_lookup_section="";
@@ -4079,15 +3894,15 @@ class JogetLink
 				$dash_doc_register_corr = $jsonPrefix."list_correspondence_sabah?d-490849-fn_c_package_uuid={?}&project_id={?}";
 				
 				// dashboard card
-				$dash_doc_register_doc_card = $userviewPrefix."dashboardListDocument_sabah?d-6642978-fn_c_package_uuid=".$packageUuidIdConOp."&d-6642978-fn_c_project_id=".$projectIdConOp."&d-6642978-fn_document_date={?}&d-6642978-fn_document_date={?}&d-6642978-fn_c_doc_type={?}&d-6642978-fn_c_doc_subtype={?}&d-6642978-fn_revision_status={?}&inPackageUuid={?}";
-				$dash_doc_register_corr_card = $userviewPrefix."dashListCorrespondence_sabah?d-4230405-fn_c_package_uuid=".$packageUuidIdConOp."&d-4230405-fn_c_project_id=".$projectIdConOp."&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_subtype={?}&d-4230405-fn_c_corr_type={?}&d-4230405-fn_c_status={?}&d-4230405-fn_c_respond_flag={?}&d-4230405-fn_c_priority={?}&d-4230405-fn_c_third_party={?}&inPackageUuid={?}";
+				$dash_doc_register_doc_card = $userviewPrefix."dashboardListDocument_sabah?d-6642978-fn_c_package_uuid=".$packageUuidIdConOp."&d-6642978-fn_c_project_id=".$projectIdConOp."&d-6642978-fn_document_date={?}&d-6642978-fn_document_date={?}&d-6642978-fn_c_doc_type={?}&d-6642978-fn_c_doc_subtype={?}&d-6642978-fn_revision_status={?}";
+				$dash_doc_register_corr_card = $userviewPrefix."dashListCorrespondence_sabah?d-4230405-fn_c_package_uuid=".$packageUuidIdConOp."&d-4230405-fn_c_project_id=".$projectIdConOp."&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_subtype={?}&d-4230405-fn_c_corr_type={?}&d-4230405-fn_c_status={?}&d-4230405-fn_c_respond_flag={?}&d-4230405-fn_c_priority={?}&d-4230405-fn_c_third_party={?}";
 				$dash_doc_register_corr_cardNotUrgent = $userviewPrefix."dashListCorrespondence_sabah?d-4230405-fn_c_package_uuid=".$packageUuidIdConOp."&d-4230405-fn_c_project_id=".$projectIdConOp."&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_subtype={?}&d-4230405-fn_c_corr_type={?}&d-4230405-fn_c_third_party={?}&d-4230405-fn_c_status={?}&d-4230405-fn_c_priority=Low&d-4230405-fn_c_priority=Medium&d-4230405-fn_c_priority=High&d-4230405-fn_c_created_by_user_org=".$currentOrg;
 				$dash_doc_register_corr_cardUrgent = $userviewPrefix."dashListCorrespondence_sabah?d-4230405-fn_c_package_uuid=".$packageUuidIdConOp."&d-4230405-fn_c_project_id=".$projectIdConOp."&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_date={?}&d-4230405-fn_c_doc_subtype={?}&d-4230405-fn_c_status={?}&d-4230405-fn_c_respond_flag={?}&d-4230405-fn_c_third_party={?}&d-4230405-fn_c_priority=Urgent&d-4230405-fn_c_created_by_user_org=".$currentOrg;
 				$dash_doc_register_corr_cardInc = $userviewPrefix."dashListCorrespondence_sabah_inc?d-5170117-fn_c_package_uuid=".$packageUuidIdConOp."&d-5170117-fn_c_project_id=".$projectIdConOp."&d-5170117-fn_c_doc_date={?}&d-5170117-fn_c_doc_date={?}&d-5170117-fn_c_doc_subtype={?}&d-5170117-fn_c_created_by_user_org=".$currentOrg;
-				$dash_doc_register_corr_cardIncParent = $userviewPrefix."dashListCorrespondence_sabah_inc_parent?d-2562031-fn_c_package_uuid=".$packageUuidIdConOp."&d-2562031-fn_c_project_id=".$projectIdConOp."&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_subtype={?}&inPackageUuid={?}";
+				$dash_doc_register_corr_cardIncParent = $userviewPrefix."dashListCorrespondence_sabah_inc_parent?d-2562031-fn_c_package_uuid=".$packageUuidIdConOp."&d-2562031-fn_c_project_id=".$projectIdConOp."&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_subtype={?}";
 				$dash_doc_register_corr_cardOut = $userviewPrefix."dashListCorrespondence_sabah_out?d-5170209-fn_c_package_uuid=".$packageUuidIdConOp."&d-5170209-fn_c_project_id=".$projectIdConOp."&d-5170209-fn_c_doc_date={?}&d-5170209-fn_c_doc_date={?}&d-5170209-fn_c_doc_subtype={?}&d-5170209-fn_c_third_party={?}&d-5170209-fn_c_created_by_user_org=".$currentOrg;
-				$dash_doc_register_corr_cardOutParent = $userviewPrefix."dashListCorrespondence_sabah_inc_parent?d-2562031-fn_c_package_uuid=".$packageUuidIdConOp."&d-2562031-fn_c_project_id=".$projectIdConOp."&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_subtype={?}&inPackageUuid={?}";
-				$dash_doc_register_corr_cardType = $userviewPrefix."dashListCorrespondence_sabah_type?d-7122279-fn_c_package_uuid=".$packageUuidIdConOp."&d-7122279-fn_c_project_id=".$projectIdConOp."&d-5170209-fn_c_doc_date={?}&d-5170209-fn_c_doc_date={?}&d-7122279-fn_c_corr_type={?}&inPackageUuid={?}";
+				$dash_doc_register_corr_cardOutParent = $userviewPrefix."dashListCorrespondence_sabah_inc_parent?d-2562031-fn_c_package_uuid=".$packageUuidIdConOp."&d-2562031-fn_c_project_id=".$projectIdConOp."&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_date={?}&d-2562031-fn_c_doc_subtype={?}";
+				$dash_doc_register_corr_cardType = $userviewPrefix."dashListCorrespondence_sabah_type?d-7122279-fn_c_package_uuid=".$packageUuidIdConOp."&d-7122279-fn_c_project_id=".$projectIdConOp."&d-5170209-fn_c_doc_date={?}&d-5170209-fn_c_doc_date={?}&d-7122279-fn_c_corr_type={?}";
 				break;
 		}
 
@@ -4098,7 +3913,6 @@ class JogetLink
 			'doc_list_doc_my' => $doc_list_doc_my,
 			'doc_list_doc_open' => $doc_list_doc_open,
 			'doc_list_doc_restricted' => $doc_list_doc_restricted,
-			'doc_list_doc_export' => $doc_list_doc_export,
 			'doc_list_doc_confidental' => $doc_list_doc_confidental,
 			'doc_list_doc_arch' => $doc_list_doc_arch,
 			'doc_list_doc_draft' => $doc_list_doc_draft,
@@ -4112,7 +3926,6 @@ class JogetLink
 			'doc_list_corr_open' => $doc_list_corr_open,
 			'doc_list_corr_conf' => $doc_list_corr_conf,
 			'doc_list_corr_restricted' => $doc_list_corr_restricted,
-			'doc_list_corr_export' => $doc_list_corr_export,
 			'doc_form_corr_respond' => $doc_form_corr_respond,
 			'doc_json_corr_notification' => $doc_json_corr_notification,
 			'doc_list_corr_inbox' => $doc_list_corr_inbox,
@@ -4170,9 +3983,6 @@ class JogetLink
 		$doc_open_corr_respond_sslr = $userviewPrefixDocument."correspondence_response_sslr?id=";
 		$doc_open_corr_acknowldge_sslr = $userviewPrefixDocument."correspondence_acknowledge_sslr?id=";
 
-		// markup sabah
-		$doc_markup_sabah_view = $userviewPrefixDocument."markup_sabah_view?id=";
-
 		$appNameFinance = 'pfs';
 		$jsonPrefixFinance = $this->jogetHost."jw/web/json/data/list/".$appNameFinance."/";
 		$userviewPrefixFinance = $this->jogetHost."jw/web/embed/userview/".$appNameFinance."/pfsView/_/";
@@ -4204,21 +4014,12 @@ class JogetLink
 		$finance_open_ContractActivityForm = $userviewPrefixFinance."contract_inbox?activityId=";
 		$finance_open_ClaimActivityForm = $userviewPrefixFinance. "claim_inbox?activityId=";
 		$finance_open_VOActivityForm = $userviewPrefixFinance. "vo_inbox?activityId=";
-		$finance_open_VOActivityForm_SSLR2 = $userviewPrefixFinance. "vo_inbox_sslr?activityId=";
-		$finance_open_EOTActivityForm_SSLR2 = $userviewPrefixFinance. "eot_inbox_sslr?activityId=";
 
 		$finance_list_ContractActivityFormAsset = $userviewPrefixAssetFinance."contract_inbox?activityId=";
 		$finance_list_ClaimActivityFormAsset = $userviewPrefixAssetFinance."periodic_claim_inbox?activityId=";
 		$finance_list_ClaimActivityFormRoutineAsset = $userviewPrefixAssetFinance. "claim_inbox?activityId=";
 		$finance_list_ClaimActivityFormHqAsset = $userviewPrefixAssetFinance. "hq_claim_inbox?activityId=";
 		$finance_list_ClaimActivityFormPerHqAsset = $userviewPrefixAssetFinance. "hq_claim_per_inbox?activityId=";
-
-		// SSLR2 PFS
-		$finance_list_ClaimViewAttachment_SSLR2 = $userviewPrefixFinance. "sslr_claimAttachmentView?id={?}";
-		$finance_list_ApprovedClaimsLinking_SSLR2 = $userviewPrefixFinance."claimUploadAttachmentList_sslr?project_id=".$this->currPackageId."&layer_id={?}&layer_name={?}";
-		$finance_list_Additionalfile_SSLR2 = $userviewPrefixFinance."bimAdditionalUploadFile_sslr?layer_id={?}";
-		$finance_list_ClaimView_SSLR2 = $userviewPrefixFinance."claimLinkedBimList_sslr?project_id=".$this->currPackageId."&layer_id={?}";
-		$finance_list_AdditionalfileView_SSLR2 = $userviewPrefixFinance. "sslr_additionalAttachmentView?id={?}";
 
 		// open close form from email
 		$cons_form_RFI = $userviewPrefixConstruct."rfi/_/rfiForm_crudSarawak/?_mode=edit&hide=hideBack&id=";
@@ -4247,8 +4048,8 @@ class JogetLink
 		$asset_insp_form_drainage = $userviewPrefixAsset."insp_drainage?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_insp_form_slope = $userviewPrefixAsset."insp_slope?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_insp_culvert = $userviewPrefixAsset."list_insp_inv_culvert?d-4254305-fn_package_uuid=".$this->currPackageUuid."&d-4254305-fn_asset_id=".$empty;
-		$asset_insp_drainage = $userviewPrefixAsset."list_insp_inv_drainage?d-4759361-fn_package_uuid=".$this->currPackageUuid."&d-4759361-fn_asset_id=".$empty."&project_owner=".$this->currProjectOwner;
-		//$asset_insp_pavement = $userviewPrefixAsset."list_insp_inv_pavement?d-3658546-fn_package_uuid=".$this->currPackageUuid."&d-3658546-fn_asset_id=".$empty;
+		$asset_insp_drainage = $userviewPrefixAsset."list_insp_inv_drainage?d-4759361-fn_package_uuid=".$this->currPackageUuid."&d-4759361-fn_asset_id=".$empty;
+		$asset_insp_pavement = $userviewPrefixAsset."list_insp_inv_pavement?d-3658546-fn_package_uuid=".$this->currPackageUuid."&d-3658546-fn_asset_id=".$empty;
 		$asset_insp_slope = $userviewPrefixAsset."list_insp_inv_slope?d-4770194-fn_package_uuid=".$this->currPackageUuid."&d-4770194-fn_asset_id=".$empty;
 
 		//asset inbox
@@ -4263,19 +4064,15 @@ class JogetLink
 		//asset manage
 		$asset_manage_NODefect =  $userviewPrefixAsset."list_nodManage?d-3413492-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$asset_manage_defect_detection =  $userviewPrefixAsset."list_defectManage?d-7015122-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
-		$asset_manage_defect_detection_sabah =  $userviewPrefixAsset."list_defectManage_sbh?d-6192144-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
-		$asset_manage_NOE =  $userviewPrefixAsset."list_noeManage?package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
+		$asset_manage_maint_equipment = $userviewPrefixAsset."EquipmentLookup?d-6421139-fn_project_id=".$this->currProjectId;
 
 		$asset_maintain_schedule_inspection = $userviewPrefixAsset."schedule_inspection?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 		$asset_maintain_schedule_inspection_sabah = $userviewPrefixAsset."schedule_inspection_sabah?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 		$asset_maintain_nod = $userviewPrefixAsset."nod?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_maintain_nod_emergency = $userviewPrefixAsset."nod_emergency?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_manage_maint_work_activity =  $userviewPrefixAsset."list_maintenanceActivity?d-7779575-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
-		$asset_manage_maint_work_activity_sabah =  $userviewPrefixAsset."list_maintenanceActivity_sabah?d-647463-fn_package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner;
 		$asset_manage_maint_work_instruction =  $userviewPrefixAsset."list_workInstructionManage?d-5021799-fn_package_uuid=".$this->currPackageUuid."&d-5021799-fn_ref_no=&d-5021799-fn_type_of_activity=";
-		$asset_manage_maint_work_instruction_sabah =  $userviewPrefixAsset."list_workInstructionManage_sabah?d-3494679-fn_package_uuid=".$this->currPackageUuid."&d-3494679-fn_ref_no=&d-3494679-fn_type_of_activity=";
 		$asset_submit_maint_work_program =  $userviewPrefixAsset."work_program_submission?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
-		$asset_submit_maint_work_program_sabah =  $userviewPrefixAsset."work_program_submission_sbh?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_submit_maint_noe =  $userviewPrefixAsset."noe?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_submit_maint_noe_sabah =  $userviewPrefixAsset."new_noe_sabah?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
 		$asset_submit_maint_work_daily_report =  $userviewPrefixAsset."daily_work?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
@@ -4293,8 +4090,7 @@ class JogetLink
 		$asset_submit_work_budget_approval_emergency =  $userviewPrefixAsset."wbEmergency?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$asset_submit_work_order_emergency =  $userviewPrefixAsset."work_order_emergency?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 		$asset_create_defect_detection =  $userviewPrefixAsset."create_defect?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
-		$asset_submit_maint_gar =  $userviewPrefixAsset."gar?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_location=".$this->currLocation;
-		$asset_create_NODefect =  $asset_create_NODefect =  $userviewPrefixAsset."create_nod?d-570502-fn_package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
+		$asset_create_NODefect =  $userviewPrefixAsset."create_nod?package_id=".$this->currPackageId."&project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&project_owner=".$this->currProjectOwner;
 
 		// maintenance view
 		$asset_maint_view_work_instruction = $userviewPrefixAsset."list_workInstruction?d-1123026-fn_package_uuid=".$this->currPackageUuid."&d-1123026-fn_ref_no=".$empty."&d-1123026-fn_dateCreated=".$empty."&d-1123026-fn_dateCreated=".$empty."&d-1123026-fn_type_of_activity=".$empty."&d-1123026-fn_wi_status=".$empty."&d-1123026-fn_work_status=".$empty."&d-1123026-fn_activity=".$empty."&d-1123026-fn_work_date=".$empty."&d-1123026-fn_work_date=".$empty;
@@ -4315,11 +4111,7 @@ class JogetLink
 		$asset_maint_view_defect_detection_emergency = $userviewPrefixAsset."list_defectDetectionEmergency";
 
 		// signature
-		if($this->isDownstream){
-			$asset_user_signature = $userviewPrefixConstruct."ri_asset/_/userSignature?d-8275578-fn_id=".$this->currUserEmail;
-		}else{
-			$asset_user_signature = $userviewPrefixAsset."userSignature?d-8275578-fn_id=".$this->currUserEmail;
-		}
+		$asset_user_signature = $userviewPrefixAsset."userSignature?d-8275578-fn_id=".$this->currUserEmail; // bridge inspection opens to a list and not form as got several components
 
 		// count for all assignments
 		$cons_json_datalist_task_count = $jsonPrefixConstruct."generalInbox_count?d-5409928-fn_ResourceId=".$this->currUserEmail;
@@ -4330,37 +4122,15 @@ class JogetLink
 
 		// fm
 		$fm_json_datalist_asset_type = $jsonPrefixFm."list_assetTypeConfiguration";
+		$fm_json_notifications = $jsonPrefixFm."generalInbox?d-5171348-fn_assign_to=".$this->currUserEmail.'&dateModifiedFrom={?}&dateModifiedTo={?}';
+		$fm_json_notifications_count =  $jsonPrefixFm."generalInbox_count?d-5171348-fn_assign_to=";
+		$fm_json_notifications_package = $jsonPrefixFm."generalInbox?start=0&d-5171348-fn_package_id=".urlencode($this->currPackageId)."&d-5171348-fn_c_assign_to=".$this->currUserEmail;
+		$fm_activity_form = $userviewPrefixFm."serviceRequest_inbox?activityId=";
+
 		// markup tool inbox sabah
 		$markup_json_datalist_task = $jsonPrefixDocument."inbox_reviewToolForm?ResourceId=".$this->currUserEmail;
 		$markup_json_datalist_task_count = $jsonPrefixDocument."inboxMarkup_count?d-4187620-fn_ResourceId=".$this->currUserEmail;
 
-		// rfi edit closed rfi
-		$rfi_edit_json_datalist_task = $jsonPrefixConstruct."list_editMyTask?ResourceId=".$this->currUserEmail;
-		$rfi_edit_json_datalist_task_count = $jsonPrefixConstruct."list_editMyTask_count?ResourceId=".$this->currUserEmail;
-		$cons_issue_verify_rfi = $userviewPrefixConstruct."wir/_/wir_verifySabah?id=";
-
-		// from email view without mytask action - sslr
-		$email_view_sslr_MS = $userviewPrefixConstruct."ms/_/ms_sslr_email_view?id=";
-		$email_view_sslr_NOI = $userviewPrefixConstruct."noi/_/noi_sslr_email_view?id=";
-		$email_view_sslr_NCR = $userviewPrefixConstruct."ncr/_/ncr_sslr_email_view?id=";
-		$email_view_sslr_INC = $userviewPrefixConstruct."inc/_/inc_sslr_email_view?id=";
-		$email_view_sslr_RFI = $userviewPrefixConstruct."rfi/_/rfi_sslr_email_view?id=";
-		$email_view_sslr_WIR = $userviewPrefixConstruct."wir/_/wir_sslr_email_view?id=";
-
-		// from email view without mytask action - sabah 1b
-		$email_view_sbh_1b_SA = $userviewPrefixConstruct."sa/_/sa_sbh_1b_email_view?id=";
-		$email_view_sbh_1b_SMH = $userviewPrefixConstruct."smh/_/smh_sbh_1b_email_view?id=";
-		$email_view_sbh_PUBC = $userviewPrefixConstruct."pubc/_/pubc_sabah_email_view?id=";
-
-		//markup review
-		$cons_datalist_markup = $userviewPrefixDocument."markupForm_crud?d-6595155-fn_package_uuid=".$this->currPackageUuid;
-		$cons_datalist_markupv3 = $jsonPrefixDocument."list_markupForm?d-6595155-fn_package_uuid=".$this->currPackageUuid;
-		$cons_issue_markupv3 = $userviewPrefixDocument."markUpForm?project_id_number=".$this->pid."&package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId;
-
-		//markup sabah
-		$cons_issue_markupv3_sbh = $userviewPrefixDocument."new_markupSbh?project_id_number=".$this->pid."&package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId;
-		$markup_json_notification_package = $jsonPrefixDocument."inbox_markupPackage?d-2911267-fn_ResourceId=".$this->currUserEmail."&d-2911267-fn_package_uuid=".$this->currPackageUuid;
-		$cons_datalist_markup_sabah = $userviewPrefixDocument."markupForm_crud_sabah?d-6595155-fn_package_uuid=".$this->currPackageUuid;
 
 		$generalLinkArr = array(
 			'cons_json_datalist_task' => $cons_json_datalist_task,
@@ -4371,13 +4141,10 @@ class JogetLink
 			'finance_open_ContractActivityForm' => $finance_open_ContractActivityForm,
 			'finance_open_ClaimActivityForm' => $finance_open_ClaimActivityForm,
 			'finance_open_VOActivityForm' => $finance_open_VOActivityForm,
-			'finance_open_VOActivityForm_SSLR2' => $finance_open_VOActivityForm_SSLR2,
-			'finance_open_EOTActivityForm_SSLR2' => $finance_open_EOTActivityForm_SSLR2,
 			'doc_open_corr_respond' => $doc_open_corr_respond,
 			'doc_open_corr_acknowldge' => $doc_open_corr_acknowldge,
 			'doc_open_corr_respond_sslr' => $doc_open_corr_respond_sslr,
 			'doc_open_corr_acknowldge_sslr' => $doc_open_corr_acknowldge_sslr,
-			'doc_markup_sabah_view' => $doc_markup_sabah_view,
 			'asset_json_datalist_task' => $asset_json_datalist_task,
 			'finance_asset_json_notifications' => $finance_asset_json_notifications,
 			'finance_list_ContractActivityFormAsset' => $finance_list_ContractActivityFormAsset,
@@ -4385,11 +4152,6 @@ class JogetLink
 			'finance_list_ClaimActivityFormRoutineAsset' => $finance_list_ClaimActivityFormRoutineAsset,
 			'finance_list_ClaimActivityFormHqAsset' => $finance_list_ClaimActivityFormHqAsset,
 			'finance_list_ClaimActivityFormPerHqAsset' => $finance_list_ClaimActivityFormPerHqAsset,
-			'finance_list_ClaimViewAttachment_SSLR2' => $finance_list_ClaimViewAttachment_SSLR2,
-			'finance_list_ApprovedClaimsLinking_SSLR2' => $finance_list_ApprovedClaimsLinking_SSLR2,
-			'finance_list_Additionalfile_SSLR2' => $finance_list_Additionalfile_SSLR2,
-			'finance_list_ClaimView_SSLR2' => $finance_list_ClaimView_SSLR2,
-			'finance_list_AdditionalfileView_SSLR2' => $finance_list_AdditionalfileView_SSLR2,
 			// open close form from email
 			'cons_form_RFI' => $cons_form_RFI,
 			'cons_form_NCR' => $cons_form_NCR,
@@ -4419,20 +4181,16 @@ class JogetLink
 			'asset_insp_form_slope' => $asset_insp_form_slope,
 			'asset_insp_culvert' => $asset_insp_culvert,
 			'asset_insp_drainage' => $asset_insp_drainage,
-			//'asset_insp_pavement' => $asset_insp_pavement,
+			'asset_insp_pavement' => $asset_insp_pavement,
 			'asset_insp_slope' => $asset_insp_slope,
 			'asset_maintain_nod' => $asset_maintain_nod,
 			'asset_maintain_nod_emergency' => $asset_maintain_nod_emergency,
 			'asset_manage_maint_work_activity' => $asset_manage_maint_work_activity,
-			'asset_manage_maint_work_activity_sabah' => $asset_manage_maint_work_activity_sabah,
 			'asset_manage_maint_work_instruction' => $asset_manage_maint_work_instruction,
-			'asset_manage_maint_work_instruction_sabah' => $asset_manage_maint_work_instruction_sabah,
 			'asset_submit_maint_work_program' => $asset_submit_maint_work_program,
-			'asset_submit_maint_work_program_sabah' => $asset_submit_maint_work_program_sabah,
 			'asset_inbox_maint_work_program' => $asset_inbox_maint_work_program,
 			'asset_inbox_maint_work_order' => $asset_inbox_maint_work_order,
 			'asset_submit_maint_noe' => $asset_submit_maint_noe,
-			'asset_submit_maint_gar' => $asset_submit_maint_gar,
 			'asset_inbox_maint_noe' => $asset_inbox_maint_noe,
 			'asset_submit_maint_work_daily_report' => $asset_submit_maint_work_daily_report,
 			'asset_inbox_maint_work_daily_report' => $asset_inbox_maint_work_daily_report,
@@ -4442,6 +4200,7 @@ class JogetLink
 			'asset_maintain_nod_routine' => $asset_maintain_nod_routine,
 			'asset_maintain_site_routine' => $asset_maintain_site_routine,
 			'asset_work_order' => $asset_work_order,
+			'asset_manage_maint_equipment' => $asset_manage_maint_equipment,
 			'asset_manage_work_order_emergency' => $asset_manage_work_order_emergency,
 			'asset_inbox_maint_work_order_emergency' => $asset_inbox_maint_work_order_emergency,
 			// maintenance view
@@ -4469,12 +4228,10 @@ class JogetLink
 			'asset_maint_view_defect_detection_emergency' => $asset_maint_view_defect_detection_emergency,
 			'asset_create_defect_detection' => $asset_create_defect_detection,
 			'asset_manage_defect_detection' => $asset_manage_defect_detection,
-			'asset_manage_defect_detection_sabah' => $asset_manage_defect_detection_sabah,
 			'asset_create_NODefect' => $asset_create_NODefect,
 			'asset_manage_NODefect' => $asset_manage_NODefect,
-			'asset_manage_NOE' => $asset_manage_NOE,
 			'asset_user_signature' => $asset_user_signature,
-			'asset_submit_work_order_sabah' => $asset_submit_work_order_sabah,
+			'asset_submit_work_order' => $asset_submit_work_order_sabah,
 			'asset_submit_maint_noe_sabah' => $asset_submit_maint_noe_sabah,
 			'asset_maintain_ncp_sabah' => $asset_maintain_ncp_sabah,
 			'cons_json_datalist_task_count' => $cons_json_datalist_task_count,
@@ -4484,28 +4241,12 @@ class JogetLink
 			'finance_asset_json_notifications_count' => $finance_asset_json_notifications_count,
 			// fm
 			'fm_json_datalist_asset_type' => $fm_json_datalist_asset_type,
+			'fm_activity_form' => $fm_activity_form,
+			'fm_json_notifications' => $fm_json_notifications,
+			'fm_json_notifications_count' => $fm_json_notifications_count,
+			'fm_json_notifications_package' => $fm_json_notifications_package,
 			'markup_json_datalist_task' => $markup_json_datalist_task,
-			'markup_json_datalist_task_count' => $markup_json_datalist_task_count,
-			'rfi_edit_json_datalist_task' => $rfi_edit_json_datalist_task,
-			'rfi_edit_json_datalist_task_count' => $rfi_edit_json_datalist_task_count,
-			'cons_issue_verify_rfi' => $cons_issue_verify_rfi,
-
-			'email_view_sslr_MS' => $email_view_sslr_MS,
-			'email_view_sslr_NOI' => $email_view_sslr_NOI,
-			'email_view_sslr_NCR' => $email_view_sslr_NCR,
-			'email_view_sslr_INC' => $email_view_sslr_INC,
-			'email_view_sslr_RFI' => $email_view_sslr_RFI,
-			'email_view_sslr_WIR' => $email_view_sslr_WIR,
-			'email_view_sbh_1b_SA' => $email_view_sbh_1b_SA,
-			'email_view_sbh_1b_SMH' => $email_view_sbh_1b_SMH,
-			'email_view_sbh_PUBC' => $email_view_sbh_PUBC,
-			//markup
-			'cons_datalist_markupv3' => $cons_datalist_markupv3,
-			'cons_datalist_markup' => $cons_datalist_markup,
-			'cons_issue_markupv3' => $cons_issue_markupv3,
-			'cons_issue_markupv3_sbh' => $cons_issue_markupv3_sbh,
-			'markup_json_notification_package' => $markup_json_notification_package,
-			'cons_datalist_markup_sabah' => $cons_datalist_markup_sabah
+			'markup_json_datalist_task_count' => $markup_json_datalist_task_count
 		);
 
 		if($this->currProjectOwner == "SSLR2"){
@@ -4694,8 +4435,6 @@ class JogetLink
 		echo "var GEOHOST = '".$this->geoServerHost."';";
 		echo "var SYSTEM = '".$this->system."';";
 		echo "var IS_DOWNSTREAM = '".$this->isDownstream."';";
-		echo "var MAPBOX_TOKEN = '".$this->mapboxToken."';";
-		echo "var MAPTILER_TOKEN = '".$this->maptilerToken."';";
 		if ($this->jogetAppLink) {
 			echo "var ".$varname." = JSON.parse('".json_encode($this->jogetAppLink)."');";
 		}

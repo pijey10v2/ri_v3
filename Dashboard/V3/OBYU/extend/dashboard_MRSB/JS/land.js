@@ -11,6 +11,7 @@ var prevMonth;
 var timelineJSON;
 
 function openConOpDashboardLand(year, month){
+    if(year == '' || month == '') return 
 
     var linkParamArr = [year, month];
     var postParam = {function:"openConOpDashboard",processType:"LAND", conOpTabId:"conopTab18", linkName:"construct_dash_conop_land_management", linkParam:linkParamArr, linkWinTitle: 'Land Management'};
@@ -21,11 +22,9 @@ function openConOpDashboardLand(year, month){
     }
 }
 
-function openConOpDashboardLandTimeData(year, month, category){
-    //if(idFilter == '') return 
-    //var linkParamArr = [idFilter];
-
-    var linkParamArr = [year, month, category];
+function openConOpDashboardLandTimeData(idFilter){
+    if(idFilter == '') return 
+    var linkParamArr = [idFilter];
     var postParam = {function:"openConOpDashboard",processType:"LAND", conOpTabId:"conopTab17", linkName:"construct_dash_conop_land_timeline", linkParam:linkParamArr, linkWinTitle: 'Land Timeline & Database'};
     if(localStorage.ui_pref == 'ri_v3'){
         window.parent.widgetConopOpen("LAND", "construct_dash_conop_land_timeline", linkParamArr, "Land Management");
@@ -34,503 +33,6 @@ function openConOpDashboardLandTimeData(year, month, category){
     }
 }
 
-// First Page Pie Chart
-function landAcquisitionChart(data, yearFilter, monthFilter) {
-
-    let latestYear = null;
-    let latestMonth = null;
-    let latestData = null;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    if (yearFilter === "all") {
-        if (monthFilter === "all") {
-            for (let year in data) {
-                if (!isNaN(year)) {
-                    for (let month in data[year]) {
-                        if (months.includes(month)) {
-                            if (latestYear === null || year > latestYear || (year === latestYear && months.indexOf(month) > months.indexOf(latestMonth))) {
-                                latestYear = year;
-                                latestMonth = month;
-                                latestData = data[year][month];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        if (!data.hasOwnProperty(yearFilter)) {
-            return;
-        }
-
-        if (monthFilter === "all") {
-            for (let month in data[yearFilter]) {
-                if (months.includes(month)) {
-                    if (latestMonth === null || months.indexOf(month) > months.indexOf(latestMonth)) {
-                        latestMonth = month;
-                        latestData = data[yearFilter][month];
-                    }
-                }
-            }
-        } else {
-            latestData = data[yearFilter][monthFilter];
-        }
-    }
-
-    var yearData = '';
-    var monthData = '';
-
-    if (yearFilter === "all") {
-        yearData = '';
-    } else {
-        const monthNames = {
-            Jan: "01",
-            Feb: "02",
-            Mar: "03",
-            Apr: "04",
-            May: "05",
-            Jun: "06",
-            Jul: "07",
-            Aug: "08",
-            Sep: "09",
-            Oct: "10",
-            Nov: "11",
-            Dec: "12"
-        };
-        
-        if (monthFilter === "all") {
-            monthData = '';
-        } else {
-            monthData = monthNames[monthFilter] ? monthNames[monthFilter] : '';
-        }
-
-        yearData = yearFilter;
-    }
-
-    const sectionToChart = {
-        "": { title: "NCH", div: "overallChart" },
-        "LW 1": { title: "LW 1", div: "lawas01Chart" },
-        "LAW01": { title: "LAW01", div: "lawas01Chart" },
-        "LW 2": { title: "LW 2", div: "lawas02Chart" },
-        "LAW02": { title: "LAW02", div: "lawas02Chart" },
-        "LB 1": { title: "LB 1", div: "limbang01Chart" },
-        "LIM01": { title: "LIM01", div: "limbang01Chart" },
-        "LB 2": { title: "LB 2", div: "limbang02Chart" },
-        "LIM02": { title: "LIM02", div: "limbang02Chart" },
-        "LB 3": { title: "LB 3", div: "limbang03Chart" },
-        "LIM03": { title: "LIM03", div: "limbang03Chart" }
-    };
-
-    if (!latestData || Object.keys(latestData).length === 0) {
-        for (const section in sectionToChart) {
-            const { title: centerTitle, div: chartDiv } = sectionToChart[section] ? sectionToChart[section] : '';
-
-            if (!document.getElementById(chartDiv)) {
-                continue;
-            }
-
-            Highcharts.chart(chartDiv, {
-                chart: {
-                    type: 'pie',
-                    custom: {},
-                    events: {
-                        render() {
-                            const chart = this,
-                                series = chart.series[0];
-                            let customLabel = chart.options.chart.custom.label;
-
-                            if (!customLabel) {
-                                customLabel = chart.options.chart.custom.label =
-                                    chart.renderer.label(centerTitle + '<br/>')
-                                        .css({ color: '#000', textAnchor: 'middle' })
-                                        .add();
-                            }
-
-                            if (series && series.center) {
-                                const x = series.center[0] + chart.plotLeft;
-                                const y = series.center[1] + chart.plotTop - (customLabel.attr('height') / 2);
-                    
-                                customLabel.attr({ x: x, y: y });
-                                customLabel.css({ fontSize: `${series.center[2] / 12}px` });
-                            }
-                        }
-                    }
-                },
-                accessibility: {
-                    point: { valueSuffix: '%' }
-                },
-                title: { text: '' },
-                subtitle: { text: '' },
-                tooltip: { pointFormat: '' },
-                plotOptions: {
-                    pie: {
-                        dataLabels: {
-                            enabled: true,
-                            format: '{point.y}km',
-                            style: {
-                                fontSize: '8px'
-                            }
-                        },
-                        showInLegend: true
-                    }
-                },
-                legend: {
-                    itemStyle: {
-                        fontSize: '10px',
-                        color: '#333'
-                    }
-                },
-                series: [{
-                    name: centerTitle,
-                    colorByPoint: true,
-                    innerSize: '85%',
-                    size: '95%',
-                    data: []
-                }],
-                credits: { enabled: false },
-            });
-        }
-        return;
-    }
-
-    for (const section in latestData) {
-        const { title: centerTitle, div: chartDiv } = sectionToChart[section] ? sectionToChart[section] : {};
-
-        if (!centerTitle || !chartDiv) {
-            continue;
-        }
-
-        const chartData = latestData[section] ? latestData[section] : {};
-
-        const landAcData = [
-            {
-                name: "Land Acquisition Status To Date (KM)",
-                y: parseFloat((chartData.cumulativeStatusKM ? chartData.cumulativeStatusKM : 0).toFixed(0)),
-                color: 'cornflowerblue'
-            },
-            {
-                name: "Land Acquisition Status Balance (KM)",
-                y: parseFloat((chartData.cumulativeBalStatusKM ? chartData.cumulativeBalStatusKM : 0).toFixed(1)),
-                color: 'coral'
-            }
-        ];
-
-        const landDisData = [
-            {
-                name: "Land Disputed To Date (KM)",
-                y: parseFloat((chartData.cumulativeDisputeKM ? chartData.cumulativeDisputeKM : 0).toFixed(0)),
-                color: 'darkseagreen'
-            }
-        ];
-
-        if (!document.getElementById(chartDiv)) {
-            continue;
-        }
-
-        let updateOnce = false;
-
-        Highcharts.chart(chartDiv, {
-            chart: {
-                marginTop: 3.7,
-                marginLeft: 100,
-                marginBottom: 4.5,
-                type: 'pie',
-                custom: {},
-                events: {
-                    render() {
-                        const chart = this,
-                            series = chart.series[0];
-                        let customLabel = chart.options.chart.custom.label;
-
-                        if (document.fullscreenElement && !updateOnce) {
-                            updateOnce = true;
-                            
-                            if (!customLabel) {
-                                customLabel = chart.options.chart.custom.label =
-                                    chart.renderer.label(centerTitle + '<br/>')
-                                        .css({ color: '#000', textAnchor: 'middle' })
-                                        .add();
-                            }
-                        
-                            if (series && series.center) {
-                                const x = series.center[0] + chart.plotLeft;
-                                const y = series.center[1] + chart.plotTop - (customLabel.attr('height') / 2);
-                        
-                                customLabel.attr({ x: x, y: y });
-                                customLabel.css({ fontSize: `${series.center[2] / 12}px` });
-                            }
-
-                            chart.series.forEach(function (series) {
-
-                                series.update({
-                                    dataLabels: {
-                                        enabled: true,
-                                        distance: 30,
-                                        format: '{point.y}km',
-                                        style: {
-                                            fontSize: '20px'
-                                        }
-                                    }
-                                }, false); 
-                            });
-                    
-                            chart.redraw();
-                        
-                            chart.update({                               
-                                legend: {
-                                    layout: 'vertical',
-                                    align: 'left',
-                                    itemStyle: {
-                                        fontSize: '20px',
-                                        color: '#333',
-                                        width: 'auto'
-                                    }
-                                }
-                            });
-                        }
-
-                        if (!customLabel) {
-                            customLabel = chart.options.chart.custom.label =
-                                chart.renderer.label(centerTitle + '<br/>')
-                                    .css({ color: '#000', textAnchor: 'middle' })
-                                    .add();
-                        }
-
-                        if (series && series.center) {
-                            const x = series.center[0] + chart.plotLeft;
-                            const y = series.center[1] + chart.plotTop - (customLabel.attr('height') / 2);
-                
-                            customLabel.attr({ x: x, y: y });
-                            customLabel.css({ fontSize: `${series.center[2] / 12}px` });
-                        }
-                    }
-                }
-            },
-            accessibility: {
-                point: { valueSuffix: '%' }
-            },
-            title: { text: '' },
-            subtitle: { text: '' },
-            tooltip: { pointFormat: '' },
-            legend: {
-                layout: 'vertical',
-                align: 'left',
-                itemStyle: {
-                    fontSize: '8.5px',
-                    color: '#333',
-                    width: 80,
-                    textOverflow: null
-                }
-            },
-            plotOptions: {
-                pie: {
-                    borderRadius: 0,
-                    showInLegend: true
-                }
-            },
-            series: [{
-                name: "Land Disputed",
-                colorByPoint: true,
-                size: '60%',
-                innerSize: '60%',
-                data: landDisData,
-                dataLabels: {
-                    enabled: true,
-                    distance: 40,
-                    format: '{point.y}km',
-                    style: {
-                        fontSize: '9px'
-                    }
-                },
-                events: {
-                    click: function (event) {
-                        var linkParamArr = [yearData, monthData];
-                        var postParam = { function: "openConOpDashboard", processType: "LAND", conOpTabId: "conopTab18", linkName: "construct_dash_conop_land_management", linkParam: linkParamArr, linkWinTitle: 'Land Management' };
-                        if (localStorage.ui_pref == "ri_v3") {
-                            window.parent.widgetConopOpen("LAND", "construct_dash_conop_land_management", linkParamArr, "Land Management");
-                        } else {
-                            parent.postMessage(postParam, "*");
-                        }
-                    }
-                }
-            },
-            {
-                name: "Land Acquisition Status",
-                colorByPoint: true,
-                size: '90%',
-                innerSize: '80%',
-                data: landAcData,
-                dataLabels: {
-                    enabled: true,
-                    distance: 5,
-                    format: '{point.y}km',
-                    style: {
-                        fontSize: '9px'
-                    }
-                },
-                events: {
-                    click: function (event) {
-                        var linkParamArr = [yearData, monthData];
-                        var postParam = { function: "openConOpDashboard", processType: "LAND", conOpTabId: "conopTab18", linkName: "construct_dash_conop_land_management", linkParam: linkParamArr, linkWinTitle: 'Land Management' };
-                        if (localStorage.ui_pref == "ri_v3") {
-                            window.parent.widgetConopOpen("LAND", "construct_dash_conop_land_management", linkParamArr, "Land Management");
-                        } else {
-                            parent.postMessage(postParam, "*");
-                        }
-                    }
-                }
-            }],
-            credits: { enabled: false },
-        });
-    }
-}
-
-// First Page Table
-function landAcquisitionTable(data, yearFilter, monthFilter) {
-
-    let latestYear = null;
-    let latestMonth = null;
-    let latestData = null;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    if (yearFilter === "all") {
-        if (monthFilter === "all") {
-            for (let year in data) {
-                if (!isNaN(year)) {
-                    for (let month in data[year]) {
-                        if (months.includes(month)) {
-                            if (latestYear === null || year > latestYear || (year === latestYear && months.indexOf(month) > months.indexOf(latestMonth))) {
-                                latestYear = year;
-                                latestMonth = month;
-                                latestData = data[year][month];
-                            }
-                        }
-                    }
-                }
-            }
-        }   
-    } else {
-        if (!data.hasOwnProperty(yearFilter)) {
-            return;
-        }
-
-        if (monthFilter === "all") {
-            for (let month in data[yearFilter]) {
-                if (months.includes(month)) {
-                    if (latestMonth === null || months.indexOf(month) > months.indexOf(latestMonth)) {
-                        latestMonth = month;
-                        latestData = data[yearFilter][month];
-                    }
-                }
-            }
-        } else {
-            latestData = data[yearFilter][monthFilter];
-        }
-    }
-
-    var yearData = '';
-    var monthData = '';
-
-    if (yearFilter === "all") {
-        yearData = '';
-    } else {
-        const monthNames = {
-            Jan: "01",
-            Feb: "02",
-            Mar: "03",
-            Apr: "04",
-            May: "05",
-            Jun: "06",
-            Jul: "07",
-            Aug: "08",
-            Sep: "09",
-            Oct: "10",
-            Nov: "11",
-            Dec: "12"
-        };
-    
-        if (monthFilter === "all") {
-            monthData = '';
-        } else {
-            monthData = monthNames[monthFilter] ? monthNames[monthFilter] : '';
-        }
-    
-        yearData = yearFilter;
-    }
-
-    if (!latestData || Object.keys(latestData).length === 0) {
-        const noDataHTML = '<tr><td colspan="5"><center>No Data Available</center></td></tr>';
-        ["overallTBody", "lawas01TBody", "lawas02TBody", "limbang01TBody", "limbang02TBody", "limbang03TBody"].forEach(id => {
-            $("#" + id).html(noDataHTML);
-        });
-        return;
-    }
-
-    const sectionToTBody = {
-        "": "overallTBody",
-        "LW 1": "lawas01TBody",
-        "LAW01": "lawas01TBody",
-        "LW 2": "lawas02TBody",
-        "LAW02": "lawas02TBody",
-        "LB 1": "limbang01TBody",
-        "LIM01": "limbang01TBody",
-        "LB 2": "limbang02TBody",
-        "LIM02": "limbang02TBody",
-        "LB 3": "limbang03TBody",
-        "LIM03": "limbang03TBody"
-    };
-
-    for (const section in latestData) {
-        const tBody = sectionToTBody[section];
-        const tData = latestData[section] || {};
-        
-        $("#" + tBody).html("");
-
-        const cumuStatKM = tData.cumulativeStatusKM ? tData.cumulativeStatusKM : 0;
-        const cumuBalStatKM = tData.cumulativeBalStatusKM ? tData.cumulativeBalStatusKM : 0;
-        const cumuDisputeKM = tData.cumulativeDisputeKM ? tData.cumulativeDisputeKM : 0;
-        const totalOverall = cumuStatKM + cumuBalStatKM;
-
-        let chartTBodyHTML = '';
-
-        if (totalOverall === 0) {
-            chartTBodyHTML += '<tr><td colspan="5"><center>No Data Available</center></td></tr>';
-        } else {
-            const roundedStatusPercent = Math.round((cumuStatKM / totalOverall) * 100);
-            const roundedBalStatusPercent = Math.round((cumuBalStatKM / totalOverall) * 100);
-            const roundedDisputePercent = Math.round((cumuDisputeKM / totalOverall) * 100);
-            const roundedToTwoDecimals = totalOverall.toFixed(1);
-            const roundedcumuBalStatKM = cumuBalStatKM.toFixed(1);
-
-            chartTBodyHTML += `
-                <tr>
-                    <td>Land Acquisition Status</td>
-                    <td onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${cumuStatKM}</td>
-                    <td onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedStatusPercent} %</td>
-                    <td onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedcumuBalStatKM}</td>
-                    <td onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedBalStatusPercent} %</td>
-                </tr>
-                <tr>
-                    <td>Land Disputed</td>
-                    <td onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${cumuDisputeKM}</td>
-                    <td onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedDisputePercent} %</td>
-                    <td class="landColor"></td>
-                    <td class="landColor"></td>
-                </tr>
-                <tr>
-                    <td><b>Total Overall (KM)</b></td>
-                    <td colspan="4" onclick="openConOpDashboardLand('${yearData}', '${monthData}')"><center>${roundedToTwoDecimals}</center></td>
-                </tr>
-            `;
-        }
-
-        $("#" + tBody).html(chartTBodyHTML);
-    }
-}
-
-// Second Page Land Summary
 function updateSynopsis(data, allData){
     let landTbHTML = '';
     $("#landSynopsis").html("");
@@ -545,237 +47,196 @@ function updateSynopsis(data, allData){
     $("#landSynopsis").html(landTbHTML);  
 }
 
-// Second Page Land Database - Year and Month Filter
-function updateLandDatabase(data, yearFilter, monthFilter) {
+function updateLandDatabase(data, allData, monthYear){
+    var catArr = [];
+    var dataArr = [];
+    var tempArr2 = [];
+    var tempArr3 = [];
 
-    let latestYear = null;
-    let latestMonth = null;
-    let latestData = null;
+    var tempAdd = 0;
+    if(data){
+        for (const [idx, ele] of Object.entries(data)) {
+            catArr.push(idx);
+            tempAdd = 0;
+            for (const [idx2, ele2] of Object.entries(ele)) {
+                //tempArr2 for COLUMN CHART
+                if (!tempArr2[idx2]) tempArr2[idx2] = [];
+                tempArr2[idx2].push({y: (ele2) ? parseFloat(ele2) : 0, allData : allData});
+                tempAdd = tempAdd + parseFloat(ele2);
+            }
+            //tempArr3 for SPLINE CHART
+            tempArr3.push(Math.round(parseFloat(tempAdd)));
+        }
 
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        let counter = 0;
 
-    if (yearFilter === "all") {
-        if (monthFilter === "all") {
-            for (let year in data) {
-                if (!isNaN(year)) {
-                    for (let month in data[year]) {
-                        if (months.includes(month)) {
-                            if (data[year][month] && data[year][month]['landDatabase']) {
-                                if (latestYear === null || year > latestYear || (year === latestYear && months.indexOf(month) > months.indexOf(latestMonth))) {
-                                    latestYear = year;
-                                    latestMonth = month;
-                                    latestData = data[year][month]['landDatabase'];
+        //FOR COLUMN
+        for (const [idx3, ele3] of Object.entries(tempArr2)) {
+            var tempArr = {
+                type: 'column',
+                name: idx3,
+                data: ele3,
+                cursor: 'pointer',
+                color: Highcharts.getOptions().colors[counter],
+                events: {
+                    click: function (event) {
+                        var allData = (event.point.allData) ? event.point.allData : [];
+                        var idFilter = (allData['Database'] && allData['Database'].idForConop) ? allData['Database'].idForConop : '';
+
+                        if(idFilter == '') return 
+                        var linkParamArr = [idFilter];
+                        var postParam = {function:"openConOpDashboard",processType:"LAND", conOpTabId:"conopTab17", linkName:"construct_dash_conop_land_timeline", linkParam:linkParamArr, linkWinTitle: 'Land Timeline & Database'};
+                        if(localStorage.ui_pref == "ri_v3"){
+                            window.parent.widgetConopOpen("LAND", "construct_dash_conop_land_timeline", linkParamArr, "Land Timeline & Database");
+                        }else{
+                            parent.postMessage(postParam ,"*");
+                        }
+                    }
+                }
+            };
+            dataArr.push(tempArr);
+            counter++;
+        }
+
+        //FOR SPLINE
+        var tempArr = {type: 'spline', name: 'TOTAL', data: tempArr3, color: Highcharts.getOptions().colors[7]};
+        dataArr.push(tempArr);
+    }
+
+    var chart = Highcharts.chart('landDatabase', {
+        chart: {
+            marginTop: 55,
+            events: {
+                render() {
+                  var chart = this;
+                  if(localStorage.ui_pref == 'ri_v3'){
+                      if (document.fullscreenElement && chart.updateFlag) {
+                        chart.updateFlag = false;
+                        chart.update({
+                            chart:{
+                                marginTop: 90,
+                                marginBottom: 100,
+                            },
+                            title: {
+                                text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Land Management<br>'+localStorage.p_name+'<br>Land Database ('+monthYear+')</span>'
+                            },
+                            legend: {
+                                symbolHeight: 10,
+                                symbolWidth: 10,
+                                verticalAlign: 'bottom',
+                                y: -20,
+                                floating: false,
+                                itemStyle : {
+                                  fontSize : 10
                                 }
                             }
-                        }
+                        })
+            
+                        chart.updateFlag = true;
+                      }
+                      else if (chart.updateFlag) {
+                        chart.updateFlag = false;
+            
+                        chart.update({
+                          title: {
+                            text: '<span class="showLabel">Land Management<br>'+localStorage.p_name+'<br>Land Database ('+monthYear+')</span>'
+                          },
+                          legend: {
+                            floating: true,
+                            verticalAlign: 'top',
+                            symbolHeight: 9,
+                            symbolWidth: 9,
+                            itemStyle: {
+                              fontSize: '9px',
+                            },
+                          }
+                        })
+                        chart.updateFlag = true;
+                      }
+                  }
+        
+                }
+            }
+        },
+        title: {
+            useHTML: true,
+            enabled: true,
+            text: '<span class="showLabel">Land Management<br>'+localStorage.p_name+'<br>Land Database ('+monthYear+')</span>'
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            categories: catArr,
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: ''
+            }
+        },
+        legend: {
+            align: 'center',
+            verticalAlign: 'top',
+            floating: true,
+            itemStyle : {
+                fontSize : 9
+            },
+            labelFormatter: function() {
+                return this.name;
+            },
+        },
+        credits: false,
+        tooltip: {
+            formatter: function(){
+                var points = this.points;
+                var tableHTML = '<span style="font-size:0.9rem"><b>'+this.point.category+'</b></span><table>';
+                points.forEach(function(idx, ele){
+                    switch(ele){
+                        case 0:
+                            section = 'Limbang 1';
+                        break;
+                        case 1:
+                            section = 'Limbang 2';
+                        break;
+                        case 2:
+                            section = 'Limbang 3';
+                        break;
+                        case 3:
+                            section = 'Lawas 1';
+                        break;
+                        case 4:
+                            section = 'Lawas 2';
+                        break;
+                        case 5:
+                            section = 'TOTAL';
+                        break;
+                        default:
+                        break
                     }
-                }
+                    tableHTML += '<tr><td style="white-space:pre;padding:0;font-size:0.9rem">'+section+': </td>' +
+                                 '<td style="padding:0;font-size:0.9rem"><b>'+idx.y+'</b></td></tr>'
+                })
+
+                tableHTML += '</table>';
+                return tableHTML;
+            },
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
             }
-        }
-    } else {
-        if (!data.hasOwnProperty(yearFilter)) {
-            return;
-        }
-
-        if (monthFilter === "all") {
-            for (let month in data[yearFilter]) {
-                if (months.includes(month)) {
-                    if (data[yearFilter][month] && data[yearFilter][month]['landDatabase']) {
-                        if (latestMonth === null || months.indexOf(month) > months.indexOf(latestMonth)) {
-                            latestMonth = month;
-                            latestData = data[yearFilter][month]['landDatabase'];
-                        }
-                    }
-                }
-            }
-        } else {
-            latestData = data[yearFilter][monthFilter] && data[yearFilter][monthFilter]['landDatabase'] ? data[yearFilter][monthFilter]['landDatabase'] : null;
-        }
-    }
-
-    if (!latestData) {
-        latestData = [];
-    }
-
-    var yearData = '';
-    var monthData = '';
-
-    const monthNames = {
-        Jan: "01",
-        Feb: "02",
-        Mar: "03",
-        Apr: "04",
-        May: "05",
-        Jun: "06",
-        Jul: "07",
-        Aug: "08",
-        Sep: "09",
-        Oct: "10",
-        Nov: "11",
-        Dec: "12"
-    };
-
-    if (yearFilter === "all") {
-        yearData = latestYear;
-        monthData = monthNames[latestMonth];
-    } else {
-        if (monthFilter === "all") {
-            monthData = '';
-        } else {
-            monthData = monthNames[monthFilter] ? monthNames[monthFilter] : '';
-        }
-    
-        yearData = yearFilter;
-    }
-
-    $("#landDatabaseHead").html("");
-    $("#landDatabaseBody").html("");
-
-    var catArr = [];
-    var sectionArr = [];
-
-    let databaseHeadTbHTML = '';
-    let databaseBodyTbHTML = '';
-
-    const sectionMapping = {
-        "Limbang 1": "LIM01",
-        "Limbang 01": "LIM01",
-        "Limbang 2": "LIM02",
-        "Limbang 02": "LIM02",
-        "Limbang 3": "LIM03",
-        "Limbang 03": "LIM03",
-        "Lawas 1": "LAW01",
-        "Lawas 01": "LAW01",
-        "Lawas 2": "LAW02",
-        "Lawas 02": "LAW02"
-    };
-
-    const sectionOrder = ["LIM01", "LIM02", "LIM03", "LAW01", "LAW02"];
-
-    if (latestData) {
-        for (const [idx, ele] of Object.entries(latestData)) {
-            catArr.push(idx);
-            for (const [idx2, ele2] of Object.entries(ele)) {
-                if (!sectionArr.includes(idx2)) {
-                    sectionArr.push(idx2);
-                }
-            }
-        }
-
-        let mappedSections = sectionArr.map(section => sectionMapping[section] || section);
-        mappedSections.sort((a, b) => sectionOrder.indexOf(a) - sectionOrder.indexOf(b));
-
-        // FOR Table Header
-        databaseHeadTbHTML += '<tr>';
-        databaseHeadTbHTML += '<th style="text-align: center;">Category</th>';
-        for (const section of mappedSections) {
-            databaseHeadTbHTML += '<th style="text-align: center;">' + section + '</th>';
-        }
-        databaseHeadTbHTML += '<th style="text-align: center;">Total</th>';
-        databaseHeadTbHTML += '</tr>';
-
-        // FOR Table Body
-        for (const category of catArr) {
-            let total = 0;
-            databaseBodyTbHTML += '<tr>';
-            databaseBodyTbHTML += '<td style="text-align: center;">' + category + '</td>';
-            for (const section of mappedSections) {
-                const originalSection = sectionArr.find(key => sectionMapping[key] === section);
-                const value = latestData[category][originalSection] || 0;
-                databaseBodyTbHTML += `<td onclick="openConOpDashboardLandTimeData('${yearData}', '${monthData}', 'Database')" style="text-align: center;">` + value + `</td>`;
-                total += parseFloat(value);
-            }
-            databaseBodyTbHTML += `<td onclick="openConOpDashboardLandTimeData('${yearData}', '${monthData}' , 'Database')" style="text-align: center;">` + total + `</td>`;
-            databaseBodyTbHTML += '</tr>';
-        }
-
-        $("#landDatabaseHead").html(databaseHeadTbHTML);
-        $("#landDatabaseBody").html(databaseBodyTbHTML);
-    }
+        },
+        series: dataArr
+    });
+    chart.updateFlag = true;
 }
 
-// Third Page Land Timeline
-function updateLandTimeline(data, yearFilter, monthFilter) {
-    let latestYear = null;
-    let latestMonth = null;
-    let latestData = null;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    if (yearFilter === "all") {
-        if (monthFilter === "all") {
-            for (let year in data) {
-                if (!isNaN(year)) {
-                    for (let month in data[year]) {
-                        if (months.includes(month)) {
-                            if (data[year][month] && data[year][month]['landTimeline']) {
-                                if (latestYear === null || year > latestYear || (year === latestYear && months.indexOf(month) > months.indexOf(latestMonth))) {
-                                    latestYear = year;
-                                    latestMonth = month;
-                                    latestData = data[year][month]['landTimeline'];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        if (!data.hasOwnProperty(yearFilter)) {
-            return;
-        }
-
-        if (monthFilter === "all") {
-            for (let month in data[yearFilter]) {
-                if (months.includes(month)) {
-                    if (data[yearFilter][month] && data[yearFilter][month]['landTimeline']) {
-                        if (latestMonth === null || months.indexOf(month) > months.indexOf(latestMonth)) {
-                            latestMonth = month;
-                            latestData = data[yearFilter][month]['landTimeline'];
-                        }
-                    }
-                }
-            }
-        } else {
-            latestData = data[yearFilter][monthFilter] && data[yearFilter][monthFilter]['landTimeline'] ? data[yearFilter][monthFilter]['landTimeline'] : null;
-        }
-    }
-
-    if (!latestData) {
-        latestData = [];
-    }
-
-    var yearData1 = '';
-    var monthData1 = '';
-
-    const monthNames = {
-        Jan: "01",
-        Feb: "02",
-        Mar: "03",
-        Apr: "04",
-        May: "05",
-        Jun: "06",
-        Jul: "07",
-        Aug: "08",
-        Sep: "09",
-        Oct: "10",
-        Nov: "11",
-        Dec: "12"
-    };
-
-    if (yearFilter === "all") {
-        yearData1 = latestYear;
-        monthData1 = monthNames[latestMonth];
-    } else {
-        if (monthFilter === "all") {
-            monthData1 = '';
-        } else {
-            monthData1 = monthNames[monthFilter] ? monthNames[monthFilter] : '';
-        }
-    
-        yearData1 = yearFilter;
-    }
-
+function updateLandTimeline(data, allData){
     let timeHeadTbHTML = '';
     let timeBodyTbHTML = '';
 
@@ -784,8 +245,6 @@ function updateLandTimeline(data, yearFilter, monthFilter) {
 
     flagThFirst = false;
     flagMilestonesFirst = false;
-    flagMilestonesSecond = false;
-    flagMilestonesLast = false;
     flagEventFirst = false;
     flagEventSecond = false;
     flagHaveAssump = false;
@@ -793,417 +252,475 @@ function updateLandTimeline(data, yearFilter, monthFilter) {
     var dateAssumpt = '';
     var textAssumpt = '';
     var indicatorAssumpt = '';
-    var indicatorAssumpt = '';
     var indicatorClass = '';
-    var indicatorFixed = '';
 
     var count = 0;
-    var lengthData = (latestData && latestData.data) ? (latestData.data).length : 0;
+
+    var idConop = (allData && allData['Timeline'] && allData['Timeline'].idForConop) ? allData['Timeline'].idForConop : '';
+    
+    var lengthData = (data && data.data) ? (data.data).length : 0;
     var eleCount = 0;
+    if(data){
 
-    if (latestData && Array.isArray(latestData.data)) {
-        let uniqueMonthTimelines = new Map();
-        let currentColumn = 1;
-
-        // FIRST LOOP IS FOR THE HEADER
-        for (const ele of latestData.data) {
-            eleCount++;
-            var createDate = new Date(ele.year + "-" + ele.month + "-01");
+        //FIRST LOOP IS FOR DATA
+        for (const [idx, ele] of Object.entries(data.data)) {
+            eleCount ++;
+            var createDate = new Date (ele.year + "-" + ele.month + "-01");
             var createYear = createDate.getFullYear();
             var createMonth = createDate.getMonth();
-            var mthYr = monthNumtoHalftext[ele.month] + ' ' + ele.year;
-            var monthCheck = "";
+            var mthYr = monthNumtoHalftext[ele.month] +' '+ ele.year;
 
-            if (ele.month_timeline) {
-                monthCheck = ele.month_timeline;
-
-                if (!uniqueMonthTimelines.has(monthCheck)) {
-                    uniqueMonthTimelines.set(monthCheck, currentColumn);
-                    currentColumn++;
-
-                    if (!flagThFirst) {
-                        timeHeadTbHTML += '<tr>';
-                        timeHeadTbHTML += '<th></th>';
-                        flagThFirst = true;
-                    }
-                    timeHeadTbHTML += '<th>' + monthCheck + '</th>';
-                }
-            }
-        }
-        if (flagThFirst) {
-            timeHeadTbHTML += '</tr>';
-        }
-
-        // FIRST LOOP FOR THE BODY
-        let totalColumns = uniqueMonthTimelines.size;
-        let rowCells = Array(totalColumns).fill('<td></td>');
-
-        flagThFirst = false;
-        currentColumn = 1;
-        uniqueMonthTimelines.clear();
-        for (const ele of latestData.data) {
-            let useMonthYear = monthNumtoHalftext[ele.month] + ' ' + ele.year;
-            monthCheck = ele.month_timeline;
-
-            if (ele.month_timeline) {
-                if (!flagThFirst) {
-                    if (!uniqueMonthTimelines.has(monthCheck)) {
-                        timeHeadTbHTML += '<tr>'
-                        timeHeadTbHTML += '<th></th>'
-                        timeHeadTbHTML += '<th>' + useMonthYear + '</th>'
-
-                        flagThFirst = true;
-                        uniqueMonthTimelines.set(monthCheck, currentColumn);
-                        currentColumn++;
-                    }
-                } else {
-                    if (!uniqueMonthTimelines.has(monthCheck)) {
-                        timeHeadTbHTML += '<th>' + useMonthYear + '</th>'
-                        uniqueMonthTimelines.set(monthCheck, currentColumn);
-                        currentColumn++;
-                    }
-                }
-            }
-        }
-
-        currentColumn = 1;
-        uniqueMonthTimelines.clear();
-        let columnMilestones = new Map();
-        
-        for (const ele of latestData.data) {
-            let milesVal = '';
-        
-            if (ele.month_timeline) {
-                let monthCheck = ele.month_timeline;
-        
-                if (!uniqueMonthTimelines.has(monthCheck)) {
-                    uniqueMonthTimelines.set(monthCheck, currentColumn);
-                    currentColumn++;
-        
-                    if (ele.milestone === "Construction") {
-                        milesVal = ele.milestone;
-                    } else {
-                        milesVal = '';
-                    }
-        
-                    columnMilestones.set(monthCheck, milesVal);
-                } else {
-                    if (ele.milestone === "Construction") {
-                        columnMilestones.set(monthCheck, ele.milestone);
-                    }
-                }
-            }
-        }
-        
-        timeBodyTbHTML += '<tr>';
-        rowCells = Array(currentColumn).fill('<td></td>');
-        let currentMilestone = null;
-        let milestoneCount = 1;
-        let milestoneStartIndex = null;
-        
-        for (const [month, milestone] of columnMilestones.entries()) {
-            let columnIndex = uniqueMonthTimelines.get(month);
-        
-            if (milestone === currentMilestone && columnIndex === milestoneStartIndex + milestoneCount) {
-                milestoneCount++;
-            } else {
-                if (currentMilestone) {
-                    let cellContent = '<td' +
-                        (milestoneCount > 1 ? ' colspan="' + milestoneCount + '"' : '') +
-                        ' style="background-color: yellow; text-align: center;" onclick="openConOpDashboardLandTimeData(\'' + yearData1 + '\' , \'' + monthData1 + '\', \'Timeline\')">' + currentMilestone + '</td>';
-                    rowCells[milestoneStartIndex] = cellContent;
-                    for (let i = 1; i < milestoneCount; i++) {
-                        rowCells[milestoneStartIndex + i] = '';
-                    }
-                }
-                currentMilestone = milestone;
-                milestoneCount = 1;
-                milestoneStartIndex = columnIndex;
-            }
-        }
-        
-        // Handle the last milestone
-        if (currentMilestone) {
-            let cellContent = '<td' +
-                (milestoneCount > 1 ? ' colspan="' + milestoneCount + '"' : '') +
-                ' style="background-color: yellow; text-align: center;" onclick="openConOpDashboardLandTimeData(\'' + yearData1 + '\' , \'' + monthData1 + '\', \'Timeline\')">' + currentMilestone + '</td>';
-            rowCells[milestoneStartIndex] = cellContent;
-            for (let i = 1; i < milestoneCount; i++) {
-                rowCells[milestoneStartIndex + i] = '';
-            }
-        }
-        
-        timeBodyTbHTML += rowCells.join('') + '</tr>';
-        currentColumn = 1;
-        uniqueMonthTimelines.clear();
-        for (const ele of latestData.data) {
-            var milesWords = (ele.milestone) ? ele.milestone : 'N/A';
-            var milesVal = '';
-            monthCheck = ele.month_timeline;
-
-            if (!uniqueMonthTimelines.has(monthCheck)) {
-                if (ele.milestone == "LAP Submission" || ele.milestone == "Funds Available") {
-                    milesVal = ele.milestone;
-                } else {
-                    milesVal = '';
-                }
-                    
-                if (milesWords) {
-                    if (!flagMilestonesSecond) {
-                        timeBodyTbHTML += '<tr>'
-                        timeBodyTbHTML += '<th>KEY LAND MILESTONES</th>'
-
-                        flagMilestonesSecond = true;
-                    }
-                    timeBodyTbHTML += '<td onclick="openConOpDashboardLandTimeData(\'' + yearData1 + '\' , \'' + monthData1 + '\', \'Timeline\')">' + milesVal + '</td>'
-                }
-                uniqueMonthTimelines.set(monthCheck, currentColumn);
-                currentColumn++;
-            }
-        }
-        timeBodyTbHTML += '</tr>'
-        timeBodyTbHTML += '<tr>'
-        timeBodyTbHTML += '<th>LAND ACQUISITION STAGE 1 (LAND ACQUISITION STATUS) - 88KM</th>'
-
-        rowCells = Array(totalColumns).fill('<td></td>');
-
-        let currentEvent = null;
-        let eventCount = 0;
-        let eventStartIndex = null;
-
-        for (const ele of latestData.data) {
-            let eventWords = ele.event ? ele.event : 'N/A';
-            let monthCheck = ele.month_timeline;
-
-            if (ele.milestone === "Land Acquisition Stage 1 (Land Acquisition Status) - 88KM") {
-                let columnIndex = uniqueMonthTimelines.get(monthCheck) - 1;
-
-                if (currentEvent === eventWords && columnIndex === eventStartIndex + eventCount) {
-                    eventCount++;
-                } else {
-                    if (currentEvent) {
-                        let bgColor = '';
-                        if (currentEvent === "Land Acquisition and Compensation") {
-                            bgColor = 'skyblue';
-                        } else if (currentEvent === "Notice Pemberitahuan Awal (NPA)") {
-                            bgColor = 'lightgreen';
-                        } else if (currentEvent === "Query Session") {
-                            bgColor = 'orange';
-                        } else if (currentEvent === "Enforcement by Authority" || currentEvent === "Notice to Quit from Authority (NTQ)") {
-                            bgColor = 'mediumseagreen';
-                        }
-
-                        let cellContent = '<td' + 
-                                        (eventCount > 1 ? ' colspan="' + eventCount + '"' : '') + 
-                                        (bgColor ? ' style="background-color: ' + bgColor + '; text-align: center;"' : ' style="text-align: center;"') +
-                                        ' onclick="openConOpDashboardLandTimeData(\'' + yearData1 + '\' , \'' + monthData1 + '\', \'Timeline\')">' + currentEvent + '</td>';
-                        rowCells[eventStartIndex] = cellContent;
-                        for (let i = 1; i < eventCount; i++) {
-                            rowCells[eventStartIndex + i] = '';
-                        }
-                    }
-                    currentEvent = eventWords;
-                    eventCount = 1;
-                    eventStartIndex = columnIndex;
-                }
-            }
-        }
-
-        if (currentEvent) {
-            let bgColor = '';
-            if (currentEvent === "Land Acquisition and Compensation") {
-                bgColor = 'skyblue';
-            } else if (currentEvent === "Notice Pemberitahuan Awal (NPA)") {
-                bgColor = 'lightgreen';
-            } else if (currentEvent === "Query Session") {
-                bgColor = 'orange';
-            } else if (currentEvent === "Enforcement by Authority" || currentEvent === "Notice to Quit from Authority (NTQ)") {
-                bgColor = 'mediumseagreen';
-            }
-
-            let cellContent = '<td' + 
-                            (eventCount > 1 ? ' colspan="' + eventCount + '"' : '') + 
-                            (bgColor ? ' style="background-color: ' + bgColor + '; text-align: center;"' : ' style="text-align: center;"') +
-                            ' onclick="openConOpDashboardLandTimeData(\'' + yearData1 + '\' , \'' + monthData1 + '\', \'Timeline\')">' + currentEvent + '</td>';
-            rowCells[eventStartIndex] = cellContent;
-            for (let i = 1; i < eventCount; i++) {
-                rowCells[eventStartIndex + i] = '';
-            }
-        }
-
-        // Build the final table body row
-        timeBodyTbHTML += rowCells.join('') + '</tr>';
-        timeBodyTbHTML += '<tr>'
-        timeBodyTbHTML += '<th>LAND ACQUISITION STAGE 2 (LAND DISPUTED) - 88KM</th>'
-
-        rowCells = Array(totalColumns).fill('<td></td>');
-        currentEvent = null;
-        eventCount = 0;
-        eventStartIndex = null;
-        flagEventSecond = false;
-        
-        for (const ele of latestData.data) {
-            let eventWords = ele.event ? ele.event : '';
-            let monthCheck = ele.month_timeline;
-        
-            if (ele.milestone === "Land Acquisition Stage 1 (Land Acquisition Status) - 88KM" || 
-                ele.milestone === "LAP Submission" || 
-                ele.milestone === "Funds Available") {
-                continue;
-            } else {
-                if (eventWords) {
-                    if (!flagEventSecond) {
-                        flagEventSecond = true;
-                    }
-        
-                    let columnIndex = uniqueMonthTimelines.get(monthCheck) - 1;
-        
-                    if (currentEvent === eventWords && columnIndex === eventStartIndex + eventCount) {
-                        eventCount++;
-                    } else {
-                        if (currentEvent) {
-                            let bgColor = '';
-                            if (currentEvent === "Land Acquisition and Compensation") {
-                                bgColor = 'skyblue';
-                            } else if (currentEvent === "Notice Pemberitahuan Awal (NPA)") {
-                                bgColor = 'lightgreen';
-                            } else if (currentEvent === "Query Session") {
-                                bgColor = 'orange';
-                            } else if (currentEvent === "Enforcement by Authority" || currentEvent === "Notice to Quit from Authority (NTQ)") {
-                                bgColor = 'mediumseagreen';
-                            }
-        
-                            let cellContent = '<td' + 
-                                              (eventCount > 1 ? ' colspan="' + eventCount + '"' : '') + 
-                                              (bgColor ? ' style="background-color: ' + bgColor + '; text-align: center;"' : ' style="text-align: center;"') +
-                                              ' onclick="openConOpDashboardLandTimeData(\'' + yearData1 + '\' , \'' + monthData1 + '\', \'Timeline\')">' + currentEvent + '</td>';
-                            rowCells[eventStartIndex] = cellContent;
-                            for (let i = 1; i < eventCount; i++) {
-                                rowCells[eventStartIndex + i] = '';
-                            }
-                        }
-                        currentEvent = eventWords;
-                        eventCount = 1;
-                        eventStartIndex = columnIndex;
-                    }
-                }
-            }
-        }
-        
-        if (currentEvent) {
-            let bgColor = '';
-            if (currentEvent === "Land Acquisition and Compensation") {
-                bgColor = 'skyblue';
-            } else if (currentEvent === "Notice Pemberitahuan Awal (NPA)") {
-                bgColor = 'lightgreen';
-            } else if (currentEvent === "Query Session") {
-                bgColor = 'orange';
-            } else if (currentEvent === "Enforcement by Authority" || currentEvent === "Notice to Quit from Authority (NTQ)") {
-                bgColor = 'mediumseagreen';
-            }
-        
-            let cellContent = '<td' + 
-                              (eventCount > 1 ? ' colspan="' + eventCount + '"' : '') + 
-                              (bgColor ? ' style="background-color: ' + bgColor + '; text-align: center;"' : ' style="text-align: center;"') +
-                              ' onclick="openConOpDashboardLandTimeData(\'' + yearData1 + '\' , \'' + monthData1 + '\', \'Timeline\')">' + currentEvent + '</td>';
-            rowCells[eventStartIndex] = cellContent;
-            for (let i = 1; i < eventCount; i++) {
-                rowCells[eventStartIndex + i] = '';
-            }
-        }
-        
-        timeBodyTbHTML += rowCells.join('') + '</tr>';
-        timeBodyTbHTML += '<td class="indicatorData"></td>';
-
-        currentColumn = 1;
-        uniqueMonthTimelines.clear();
-        for (const [idx, ele] of Object.entries(latestData.data)) {
-            eleCount++;
-            var createDate = new Date(ele.year + "-" + ele.month + "-01");
-            var createYear = createDate.getFullYear();
-            var createMonth = createDate.getMonth() + 1;
-
-            let assumptions = [];
-
-            if (latestData.assumption) {
-                for (const [idx2, ele2] of Object.entries(latestData.assumption)) {
-                    var createDate2 = new Date(ele2.date);
+            dateAssumpt = '';
+            textAssumpt = '';
+            indicatorAssumpt = '';
+            indicatorClass = '';
+            indicatorFixed = '';
+            
+            //SECOND LOOP IS FOR ASSUMPTION
+            if(data.assumption){
+                for (const [idx2, ele2] of Object.entries(data.assumption)) {
+                    var createDate2 = new Date (ele2.date);
                     var createYear2 = createDate2.getFullYear();
-                    var createMonth2 = createDate2.getMonth() + 1;
+                    var createMonth2 = createDate2.getMonth();
                     var createDay2 = createDate2.getDate();
-
-                    if ((createYear == createYear2) && (createMonth == createMonth2)) {
+    
+                    if((createYear == createYear2) && (createMonth == createMonth2)){
                         var createMonthNeedChange = createDate2.getMonth() + 1;
-                        var dateAssumpt = createDay2 + '/' + createMonthNeedChange + '/' + createYear2;
-                        var textAssumpt = ele2.target_assumption;
-
-                        var indicatorClass = '';
-                        if (createDay2 == 1) {
+                        dateAssumpt = createDay2 + '/' + createMonthNeedChange + '/' +createYear2;
+                        textAssumpt = ele2.target_assumption;
+    
+                        if(createDay2 == 1){
                             indicatorClass = 'early';
-                        } else if (createDay2 == 30 || createDay2 == 31 || createDay2 == 28 || createDay2 == 29) {
+                        }
+                        else if(createDay2 == 30 || createDay2 == 31 || createDay2 == 28 || createDay2 == 29){
                             indicatorClass = 'late';
-                        } else {
+                        }
+                        else{
                             indicatorClass = 'mid';
                         }
-
-                        var indicatorFixed = '';
-                        if (eleCount == lengthData) {
-                            indicatorFixed = 'fixed';
+    
+                        if (eleCount == lengthData){
+                            indicatorFixed = 'fixed'
                         }
-
-                        assumptions.push({
-                            dateAssumpt: dateAssumpt,
-                            textAssumpt: textAssumpt,
-                            indicatorClass: indicatorClass,
-                            indicatorFixed: indicatorFixed
-                        });
-
+    
                         flagHaveAssump = true;
+                        break;
                     }
                 }
             }
 
-            if (ele.month_timeline) {
-                let indicatorAssumpt = '';
-                if (flagHaveAssump) {
-                    indicatorAssumpt = assumptions.map(assumption => 
-                        `<div class="indicator ${assumption.indicatorClass} ${assumption.indicatorFixed}" onclick="openConOpDashboardLandTimeData('${yearData1}' , '${monthData1}', 'Timeline')">
-                            <i class="fa-sharp fa-solid fa-arrow-down"></i>
-                            <div class="text" title="${assumption.textAssumpt} : ${assumption.dateAssumpt}"><div>${assumption.textAssumpt}<br>${assumption.dateAssumpt}</div></div>
-                        </div>`
-                    ).join('');
+            if(ele.month_timeline){
+                
+                if(flagHaveAssump){
+                    indicatorAssumpt = '<div class="indicator '+indicatorClass+' '+indicatorFixed+'" ><div class="text">'+textAssumpt+'<br>'+dateAssumpt+'</div><i class="fa-sharp fa-solid fa-arrow-down"></i></div>';
                 }
 
-                monthCheck = ele.month_timeline;
-                if (!uniqueMonthTimelines.has(monthCheck)) {
-                    timeBodyTbHTML += '<td class="indicatorData">' + indicatorAssumpt + '</td>';
-                    uniqueMonthTimelines.set(monthCheck, currentColumn);
-                    currentColumn++;
-                } else {
-                    timeBodyTbHTML = timeBodyTbHTML.replace(
-                        `<td class="indicatorData">${uniqueMonthTimelines.get(monthCheck)}</td>`,
-                        `<td class="indicatorData">${uniqueMonthTimelines.get(monthCheck)}${indicatorAssumpt}</td>`
-                    );
+                if(!flagThFirst){
+                    timeHeadTbHTML += '<tr>'
+                    timeHeadTbHTML += '<th></th>'
+                    timeHeadTbHTML += '<th>'+indicatorAssumpt+''+ele.month_timeline+'</th>'
+    
+                    flagThFirst = true;
+                }
+                else{
+                    timeHeadTbHTML += '<th>'+indicatorAssumpt+''+ele.month_timeline+'</th>'
                 }
             }
+
             flagHaveAssump = false;
             count++;
+
+        }
+        timeHeadTbHTML += '</tr>'
+
+        flagThFirst = false;
+        for (const [idx, ele] of Object.entries(data.data)) {
+            if(ele.month || ele.year){
+                var useMonthYear = monthNumtoHalftext[ele.month] +' '+ ele.year;
+
+
+                if(!flagThFirst){
+                    timeHeadTbHTML += '<tr>'
+                    timeHeadTbHTML += '<th></th>'
+                    timeHeadTbHTML += '<th>'+useMonthYear+'</th>'
+    
+                    flagThFirst = true;
+                }
+                else{
+                    timeHeadTbHTML += '<th>'+useMonthYear+'</th>'
+                }
+
+            }
+        }
+        timeHeadTbHTML += '</tr>'
+
+        for (const [idx, ele] of Object.entries(data.data)) {
+            var milesWords = (ele.milestone) ? ele.milestone : 'N/A';
+            var milesVal = '';
+
+            if(ele.milestone == "LAP Submission" || ele.milestone == "Funds Available"){
+                milesVal = ele.milestone;
+            }else{
+                milesVal = '';
+            }
+
+            if(milesWords){
+                if(!flagMilestonesFirst){
+                    timeBodyTbHTML += '<tr>'
+                    timeBodyTbHTML += '<th>KEY LAND MILESTONES</th>'
+
+                    flagMilestonesFirst = true;
+                }
+                
+                timeBodyTbHTML += '<td onclick="openConOpDashboardLandTimeData(\''+idConop+'\')">'+milesVal+'</td>'
+            }
         }
         timeBodyTbHTML += '</tr>'
+
+        timeBodyTbHTML += '<tr>'
+        timeBodyTbHTML += '<th>Land Acquisition Stage 1 (AIWI) - 88KM</th>'
+
+        for (const [idx, ele] of Object.entries(data.data)) {
+            var eventWords = (ele.event) ? ele.event : 'N/A';
+            var eventPercent = (ele.partial_delivery) ? ele.partial_delivery + '%' : '';
+
+            if(ele.milestone == "Land Acquisition Stage 1 (AIWI) - 88KM"){
+                if(eventWords){
+                    if(!flagEventFirst){
+                        flagEventFirst = true;
+                    }
+                    timeBodyTbHTML += '<td onclick="openConOpDashboardLandTimeData(\''+idConop+'\')">'+ele.event+'</td>'
+                }
+            }else{
+                timeBodyTbHTML += '<td></td>'
+            }
+        }
+
+        timeBodyTbHTML += '</tr>'
+
+        timeBodyTbHTML += '<tr>'
+        timeBodyTbHTML += '<th>Land Acquisition Stage 2 (FOE) - 88KM</th>'
+
+        for (const [idx, ele] of Object.entries(data.data)) {
+            var eventWords = (ele.event) ? ele.event : 'N/A';
+            var eventPercent = (ele.partial_delivery) ? ele.partial_delivery + '%' : '';
+
+            if(ele.milestone == "LAP Submission" || ele.milestone == "Funds Available" || ele.milestone == "Land Acquisition Stage 1 (AIWI) - 88KM"){
+                timeBodyTbHTML += '<td></td>'
+            }else{
+                if(eventWords){
+                    if(!flagEventSecond){
+                        flagEventSecond = true;
+                    }
+                    timeBodyTbHTML += '<td onclick="openConOpDashboardLandTimeData(\''+idConop+'\')">'+ele.event+'</td>'
+                }
+            }
+        }
+        timeBodyTbHTML += '</tr>'
+
     }
 
     $("#timelineHead").html(timeHeadTbHTML);
     $("#timelineBody").html(timeBodyTbHTML);
-
-    $(".indicatorData:empty").css('visibility', 'hidden')
 }
 
-// Third Page Land Management Report
+function drawAiwiChart(data, allData, monthYear, month){
+    var catArr = [];
+    var dataArr = [];
+    var valueAdd = 0;
+
+    if(data){
+        for (const [idx, ele] of Object.entries(data)) {
+            if(idx == '') continue;
+            valueAdd =  valueAdd + parseInt(ele);
+
+            var tempArr = {name: idx, y: (ele) ? parseInt(ele) : 0, allData: (allData) ? allData : [], upColor: dataColorArr[0]};
+            dataArr.push(tempArr);
+        }
+
+        if(valueAdd == 100){
+            catArr.push('Balance');
+            var tempArr = {name: 'Balance', y: - 100, color: dataColorArr[6]};
+            dataArr.push(tempArr);
+        }else{
+            catArr.push('Balance');
+            var tempArr = {name: 'Balance', y: valueAdd - 100, color: dataColorArr[6]};
+            dataArr.push(tempArr);
+        }
+
+        catArr.push('Target');
+        var tempArr = {name: 'Target', y: 100, color: dataColorArr[2]};
+        dataArr.push(tempArr);
+
+
+    }
+
+    var chart = Highcharts.chart('aiwiChart', {
+        chart: {
+            type: 'waterfall',
+            events: {
+                render() {
+                  var chart = this;
+
+                  if(localStorage.ui_pref == 'ri_v3'){
+                      if (document.fullscreenElement && chart.updateFlag) {
+                        chart.updateFlag = false;
+                        chart.update({
+                          chart:{
+                            marginTop: 90
+                          },
+                          title: {
+                            text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Land Management<br>'+localStorage.p_name+'<br>AIWI STATUS STAGE 1 ('+monthYear+')</span>'
+                          }
+                        })
+            
+                        chart.updateFlag = true;
+                      }
+                      else if (chart.updateFlag) {
+                        chart.updateFlag = false;
+            
+                        chart.update({
+                          title: {
+                            text: '<span class="showLabel">Land Management<br>'+localStorage.p_name+'<br>AIWI ('+monthYear+')</span>'
+                          },
+                        })
+                        chart.updateFlag = true;
+                      }
+                  }
+        
+                }
+            }
+        },
+        credits: false,
+        title: {
+            useHTML: true,
+            enabled: true,
+            text: '<span class="showLabel">Land Management<br>'+localStorage.p_name+'<br>AIWI ('+monthYear+')</span>'
+        },
+        xAxis: {
+            type: 'category',
+        },
+        yAxis: {
+            title: {
+                text: ''
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '<b>{point.y:,.1f}%</b>'
+        },
+        series: [{
+            label: {
+                enabled: false
+            },
+            data: dataArr,
+            dataLabels: {
+                enabled: true,
+                formatter: function () {
+                    return this.y + '%';
+                },
+                style: {
+                    fontWeight: 'bold'
+                }
+            },
+            pointPadding: 0,
+            cursor : 'pointer',
+            events: {
+                click: function (event) {
+                    var monthEachChart = event.point.category;
+                    if(monthEachChart == 'Balance' || monthEachChart == 'Target') return
+
+                    var monthPass = (monthEachChart) ? monthEachChart : '';
+                    var yearPass;
+                    
+                    if (localStorage.ui_pref == 'ri_v3'){
+                        yearPass = window.parent.$('.mainPage.myDashboard').find('.yrFilter').val();
+                    }else{
+                        yearPass = $('#yearFilter').val();
+                    }
+
+                    if(yearPass == 'all'){
+                        var currDate = new Date();
+                        currYear = currDate.getFullYear();
+                        yearPass = currYear;
+                    }
+
+                    var linkParamArr = [yearPass, monthPass];
+
+                    var postParam = {function:"openConOpDashboard",processType:"LAND", conOpTabId:"conopTab18", linkName:"construct_dash_conop_land_managementAiwiFoe", linkParam:linkParamArr, linkWinTitle: 'Land Management'};
+                    if(localStorage.ui_pref == 'ri_v3'){
+                        window.parent.widgetConopOpen("LAND", "construct_dash_conop_land_managementAiwiFoe", linkParamArr, "Land Management - " + event.point.category);
+                    }else{
+                        parent.postMessage(postParam ,"*");
+                    }
+                }
+            }
+        }]
+    });
+    chart.updateFlag = true;
+
+    if(valueAdd == 100){
+        var negativeBar = $('#aiwiChart').find('.highcharts-series.highcharts-waterfall-series').children().eq(useMonth)
+        negativeBar.css('opacity', '0')
+
+        var negativeText = $('#aiwiChart').find('.highcharts-data-labels.highcharts-waterfall-series').children().eq(useMonth)
+        negativeText.css('opacity', '0')
+    }
+}
+
+function drawFoeChart(data, allData, monthYear, month){
+    var catArr = [];
+    var dataArr = [];
+    var valueAdd = 0;
+
+    if(data){
+        for (const [idx, ele] of Object.entries(data)) {
+            if(idx == '' || idx == 'M0') continue;
+            catArr.push(idx);
+            valueAdd =  valueAdd + parseInt(ele);
+
+            var tempArr = {name: idx, y: (ele) ? parseInt(ele) : 0, allData: (allData) ? allData : [], upColor: dataColorArr[0]};
+            dataArr.push(tempArr);
+        }
+
+        catArr.push('Balance');
+
+        if(valueAdd == 100){
+            var tempArr = {name: 'Balance', y: - 100, color: dataColorArr[6]};
+            dataArr.push(tempArr);
+        }else{
+            var tempArr = {name: 'Balance', y: valueAdd - 100, color: dataColorArr[6]};
+            dataArr.push(tempArr);
+        }
+
+        catArr.push('Target');
+        var tempArr = {name: 'Target', y: 100, color: dataColorArr[2]};
+        dataArr.push(tempArr);
+    }
+
+    var chart = Highcharts.chart('foeChart', {
+        chart: {
+            type: 'waterfall',
+            events: {
+                render() {
+                  var chart = this;
+
+                  if(localStorage.ui_pref == 'ri_v3'){
+                      if (document.fullscreenElement && chart.updateFlag) {
+                        chart.updateFlag = false;
+                        chart.update({
+                          chart:{
+                            marginTop: 90
+                          },
+                          title: {
+                            text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Land Management<br>'+localStorage.p_name+'<br>FOE STATUS STAGE 2 ('+monthYear+')</span>'
+                          }
+                        })
+            
+                        chart.updateFlag = true;
+                      }
+                      else if (chart.updateFlag) {
+                        chart.updateFlag = false;
+            
+                        chart.update({
+                          title: {
+                            text: '<span class="showLabel">Land Management<br>'+localStorage.p_name+'<br>FOE ('+monthYear+')</span>'
+                          },
+                        })
+                        chart.updateFlag = true;
+                      }
+                  }
+        
+                }
+            }
+        },
+        credits: false,
+        title: {
+            useHTML: true,
+            enabled: true,
+            text: '<span class="showLabel">Land Management<br>'+localStorage.p_name+'<br>FOE ('+monthYear+')</span>'
+        },
+        xAxis: {
+            type: 'category',
+        },
+        yAxis: {
+            title: {
+                text: ''
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '<b>{point.y:,.1f}%</b>'
+        },
+        series: [{
+            label: {
+                enabled: false
+            },
+            data: dataArr,
+            dataLabels: {
+                enabled: true,
+                formatter: function () {
+                    return this.y + '%';
+                },
+                style: {
+                    fontWeight: 'bold'
+                }
+            },
+            pointPadding: 0,
+            cursor : 'pointer',
+            events: {
+                click: function (event) {
+                    var monthEachChart = event.point.category;
+                    if(monthEachChart == 'Balance' || monthEachChart == 'Target') return
+
+                    var monthPass = (monthEachChart) ? monthEachChart : '';
+                    var yearPass;
+
+                    if (localStorage.ui_pref == 'ri_v3'){
+                        yearPass = window.parent.$('.mainPage.myDashboard').find('.yrFilter').val();
+                    }else{
+                        yearPass = $('#yearFilter').val();
+                    }
+
+                    if(yearPass == 'all'){
+                        var currDate = new Date();
+                        currYear = currDate.getFullYear();
+                        yearPass = currYear;
+                    }
+                    
+                    var linkParamArr = [yearPass, monthPass];
+
+                    var postParam = {function:"openConOpDashboard",processType:"LAND", conOpTabId:"conopTab18", linkName:"construct_dash_conop_land_managementAiwiFoe", linkParam:linkParamArr, linkWinTitle: 'Land Management'};
+                    if(localStorage.ui_pref == 'ri_v3'){
+                        window.parent.widgetConopOpen("LAND", "construct_dash_conop_land_managementAiwiFoe", linkParamArr, "Land Management - " + event.point.category);
+                    }else{
+                        parent.postMessage(postParam ,"*");
+                    }
+                }
+            }
+        }]
+    });
+    chart.updateFlag = true;
+
+    if(valueAdd == 100){
+        var negativeBar = $('#foeChart').find('.highcharts-series.highcharts-waterfall-series').children().eq(useMonth)
+        negativeBar.css('opacity', '0')
+
+        var negativeText = $('#foeChart').find('.highcharts-data-labels.highcharts-waterfall-series').children().eq(useMonth)
+        negativeText.css('opacity', '0')
+    }
+}
+
 function updateTableLMRSection(currData, prevData, ttlCurrData, ttlPrevData, allData, allDataPrev){
     var tempArr = [];
     var arrayForTable = [];
     let lmrSectionTbHTML = '';
     let lmrFootTbHTML = '';
+    let accumulativeIssueTbHTML = '';
 
     $("#lmrSectionTable").html("");
     $("#lmrFootTable").html("");
@@ -1213,6 +730,75 @@ function updateTableLMRSection(currData, prevData, ttlCurrData, ttlPrevData, all
 
     var yearPrev = (allDataPrev && allDataPrev.year) ? allDataPrev.year : '';
     var monthPrev = (allDataPrev && allDataPrev.month) ? allDataPrev.month : '';
+
+    // total km-run % for current
+    var ttlUnresolvedPercentCurr = 0;
+    var ttlNewKMPercentCurr = 0;
+    var ttlSolvedKMPercentCurr = 0;
+    var ttlBalKMPercentCurr = 0;
+
+    // total km-run % for previous
+    var ttlUnresolvedPercentPrev = 0;
+    var ttlNewKMPercentPrev = 0;
+    var ttlSolvedKMPercentPrev = 0;
+    var ttlBalKMPercentPrev = 0;
+
+    var unresolvedKMPercent = 0;
+    var newKMPercent = 0;
+    var solvedKMPercent = 0;
+    var balKMPercent = 0;
+
+    var unresolvedVar = 0;
+    var newVar = 0;
+    var solvedVar = 0;
+    var balVar = 0;
+
+    var ttlUnresolvedVar = 0;
+    var ttlNewVar = 0;
+    var ttlSolvedVar = 0;
+    var ttlBalVar = 0;
+
+    // previous data
+    var totalUnresolvedIssuesPrev = (ttlPrevData.ttlCFIssue) ? ttlPrevData.ttlCFIssue : 0;
+    var totalNewIssuePrev = (ttlPrevData.ttlNewIssue) ? ttlPrevData.ttlNewIssue : 0;
+    var totalSolvedIssuePrev = (ttlPrevData.ttlSolvedIssue) ? ttlPrevData.ttlSolvedIssue : 0;
+    var totalBalIssuePrev = (ttlPrevData.ttlBalIssue) ? ttlPrevData.ttlBalIssue : 0;
+    var totalUnresolvedKMPrev = (ttlPrevData.ttlCFKM) ? ttlPrevData.ttlCFKM : 0;
+    var totalNewKMPrev = (ttlPrevData.ttlNewKM) ? ttlPrevData.ttlNewKM : 0;
+    var totalSolvedKMPrev = (ttlPrevData.ttlSolvedKM) ? ttlPrevData.ttlSolvedKM : 0;
+    var totalBalKMPrev = (ttlPrevData.ttlBalKM) ? ttlPrevData.ttlBalKM : 0;
+
+    // previous accumulative total data
+    var totalAccumulCFIssuePrev = (ttlPrevData.ttlAccCFIssue) ? ttlPrevData.ttlAccCFIssue : 0;
+    var totalAccumulCFkmPrev = (ttlPrevData.ttlAccCFkm) ? ttlPrevData.ttlAccCFkm : 0;
+    var totalAccCTDIssuePrev = (ttlPrevData.ttlAccCTDIssue) ? ttlPrevData.ttlAccCTDIssue : 0;
+    var totalAccCTDkmPrev = (ttlPrevData.ttlAccCTDkm) ? ttlPrevData.ttlAccCTDkm : 0;
+
+    // current data
+    var totalUnresolvedIssuesCurr = (ttlCurrData.ttlCFIssue) ? ttlCurrData.ttlCFIssue : 0;
+    var totalNewIssueCurr = (ttlCurrData.ttlNewIssue) ? ttlCurrData.ttlNewIssue : 0;
+    var totalSolvedIssueCurr = (ttlCurrData.ttlSolvedIssue) ? ttlCurrData.ttlSolvedIssue : 0;
+    var totalBalIssueCurr = (ttlCurrData.ttlBalIssue) ? ttlCurrData.ttlBalIssue : 0;
+    var totalUnresolvedKMCurr = (ttlCurrData.ttlCFKM) ? ttlCurrData.ttlCFKM : 0;
+    var totalNewKMCurr = (ttlCurrData.ttlNewKM) ? ttlCurrData.ttlNewKM : 0;
+    var totalSolvedKMCurr = (ttlCurrData.ttlSolvedKM) ? ttlCurrData.ttlSolvedKM : 0;
+    var totalBalKMCurr = (ttlCurrData.ttlBalKM) ? ttlCurrData.ttlBalKM : 0;
+
+    var totalCFPercentPrev = 0;
+    var totalNewIssuePercentPrev = 0;
+    var totalSolvedPercentPrev = 0;
+    var totalBalPercentPrev = 0;
+
+    var totalCFPercentCurr = 0;
+    var totalNewIssuePercentCurr = 0;
+    var totalSolvedPercentCurr = 0;
+    var totalBalPercentCurr = 0;
+
+    // current accumulative total data
+    var totalAccumulCFIssueCurr = (ttlCurrData.ttlAccCFIssue) ? ttlCurrData.ttlAccCFIssue : 0;
+    var totalAccumulCFkmCurr = (ttlCurrData.ttlAccCFkm) ? ttlCurrData.ttlAccCFkm : 0;
+    var totalAccCTDIssueCurr = (ttlCurrData.ttlAccCTDIssue) ? ttlCurrData.ttlAccCTDIssue : 0;
+    var totalAccCTDkmCurr = (ttlCurrData.ttlAccCTDkm) ? ttlCurrData.ttlAccCTDkm : 0;
 
     if(currData){
         for (const [idx, ele] of Object.entries(currData)) {
@@ -1242,44 +828,45 @@ function updateTableLMRSection(currData, prevData, ttlCurrData, ttlPrevData, all
                     if (!arrayForTable[idx]['unresolvedIssue']['current']) arrayForTable[idx]['unresolvedIssue']['current'] = [];
 
                     var unresolvedIssue = (ele3.unresolved_issues) ? ele3.unresolved_issues : 0;
+                    var unresolvedIssueKM = (ele3.unresolved_issues_km) ? ele3.unresolved_issues_km : 0;
+                    unresolvedKMPercent = (unresolvedIssueKM / totalUnresolvedKMCurr) * 100;
 
-                    arrayForTable[idx]['unresolvedIssue']['current'].push(unresolvedIssue);
+                    arrayForTable[idx]['unresolvedIssue']['current'].push(unresolvedIssue,unresolvedIssueKM,unresolvedKMPercent);
 
                     if (!arrayForTable[idx]['newIssue']) arrayForTable[idx]['newIssue'] = [];
                     if (!arrayForTable[idx]['newIssue']['current']) arrayForTable[idx]['newIssue']['current'] = [];
 
                     var newIssue = (ele3.new_issues) ? ele3.new_issues : 0;
+                    var newIssueKM = (ele3.new_issues_km) ? ele3.new_issues_km : 0;
+                    newKMPercent = (newIssueKM / totalNewKMCurr) * 100;
 
-                    arrayForTable[idx]['newIssue']['current'].push(newIssue);
+                    arrayForTable[idx]['newIssue']['current'].push(newIssue,newIssueKM,newKMPercent);
 
                     if (!arrayForTable[idx]['solvedIssue']) arrayForTable[idx]['solvedIssue'] = [];
                     if (!arrayForTable[idx]['solvedIssue']['current']) arrayForTable[idx]['solvedIssue']['current'] = [];
 
                     var solvedIssue = (ele3.solved_issues) ? ele3.solved_issues : 0;
-                   
-                    arrayForTable[idx]['solvedIssue']['current'].push(solvedIssue);
+                    var solvedIssueKM = (ele3.solved_issues_km) ? ele3.solved_issues_km : 0;
+                    solvedKMPercent = (solvedIssueKM / totalSolvedKMCurr) * 100;
 
-                    if (!arrayForTable[idx]['balCumulative']) arrayForTable[idx]['balCumulative'] = [];
-                    if (!arrayForTable[idx]['balCumulative']['current']) arrayForTable[idx]['balCumulative']['current'] = [];
+                    arrayForTable[idx]['solvedIssue']['current'].push(solvedIssue,solvedIssueKM,solvedKMPercent);
 
-                    var balCumulative = (ele3.bal_cumulative) ? ele3.bal_cumulative : 0;
+                    if (!arrayForTable[idx]['balUnresolvedIssue']) arrayForTable[idx]['balUnresolvedIssue'] = [];
+                    if (!arrayForTable[idx]['balUnresolvedIssue']['current']) arrayForTable[idx]['balUnresolvedIssue']['current'] = [];
 
-                    arrayForTable[idx]['balCumulative']['current'].push(balCumulative);
+                    var balUnresolvedIssue = (ele3.bal_unresolved_issues) ? ele3.bal_unresolved_issues : 0;
+                    var balUnresolvedIssueKM = (ele3.bal_unresolved_issues_km) ? ele3.bal_unresolved_issues_km : 0;
+                    balKMPercent = (balUnresolvedIssueKM / totalBalKMCurr) * 100;
 
-                    if (!arrayForTable[idx]['balCumulativeResolve']) arrayForTable[idx]['balCumulativeResolve'] = [];
-                    if (!arrayForTable[idx]['balCumulativeResolve']['current']) arrayForTable[idx]['balCumulativeResolve']['current'] = [];
+                    arrayForTable[idx]['balUnresolvedIssue']['current'].push(balUnresolvedIssue,balUnresolvedIssueKM,balKMPercent);
 
-                    var balCumulativeResolve = (ele3.bal_cumulative_resolved) ? ele3.bal_cumulative_resolved : 0;
-
-                    arrayForTable[idx]['balCumulativeResolve']['current'].push(balCumulativeResolve);
-
-                    if (!arrayForTable[idx]['balCumulativeOpen']) arrayForTable[idx]['balCumulativeOpen'] = [];
-                    if (!arrayForTable[idx]['balCumulativeOpen']['current']) arrayForTable[idx]['balCumulativeOpen']['current'] = [];
-
-                    var balCumulativeOpen = (ele3.bal_unresolved_issues) ? ele3.bal_unresolved_issues : 0;
-
-                    arrayForTable[idx]['balCumulativeOpen']['current'].push(balCumulativeOpen);
                 }
+
+                // total for current percent km-run
+                ttlUnresolvedPercentCurr = unresolvedKMPercent++;
+                ttlNewKMPercentCurr = newKMPercent++;
+                ttlSolvedKMPercentCurr = solvedKMPercent++;
+                ttlBalKMPercentCurr = balKMPercent++;
             }
 
             else if(idx2 == 'previous'){
@@ -1290,137 +877,682 @@ function updateTableLMRSection(currData, prevData, ttlCurrData, ttlPrevData, all
                     if (!arrayForTable[idx]['unresolvedIssue']) arrayForTable[idx]['unresolvedIssue'] = [];
                     if (!arrayForTable[idx]['unresolvedIssue']['previous']) arrayForTable[idx]['unresolvedIssue']['previous'] = [];
                     
-                    // var unresolvedIssue = (ele4.unresolved_issues) ? ele4.unresolved_issues : 0;
-                    var cumulUnresolvedIssue = (ele4.bal_unresolved_issues	) ? ele4.bal_unresolved_issues	 : 0;
+                    var unresolvedIssue = (ele4.unresolved_issues) ? ele4.unresolved_issues : 0;
+                    var unresolvedIssueKM = (ele4.unresolved_issues_km) ? ele4.unresolved_issues_km : 0;
+                    var unresolvedKMPercent = (unresolvedIssueKM / totalUnresolvedKMPrev) * 100;
 
-                    arrayForTable[idx]['unresolvedIssue']['previous'].push(cumulUnresolvedIssue);
+                    arrayForTable[idx]['unresolvedIssue']['previous'].push(unresolvedIssue,unresolvedIssueKM,unresolvedKMPercent);
 
                     if (!arrayForTable[idx]['newIssue']) arrayForTable[idx]['newIssue'] = [];
                     if (!arrayForTable[idx]['newIssue']['previous']) arrayForTable[idx]['newIssue']['previous'] = [];
 
                     var newIssue = (ele4.new_issues) ? ele4.new_issues : 0;
+                    var newIssueKM = (ele4.new_issues_km) ? ele4.new_issues_km : 0;
+                    var newKMPercent = (newIssueKM / totalNewKMPrev) * 100;
 
-                    arrayForTable[idx]['newIssue']['previous'].push(newIssue);
+                    arrayForTable[idx]['newIssue']['previous'].push(newIssue,newIssueKM,newKMPercent);
 
                     if (!arrayForTable[idx]['solvedIssue']) arrayForTable[idx]['solvedIssue'] = [];
                     if (!arrayForTable[idx]['solvedIssue']['previous']) arrayForTable[idx]['solvedIssue']['previous'] = [];
 
-                    var cumulsolvedIssue = (ele4.bal_cumulative_resolved) ? ele4.bal_cumulative_resolved : 0;
-                    // var solvedIssue = (ele4.solved_issues) ? ele4.solved_issues : 0;
+                    var solvedIssue = (ele4.solved_issues) ? ele4.solved_issues : 0;
+                    var solvedIssueKM = (ele4.solved_issues_km) ? ele4.solved_issues_km : 0;
+                    var solvedKMPercent = (solvedIssueKM / totalSolvedKMPrev) * 100;
 
-                    arrayForTable[idx]['solvedIssue']['previous'].push(cumulsolvedIssue);
+                    arrayForTable[idx]['solvedIssue']['previous'].push(solvedIssue,solvedIssueKM,solvedKMPercent);
 
-                    if (!arrayForTable[idx]['balCumulative']) arrayForTable[idx]['balCumulative'] = [];
-                    if (!arrayForTable[idx]['balCumulative']['previous']) arrayForTable[idx]['balCumulative']['previous'] = [];
+                    if (!arrayForTable[idx]['balUnresolvedIssue']) arrayForTable[idx]['balUnresolvedIssue'] = [];
+                    if (!arrayForTable[idx]['balUnresolvedIssue']['previous']) arrayForTable[idx]['balUnresolvedIssue']['previous'] = [];
 
-                    var balCumulative = (ele4.bal_cumulative) ? ele4.bal_cumulative : 0;
+                    var balUnresolvedIssue = (ele4.bal_unresolved_issues) ? ele4.bal_unresolved_issues : 0;
+                    var balUnresolvedIssueKM = (ele4.bal_unresolved_issues_km) ? ele4.bal_unresolved_issues_km : 0;
+                    var balKMPercent = (balUnresolvedIssueKM / totalBalKMPrev) * 100;
 
-                    arrayForTable[idx]['balCumulative']['previous'].push(balCumulative);
+                    arrayForTable[idx]['balUnresolvedIssue']['previous'].push(balUnresolvedIssue,balUnresolvedIssueKM,balKMPercent);
+                }
+
+                // total for previous percent km-run
+                ttlUnresolvedPercentPrev = unresolvedKMPercent++;
+                ttlNewKMPercentPrev = newKMPercent++;
+                ttlSolvedKMPercentPrev = solvedKMPercent++;
+                ttlBalKMPercentPrev = balKMPercent++;
+            }
+        }
+    }
+
+    //LAST LOOP FOR TABLE
+    for (const [idx, ele] of Object.entries(arrayForTable)) {
+        for (const [idx2, ele2] of Object.entries(ele)) {
+            var classUsed = '';
+
+            if(idx2 == 'unresolvedIssue'){
+                var prevIssueNo = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
+                var prevIssueKM = (ele2['previous'] && ele2['previous'][1]) ? ele2['previous'][1] : 0;
+                var prevKMPercent = (ele2['previous'] && ele2['previous'][2]) ? ele2['previous'][2] : 0;
+                var currIssueNo = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
+                var currIssueKM = (ele2['current'] && ele2['current'][1]) ? ele2['current'][1] : 0;
+                var currKMPercent = (ele2['current'] && ele2['current'][2]) ? ele2['current'][2] : 0;
+
+                unresolvedVar = currIssueNo - prevIssueNo;
+                totalCFPercentPrev = totalCFPercentPrev + prevKMPercent;
+                totalCFPercentCurr = totalCFPercentCurr + currKMPercent;
+
+                if(unresolvedVar == 0){
+                    classUsed = 'fa-hyphen';
+                }
+                else if(unresolvedVar > 0){
+                    classUsed = 'fa-caret-up';
+                }
+                else if(unresolvedVar < 0){
+                    classUsed = 'fa-caret-down';
+                }
+
+                lmrSectionTbHTML += '<tr>'
+                lmrSectionTbHTML += '<th rowspan="4">'+idx+'</td>'
+                lmrSectionTbHTML += '<td>C/F Unresolved Issue</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevIssueNo+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevKMPercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currIssueNo+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currKMPercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classUsed+'"></i>'+unresolvedVar+'</td>'
+                lmrSectionTbHTML += '</tr>';
+            }
+
+            if(idx2 == 'newIssue'){
+                var prevNewIssue = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
+                var prevNewIssueKM = (ele2['previous'] && ele2['previous'][1]) ? ele2['previous'][1] : 0;
+                var prevNewIssuePercent = (ele2['previous'] && ele2['previous'][2]) ? ele2['previous'][2] : 0;
+                var currNewIssue = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
+                var currNewIssueKM = (ele2['current'] && ele2['current'][1]) ? ele2['current'][1] : 0;
+                var currNewIssuePercent = (ele2['current'] && ele2['current'][2]) ? ele2['current'][2] : 0;
+
+                newVar = currNewIssue - prevNewIssue;
+                totalNewIssuePercentPrev = totalNewIssuePercentPrev + prevNewIssuePercent;
+                totalNewIssuePercentCurr = totalNewIssuePercentCurr + currNewIssuePercent;
+
+                if(newVar == 0){
+                    classUsed = 'fa-hyphen';
+                }
+                else if(newVar > 0){
+                    classUsed = 'fa-caret-up';
+                }
+                else if(newVar < 0){
+                    classUsed = 'fa-caret-down';
+                }
+                
+                lmrSectionTbHTML += '<tr>'
+                lmrSectionTbHTML += '<td>NEW Issue</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevNewIssue+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevNewIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevNewIssuePercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currNewIssue+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currNewIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currNewIssuePercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classUsed+'"></i>'+newVar+'</td>'
+                lmrSectionTbHTML += '</tr>';
+            }
+
+            if(idx2 == 'solvedIssue'){
+                var prevSolvedIssue = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
+                var prevSolvedIssueKM = (ele2['previous'] && ele2['previous'][1]) ? ele2['previous'][1] : 0;
+                var prevSolvedPercent = (ele2['previous'] && ele2['previous'][2]) ? ele2['previous'][2] : 0;
+                var currSolvedIssue = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
+                var currSolvedIssueKM = (ele2['current'] && ele2['current'][1]) ? ele2['current'][1] : 0;
+                var currSolvedPercent = (ele2['current'] && ele2['current'][2]) ? ele2['current'][2] : 0;
+
+                solvedVar = currSolvedIssue - prevSolvedIssue;
+                totalSolvedPercentPrev = totalSolvedPercentPrev + prevSolvedPercent;
+                totalSolvedPercentCurr = totalSolvedPercentCurr + currSolvedPercent;
+
+                if(solvedVar == 0){
+                    classUsed = 'fa-hyphen';
+                }
+                else if(solvedVar > 0){
+                    classUsed = 'fa-caret-up';
+                }
+                else if(solvedVar < 0){
+                    classUsed = 'fa-caret-down';
+                }
+
+                lmrSectionTbHTML += '<tr>'
+                lmrSectionTbHTML += '<td>Solved Issue</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevSolvedIssue+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevSolvedIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevSolvedPercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currSolvedIssue+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currSolvedIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currSolvedPercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classUsed+'"></i>'+solvedVar+'</td>'
+                lmrSectionTbHTML += '</tr>';
+            }
+
+            if(idx2 == 'balUnresolvedIssue'){
+                var prevBalUnresolvedIssue = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
+                var prevBalUnresolvedIssueKM = (ele2['previous'] && ele2['previous'][1]) ? ele2['previous'][1] : 0;
+                var prevBalPercent = (ele2['previous'] && ele2['previous'][2]) ? ele2['previous'][2] : 0;
+                var currBalUnresolvedIssue = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
+                var currBalUnresolvedIssueKM = (ele2['current'] && ele2['current'][1]) ? ele2['current'][1] : 0;
+                var currBalPercent = (ele2['current'] && ele2['current'][2]) ? ele2['current'][2] : 0;
+
+                balVar = currBalUnresolvedIssue - prevBalUnresolvedIssue;
+                totalBalPercentPrev = totalBalPercentPrev + prevBalPercent;
+                totalBalPercentCurr = totalBalPercentCurr + currBalPercent;
+
+                if(balVar == 0){
+                    classUsed = 'fa-hyphen';
+                }
+                else if(balVar > 0){
+                    classUsed = 'fa-caret-up';
+                }
+                else if(balVar < 0){
+                    classUsed = 'fa-caret-down';
+                }
+
+                lmrSectionTbHTML += '<tr>'
+                lmrSectionTbHTML += '<td><b>Balance Unresolved Issue</b></td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevBalUnresolvedIssue+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevBalUnresolvedIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevBalPercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currBalUnresolvedIssue+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currBalUnresolvedIssueKM+'</td>'
+                lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currBalPercent.toFixed(2)+'</td>'
+                lmrSectionTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classUsed+'"></i>'+balVar+'</td>'
+                lmrSectionTbHTML += '</tr>';
+            }
+        }
+
+        ttlUnresolvedVar = unresolvedVar++;
+        var classUnresolved = '';
+
+        if(ttlUnresolvedVar == 0){
+            classUnresolved = 'fa-hyphen';
+        }
+        else if(ttlUnresolvedVar > 0){
+            classUnresolved = 'fa-caret-up';
+        }
+        else if(ttlUnresolvedVar < 0){
+            classUnresolved = 'fa-caret-down';
+        }
+
+        ttlNewVar = newVar++;
+        var classNew = '';
+
+        if(ttlNewVar == 0){
+            classNew = 'fa-hyphen';
+        }
+        else if(ttlNewVar > 0){
+            classNew = 'fa-caret-up';
+        }
+        else if(ttlNewVar < 0){
+            classNew = 'fa-caret-down';
+        }
+
+        ttlSolvedVar = solvedVar++;
+        var classSolved = '';
+
+        if(ttlSolvedVar == 0){
+            classSolved = 'fa-hyphen';
+        }
+        else if(ttlSolvedVar > 0){
+            classSolved = 'fa-caret-up';
+        }
+        else if(ttlSolvedVar < 0){
+            classSolved = 'fa-caret-down';
+        }
+
+        ttlBalVar = balVar++;
+        var classBal = '';
+
+        if(ttlBalVar == 0){
+            classBal = 'fa-hyphen';
+        }
+        else if(ttlBalVar > 0){
+            classBal = 'fa-caret-up';
+        }
+        else if(ttlBalVar < 0){
+            classBal = 'fa-caret-down';
+        }
+    }
+
+    $("#lmrSectionTable").html(lmrSectionTbHTML);
+
+    totalCFPercentPrev = (totalCFPercentPrev) ? totalCFPercentPrev.toFixed(2) : '0.00';
+    totalCFPercentCurr = (totalCFPercentCurr) ? totalCFPercentCurr.toFixed(2) : '0.00';
+    totalNewIssuePercentPrev = (totalNewIssuePercentPrev) ? totalNewIssuePercentPrev.toFixed(2) : '0.00';
+    totalNewIssuePercentCurr = (totalNewIssuePercentCurr) ? totalNewIssuePercentCurr.toFixed(2) : '0.00';
+    totalSolvedPercentPrev = (totalSolvedPercentPrev) ? totalSolvedPercentPrev.toFixed(2) : '0.00';
+    totalSolvedPercentCurr = (totalSolvedPercentCurr) ? totalSolvedPercentCurr.toFixed(2) : '0.00';
+    totalBalPercentPrev = (totalBalPercentPrev) ? totalBalPercentPrev.toFixed(2) : '0.00';
+    totalBalPercentCurr = (totalBalPercentCurr) ? totalBalPercentCurr.toFixed(2) : '0.00';
+
+    //FOR FOOTER
+    lmrFootTbHTML += '<tr>'
+    lmrFootTbHTML += '<th rowspan="5">TOTAL</th>'
+    lmrFootTbHTML += '</tr>'
+
+    lmrFootTbHTML += '<tr>'
+    lmrFootTbHTML += '<th>C/F Unresolved Issues</th>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalUnresolvedIssuesPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalUnresolvedKMPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalCFPercentPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalUnresolvedIssuesCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalUnresolvedKMCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalCFPercentCurr+'</td>'
+    lmrFootTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classUnresolved+'"></i>'+ttlUnresolvedVar+'</td>'
+    lmrFootTbHTML += '</tr>'
+
+    lmrFootTbHTML += '<tr>'
+    lmrFootTbHTML += '<th>NEW Issues</th>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalNewIssuePrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalNewKMPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalNewIssuePercentPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalNewIssueCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalNewKMCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalNewIssuePercentCurr+'</td>'
+    lmrFootTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classNew+'"></i>'+ttlNewVar+'</td>'
+    lmrFootTbHTML += '</tr>'
+
+    lmrFootTbHTML += '<tr>'
+    lmrFootTbHTML += '<th>Solved Issues</th>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalSolvedIssuePrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalSolvedKMPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalSolvedPercentPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalSolvedIssueCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalSolvedKMCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalSolvedPercentCurr+'</td>'
+    lmrFootTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classSolved+'"></i>'+ttlSolvedVar+'</td>'
+    lmrFootTbHTML += '</tr>'
+
+    lmrFootTbHTML += '<tr>'
+    lmrFootTbHTML += '<th><b>Balance Unresolved Issues</b></th>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalBalIssuePrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalBalKMPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalBalPercentPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalBalIssueCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalBalKMCurr+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalBalPercentCurr+'</td>'
+    lmrFootTbHTML += '<td style = "text-align: right; border-bottom-right-radius: 5px;"><i class="fa-solid '+classBal+'"></i>'+ttlBalVar+'</td>'
+    lmrFootTbHTML += '</tr>'
+    
+    $("#lmrFootTable").html(lmrFootTbHTML);
+
+    var ctdCFKMpercentPrev = (totalAccumulCFkmPrev/totalAccCTDkmPrev) * 100;
+    var ctdNewKMpercentPrev = (totalNewKMPrev/totalAccCTDkmPrev) * 100;
+    var accumulCTDPercentPrev = ctdCFKMpercentPrev + ctdNewKMpercentPrev;
+
+    var ctdCFKMpercentCurr = (totalAccumulCFkmCurr/totalAccCTDkmCurr) * 100;
+    var ctdNewKMpercentCurr = (totalNewKMCurr/totalAccCTDkmCurr) * 100;
+    var accumulCTDPercentCurr = ctdCFKMpercentCurr + ctdNewKMpercentCurr;
+
+    var ctdVarCF = totalAccumulCFIssueCurr - totalAccumulCFIssuePrev;
+    var ctdVarNewIssue = totalNewIssueCurr - totalNewIssuePrev;
+    var ctdVarAccumul = totalAccCTDIssueCurr - totalAccCTDIssuePrev;
+
+    var classCFctd = '';
+    var classNewctd = '';
+    var classAccumulctd = '';
+
+    if(ctdVarCF == 0){
+        classCFctd = 'fa-hyphen';
+    }
+    else if(ctdVarCF > 0){
+        classCFctd = 'fa-caret-up';
+    }
+    else if(ctdVarCF < 0){
+        classCFctd = 'fa-caret-down';
+    }
+
+    if(ctdVarNewIssue == 0){
+        classNewctd = 'fa-hyphen';
+    }
+    else if(ctdVarNewIssue > 0){
+        classNewctd = 'fa-caret-up';
+    }
+    else if(ctdVarNewIssue < 0){
+        classNewctd = 'fa-caret-down';
+    }
+
+    if(ctdVarAccumul == 0){
+        classAccumulctd = 'fa-hyphen';
+    }
+    else if(ctdVarAccumul > 0){
+        classAccumulctd = 'fa-caret-up';
+    }
+    else if(ctdVarAccumul < 0){
+        classAccumulctd = 'fa-caret-down';
+    }
+
+    accumulativeIssueTbHTML += '<tr>'
+    accumulativeIssueTbHTML += '<th style="width: 50px">C/F ACCUMULATIVE</th>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalAccumulCFIssuePrev+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalAccumulCFkmPrev+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+((isNaN(ctdCFKMpercentPrev.toFixed(2))) ? '0.00' : ctdCFKMpercentPrev.toFixed(2))+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalAccumulCFIssueCurr+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalAccumulCFkmCurr+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+((isNaN(ctdCFKMpercentCurr.toFixed(2))) ? '0.00' : ctdCFKMpercentCurr.toFixed(2))+'</td>'
+    accumulativeIssueTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classCFctd+'"></i>'+ctdVarCF+'</td>'
+    accumulativeIssueTbHTML += '</tr>'
+
+    accumulativeIssueTbHTML += '<tr>'
+    accumulativeIssueTbHTML += '<th>NEW ISSUES</th>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalNewIssuePrev+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalNewKMPrev+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+((isNaN(ctdNewKMpercentPrev.toFixed(2))) ? '0.00' : ctdNewKMpercentPrev.toFixed(2))+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalNewIssueCurr+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalNewKMCurr+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+((isNaN(ctdNewKMpercentCurr.toFixed(2))) ? '0.00' : ctdNewKMpercentCurr.toFixed(2))+'</td>'
+    accumulativeIssueTbHTML += '<td style = "text-align: right;"><i class="fa-solid '+classNewctd+'"></i>'+ctdVarNewIssue+'</td>'
+    accumulativeIssueTbHTML += '</tr>'
+
+    accumulativeIssueTbHTML += '<tr>'
+    accumulativeIssueTbHTML += '<th style="border-bottom-left-radius: 5px;">ACCUMULATIVE CTD</th>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalAccCTDIssuePrev+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalAccCTDkmPrev+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+((isNaN(accumulCTDPercentPrev.toFixed(2))) ? '0.00' : accumulCTDPercentPrev.toFixed(2))+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalAccCTDIssueCurr+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalAccCTDkmCurr+'</td>'
+    accumulativeIssueTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+((isNaN(accumulCTDPercentCurr.toFixed(2))) ? '0.00' : accumulCTDPercentCurr.toFixed(2))+'</td>'
+    accumulativeIssueTbHTML += '<td style = "text-align: right; border-bottom-right-radius: 5px;"><i class="fa-solid '+classAccumulctd+'"></i>'+ctdVarAccumul+'</td>'
+    accumulativeIssueTbHTML += '</tr>';
+
+    $("#accumulativeIssueTable").html(accumulativeIssueTbHTML);
+}
+
+function updateTableLMRType(currData, prevData, ttlCurrData, ttlPrevData, allData, allDataPrev, ctdData){
+
+    var tempArr = [];
+    var arrayForTable = [];
+
+    let lmrSectionTbHTML = '';
+    let lmrFootTbHTML = '';
+
+    var ttlIssuePrev = 0;
+    var ttlIssueCurr = 0;
+
+    var ttlPercentPrev = 0;
+    var ttlPercentCurr = 0;
+
+    var ttlLengthPrev = 0;
+    var ttlLengthCurr = 0;
+
+    $("#lmrTypeTable").html("");
+    $("#lmrTypeFootTable").html("");
+
+    var year = (allData && allData.year) ? allData.year : '';
+    var month = (allData && allData.month) ? allData.month : '';
+
+    var yearPrev = (allDataPrev && allDataPrev.year) ? allDataPrev.year : '';
+    var monthPrev = (allDataPrev && allDataPrev.month) ? allDataPrev.month : '';
+
+    var issueBlockade = 0;
+    var lengthBlockade = 0;
+    var issueCourt = 0;
+    var lengthCourt = 0;
+    var issueDesign = 0;
+    var lengthDesign = 0;
+    var issueOthers = 0;
+    var lengthOthers = 0;
+
+    if(ctdData){
+        for (const [idx, ele] of Object.entries(ctdData)) {
+            if(idx == '') continue;
+
+            if(idx == 'Blockade'){
+                issueBlockade = (ele.ctd_issue) ? parseInt (ele.ctd_issue) : 0;
+                lengthBlockade = (ele.ctd_length) ? parseFloat (ele.ctd_length) : 0;
+            }else if(idx == 'Court Case'){
+                issueCourt = (ele.ctd_issue) ? parseInt (ele.ctd_issue) : 0;
+                lengthCourt = (ele.ctd_length) ? parseFloat (ele.ctd_length) : 0;
+            }else if(idx == 'Design/Technical'){
+                issueDesign = (ele.ctd_issue) ? parseInt (ele.ctd_issue) : 0;
+                lengthDesign = (ele.ctd_length) ? parseFloat (ele.ctd_length) : 0;
+            }else if(idx == 'Others'){
+                issueOthers = (ele.ctd_issue) ? parseInt (ele.ctd_issue) : 0;
+                lengthOthers = (ele.ctd_length) ? parseFloat (ele.ctd_length) : 0;
+            }
+        }
+    }
+
+    if(currData){
+        for (const [idx, ele] of Object.entries(currData)) {
+            var useIdx = idx;
+            if(useIdx == 'length') useIdx = 'lengthType';
+
+            if (!tempArr[useIdx]) tempArr[useIdx] = [];
+            if (!tempArr[useIdx]['current']) tempArr[useIdx]['current'] = [];
+
+            tempArr[useIdx]['current'].push(ele);
+
+        }
+    }
+
+    if(prevData){
+        for (const [idx, ele] of Object.entries(prevData)) {
+            var useIdx = idx;
+            if(useIdx == 'length') useIdx = 'lengthType';
+
+            if (!tempArr[useIdx]) tempArr[useIdx] = [];
+            if (!tempArr[useIdx]['previous']) tempArr[useIdx]['previous'] = [];
+
+            tempArr[useIdx]['previous'].push(ele);
+        }
+    }
+
+    for (const [idx, ele] of Object.entries(tempArr)) {
+        for (const [idx2, ele2] of Object.entries(ele)) {
+            //idx2 = current / previous
+            if(idx2 == 'current'){
+                for (const [idx3, ele3] of Object.entries(ele2)) {
+                    if (!arrayForTable[idx]) arrayForTable[idx] = [];
+                    if (!arrayForTable[idx]['current']) arrayForTable[idx]['current'] = [];
+
+                    arrayForTable[idx]['current'].push((ele3) ? ele3 : '');
+                }
+            }
+
+            else if(idx2 == 'previous'){
+                for (const [idx3, ele3] of Object.entries(ele2)) {
+                    if (!arrayForTable[idx]) arrayForTable[idx] = [];
+                    if (!arrayForTable[idx]['previous']) arrayForTable[idx]['previous'] = [];
+
+                    arrayForTable[idx]['previous'].push((ele3) ? ele3 : '');
                 }
             }
         }
     }
 
-    var prevTotalCumulative = 0;
-    var prevTotalIssueResolve = 0;
-    var prevTotalOpen = 0;
-    var currTotalNewIssue = 0;
-    var currTotalIssueResolve = 0;
-    var currTotalIssueOpen = 0;
-    var currTotalCumulative = 0;
-    var currTotalCumulativeResolve = 0;
-    var currTotalCumulativeOpen = 0;
+    var classUsedIssue = '';
+    var classUsedPercent = '';
+    var classUsedLength = '';
+
+    var currIssue = 0;
+    var currPercentage = 0;
+    var currLength = 0;
+    var prevIssue = 0;
+    var prevPercentage = 0;
+    var prevLength = 0;
+    var ttlAccumulIssue = 0;
+    var ttlAccumulLength = 0;
+    var accumulIssueTtl = 0;
+    var accumulLengthTtl = 0;
 
     //LAST LOOP FOR TABLE
     for (const [idx, ele] of Object.entries(arrayForTable)) {
-
         for (const [idx2, ele2] of Object.entries(ele)) {
+            for (const [idx3, ele3] of Object.entries(ele2)) {
+                if(idx2 == 'current'){
+                    currIssue = (ele3.no_of_issue) ? parseInt (ele3.no_of_issue) : 0;
+                    currPercentage = (ele3.percentage) ? parseInt (ele3.percentage) : 0;
+                    currLength = (ele3.length) ? parseInt (ele3.length) : 0;
+                }
+                
+                if(idx2 == 'previous'){
+                    prevIssue = (ele3.no_of_issue) ? parseInt (ele3.no_of_issue) : 0;
+                    prevPercentage = (ele3.percentage) ? parseInt (ele3.percentage) : 0;
+                    prevLength = (ele3.length) ? parseInt (ele3.length) : 0;
+                }
 
-            if(idx2 == 'unresolvedIssue'){
-                var prevIssueNo = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
-                var currIssueNo = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
-                currTotalIssueOpen += parseInt(currIssueNo);
-                prevTotalOpen += parseInt(prevIssueNo);
+                var varIssue = currIssue - prevIssue;
+                var varPercentage = currPercentage - prevPercentage;
+                var varLength = currLength - prevLength;
+
+                if(idx == 'Blockade'){
+                    ttlAccumulIssue = currIssue + parseInt(issueBlockade);
+                    ttlAccumulLength = currLength + parseFloat(lengthBlockade);
+                }else if(idx == 'Court Case'){
+                    ttlAccumulIssue = currIssue + parseInt(issueCourt);
+                    ttlAccumulLength = currLength + parseFloat(lengthCourt);
+                }else if(idx == 'Design/Technical'){
+                    ttlAccumulIssue = currIssue + parseInt(issueDesign);
+                    ttlAccumulLength = currLength + parseFloat(lengthDesign);
+                }else if(idx == 'Others'){
+                    ttlAccumulIssue = currIssue + parseInt(issueOthers);
+                    ttlAccumulLength = currLength + parseFloat(lengthOthers);
+                }
+
+                if(varIssue == 0){
+                    classUsedIssue = 'fa-hyphen';
+                }
+                else if(varIssue > 0){
+                    classUsedIssue = 'fa-caret-up';
+                }
+                else if(varIssue < 0){
+                    classUsedIssue = 'fa-caret-down';
+                }
+
+                if(varPercentage == 0){
+                    classUsedPercent = 'fa-hyphen';
+                }
+                else if(varPercentage > 0){
+                    classUsedPercent = 'fa-caret-up';
+                }
+                else if(varPercentage < 0){
+                    classUsedPercent = 'fa-caret-down';
+                }
+
+                if(varLength == 0){
+                    classUsedLength = 'fa-hyphen';
+                }
+                else if(varLength > 0){
+                    classUsedLength = 'fa-caret-up';
+                }
+                else if(varLength < 0){
+                    classUsedLength = 'fa-caret-down';
+                }
+
+                ttlIssuePrev = ttlIssuePrev + parseInt(prevIssue);
+                ttlIssueCurr = ttlIssueCurr + parseInt(currIssue);
+
+                ttlPercentPrev = ttlPercentPrev + parseInt(prevPercentage);
+                ttlPercentCurr = ttlPercentCurr + parseInt(currPercentage);
+
+                ttlLengthPrev = ttlLengthPrev + parseInt(prevLength);
+                ttlLengthCurr = ttlLengthCurr + parseInt(currLength);
             }
 
-            if(idx2 == 'newIssue'){
-                var prevNewIssue = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
-                var currNewIssue = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
-                currTotalNewIssue += parseInt(currNewIssue);
-            }
-
-            if(idx2 == 'solvedIssue'){
-                var prevSolvedIssue = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
-                var currSolvedIssue = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
-                prevTotalIssueResolve += parseInt(prevSolvedIssue);
-                currTotalIssueResolve += parseInt(currSolvedIssue);
-            }
-
-            if(idx2 == 'balCumulative'){
-                var prevBalUnresolvedIssue = (ele2['previous'] && ele2['previous'][0]) ? ele2['previous'][0] : 0;
-                var currBalUnresolvedIssue = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
-                currTotalCumulative += parseInt(currBalUnresolvedIssue);
-                prevTotalCumulative += parseInt(prevBalUnresolvedIssue);
-            }
-
-            if(idx2 == 'balCumulativeResolve'){
-                var currBalCumulativeResolve = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
-                currTotalCumulativeResolve += parseInt(currBalCumulativeResolve);
-
-            }
-
-            if(idx2 == 'balCumulativeOpen'){
-                var currBalCumulativeOpen = (ele2['current'] && ele2['current'][0]) ? ele2['current'][0] : 0;
-                currTotalCumulativeOpen += parseInt(currBalCumulativeOpen);
-            }
-            
         }
 
-        lmrSectionTbHTML += '<tr>';
-        lmrSectionTbHTML += '<th>' + idx + '</th>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + yearPrev + '\', \'' + monthPrev + '\')" style="text-align: center;">' + prevBalUnresolvedIssue + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + yearPrev + '\', \'' + monthPrev + '\')" style="text-align: center;">' + prevSolvedIssue + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + yearPrev + '\', \'' + monthPrev + '\')" style="text-align: center;">' + prevIssueNo + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')" style="text-align: center;">' + currNewIssue + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')" style="text-align: center;">' + currSolvedIssue + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')" style="text-align: center;">' + currIssueNo + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')" style="text-align: center;">' + (currBalUnresolvedIssue || 0) + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')" style="text-align: center;">' + (currBalCumulativeResolve || 0) + '</td>';
-        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')" style="text-align: center;">' + (currBalCumulativeOpen || 0) + '</td>';
+        lmrSectionTbHTML += '<tr>'
+        lmrSectionTbHTML += '<th rowspan="2">'+idx+'</td>'
+        lmrSectionTbHTML += '<td>No. of Issue</td>'
+        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevIssue+'</td>'
+        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currIssue+'</td>'
+        lmrSectionTbHTML += '<td><i class="fa-solid '+classUsedIssue+'"></i>'+varIssue+'</td>'
+        lmrSectionTbHTML += '<td style = "text-align: right;">'+ttlAccumulIssue.toFixed(2)+'</td>'
         lmrSectionTbHTML += '</tr>';
 
+        lmrSectionTbHTML += '<tr>'
+        lmrSectionTbHTML += '<td>Length (M)</td>'
+        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+prevLength+'</td>'
+        lmrSectionTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+currLength+'</td>'
+        lmrSectionTbHTML += '<td><i class="fa-solid '+classUsedLength+'"></i>'+varLength+'</td>'
+        lmrSectionTbHTML += '<td style = "text-align: right;">'+ttlAccumulLength.toFixed(2)+'</td>'
+        lmrSectionTbHTML += '</tr>';
 
+        accumulIssueTtl = accumulIssueTtl + ttlAccumulIssue;
+        accumulLengthTtl = accumulLengthTtl + ttlAccumulLength;
     }
-
-    $("#lmrSectionTable").html(lmrSectionTbHTML);
+    
+    $("#lmrTypeTable").html(lmrSectionTbHTML);
 
     //FOR FOOTER
+
+    var totalBalIssuePrev = (ttlPrevData.ttlIssueType) ? ttlPrevData.ttlIssueType : 0;
+    var totalLengthPrev = (ttlPrevData.ttlLengthType) ? ttlPrevData.ttlLengthType : 0;
+
+    var totalBalIssueCurr = (ttlCurrData.ttlIssueType) ? ttlCurrData.ttlIssueType : 0;
+    var totalLengthCurr = (ttlCurrData.ttlLengthType) ? ttlCurrData.ttlLengthType : 0;
+
+    var varTotalIssue = totalBalIssueCurr - totalBalIssuePrev;
+    var varTotalLength = totalLengthCurr - totalLengthPrev;
+
+    var totalCTDaccumulIssue = accumulIssueTtl + parseInt(totalBalIssueCurr);
+    var totalCTDaccumulLength = parseFloat(accumulLengthTtl) + parseInt(totalLengthCurr);
+
+    // var totalCTDaccumulIssue = varTotalIssue -totalBalIssueCurr;
+    // var totalCTDaccumulLength = varTotalLength -totalLengthCurr;
+
+    var classIssue = '';
+
+    if(varTotalIssue == 0){
+        classIssue = 'fa-hyphen';
+    }
+    else if(varTotalIssue > 0){
+        classIssue = 'fa-caret-up';
+    }
+    else if(varTotalIssue < 0){
+        classIssue = 'fa-caret-down';
+    }
+
+    var classLength = '';
+
+    if(varTotalLength == 0){
+        classLength = 'fa-hyphen';
+    }
+    else if(varTotalLength > 0){
+        classLength = 'fa-caret-up';
+    }
+    else if(varTotalLength < 0){
+        classLength = 'fa-caret-down';
+    }
+
     lmrFootTbHTML += '<tr>'
-    lmrFootTbHTML += '<th>TOTAL</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')" style="text-align: center;">'+prevTotalCumulative+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')" style="text-align: center;">'+prevTotalIssueResolve+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')" style="text-align: center;">'+prevTotalOpen+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')" style="text-align: center;">'+currTotalNewIssue+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')" style="text-align: center;">'+currTotalIssueResolve+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')" style="text-align: center;">'+currTotalIssueOpen+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')" style="text-align: center;">'+currTotalCumulative+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')" style="text-align: center;">'+currTotalCumulativeResolve+'</td>'
-    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')" style="text-align: center;">'+currTotalCumulativeOpen+'</td>'
+    lmrFootTbHTML += '<th colspan="2">TOTAL # OF ISSUES</th>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalBalIssuePrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalBalIssueCurr+'</td>'
+    lmrFootTbHTML += '<td><i class="fa-solid '+classIssue+'"></i>'+varTotalIssue+'</td>'
+    lmrFootTbHTML += '<td style = "text-align: right;">'+totalCTDaccumulIssue.toFixed(2)+'</td>'
+    lmrFootTbHTML += '</tr>'
+
+    lmrFootTbHTML += '<tr>'
+    lmrFootTbHTML += '<th colspan="2">Length (M)</th>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+yearPrev+'\', \''+monthPrev+'\')">'+totalLengthPrev+'</td>'
+    lmrFootTbHTML += '<td onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+totalLengthCurr+'</td>'
+    lmrFootTbHTML += '<td><i class="fa-solid '+classLength+'"></i>'+varTotalLength+'</td>'
+    lmrFootTbHTML += '<td style = "text-align: right;">'+totalCTDaccumulLength.toFixed(2)+'</td>'
     lmrFootTbHTML += '</tr>';
     
-    $("#lmrFootTable").html(lmrFootTbHTML);
+    $("#lmrTypeFootTable").html(lmrFootTbHTML);
+
 }
 
-// Fourth Page
-function updateTableLandTrack(data, allData) {
+function updateTableLandTrack(data, dataWTG, allData){
     var lengthPackage = '';
     var lengthSection = '';
     var arrlength = [];
     var arrlengthSection = [];
+    var arrlengthWTG = [];
 
     var flagFirstTr = false;
     var flagSecondTr = false;
     var flagThirdTrStart = false;
+    var flagMileCheck = false;
+
+    var totalCompletion = 0;
+    var countCompletion = 0;
+    var lengthToUsed = 0;
     var countHeadSec = 0;
 
     let landTrackHead = '';
@@ -1432,141 +1564,398 @@ function updateTableLandTrack(data, allData) {
     var year = (allData && allData.year) ? allData.year : '';
     var month = (allData && allData.month) ? allData.month : '';
 
-    if (data.count) {
+    if(dataWTG){
+        for (const [idx, ele] of Object.entries(dataWTG.mileStage)){
+            //idx = 1. SPA APPROVAL
+            lengthStage = Object.keys(ele).length;
+            if (!arrlengthWTG) arrlengthWTG = [];
+            if (!arrlengthWTG[idx]) arrlengthWTG[idx] = [];
+
+            arrlengthWTG[idx].push(lengthStage)
+        }
+    }
+
+    if(data.count){
         for (const [idx, ele] of Object.entries(data.count)) {
             lengthPackage = Object.keys(ele).length;
             for (const [idx2, ele2] of Object.entries(ele)) {
                 lengthSection = Object.keys(ele2).length;
-                arrlength.push(lengthSection);
-                ele2.sort();
-                if (!arrlengthSection[idx2]) arrlengthSection[idx2] = [];
-                arrlengthSection[idx2].push(...ele2);
+                if (!arrlength) arrlength = [];
+                arrlength.push(lengthSection)
+                ele2.sort()
+                for (const [idx3, ele3] of Object.entries(ele2)) {
+                    if (!arrlengthSection[idx2]) arrlengthSection[idx2] = [];
+                    arrlengthSection[idx2].push(ele3)
+                }
+
             }
+
         }
 
-        // Create table header
-        if (!flagFirstTr) {
+        //START DOING FOR TABLE HEAD
+        if(!flagFirstTr){
+
             landTrackHead += '<tr class="firstTr">'
-                + '<th style="text-align: center;" rowspan="4">Critical Milestone</th>'
-                + '<th style="text-align: center;" rowspan="4">Stage</th>';
+            landTrackHead += '<th rowspan="4">Critical Milestone</th>'
+            landTrackHead += '<th rowspan="4">Stage</th>'
 
             for (let i = 0; i < lengthPackage; i++) {
-                var needToAdd = arrlength[i] + 1;
-                landTrackHead += '<th style="text-align: center;" scope="col" colspan="' + needToAdd + '">% Completion (Stage)</th>';
+                var needToAdd = arrlength[i] + 1
+                landTrackHead += '<th scope="col" colspan="'+arrlength[i]+'">% Dynamic Progress (Stage)</th>'
+                landTrackHead += '<th scope="col" colspan="'+needToAdd+'">% Completion (Stage)</th>'
             }
 
-            landTrackHead += '<th style="text-align: center;" scope="col">% Completion (Stage)</th></tr>';
+            landTrackHead += '<th rowspan="4">WTG % Level 1 (Stage)</th>'
+            landTrackHead += '<th scope="col">% Completion (Stage)</th>'
+            landTrackHead += '<th scope="col" rowspan="4">WTG % Level 2 (Critical Milestones)</th>'
+            landTrackHead += '<th scope="col" colspan="2">% Completion (Critical Milestones)</th>'
+            landTrackHead += '</tr>'
+
             flagFirstTr = true;
         }
 
-        if (!flagSecondTr) {
-            landTrackHead += '<tr class="secondTr">';
+        if(!flagSecondTr){
+
+            landTrackHead += '<tr class="secondTr">'
+            
             for (const [idx3, ele3] of Object.entries(arrlengthSection)) {
                 var lengthEach = Object.keys(ele3).length;
-                var addForTotal = lengthEach + 1;
-                landTrackHead += '<th style="text-align: center;" colspan="' + addForTotal + '">' + idx3 + '</th>';
+                var addForTotal = lengthEach + 1; 
+                landTrackHead += '<th colspan="'+lengthEach+'">'+idx3+'</th>'
+                landTrackHead += '<th colspan="'+addForTotal+'">'+idx3+'</th>'
             }
-            landTrackHead += '<th style="text-align: center;" rowspan="3" id="ttlId_1">Total</th></tr>';
+
+            landTrackHead += '<th rowspan="3" id = "ttlId_1">Total</th>'
+            landTrackHead += '<th rowspan="3" id = "ttlId_2">Total</th>'
+
+            landTrackHead += '</tr>'
+
             flagSecondTr = true;
         }
 
-        if (!flagThirdTrStart) {
-            landTrackHead += '<tr class="thirdTr">';
+        if(!flagThirdTrStart){
+            landTrackHead += '<tr class="thirdTr">'
+
             for (const [idx3, ele3] of Object.entries(arrlengthSection)) {
                 countHeadSec++;
-                for (const [idx4, ele4] of Object.entries(ele3)) {
-                    landTrackHead += '<th style="text-align: center;">' + ele4 + '</th>';
+
+                var lengthEach = Object.keys(ele3).length;
+                for (let i = 0; i < 2; i++) {
+                    for (const [idx4, ele4] of Object.entries(ele3)) {
+                        landTrackHead += '<th>'+ele4+'</th>'
+                    }
                 }
-                landTrackHead += '<th style="text-align: center;" id="ttlSecId_' + countHeadSec + '">Total</th>';
+                landTrackHead += '<th id = "ttlSecId_'+countHeadSec+'">Total</th>'
             }
-            landTrackHead += '</tr>';
+            landTrackHead += '</tr>'
+
             flagThirdTrStart = true;
+
         }
 
-        // Create table body
-        let rowspanCount = {};
+        //START DOING TABLE FOR BODY
         for (const [idx, ele] of Object.entries(data.data)) {
+            flagMileCheck = false;
+            var calTtlWTGmilePercent = 0;
+            var calTtlWTGmileComplete = 0;
+            var countLoopWTG = 0;
+            var countLoopWTGBefore = 0;
+
             for (const [idx2, ele2] of Object.entries(ele)) {
-                if (!rowspanCount[idx]) {
-                    rowspanCount[idx] = 0;
-                }
-                rowspanCount[idx]++;
-            }
-        }
+                landTrackingBody += '<tr>'
+                landTrackingBody += '<th>'+idx+'</th>'
+                landTrackingBody += '<th>'+idx2+'</th>'
 
-        let idxTracker = {};
-        for (const [idx, ele] of Object.entries(data.data)) {
-            for (const [idx2, ele2] of Object.entries(ele)) {
-                landTrackingBody += '<tr>';
-                if (!idxTracker[idx]) {
-                    idxTracker[idx] = 0;
+                var countToCalculate = 0
+                var ttlCompletionAll = 0
+
+                for (const [idx11, ele11] of Object.entries(arrlengthWTG)) {
+                    if(idx == idx11){
+                        lengthToUsed = ele11[0]
+                    }
                 }
 
-                if (idxTracker[idx] === 0) {
-                    landTrackingBody += '<th rowspan="' + rowspanCount[idx] + '">' + idx + '</th>';
-                }
-                idxTracker[idx]++;
-                landTrackingBody += '<th>' + idx2 + '</th>';
-
-                let countToCalculate = 0;
-                let ttlCompletionAll = 0;
-                let ttlcompletion = 0;
-
+                //idx3 = LAWAS
                 for (const [idx3, ele3] of Object.entries(ele2)) {
-                    let totalCompletion = 0;
-                    let countCompletion = 0;
-                    countToCalculate++;
-                    for (const [idxCompletion, eleCompletion] of Object.entries(ele3)) {
-                        for (const [idx5, ele5] of Object.entries(eleCompletion)) {
+                    totalCompletion = 0;
+                    countCompletion = 0;
+
+                    for (const [idxDynamic, eleDynamic] of Object.entries(ele3)) {
+                        //DYNAMIC
+                        for (const [idx5, ele5] of Object.entries(eleDynamic)) {
                             for (const [idxLength, eleLength] of Object.entries(arrlengthSection)) {
-                                if (idx3 == idxLength) {
+                                if(idx3 == idxLength){
                                     for (const [idxLength2, eleLength2] of Object.entries(eleLength)) {
-                                        if (idxCompletion == eleLength2) {
-                                            const compleProgress = ele5.completion_progress ? ele5.completion_progress : 0;
-                                            totalCompletion += parseInt(compleProgress);
-                                            landTrackingBody += '<th style="text-align: center;" onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')">' + compleProgress + '%</th>';
-                                            break;
+                                        if(idxDynamic == eleLength2){
+                                            var dynaProgress = (ele5.dynamic_progress) ? ele5.dynamic_progress : 0;
+                                            landTrackingBody += '<th onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dynaProgress+' %</th>'
+                                            break
+    
                                         }
                                     }
+                                    break
+                                }
+                            }
+                            break
+                        }
+                    }
+
+                    countToCalculate ++;
+                    for (const [idxCompletion, eleCompletion] of Object.entries(ele3)) {
+                        //COMPLETION
+                        for (const [idx5, ele5] of Object.entries(eleCompletion)) {
+                            for (const [idxLength, eleLength] of Object.entries(arrlengthSection)) {
+    
+                                if(idx3 == idxLength){
+                                    for (const [idxLength2, eleLength2] of Object.entries(eleLength)) {
+                                        if(idxCompletion == eleLength2){
+                                            var compleProgress = (ele5.completion_progress) ? ele5.completion_progress : 0;
+                                            totalCompletion = totalCompletion + parseInt(compleProgress);
+
+                                            landTrackingBody += '<th onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+compleProgress+' %</th>'
+                                            break
+    
+                                        }
+                                    }
+                                    break
+                                }
+                            }
+                            break
+                        }
+                        countCompletion ++;
+                    }
+
+                    var averageCompletion = Math.round (totalCompletion / countCompletion);
+                    ttlCompletionAll = ttlCompletionAll + averageCompletion;
+
+                    landTrackingBody += '<th>'+averageCompletion+' %</th>'
+
+                }
+                
+                for (const [idxwtg, elewtg] of Object.entries(dataWTG)) {
+
+                    if(idxwtg == 'stage'){
+                        for (const [idxwtg2, elewtg2] of Object.entries(elewtg)) {
+                            for (const [idxwtg3, elewtg3] of Object.entries(elewtg2)) {
+                                if(idxwtg2 == idx2){
+                                    var wtgPercentStage = (elewtg3.wtg_percentage) ? parseInt (elewtg3.wtg_percentage) : 0;
+                                    var calculateWtgStage = 0
+                                    if(ttlCompletionAll != 0){
+                                        calculateWtgStage = Math.round (ttlCompletionAll / countToCalculate);
+                                    }
+                                    
+                                    calTtlWTGmilePercent = calTtlWTGmilePercent + wtgPercentStage;
+                                    calTtlWTGmileComplete = calTtlWTGmileComplete + calculateWtgStage;
+
+                                    landTrackingBody += '<th>'+elewtg3.wtg_percentage+' %</th>'
+                                    landTrackingBody += '<th>'+calculateWtgStage+' %</th>'
                                     break;
                                 }
                             }
-                            break;
                         }
-                        countCompletion++;
                     }
 
-                    let averageCompletion = 0;
-                    if (countCompletion > 0) {
-                        averageCompletion = Math.round(totalCompletion / countCompletion);
+                    if(idxwtg == 'mile'){
+                        countLoopWTGBefore ++;
+
+                        if(countLoopWTGBefore < lengthToUsed){
+                            for (const [idxwtg2, elewtg2] of Object.entries(elewtg)) {
+                                for (const [idxwtg3, elewtg3] of Object.entries(elewtg2)) {
+                                    if(idxwtg2 == idx){
+                                        landTrackingBody += '<th></th>'
+                                        landTrackingBody += '<th></th>'
+                                        break;
+                                    }
+                                }
+    
+                            }
+                        }
+
                     }
-                    ttlCompletionAll += averageCompletion;
-                    landTrackingBody += '<th style="text-align: center;">' + averageCompletion + '%</th>';
+
                 }
 
-                if (countToCalculate > 0) {
-                    ttlcompletion = ttlCompletionAll / countToCalculate;
-                } else {
-                    ttlcompletion = 0;
+                for (const [idxwtg, elewtg] of Object.entries(dataWTG)) {
+                    if(idxwtg == 'mile'){
+                        countLoopWTG ++;
+
+                        if(lengthToUsed == countLoopWTG){
+                            for (const [idxwtg2, elewtg2] of Object.entries(elewtg)) {
+                                for (const [idxwtg3, elewtg3] of Object.entries(elewtg2)) {
+                                    if(idxwtg2 == idx){
+                                        wtgPercentMile = (elewtg3.wtg_percentage) ? parseInt (elewtg3.wtg_percentage) : 0;
+                                        calculateWtgMile = 0
+
+                                        if(calTtlWTGmileComplete != 0){
+                                            calculateWtgMile = Math.round (calTtlWTGmileComplete / calTtlWTGmilePercent * wtgPercentMile);
+                                        }
+
+                                        landTrackingBody += '<th>'+wtgPercentMile+' %</th>'
+                                        landTrackingBody += '<th>'+calculateWtgMile+' %</th>'
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+
                 }
 
-                landTrackingBody += '<th style="text-align: center;" onclick="openConOpDashboardLand(\'' + year + '\', \'' + month + '\')">' + ttlcompletion + '%</th>';
-                landTrackingBody += '</tr>';
+                landTrackingBody += '</tr>'
+
             }
+
         }
     }
 
     $("#landTrackHead").html(landTrackHead);
     $("#landTrackingBody").html(landTrackingBody);
+
+    //FOR CALCULATION AT THE END OF TABLE
+    var j = 0;
+    var l = 0;
+
+    var tdToAdd = 0;
+    var prevIndex = 0;
+    var indexStage = 0;
+    var indexStageCompletion = 0;
+    var indexMile = 0;
+    var indexMileCompletion = 0;
+
+    var totalStage = 0;
+    var totalStageCompletion = 0;
+    var totalMile = 0;
+    var totalMileCompletion = 0;
+
+    landTrackingBody += '<tr>'
+
+    $("#landTrackHead").find("#ttlSecId_" +countHeadSec).each(function () {
+        indexStage = $(this).index() + 3;
+        indexStageCompletion = $(this).index() + 4;
+        indexMile = $(this).index() + 5;
+        indexMileCompletion = $(this).index() + 6;
+
+    })
+
+    //FOR WTG PART
+    $("#landTrackingBody").find("tr").each(function () {
+        var valueTdStage = $(this).find("th:eq(" + indexStage + ")").html();
+        var valueTdStageCompletion = $(this).find("th:eq(" + indexStageCompletion + ")").html();
+        var valueTdMile = $(this).find("th:eq(" + indexMile + ")").html();
+        var valueTdMileCompletion = $(this).find("th:eq(" + indexMileCompletion + ")").html();
+
+        var usedLastValueStage = 0
+        if(valueTdStage){
+            var onlyValue = valueTdStage.split(" ");
+            usedLastValueStage = onlyValue[0]
+        }
+
+        var usedLastValueStageCompletion = 0
+        if(valueTdStageCompletion){
+            var onlyValue = valueTdStageCompletion.split(" ");
+            usedLastValueStageCompletion = onlyValue[0]
+        }
+
+        var usedLastValueMile = 0
+        if(valueTdMile){
+            var onlyValue = valueTdMile.split(" ");
+            usedLastValueMile = onlyValue[0]
+        }
+
+        var usedLastValueMileCompletion = 0
+        if(valueTdMileCompletion){
+            var onlyValue = valueTdMileCompletion.split(" ");
+            usedLastValueMileCompletion = onlyValue[0]
+        }
+        
+        totalStage = totalStage + parseInt(usedLastValueStage)
+        totalStageCompletion = totalStageCompletion + parseInt(usedLastValueStageCompletion)
+        totalMile = totalMile + parseInt(usedLastValueMile)
+        totalMileCompletion = totalMileCompletion + parseInt(usedLastValueMileCompletion)
+
+    });
+
+    for (let i = 0; i < countHeadSec; i++) {
+        j ++;
+        var totalAll = 0;
+        var totalPercent = 0;
+
+        $("#landTrackHead").find("#ttlSecId_" +j).each(function () {
+            var indexTotal = $(this).index()
+            if(j == 1){
+                tdToAdd = indexTotal + 2;
+            } 
+            else{
+                tdToAdd = indexTotal - prevIndex - 1;
+            }
+            $("#landTrackingBody").find("tr").each(function () {
+                var useIndex = indexTotal + 2;
+                var valueTd = $(this).find("th:eq(" + useIndex + ")").html();
+                var usedLastValue = 0
+                if(valueTd){
+                    var onlyValue = valueTd.split(" ");
+                    usedLastValue = onlyValue[0]
+                }
+                totalAll = totalAll + parseInt(usedLastValue);
+
+                
+
+            });
+
+            prevIndex = indexTotal
+
+        });
+
+        totalPercent = Math.round (totalAll / totalStage * 100)
+
+        for (let k = 0; k < tdToAdd; k++) {
+            landTrackingBody += '<th> </th>'
+        }
+        landTrackingBody += '<th>'+totalPercent+' %</th>'
+
+    }
+
+    var valueCalculate1 = 0;
+    var valueCalculate2 = 0;
+
+    if(totalStageCompletion != 0){
+        valueCalculate1 = Math.round (totalStageCompletion / totalStage * 100)
+    }
+
+    if(totalMileCompletion != 0){
+        valueCalculate2 = Math.round (totalMileCompletion / totalMile * 100)
+    }
+
+    landTrackingBody += '<th></th>'
+    landTrackingBody += '<th>'+valueCalculate1+' %</th>'
+
+    landTrackingBody += '<th></th>'
+    landTrackingBody += '<th>'+valueCalculate2+' %</th>'
+
+    landTrackingBody += '</tr>'
+    $("#landTrackingBody").html(landTrackingBody);
+
+
+
+    
 }
 
 function refreshInformation(proj = 'overall', year = 'all', month = 'all'){
-
     var dataYearMonth = "Month:" +month+ " - " + "Year:" +year;
-    var landManage = (landData && landData.landManagement && landData.landManagement[proj]) ? landData.landManagement[proj] : [];
+    var landManage = (landData && landData.landManagement && landData.landManagement[proj] && landData.landManagement[proj]) ? landData.landManagement[proj] : [];
     var landTimelineDb = (landData && landData.landTimelineDatabase && landData.landTimelineDatabase[proj]) ? landData.landTimelineDatabase[proj] : [];
-    var landAcquisition = (landData && landData.landAcquisitionData && landData.landAcquisitionData['overall']) ? landData.landAcquisitionData['overall'] : [];
+    var landWtg= (landData && landData.landWTG && landData.landWTG[proj]) ? landData.landWTG[proj] : [];
+
     var allData = (landTimelineDb && landTimelineDb['all'] && landTimelineDb['all']['all'] && landTimelineDb['all']['all'].allData) ? landTimelineDb['all']['all'].allData : [];
+
+    var landDb = (landTimelineDb && landTimelineDb['all'] && landTimelineDb['all']['all'] && landTimelineDb['all']['all'].landDatabase) ? landTimelineDb['all']['all'].landDatabase : [];
+    updateLandDatabase(landDb, allData, dataYearMonth);
+
+    var landTime = (landTimelineDb && landTimelineDb['all'] && landTimelineDb['all']['all'] && landTimelineDb['all']['all'].landTimeline) ? landTimelineDb['all']['all'].landTimeline : [];
+    updateLandTimeline(landTime, allData);
+    timelineJSON = landTime['data'];
 
     var currDate = new Date();
 
@@ -1599,6 +1988,24 @@ function refreshInformation(proj = 'overall', year = 'all', month = 'all'){
         }
     }
 
+    //set AIWI & FOE month timeline title
+
+    var timelineMonth = '';
+    for (const [idx, ele] of Object.entries(timelineJSON)) {
+        var reMonth = new RegExp(monthNumtoHalftext[ele.month]);
+        var reYear = new RegExp(ele.year);
+
+        if(currMonth.match(reMonth) && String(currYear).match(reYear)){
+            timelineMonth = ele.month_timeline;
+            break;
+        }else{
+            timelineMonth = 'NOT SET';
+        }
+    }
+
+    $('#AIWITitle').html(timelineMonth);
+    $('#FOETitle').html(timelineMonth);
+
     setCutOffDateCurr(currYear, currMonth)
     setCutOffDatePrev(prevYear, prevMonth)
 
@@ -1611,6 +2018,12 @@ function refreshInformation(proj = 'overall', year = 'all', month = 'all'){
     var synopsisData = (landManage && landManage[currYear] && landManage[currYear][currMonth] && landManage[currYear][currMonth][landId] && landManage[currYear][currMonth][landId].synopsis) ? landManage[currYear][currMonth][landId].synopsis : [];
     updateSynopsis(synopsisData, allData);
 
+    var aiwiData = (landManage && landManage[currYear] && landManage[currYear][currMonth] && landManage[currYear][currMonth].aiwi) ? landManage[currYear][currMonth].aiwi : [];
+    drawAiwiChart(aiwiData, allData, dataYearMonth, month);
+
+    var foeData = (landManage && landManage[currYear] && landManage[currYear][currMonth] && landManage[currYear][currMonth].foe) ? landManage[currYear][currMonth].foe : [];
+    drawFoeChart(foeData, allData, dataYearMonth, month);
+
     var lmrSectCurrData = (landManage && landManage[currYear] && landManage[currYear][currMonth] && landManage[currYear][currMonth][landId] && landManage[currYear][currMonth][landId]['lmr-section']) ? landManage[currYear][currMonth][landId]['lmr-section'] : [];
     var lmrSectPrevData = (landManage && landManage[prevYear] && landManage[prevYear][prevMonth] && landManage[prevYear][prevMonth][landIdPrev] && landManage[prevYear][prevMonth][landIdPrev]['lmr-section']) ? landManage[prevYear][prevMonth][landIdPrev]['lmr-section'] : [];
     
@@ -1618,22 +2031,15 @@ function refreshInformation(proj = 'overall', year = 'all', month = 'all'){
     var ttlDataPrev = (landManage && landManage[prevYear] && landManage[prevYear][prevMonth] && landManage[prevYear][prevMonth][landIdPrev] && landManage[prevYear][prevMonth][landIdPrev]['total']) ? landManage[prevYear][prevMonth][landIdPrev]['total'] : [];
 
     updateTableLMRSection(lmrSectCurrData, lmrSectPrevData, ttlDataCurr, ttlDataPrev, allData, allDataPrev)
+
+    var lmrTypeCurrData = (landManage && landManage[currYear] && landManage[currYear][currMonth] && landManage[currYear][currMonth][landId] && landManage[currYear][currMonth][landId]['lmr-type']) ? landManage[currYear][currMonth][landId]['lmr-type'] : [];
+    var lmrTypePrevData = (landManage && landManage[prevYear] && landManage[prevYear][prevMonth] && landManage[prevYear][prevMonth][landIdPrev] && landManage[prevYear][prevMonth][landIdPrev]['lmr-type']) ? landManage[prevYear][prevMonth][landIdPrev]['lmr-type'] : [];
+    var lmrTypeCTD = (landManage['lmr-type-ctd']) ? landManage['lmr-type-ctd'] : [];
+    updateTableLMRType(lmrTypeCurrData, lmrTypePrevData, ttlDataCurr, ttlDataPrev, allData, allDataPrev, lmrTypeCTD)
     
     var landTracking = (landManage && landManage[currYear] && landManage[currYear][currMonth] && landManage[currYear][currMonth][landId] && landManage[currYear][currMonth][landId]['landTracking']) ? landManage[currYear][currMonth][landId]['landTracking'] : [];
-    updateTableLandTrack(landTracking, allData);
-
-    landTracking = (landManage && landManage[currYear] && landManage[currYear][currMonth] && landManage[currYear][currMonth][landId] && landManage[currYear][currMonth][landId]['landTracking']) ? landManage[currYear][currMonth][landId]['landTracking'] : [];
-
-    landAcquisitionChart(landAcquisition, year, month);
-    landAcquisitionTable(landAcquisition, year, month);
-
-    //var landDb = (landTimelineDb && landTimelineDb['all'] && landTimelineDb['all']['all'] && landTimelineDb['all']['all'].landDatabase) ? landTimelineDb['all']['all'].landDatabase : [];
-    updateLandDatabase(landTimelineDb, year, month);
-
-    var landTime = (landTimelineDb && landTimelineDb['all'] && landTimelineDb['all']['all'] && landTimelineDb['all']['all'].landTimeline) ? landTimelineDb['all']['all'].landTimeline : [];
-    updateLandTimeline(landTimelineDb, year, month);
-    timelineJSON = landTime['data'];
-    
+    var landWTGData = (landWtg && landWtg['all'] && landWtg['all']['all'] && landWtg['all']['all'].wtg) ? landWtg['all']['all'].wtg : [];
+    updateTableLandTrack(landTracking, landWTGData, allData);
 }
 
 function setCutOffDateCurr(year, month){
@@ -1683,13 +2089,11 @@ function refreshFromv3 (filterArr){
     var year = filterArr.year;
     var month = filterArr.month;
 
-    refreshInformation(wpc, year, month);
-
-    // if(year != 'all'){
-    //     if(month != 'all'){
-    //         refreshInformation(wpc, year, month);
-    //     }
-    // }
+    if(year != 'all'){
+        if(month != 'all'){
+            refreshInformation(wpc, year, month);
+        }
+    }
 }
 
 $(document).ready(function(){
@@ -1712,14 +2116,15 @@ $(document).ready(function(){
                 $("#yearFilter").val(currYear);
                 $("#monthFilter").val(currMonth);
 
-                //$('.filterContainer .yrFilter', window.parent.document).val(currYear);
+                $('.filterContainer .yrFilter', window.parent.document).val(currYear);
 								
                 $('.filterContainer .mthFilter', window.parent.document).prop('disabled', false);
-                //$('.filterContainer .mthFilter', window.parent.document).val(currMonth);
+                $('.filterContainer .mthFilter', window.parent.document).val(currMonth);
         	}
         },
         complete: function (){
             window.parent.postMessage({functionName: 'loaderajaxEnd'})
         }
     });
+
 })

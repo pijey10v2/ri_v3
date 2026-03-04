@@ -232,8 +232,7 @@ body {
 .system-page #main-active-user,
 .system-page #main-inactive-user,
 .system-page #main-active-project,
-.system-page #main-archived-project,
-.system-page #main-tokenmgmt-project {
+.system-page #main-archived-project {
   display: none;
   position: relative;
   padding: 15px 0;
@@ -244,8 +243,7 @@ body {
 .system-page #main-active-user .main-header,
 .system-page #main-inactive-user .main-header,
 .system-page #main-active-project .main-header,
-.system-page #main-archived-project .main-header,
-.system-page #main-tokenmgmt-project .main-header {
+.system-page #main-archived-project .main-header {
   width: 100%;
   height: 40px;
   color: var(--on-surface);
@@ -254,23 +252,20 @@ body {
 .system-page #main-active-user .main-header.margin-bottom,
 .system-page #main-inactive-user .main-header.margin-bottom,
 .system-page #main-active-project .main-header.margin-bottom,
-.system-page #main-archived-project .main-header.margin-bottom,
-.system-page #main-tokenmgmt-project .main-header.margin-bottom {
+.system-page #main-archived-project .main-header.margin-bottom {
   margin-bottom: 10px;
 }
 .system-page #main-active-user .main-header .titleLabel,
 .system-page #main-inactive-user .main-header .titleLabel,
 .system-page #main-active-project .main-header .titleLabel,
-.system-page #main-archived-project .main-header .titleLabel,
-.system-page #main-tokenmgmt-project .main-header .titleLabel {
+.system-page #main-archived-project .main-header .titleLabel {
   float: left;
   font-weight: var(--text-weight);
 }
 .system-page #main-active-user .main-header h3,
 .system-page #main-inactive-user .main-header h3,
 .system-page #main-active-project .main-header h3,
-.system-page #main-archived-project .main-header h3,
-.system-page #main-tokenmgmt-project .main-header h3 {
+.system-page #main-archived-project .main-header h3 {
   margin: 0px;
   top: 12px;
   position: relative;
@@ -279,15 +274,13 @@ body {
 .system-page #main-active-user .main-header button,
 .system-page #main-inactive-user .main-header button,
 .system-page #main-active-project .main-header button,
-.system-page #main-archived-project .main-header button,
-.system-page #main-tokenmgmt-project .main-header button {
+.system-page #main-archived-project .main-header button {
   float: right;
 }
 .system-page #main-active-user .searchTable,
 .system-page #main-inactive-user .searchTable,
 .system-page #main-active-project .searchTable,
-.system-page #main-archived-project .searchTable,
-.system-page #main-tokenmgmt-project .searchTable {
+.system-page #main-archived-project .searchTable {
   text-align: right;
   display: flex;
   justify-content: end;
@@ -296,8 +289,7 @@ body {
 .system-page #main-active-user .searchTable input,
 .system-page #main-inactive-user .searchTable input,
 .system-page #main-active-project .searchTable input,
-.system-page #main-archived-project .searchTable input,
-.system-page #main-tokenmgmt-project .searchTable input {
+.system-page #main-archived-project .searchTable input {
   height: 30px;
   border-radius: 7px;
   width: 250px;
@@ -310,16 +302,14 @@ body {
 .system-page #main-active-user .searchTable button,
 .system-page #main-inactive-user .searchTable button,
 .system-page #main-active-project .searchTable button,
-.system-page #main-archived-project .searchTable button,
-.system-page #main-tokenmgmt-project .searchTable button {
+.system-page #main-archived-project .searchTable button {
   padding: 8px 20px;
   border-radius: 5px;
 }
 .system-page #main-active-user .searchTable button.circle,
 .system-page #main-inactive-user .searchTable button.circle,
 .system-page #main-active-project .searchTable button.circle,
-.system-page #main-archived-project .searchTable button.circle,
-.system-page #main-tokenmgmt-project .searchTable button.circle {
+.system-page #main-archived-project .searchTable button.circle {
   width: 35px;
   height: 35px;
   font-size: 10px;
@@ -336,16 +326,14 @@ body {
 .system-page #main-active-user .searchTable button.circle:hover,
 .system-page #main-inactive-user .searchTable button.circle:hover,
 .system-page #main-active-project .searchTable button.circle:hover,
-.system-page #main-archived-project .searchTable button.circle:hover,
-.system-page #main-tokenmgmt-project .searchTable button.circle:hover {
+.system-page #main-archived-project .searchTable button.circle:hover {
   cursor: pointer;
   transform: scale(1.05);
 }
 .system-page #main-active-user .searchTable button.circle.active,
 .system-page #main-inactive-user .searchTable button.circle.active,
 .system-page #main-active-project .searchTable button.circle.active,
-.system-page #main-archived-project .searchTable button.circle.active,
-.system-page #main-tokenmgmt-project .searchTable button.circle.active {
+.system-page #main-archived-project .searchTable button.circle.active {
   opacity: 1;
   transition: all 0.1s ease-in;
   display: block;
@@ -353,16 +341,14 @@ body {
 .system-page #main-active-user .searchTable button.circle i,
 .system-page #main-inactive-user .searchTable button.circle i,
 .system-page #main-active-project .searchTable button.circle i,
-.system-page #main-archived-project .searchTable button.circle i,
-.system-page #main-tokenmgmt-project .searchTable button.circle i {
+.system-page #main-archived-project .searchTable button.circle i {
   font-size: 12px;
   color: white;
 }
 .system-page #main-active-user .searchTable .details-container,
 .system-page #main-inactive-user .searchTable .details-container,
 .system-page #main-active-project .searchTable .details-container,
-.system-page #main-archived-project .searchTable .details-container,
-.system-page #main-tokenmgmt-project .searchTable .details-container {
+.system-page #main-archived-project .searchTable .details-container {
   opacity: 0;
   transition: all 0.1s ease-out;
   margin-right: 10px;
@@ -371,39 +357,34 @@ body {
 .system-page #main-active-user .searchTable .details-container:hover,
 .system-page #main-inactive-user .searchTable .details-container:hover,
 .system-page #main-active-project .searchTable .details-container:hover,
-.system-page #main-archived-project .searchTable .details-container:hover,
-.system-page #main-tokenmgmt-project .searchTable .details-container:hover {
+.system-page #main-archived-project .searchTable .details-container:hover {
   cursor: default;
 }
 .system-page #main-active-user .searchTable .details-container.active,
 .system-page #main-inactive-user .searchTable .details-container.active,
 .system-page #main-active-project .searchTable .details-container.active,
-.system-page #main-archived-project .searchTable .details-container.active,
-.system-page #main-tokenmgmt-project .searchTable .details-container.active {
+.system-page #main-archived-project .searchTable .details-container.active {
   opacity: 1;
   transition: all 0.1s ease-in;
 }
 .system-page #main-active-user .container-content,
 .system-page #main-inactive-user .container-content,
 .system-page #main-active-project .container-content,
-.system-page #main-archived-project .container-content,
-.system-page #main-tokenmgmt-project .container-content {
+.system-page #main-archived-project .container-content {
   display: flex;
   height: calc(100% - 40px);
 }
 .system-page #main-active-user .vertical-line,
 .system-page #main-inactive-user .vertical-line,
 .system-page #main-active-project .vertical-line,
-.system-page #main-archived-project .vertical-line,
-.system-page #main-tokenmgmt-project .vertical-line {
+.system-page #main-archived-project .vertical-line {
   height: 100%;
   border-left: 1px solid var(--border-bottom);
 }
 .system-page #main-active-user .container-table,
 .system-page #main-inactive-user .container-table,
 .system-page #main-active-project .container-table,
-.system-page #main-archived-project .container-table,
-.system-page #main-tokenmgmt-project .container-table {
+.system-page #main-archived-project .container-table {
   margin-top: 15px;
   height: calc(100% - 55px);
   margin-top: unset;
@@ -412,8 +393,7 @@ body {
 .system-page #main-active-user .container-table.column-left,
 .system-page #main-inactive-user .container-table.column-left,
 .system-page #main-active-project .container-table.column-left,
-.system-page #main-archived-project .container-table.column-left,
-.system-page #main-tokenmgmt-project .container-table.column-left {
+.system-page #main-archived-project .container-table.column-left {
   width: calc(50% - 11px);
   float: left;
   margin-right: 10px;
@@ -421,8 +401,7 @@ body {
 .system-page #main-active-user .container-table.column-right,
 .system-page #main-inactive-user .container-table.column-right,
 .system-page #main-active-project .container-table.column-right,
-.system-page #main-archived-project .container-table.column-right,
-.system-page #main-tokenmgmt-project .container-table.column-right {
+.system-page #main-archived-project .container-table.column-right {
   width: calc(50% - 11px);
   float: right;
   margin-left: 10px;
@@ -430,8 +409,7 @@ body {
 .system-page #main-active-user .container-table .table-title,
 .system-page #main-inactive-user .container-table .table-title,
 .system-page #main-active-project .container-table .table-title,
-.system-page #main-archived-project .container-table .table-title,
-.system-page #main-tokenmgmt-project .container-table .table-title {
+.system-page #main-archived-project .container-table .table-title {
   font-size: clamp(1rem, 2vw, 1.3rem);
   margin-bottom: 20px;
   color: var(--on-surface);
@@ -440,16 +418,14 @@ body {
 .system-page #main-active-user .container-table .table-content,
 .system-page #main-inactive-user .container-table .table-content,
 .system-page #main-active-project .container-table .table-content,
-.system-page #main-archived-project .container-table .table-content,
-.system-page #main-tokenmgmt-project .container-table .table-content {
+.system-page #main-archived-project .container-table .table-content {
   background: var(--surface);
   height: calc(100% - 15px);
 }
 .system-page #main-active-user .container-table .tableHeader,
 .system-page #main-inactive-user .container-table .tableHeader,
 .system-page #main-active-project .container-table .tableHeader,
-.system-page #main-archived-project .container-table .tableHeader,
-.system-page #main-tokenmgmt-project .container-table .tableHeader {
+.system-page #main-archived-project .container-table .tableHeader {
   display: flex;
   line-height: 30px;
   font-size: 12px;
@@ -461,16 +437,14 @@ body {
 .system-page #main-active-user .container-table .tableHeader.system-admin,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin,
 .system-page #main-active-project .container-table .tableHeader.system-admin,
-.system-page #main-archived-project .container-table .tableHeader.system-admin,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin {
+.system-page #main-archived-project .container-table .tableHeader.system-admin {
   padding: 15px;
   width: calc(100% - 40px);
 }
 .system-page #main-active-user .container-table .tableHeader.system-admin.threeColumn .columnMiddle,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.threeColumn .columnMiddle,
 .system-page #main-active-project .container-table .tableHeader.system-admin.threeColumn .columnMiddle,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.threeColumn .columnMiddle,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.threeColumn .columnMiddle {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.threeColumn .columnMiddle {
   width: 33.33%;
   padding-left: 5px;
   line-height: 1rem;
@@ -478,8 +452,7 @@ body {
 .system-page #main-active-user .container-table .tableHeader.system-admin.fourColumn .columnSmall,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.fourColumn .columnSmall,
 .system-page #main-active-project .container-table .tableHeader.system-admin.fourColumn .columnSmall,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.fourColumn .columnSmall,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.fourColumn .columnSmall {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.fourColumn .columnSmall {
   width: 30px;
   padding-left: 7px;
   display: flex;
@@ -487,8 +460,7 @@ body {
 .system-page #main-active-user .container-table .tableHeader.system-admin.fourColumn .columnMiddle,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.fourColumn .columnMiddle,
 .system-page #main-active-project .container-table .tableHeader.system-admin.fourColumn .columnMiddle,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.fourColumn .columnMiddle,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.fourColumn .columnMiddle {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.fourColumn .columnMiddle {
   width: 25%;
   padding: 0px 5px;
   padding-left: 5px;
@@ -497,8 +469,7 @@ body {
 .system-page #main-active-user .container-table .tableHeader.system-admin.fiveColumn .columnSmall,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.fiveColumn .columnSmall,
 .system-page #main-active-project .container-table .tableHeader.system-admin.fiveColumn .columnSmall,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.fiveColumn .columnSmall,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.fiveColumn .columnSmall {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.fiveColumn .columnSmall {
   width: 30px;
   padding-left: 7px;
   display: flex;
@@ -506,8 +477,7 @@ body {
 .system-page #main-active-user .container-table .tableHeader.system-admin.fiveColumn .columnMiddle,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.fiveColumn .columnMiddle,
 .system-page #main-active-project .container-table .tableHeader.system-admin.fiveColumn .columnMiddle,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.fiveColumn .columnMiddle,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.fiveColumn .columnMiddle {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.fiveColumn .columnMiddle {
   width: 20%;
   padding: 0px 5px;
   padding-left: 5px;
@@ -516,24 +486,21 @@ body {
 .system-page #main-active-user .container-table .tableHeader.system-admin.eightColumn .columnSmall,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.eightColumn .columnSmall,
 .system-page #main-active-project .container-table .tableHeader.system-admin.eightColumn .columnSmall,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.eightColumn .columnSmall,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.eightColumn .columnSmall {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.eightColumn .columnSmall {
   width: 70px;
   padding-left: 5px;
 }
 .system-page #main-active-user .container-table .tableHeader.system-admin.eightColumn .columnLarge,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.eightColumn .columnLarge,
 .system-page #main-active-project .container-table .tableHeader.system-admin.eightColumn .columnLarge,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.eightColumn .columnLarge,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.eightColumn .columnLarge {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.eightColumn .columnLarge {
   width: calc(25% - 70px);
   padding-left: 5px;
 }
 .system-page #main-active-user .container-table .tableHeader.system-admin.eightColumn .columnMiddle,
 .system-page #main-inactive-user .container-table .tableHeader.system-admin.eightColumn .columnMiddle,
 .system-page #main-active-project .container-table .tableHeader.system-admin.eightColumn .columnMiddle,
-.system-page #main-archived-project .container-table .tableHeader.system-admin.eightColumn .columnMiddle,
-.system-page #main-tokenmgmt-project .container-table .tableHeader.system-admin.eightColumn .columnMiddle {
+.system-page #main-archived-project .container-table .tableHeader.system-admin.eightColumn .columnMiddle {
   width: 12.5%;
   padding-left: 5px;
   line-height: 1rem;
@@ -541,8 +508,7 @@ body {
 .system-page #main-active-user .container-table .tableBody,
 .system-page #main-inactive-user .container-table .tableBody,
 .system-page #main-active-project .container-table .tableBody,
-.system-page #main-archived-project .container-table .tableBody,
-.system-page #main-tokenmgmt-project .container-table .tableBody {
+.system-page #main-archived-project .container-table .tableBody {
   overflow-y: auto;
   color: var(--on-surface);
   height: calc(100% - 52px);
@@ -550,15 +516,13 @@ body {
 .system-page #main-active-user .container-table .tableBody.tableBody-title,
 .system-page #main-inactive-user .container-table .tableBody.tableBody-title,
 .system-page #main-active-project .container-table .tableBody.tableBody-title,
-.system-page #main-archived-project .container-table .tableBody.tableBody-title,
-.system-page #main-tokenmgmt-project .container-table .tableBody.tableBody-title {
+.system-page #main-archived-project .container-table .tableBody.tableBody-title {
   height: calc(100% - 60px);
 }
 .system-page #main-active-user .container-table .tableBody .row,
 .system-page #main-inactive-user .container-table .tableBody .row,
 .system-page #main-active-project .container-table .tableBody .row,
-.system-page #main-archived-project .container-table .tableBody .row,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row {
+.system-page #main-archived-project .container-table .tableBody .row {
   font-size: 12px;
   border-spacing: unset;
   display: flex;
@@ -569,16 +533,14 @@ body {
 .system-page #main-active-user .container-table .tableBody .row.system-admin,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin,
 .system-page #main-active-project .container-table .tableBody .row.system-admin,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin {
   padding: 0px 15px;
   width: calc(100% - 40px);
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.fourColumn .columnSmall,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.fourColumn .columnSmall,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall {
   width: 30px;
   padding-left: 7px;
   display: flex;
@@ -586,22 +548,19 @@ body {
 .system-page #main-active-user .container-table .tableBody .row.system-admin.fourColumn .columnSmall.align-center,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.fourColumn .columnSmall.align-center,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall.align-center,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall.align-center,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall.align-center {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.fourColumn .columnSmall.align-center {
   align-items: center;
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.fourColumn .columnMiddle,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.fourColumn .columnMiddle,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.fourColumn .columnMiddle,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.fourColumn .columnMiddle,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.fourColumn .columnMiddle {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.fourColumn .columnMiddle {
   width: 25%;
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.fiveColumn .columnSmall,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.fiveColumn .columnSmall,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall {
   width: 30px;
   padding-left: 7px;
   display: flex;
@@ -609,50 +568,43 @@ body {
 .system-page #main-active-user .container-table .tableBody .row.system-admin.fiveColumn .columnSmall.align-center,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.fiveColumn .columnSmall.align-center,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall.align-center,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall.align-center,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall.align-center {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall.align-center {
   align-items: center;
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.fiveColumn .columnSmall i:hover,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.fiveColumn .columnSmall i:hover,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall i:hover,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall i:hover,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall i:hover {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnSmall i:hover {
   transform: scale(1.05);
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.fiveColumn .columnMiddle,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.fiveColumn .columnMiddle,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.fiveColumn .columnMiddle,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnMiddle,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.fiveColumn .columnMiddle {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.fiveColumn .columnMiddle {
   width: 20%;
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.eightColumn .columnSmall,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.eightColumn .columnSmall,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.eightColumn .columnSmall,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.eightColumn .columnSmall,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.eightColumn .columnSmall {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.eightColumn .columnSmall {
   width: 70px;
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.eightColumn .columnLarge,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.eightColumn .columnLarge,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.eightColumn .columnLarge,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.eightColumn .columnLarge,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.eightColumn .columnLarge {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.eightColumn .columnLarge {
   width: calc(25% - 70px);
 }
 .system-page #main-active-user .container-table .tableBody .row.system-admin.eightColumn .columnMiddle,
 .system-page #main-inactive-user .container-table .tableBody .row.system-admin.eightColumn .columnMiddle,
 .system-page #main-active-project .container-table .tableBody .row.system-admin.eightColumn .columnMiddle,
-.system-page #main-archived-project .container-table .tableBody .row.system-admin.eightColumn .columnMiddle,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.system-admin.eightColumn .columnMiddle {
+.system-page #main-archived-project .container-table .tableBody .row.system-admin.eightColumn .columnMiddle {
   width: 12.5%;
 }
 .system-page #main-active-user .container-table .tableBody .row:hover,
 .system-page #main-inactive-user .container-table .tableBody .row:hover,
 .system-page #main-active-project .container-table .tableBody .row:hover,
-.system-page #main-archived-project .container-table .tableBody .row:hover,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row:hover {
+.system-page #main-archived-project .container-table .tableBody .row:hover {
   background: var(--top);
   box-shadow: 0 2px 10px 0px rgba(0, 0, 0, 0.13);
   cursor: pointer;
@@ -660,8 +612,7 @@ body {
 .system-page #main-active-user .container-table .tableBody .row.active,
 .system-page #main-inactive-user .container-table .tableBody .row.active,
 .system-page #main-active-project .container-table .tableBody .row.active,
-.system-page #main-archived-project .container-table .tableBody .row.active,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row.active {
+.system-page #main-archived-project .container-table .tableBody .row.active {
   background: var(--top);
   box-shadow: 0 2px 10px 0px rgba(0, 0, 0, 0.13);
   cursor: pointer;
@@ -669,8 +620,7 @@ body {
 .system-page #main-active-user .container-table .tableBody .row .textContainer,
 .system-page #main-inactive-user .container-table .tableBody .row .textContainer,
 .system-page #main-active-project .container-table .tableBody .row .textContainer,
-.system-page #main-archived-project .container-table .tableBody .row .textContainer,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row .textContainer {
+.system-page #main-archived-project .container-table .tableBody .row .textContainer {
   margin: 10px 5px;
   display: flex;
   flex-direction: column;
@@ -684,15 +634,13 @@ body {
 .system-page #main-active-user .container-table .tableBody .row .textContainer .lineHeight,
 .system-page #main-inactive-user .container-table .tableBody .row .textContainer .lineHeight,
 .system-page #main-active-project .container-table .tableBody .row .textContainer .lineHeight,
-.system-page #main-archived-project .container-table .tableBody .row .textContainer .lineHeight,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row .textContainer .lineHeight {
+.system-page #main-archived-project .container-table .tableBody .row .textContainer .lineHeight {
   line-height: 15px;
 }
 .system-page #main-active-user .container-table .tableBody .row .textContainer .line-clamp,
 .system-page #main-inactive-user .container-table .tableBody .row .textContainer .line-clamp,
 .system-page #main-active-project .container-table .tableBody .row .textContainer .line-clamp,
-.system-page #main-archived-project .container-table .tableBody .row .textContainer .line-clamp,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row .textContainer .line-clamp {
+.system-page #main-archived-project .container-table .tableBody .row .textContainer .line-clamp {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -702,30 +650,26 @@ body {
 .system-page #main-active-user .container-table .tableBody .row .textContainer img,
 .system-page #main-inactive-user .container-table .tableBody .row .textContainer img,
 .system-page #main-active-project .container-table .tableBody .row .textContainer img,
-.system-page #main-archived-project .container-table .tableBody .row .textContainer img,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row .textContainer img {
+.system-page #main-archived-project .container-table .tableBody .row .textContainer img {
   width: 20px;
   height: 20px;
 }
 .system-page #main-active-user .container-table .tableBody .row .textContainer.textCenter,
 .system-page #main-inactive-user .container-table .tableBody .row .textContainer.textCenter,
 .system-page #main-active-project .container-table .tableBody .row .textContainer.textCenter,
-.system-page #main-archived-project .container-table .tableBody .row .textContainer.textCenter,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row .textContainer.textCenter {
+.system-page #main-archived-project .container-table .tableBody .row .textContainer.textCenter {
   align-items: center;
 }
 .system-page #main-active-user .container-table .tableBody .row .fontSmall,
 .system-page #main-inactive-user .container-table .tableBody .row .fontSmall,
 .system-page #main-active-project .container-table .tableBody .row .fontSmall,
-.system-page #main-archived-project .container-table .tableBody .row .fontSmall,
-.system-page #main-tokenmgmt-project .container-table .tableBody .row .fontSmall {
+.system-page #main-archived-project .container-table .tableBody .row .fontSmall {
   font-size: 10px;
 }
 .system-page #main-active-user .container-table table,
 .system-page #main-inactive-user .container-table table,
 .system-page #main-active-project .container-table table,
-.system-page #main-archived-project .container-table table,
-.system-page #main-tokenmgmt-project .container-table table {
+.system-page #main-archived-project .container-table table {
   border-collapse: collapse;
   background-color: #ffffff;
   width: 100%;
@@ -734,8 +678,7 @@ body {
 .system-page #main-active-user .container-table table td,
 .system-page #main-inactive-user .container-table table td,
 .system-page #main-active-project .container-table table td,
-.system-page #main-archived-project .container-table table td,
-.system-page #main-tokenmgmt-project .container-table table td {
+.system-page #main-archived-project .container-table table td {
   text-align: left;
   padding: 8px;
   border: none;
@@ -744,79 +687,68 @@ body {
 .system-page #main-active-user .container-table table td span,
 .system-page #main-inactive-user .container-table table td span,
 .system-page #main-active-project .container-table table td span,
-.system-page #main-archived-project .container-table table td span,
-.system-page #main-tokenmgmt-project .container-table table td span {
+.system-page #main-archived-project .container-table table td span {
   margin-right: 10px;
 }
 .system-page #main-active-user .container-table table td span img,
 .system-page #main-inactive-user .container-table table td span img,
 .system-page #main-active-project .container-table table td span img,
-.system-page #main-archived-project .container-table table td span img,
-.system-page #main-tokenmgmt-project .container-table table td span img {
+.system-page #main-archived-project .container-table table td span img {
   height: 15px;
   width: 15px;
 }
 .system-page #main-active-user .container-table table td input,
 .system-page #main-inactive-user .container-table table td input,
 .system-page #main-active-project .container-table table td input,
-.system-page #main-archived-project .container-table table td input,
-.system-page #main-tokenmgmt-project .container-table table td input {
+.system-page #main-archived-project .container-table table td input {
   height: 10px;
 }
 .system-page #main-active-user .container-table table td:hover,
 .system-page #main-inactive-user .container-table table td:hover,
 .system-page #main-active-project .container-table table td:hover,
-.system-page #main-archived-project .container-table table td:hover,
-.system-page #main-tokenmgmt-project .container-table table td:hover {
+.system-page #main-archived-project .container-table table td:hover {
   cursor: pointer;
 }
 .system-page #main-active-user .container-table table tr,
 .system-page #main-inactive-user .container-table table tr,
 .system-page #main-active-project .container-table table tr,
-.system-page #main-archived-project .container-table table tr,
-.system-page #main-tokenmgmt-project .container-table table tr {
+.system-page #main-archived-project .container-table table tr {
   height: 30px;
 }
 .system-page #main-active-user .container-table table tr:nth-of-type(even),
 .system-page #main-inactive-user .container-table table tr:nth-of-type(even),
 .system-page #main-active-project .container-table table tr:nth-of-type(even),
-.system-page #main-archived-project .container-table table tr:nth-of-type(even),
-.system-page #main-tokenmgmt-project .container-table table tr:nth-of-type(even) {
+.system-page #main-archived-project .container-table table tr:nth-of-type(even) {
   background: #f2f2f2;
 }
 .system-page #main-active-user .container-table table tr:nth-of-type(odd),
 .system-page #main-inactive-user .container-table table tr:nth-of-type(odd),
 .system-page #main-active-project .container-table table tr:nth-of-type(odd),
-.system-page #main-archived-project .container-table table tr:nth-of-type(odd),
-.system-page #main-tokenmgmt-project .container-table table tr:nth-of-type(odd) {
+.system-page #main-archived-project .container-table table tr:nth-of-type(odd) {
   background: white;
 }
 .system-page #main-active-user .container-table table tr:hover,
 .system-page #main-inactive-user .container-table table tr:hover,
 .system-page #main-active-project .container-table table tr:hover,
-.system-page #main-archived-project .container-table table tr:hover,
-.system-page #main-tokenmgmt-project .container-table table tr:hover {
+.system-page #main-archived-project .container-table table tr:hover {
   background-color: #ddd;
 }
 .system-page #main-active-user .container-table table tr.active,
 .system-page #main-inactive-user .container-table table tr.active,
 .system-page #main-active-project .container-table table tr.active,
-.system-page #main-archived-project .container-table table tr.active,
-.system-page #main-tokenmgmt-project .container-table table tr.active {
+.system-page #main-archived-project .container-table table tr.active {
   background-color: #ddd;
 }
 .system-page #main-active-user .container-table table tr.active td,
 .system-page #main-inactive-user .container-table table tr.active td,
 .system-page #main-active-project .container-table table tr.active td,
-.system-page #main-archived-project .container-table table tr.active td,
-.system-page #main-tokenmgmt-project .container-table table tr.active td {
+.system-page #main-archived-project .container-table table tr.active td {
   font-weight: bold;
 }
 .system-page #main-active-user .container-table table th,
 .system-page #main-inactive-user .container-table table th,
 .system-page #main-active-project .container-table table th,
-.system-page #main-archived-project .container-table table th,
-.system-page #main-tokenmgmt-project .container-table table th {
+.system-page #main-archived-project .container-table table th {
   background-color: #1565c0;
   color: white;
   text-align: left;
@@ -827,15 +759,13 @@ body {
 .system-page #main-active-user .container-table table th:hover,
 .system-page #main-inactive-user .container-table table th:hover,
 .system-page #main-active-project .container-table table th:hover,
-.system-page #main-archived-project .container-table table th:hover,
-.system-page #main-tokenmgmt-project .container-table table th:hover {
+.system-page #main-archived-project .container-table table th:hover {
   cursor: default;
 }
 .system-page #main-active-user .container-table table th img,
 .system-page #main-inactive-user .container-table table th img,
 .system-page #main-active-project .container-table table th img,
-.system-page #main-archived-project .container-table table th img,
-.system-page #main-tokenmgmt-project .container-table table th img {
+.system-page #main-archived-project .container-table table th img {
   height: 8px;
   width: auto;
   margin-left: 5px;
@@ -843,15 +773,13 @@ body {
 .system-page #main-active-user .container-table table th img:hover,
 .system-page #main-inactive-user .container-table table th img:hover,
 .system-page #main-active-project .container-table table th img:hover,
-.system-page #main-archived-project .container-table table th img:hover,
-.system-page #main-tokenmgmt-project .container-table table th img:hover {
+.system-page #main-archived-project .container-table table th img:hover {
   cursor: pointer;
 }
 .system-page #main-active-user .container-table .searchUser,
 .system-page #main-inactive-user .container-table .searchUser,
 .system-page #main-active-project .container-table .searchUser,
-.system-page #main-archived-project .container-table .searchUser,
-.system-page #main-tokenmgmt-project .container-table .searchUser {
+.system-page #main-archived-project .container-table .searchUser {
   padding: 10px 5px;
   position: fixed;
   text-align: right;
@@ -861,8 +789,7 @@ body {
 .system-page #main-active-user .container-table .searchUser input,
 .system-page #main-inactive-user .container-table .searchUser input,
 .system-page #main-active-project .container-table .searchUser input,
-.system-page #main-archived-project .container-table .searchUser input,
-.system-page #main-tokenmgmt-project .container-table .searchUser input {
+.system-page #main-archived-project .container-table .searchUser input {
   height: 20px;
   padding: 5px;
   border-radius: 5px;
@@ -870,24 +797,21 @@ body {
 .system-page #main-active-user .container-table .searchUser button,
 .system-page #main-inactive-user .container-table .searchUser button,
 .system-page #main-active-project .container-table .searchUser button,
-.system-page #main-archived-project .container-table .searchUser button,
-.system-page #main-tokenmgmt-project .container-table .searchUser button {
+.system-page #main-archived-project .container-table .searchUser button {
   padding: 8px 20px;
   border-radius: 5px;
 }
 .system-page #main-active-user .container-table .searchUser button#admindeleteUser,
 .system-page #main-inactive-user .container-table .searchUser button#admindeleteUser,
 .system-page #main-active-project .container-table .searchUser button#admindeleteUser,
-.system-page #main-archived-project .container-table .searchUser button#admindeleteUser,
-.system-page #main-tokenmgmt-project .container-table .searchUser button#admindeleteUser {
+.system-page #main-archived-project .container-table .searchUser button#admindeleteUser {
   display: none;
   float: left;
 }
 .system-page #main-active-user .container-table .mainButton,
 .system-page #main-inactive-user .container-table .mainButton,
 .system-page #main-active-project .container-table .mainButton,
-.system-page #main-archived-project .container-table .mainButton,
-.system-page #main-tokenmgmt-project .container-table .mainButton {
+.system-page #main-archived-project .container-table .mainButton {
   border: 1px solid transparent;
   margin: 5px;
   padding: 6px 10px;
@@ -901,117 +825,7 @@ body {
 .system-page #main-active-user .container-table .mainButton:hover,
 .system-page #main-inactive-user .container-table .mainButton:hover,
 .system-page #main-active-project .container-table .mainButton:hover,
-.system-page #main-archived-project .container-table .mainButton:hover,
-.system-page #main-tokenmgmt-project .container-table .mainButton:hover {
+.system-page #main-archived-project .container-table .mainButton:hover {
   transform: scale(1.05);
-  cursor: pointer;
-}
-.system-page #main-active-user .token-mgmt-container-content,
-.system-page #main-inactive-user .token-mgmt-container-content,
-.system-page #main-active-project .token-mgmt-container-content,
-.system-page #main-archived-project .token-mgmt-container-content,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content {
-  background: #f5f5f6;
-  height: calc(50% - 40px);
-  margin-top: 8px;
-  border-radius: 10px;
-}
-.system-page #main-active-user .token-mgmt-container-content .token-table-content,
-.system-page #main-inactive-user .token-mgmt-container-content .token-table-content,
-.system-page #main-active-project .token-mgmt-container-content .token-table-content,
-.system-page #main-archived-project .token-mgmt-container-content .token-table-content,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .token-table-content {
-  background: var(--surface);
-  height: calc(50% - 15px);
-}
-.system-page #main-active-user .token-mgmt-container-content .radColumn, .system-page #main-active-user .token-mgmt-container-content .idColumn, .system-page #main-active-user .token-mgmt-container-content .tokenColumn, .system-page #main-active-user .token-mgmt-container-content .otherColumn, .system-page #main-active-user .token-mgmt-container-content .actionColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .radColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .idColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .tokenColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .otherColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .actionColumn,
-.system-page #main-active-project .token-mgmt-container-content .radColumn,
-.system-page #main-active-project .token-mgmt-container-content .idColumn,
-.system-page #main-active-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-active-project .token-mgmt-container-content .otherColumn,
-.system-page #main-active-project .token-mgmt-container-content .actionColumn,
-.system-page #main-archived-project .token-mgmt-container-content .radColumn,
-.system-page #main-archived-project .token-mgmt-container-content .idColumn,
-.system-page #main-archived-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-archived-project .token-mgmt-container-content .otherColumn,
-.system-page #main-archived-project .token-mgmt-container-content .actionColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .radColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .idColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .otherColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .actionColumn {
-  text-align: center !important;
-}
-.system-page #main-active-user .token-mgmt-container-content .radColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .radColumn,
-.system-page #main-active-project .token-mgmt-container-content .radColumn,
-.system-page #main-archived-project .token-mgmt-container-content .radColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .radColumn {
-  min-width: 20px !important;
-}
-.system-page #main-active-user .token-mgmt-container-content .idColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .idColumn,
-.system-page #main-active-project .token-mgmt-container-content .idColumn,
-.system-page #main-archived-project .token-mgmt-container-content .idColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .idColumn {
-  width: 70px !important;
-}
-.system-page #main-active-user .token-mgmt-container-content .tokenColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .tokenColumn,
-.system-page #main-active-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-archived-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .tokenColumn {
-  width: calc(50% + 50px) !important;
-}
-.system-page #main-active-user .token-mgmt-container-content .otherColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .otherColumn,
-.system-page #main-active-project .token-mgmt-container-content .otherColumn,
-.system-page #main-archived-project .token-mgmt-container-content .otherColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .otherColumn {
-  width: calc(13.33% + 50px) !important;
-}
-.system-page #main-active-user .token-mgmt-container-content .tokenColumn, .system-page #main-active-user .token-mgmt-container-content .otherColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .tokenColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .otherColumn,
-.system-page #main-active-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-active-project .token-mgmt-container-content .otherColumn,
-.system-page #main-archived-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-archived-project .token-mgmt-container-content .otherColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .tokenColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .otherColumn {
-  text-align: left !important;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: inline-block;
-  overflow: hidden;
-}
-.system-page #main-active-user .token-mgmt-container-content .tokenColumn:hover, .system-page #main-active-user .token-mgmt-container-content .otherColumn:hover,
-.system-page #main-inactive-user .token-mgmt-container-content .tokenColumn:hover,
-.system-page #main-inactive-user .token-mgmt-container-content .otherColumn:hover,
-.system-page #main-active-project .token-mgmt-container-content .tokenColumn:hover,
-.system-page #main-active-project .token-mgmt-container-content .otherColumn:hover,
-.system-page #main-archived-project .token-mgmt-container-content .tokenColumn:hover,
-.system-page #main-archived-project .token-mgmt-container-content .otherColumn:hover,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .tokenColumn:hover,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .otherColumn:hover {
-  cursor: pointer;
-}
-.system-page #main-active-user .token-mgmt-container-content .actionColumn,
-.system-page #main-inactive-user .token-mgmt-container-content .actionColumn,
-.system-page #main-active-project .token-mgmt-container-content .actionColumn,
-.system-page #main-archived-project .token-mgmt-container-content .actionColumn,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content .actionColumn {
-  width: calc(10% + 50px) !important;
-}
-.system-page #main-active-user .token-mgmt-container-content button:hover,
-.system-page #main-inactive-user .token-mgmt-container-content button:hover,
-.system-page #main-active-project .token-mgmt-container-content button:hover,
-.system-page #main-archived-project .token-mgmt-container-content button:hover,
-.system-page #main-tokenmgmt-project .token-mgmt-container-content button:hover {
   cursor: pointer;
 }/*# sourceMappingURL=systemAdmin.css.map */

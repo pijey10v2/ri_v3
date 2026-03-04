@@ -312,8 +312,7 @@ body{
     #main-active-user,
     #main-inactive-user,
     #main-active-project,
-    #main-archived-project,
-    #main-tokenmgmt-project{
+    #main-archived-project{
         display: none;
         position: relative;
         padding: 15px 0;
@@ -749,59 +748,6 @@ body{
                     cursor: pointer;
                 }
             }
-        }
-
-        .token-mgmt-container-content{
-            background: #f5f5f6;
-            height: calc(50% - 40px);
-            margin-top: 8px;
-            border-radius: 10px;
-
-            $radColWidth: 20px;
-            $idColWidth: 70px;
-
-            .token-table-content{
-                background: var(--surface);
-                height: calc(50% - 15px);
-            }
-
-            .radColumn, .idColumn, .tokenColumn, .otherColumn, .actionColumn{
-                text-align: center !important;
-            }
-
-            .radColumn{
-                min-width: $radColWidth !important;
-            }
-
-            .idColumn{
-                width: $idColWidth !important;
-            }
-
-            .tokenColumn{
-                width: calc(50% - ($radColWidth - $idColWidth)) !important;
-            }
-
-            .otherColumn{
-                width: calc(13.33% - ($radColWidth - $idColWidth)) !important;
-            }
-
-            .tokenColumn, .otherColumn {
-                text-align: left !important;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                display: inline-block;
-                overflow: hidden;
-
-                &:hover{
-                    cursor: pointer;
-                }
-            }
-
-            .actionColumn{
-                width: calc(10% - ($radColWidth - $idColWidth)) !important;
-            }
-
-            button:hover {cursor: pointer}
         }
     }
 }

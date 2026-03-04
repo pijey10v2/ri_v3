@@ -1,5 +1,4 @@
 var landData;
-var txtMthToNum = {"1":"01","2":"02","3":"03","4":"04","5":"05","6":"06","7":"07","8":"08","9":"09","10":"10","11":"11","12":"12"};
 
 var legendColorArr = {
 	'green': '#52BE80', 
@@ -38,7 +37,6 @@ function conOpLink(process, status){
     var searchFilter = getFilterDocumentSarawak();
     var status = status ? status : '';
     var ref_no;
-    var dateFrom;
 
     switch (process) {
         case 'LI':
@@ -50,11 +48,7 @@ function conOpLink(process, status){
         case 'LE':
             linkWinTitle = 'Land Encumbrances'
             linkName = 'dash_cons_LE_card'
-            var dateString = searchFilter.dateTo;
-            var dateParts = dateString.split("-");
-            var year = dateParts[2];    
-            dateFrom = '01-01-'+year;
-            linkParamArr = processFilterParamArr([dateFrom, searchFilter.dateTo, searchFilter.section, status])
+            linkParamArr = processFilterParamArr([searchFilter.dateFrom, searchFilter.dateTo, searchFilter.section, status])
             
         break;
         case 'LI_TBL':
@@ -76,20 +70,13 @@ function updateLandIssueCard(total, ttlNew, ttlOngoing, ttlClose){
     $('#landClosedIssueCard').html(`<span class="clickableCard" onclick="conOpLink('LI', 'Close')">`+ttlClose+`</span>`);
 }
 
-function updateLandEncCard(data, ttlQty){
-
-    var ttlFoe = (data.total_encumbrances) ? data.total_encumbrances : 0.00;
-    var ttlLength = (data.total_length) ? data.total_length : 0.00;
-    var foePercent = (ttlFoe / ttlLength) * 100;
-    var encPercent = 100 - foePercent;
-
-    // Format percentages to 2 decimal places
-    foePercent = (foePercent) ? foePercent.toFixed(2) : 0;
-    encPercent = (encPercent) ? encPercent.toFixed(2) : 0;
+function updateLandEncCard(ttlFoe, ttlEnc, ttlQty){
+    ttlFoe = (ttlFoe > 0) ? parseFloat(ttlFoe) : 0.00;
+    ttlEnc = (ttlEnc > 0) ? parseFloat(ttlEnc) : 0.00;
     ttlQty = (ttlQty > 0) ? ttlQty : 0;
     
-    $('#landTotalFOECard').html(`<span class="clickableCard" onclick="conOpLink('LE', '')">`+encPercent+`</span>`);
-    $('#landTotalEnCard').html(`<span class="clickableCard" onclick="conOpLink('LE', '')">`+foePercent+`</span>`);
+    $('#landTotalFOECard').html(`<span class="clickableCard" onclick="conOpLink('LE', '')">`+ttlFoe+`</span>`);
+    $('#landTotalEnCard').html(`<span class="clickableCard" onclick="conOpLink('LE', '')">`+ttlEnc+`</span>`);
     $('#landTtlEncQty').html(`<span class="clickableCard" onclick="conOpLink('LE', '')">`+ttlQty+`</span>`);
 }
 
@@ -97,12 +84,11 @@ function drawDeliverableChart(data, status){
     var dataArr = [];
     var statusVal = (status != 'all') ? status : '';
     var idxStatus;
-    var dateFrom;
 
     if (data){
 		for (const [idx, ele] of Object.entries(data)) {
-            if(idx == "") continue;
-            
+			if(idx == "") continue;
+
 			if(idx == "total_length"){
 				idxStatus = "Sum of Total Length"
 			}else if(idx == "free_encumbrances"){
@@ -125,12 +111,7 @@ function drawDeliverableChart(data, status){
                             var linkWinTitle = 'Land Encumbrances'
                             var linkName = 'dash_cons_LE_card'
 
-                            var dateString = searchFilter.dateTo;
-                            var dateParts = dateString.split("-");
-                            var year = dateParts[2];    
-                            dateFrom = '01-01-'+year;
-
-                            linkParamArr = processFilterParamArr([dateFrom, searchFilter.dateTo, searchFilter.section, statusVal])
+                            linkParamArr = processFilterParamArr([searchFilter.dateFrom, searchFilter.dateTo, searchFilter.section, statusVal])
                             window.parent.widgetConopOpen('', linkName, linkParamArr, linkWinTitle);
                         }
                     }
@@ -297,14 +278,29 @@ function refreshInformation(packId = 'overall', year = 'all', month = 'all', sel
 
     var encData = (landData && landData.encumbrances && landData.encumbrances.encData) ? landData.encumbrances.encData : [];
     var encChart = (encData && encData[packId] && encData[packId][year] && encData[packId][year][month]) ? encData[packId][year][month] : [];
+    var encChartData = (encChart && encChart[selSection] && encChart[selSection][selStatus]) ? encChart[selSection][selStatus] : [];
 
     var ttlEnc = (landData && landData.encumbrances && landData.encumbrances.totalEnc && landData.encumbrances.totalEnc[packId] && landData.encumbrances.totalEnc[packId][year] && landData.encumbrances.totalEnc[packId][year][month]) ? landData.encumbrances.totalEnc[packId][year][month] : [];
-    var encDataPercent = (landData && landData.encumbrances && landData.encumbrances.encData && landData.encumbrances.encData[packId] && landData.encumbrances.encData[packId][year] && landData.encumbrances.encData[packId][year][month]) ? landData.encumbrances.encData[packId][year][month] : [];
-    var ttlFoeData = (encDataPercent.foe) ? encDataPercent.foe : 0.00;
-    var ttlEncData = (encDataPercent.encumbrances) ? encDataPercent.encumbrances : 0.00;
+    var ttlDataEnc = (ttlEnc && ttlEnc[selSection] && ttlEnc[selSection][selStatus]) ? ttlEnc[selSection][selStatus].length : 0;
 
-    drawDeliverableChart(encChart, selStatus); 
-    updateLandEncCard(encDataPercent, ttlEnc);
+    drawDeliverableChart(encChartData, selStatus);  
+
+    var ttlFoeData = [];
+    var ttlEncData = [];
+    var encCardData = [];
+
+    if (packId == 'overall'){
+        encCardData = (landData && landData.encumbrances && landData.encumbrances.encCardData && landData.encumbrances.encCardData[packId] && landData.encumbrances.encCardData[packId][year] && landData.encumbrances.encCardData[packId][year][month]) ? landData.encumbrances.encCardData[packId][year][month] : [];
+        ttlFoeData = (encCardData&& encCardData[selSection] && encCardData[selSection][selStatus] && encCardData[selSection][selStatus].totalFOE) ? encCardData[selSection][selStatus].totalFOE : 0;
+        ttlEncData = (encCardData&& encCardData[selSection] && encCardData[selSection][selStatus] && encCardData[selSection][selStatus].totalEnc) ? encCardData[selSection][selStatus].totalEnc : 0;
+    }
+    else{
+        encCardData = (landData && landData.encumbrances && landData.encumbrances.encData && landData.encumbrances.encData[packId] && landData.encumbrances.encData[packId][year] && landData.encumbrances.encData[packId][year][month]) ? landData.encumbrances.encData[packId][year][month] : [];
+        ttlFoeData = (encCardData && encCardData[selSection] && encCardData[selSection][selStatus] && encCardData[selSection][selStatus].foe) ? encCardData[selSection][selStatus].foe : 0;
+        ttlEncData = (encCardData && encCardData[selSection] && encCardData[selSection][selStatus] && encCardData[selSection][selStatus].encumbrances) ? encCardData[selSection][selStatus].encumbrances : 0;
+    }
+
+    updateLandEncCard(ttlFoeData, ttlEncData, ttlDataEnc);
 }
 
 function refreshFromv3 (filterArr){
@@ -317,51 +313,22 @@ function refreshFromv3 (filterArr){
 	refreshInformation(wpc, year, month, section, status);
 }
 
-// Caching the common elements
-var $packFilter = window.parent.$('.packFilter');
-var $yrFilter = window.parent.$('.yrFilter');
-var $mthFilter = window.parent.$('.mthFilter');
-
-function fetchData(packFilter, yrFilter, mthFilter) {
-    $.ajax({
+$(document).ready(function(){
+	$.ajax({
         type: "POST",
         url: 'chartData.json.php',
         dataType: 'json',
         data: {
-            page: "land",
-            packageId: packFilter,
-            year: yrFilter,
-            month: mthFilter
+            page: "land"
         },
         success: function (obj) {
-            if (obj.status && obj.status == 'ok') {
+        	if (obj.status && obj.status == 'ok') {
                 landData = obj.data;
                 var opt = (landData.issue && landData.issue.issueStatusOption) ? landData.issue.issueStatusOption : [];
                 populateStatusOption(opt);
-                refreshInformation(packFilter, yrFilter, mthFilter);
+
+                refreshInformation();
             }
         }
     });
-}
-
-function handleFilterChange() {
-    var packFilter = (localStorage.isParent == "isParent") ? $packFilter.val() : "overall";
-    var yrFilter = $yrFilter.val();
-    var mthFilter = $mthFilter.val();
-
-    fetchData(packFilter, yrFilter, mthFilter);
-}
-
-// Attach the event listeners to all filters
-$packFilter.on('change', handleFilterChange);
-$yrFilter.on('change', handleFilterChange);
-$mthFilter.on('change', handleFilterChange);
-
-// Initial call on page load
-$(document).ready(function() {
-    var packFilter = (localStorage.isParent == "isParent") ? $packFilter.val() : "overall";
-    var yrFilter = $yrFilter.val();
-    var mthFilter = $mthFilter.val();
-
-    fetchData(packFilter, yrFilter, mthFilter);
-});
+})

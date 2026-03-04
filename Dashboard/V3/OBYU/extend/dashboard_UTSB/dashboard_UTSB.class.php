@@ -12,12 +12,10 @@ class RiDashboardUTSB extends RiDashboard
 	}
 
 	function loadJS(){
-		$linkJSPre = ($_SESSION['ui_pref'] == "ri_v3") ? "../../../../../" : "../";
-
 		echo '
 			<script src="'.$this->pathRel.'../../JS/JsLibrary/jquery-3.5.1.js"></script>
 			<script src="../../JS/dashboard.js"></script>
-			<script src="'.$linkJSPre.'JS/highchart/v11/highcharts.js"></script>
+			<script src="'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http').'://code.highcharts.com/highcharts.js"></script>
 			'.((isset($_SESSION['ui_pref']) && $_SESSION['ui_pref'] == 'ri_v3') ? '<script src="../../../../../JS/v3.js"></script>' : '').'
 		';
 
@@ -30,8 +28,8 @@ class RiDashboardUTSB extends RiDashboard
 
 		// disable all for now as it return error on highcharts
 		if ($this->enableMenu) {
-			echo '<script src="'.$linkJSPre.'JS/highchart/v11/series-label.js"></script>
-	        <script src="'.$linkJSPre.'JS/highchart/v11/exporting.js"></script>';
+			echo '<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	        <script src="https://code.highcharts.com/modules/exporting.js"></script>';
 		}
 	}
 

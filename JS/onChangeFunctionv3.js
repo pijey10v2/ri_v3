@@ -83,9 +83,8 @@ function refreshPackage (frm){
     $('.assetChainFromFilter.'+frm).prop('selectedIndex',0);
     $('.assetChainToFilter.'+frm).prop('selectedIndex',0);
     $('.assetApjFilter.'+frm).prop('selectedIndex',0);
-    $('.assetRoutineActivityFilter.'+frm).prop('selectedIndex',0);
-    $('.subActivityFilter.'+frm).prop('selectedIndex',0);
     $('.assetTypeFilter.'+frm).prop('selectedIndex',0);
+    $('.assetRoutineActivityFilter.'+frm).prop('selectedIndex',0);
     $('.assetGroupFilter.'+frm).prop('selectedIndex',0);
 
     refreshDash(frm)
@@ -122,7 +121,6 @@ function refreshDash(idFrame){
     var selDistrict = $('.districtFilter.'+idFrame).val();
     var selAssetAPJ = $('.assetApjFilter.'+idFrame).val();
     var selAssetRoutine = $('.assetRoutineActivityFilter.'+idFrame).val();
-    var selSubActivity = $('.subActivityFilter.'+idFrame).val();
     var selAssetType = $('.assetTypeFilter.'+idFrame).val();
     var selAssetGroup = $('.assetGroupFilter.'+idFrame).val();
     var selAssetDate = $('.assetDateFilter.'+idFrame).val();
@@ -153,7 +151,6 @@ function refreshDash(idFrame){
         districtLand: selDistrict,
         assetAPJ: selAssetAPJ,
         assetRoutine: selAssetRoutine,
-        assetSubAct: selSubActivity,
         assetType: selAssetType,
         assetGroup: selAssetGroup,
         assetDate: selAssetDate,
@@ -393,9 +390,6 @@ function setupListOnchange(ele){
                 case 'wirCode':
                     link = 'cons_issue_WIR_Code_Setup';
                     break;
-                case 'ccPubc':
-                    link = 'cons_issue_PBC_CC_Setup';
-                    break;
             }
         }
     
@@ -525,21 +519,39 @@ function fmAssetTableOptionOnchange(ele) {
     if(optonChoosen == 'default'){
         defaultStateWizard(title)
     }else{
+        var newWo = false;
         switch (optonChoosen) {
             case 'Service Request':
                 link = 'fm_new_service_request';
+                break;
+            case 'PPM':
+                link = 'fm_new_ppm';
+                break;
+            case 'Work Order':
+                newWo = true;
+                link = 'fm_work_order';
                 break;
         }
  
         if (JOGETLINK[link]) {
             url  = JOGETLINK[link];
         }
- 
+        console.log(agileWOCache);
+    
         var separator = url.indexOf('?') !== -1 ? '&' : '?';
-        url += separator +
-                "asset_no=" + encodeURIComponent(fm_asset_no) +
-                "&asset_name=" + encodeURIComponent(fm_asset_name) +
-                "&asset_type=" + encodeURIComponent(fm_asset_type);
+        if(newWo){
+            url += separator +
+            "assetId=" + agileWOCache['Revit ID'] +
+            "&assetName=" + agileWOCache.Floor +
+            "&buildingType=" + agileWOCache['Type Name'] + 
+            "&assetSla=&buildingOwnerName=" + agileWOCache.Mark + 
+            "&username" + localStorage.signed_in_email;
+        }else{
+            url += separator +
+            "asset_no=" + encodeURIComponent(fm_asset_no) +
+            "&asset_name=" + encodeURIComponent(fm_asset_name) +
+            "&asset_type=" + encodeURIComponent(fm_asset_type);
+        }
  
         var loading = $('.loader');
         loading.fadeIn();
@@ -585,7 +597,7 @@ function manageListOnchange(ele){
             cesiumObjProcess = loadRiCesiumManageProj(homeLocation, 'RIContainerManageProj');
         }
         if(selectId == "valueManageConstruct"){
-            cesiumObjProcess = loadRiCesiumManageProj(homeLocation, 'RIContainerManageProj1');
+            //cesiumObjProcess = loadRiCesiumManageProj(homeLocation, 'RIContainerManageProj1');
         }
         openManageDatalist(manageChoosen)
         zoomToGetData()
@@ -604,33 +616,16 @@ function manageAssetOnchange(ele){
     }else{
         switch (setupChoosen) {
             case 'WA':
-                if(localStorage.project_owner == 'JKR_SABAH'){
-					link = 'asset_manage_maint_work_activity_sabah';
-				}else{
-                    link = 'asset_manage_maint_work_activity';
-                }
-                
+                link = 'asset_manage_maint_work_activity';
                 break;
             case 'WI':
-                if(localStorage.project_owner == 'JKR_SABAH'){
-					link = 'asset_manage_maint_work_instruction_sabah';
-				}else{
-                    link = 'asset_manage_maint_work_instruction';
-                }
-                
+                link = 'asset_manage_maint_work_instruction';
                 break;
             case 'DR':
-                if(localStorage.project_owner == 'JKR_SABAH'){
-					link = 'asset_manage_defect_detection_sabah';
-				}else{
-                    link = 'asset_manage_defect_detection';
-                }
+                link = 'asset_manage_defect_detection';
                 break;
             case 'NOD':
                 link = 'asset_manage_NODefect';
-                break;
-            case 'NOE':
-                link = 'asset_manage_NOE';
                 break;
         }
 
@@ -1133,11 +1128,8 @@ function ConOpViewWholeList(ele) {
                                         position: Cesium.Cartesian3.fromDegrees(coordsArray[0], coordsArray[1], 0),
                                         billboard: {
                                             image: colourProcess,
-                                            eyeOffset: Cesium.Cartesian3(0.0, 0.0, -10.0),
-                                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-                                            verticalOrigin: Cesium.VerticalOrigin.CENTER,
                                             horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
                                             width: 30,
                                             height: 30,
                                         },

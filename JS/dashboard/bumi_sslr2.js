@@ -2,42 +2,32 @@ var bumiInfo;
 
 function conOpLink(category=''){
 	var searchfilter = getSearchFilterSabah();
-	var cardname = '';
-	var catgFilter = searchfilter.category;
-
-	if(category == 'Consortium'){
-		if(catgFilter == 'all'){
-			category = '';
-			cardname = 'Consortium';
-		}else{
-			if(category == 'Consortium'){
-				cardname = category;
-			}else{
-				cardname = category;
-			}
-			category = catgFilter;
-		}
-	}else{
-		if(catgFilter == 'all'){
-			category = category;
-			cardname = category;
-		}else{
-			cardname = category;
-			category = catgFilter;
+	var cardname = category;
+	if(searchfilter.category != ''){
+		if(category == '' ){
+			category = searchfilter.category;
+		}else if(searchfilter.category != category){
+			category = '-'
 		}
 	}
-	
+	if(category == '' ){
+		cardname = 'Consortium'
+	}
 	var linkParamArr = processFilterParamArr([category])
     window.parent.widgetConopOpen('Bumiputera', 'dash_cons_BP_card', linkParamArr, "Bumiputera - " + cardname);
 }
 
-function updateBumiCard(con, dom){
+function updateBumiCard(con, dom, des, nom){
 
-    var bumiConsortiumCard = `<span class="clickableCard" onclick="conOpLink('Consortium')">`+con+`</span>`;
+    var bumiConsortiumCard = `<span class="clickableCard" onclick="conOpLink()">`+con+`</span>`;
     var bumiDomesticCard = `<span class="clickableCard" onclick="conOpLink('Domestic')">`+dom+`</span>`;
+    var bumiDesignatedCard = `<span class="clickableCard" onclick="conOpLink('Designated')">`+des+`</span>`;
+    var bumiNominatedCard = `<span class="clickableCard" onclick="conOpLink('Nominated')">`+nom+`</span>`;
 
 	$('#bumiConsortiumCard').html(bumiConsortiumCard);
 	$('#bumiDomesticCard').html(bumiDomesticCard);
+	$('#bumiDesignatedCard').html(bumiDesignatedCard);
+	$('#bumiNominatedCard').html(bumiNominatedCard);
 }
 
 function populateBPPTable(tabInfo){
@@ -68,14 +58,12 @@ function openRecordList(recordId) {
 function refreshInformation(packId = 'overall', cat = 'overall'){
 	if (!bumiInfo) return;
 
-	if(cat == 'all') cat = 'overall';
-
 	var cardInfo = (bumiInfo[packId] && bumiInfo[packId][cat] && bumiInfo[packId][cat]['cnt']) ? bumiInfo[packId][cat]['cnt'] : []; 
 	var con = (cardInfo.consortium) ? cardInfo.consortium : 0;
 	var dom = (cardInfo.domestic) ? cardInfo.domestic : 0;
 	var des = (cardInfo.designated) ? cardInfo.designated : 0;
 	var nom = (cardInfo.nominated) ? cardInfo.nominated : 0;
-	updateBumiCard(con, dom);
+	updateBumiCard(con, dom, des, nom);
 
 	var tabInfo = (bumiInfo[packId] && bumiInfo[packId][cat] && bumiInfo[packId][cat]['raw']) ? bumiInfo[packId][cat]['raw'] : []; 
 	populateBPPTable(tabInfo);

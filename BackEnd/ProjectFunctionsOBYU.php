@@ -1053,42 +1053,6 @@ function ProjectUsersUpdate($project_id, $pidnumber, $functionType)
         }
 
     }
-    if(isset($_POST['usersReporting']) && $_SESSION['is_Parent'] == "isParent"){
-        $usersReporting = json_decode($_POST['usersReporting']);
-
-        foreach($usersReporting as $userReporting){
-
-            if (!filter_var($userReporting->user_id, FILTER_VALIDATE_INT)) {
-                $response['bool'] = false;
-                $response['msg'] = "Invalid user parameter";
-                array_push($idEmails, $userReporting->user_email);
-                return $response;
-                continue;
-            }
-            if (!filter_var($userReporting->user_email, FILTER_VALIDATE_EMAIL)) {
-                $response['bool'] = false;
-                $response['msg'] = "Invalid user parameter1";
-                array_push($idEmails, $userReporting->user_email);
-                return $response;
-                continue;
-            }
-
-            $userId = $userReporting->user_id;
-            $userEmail = $userReporting->user_email;
-            $userAccess = $userReporting->user_reporting;
-
-            $assignUser = assignUserAccessDigitalReporting($userId, $userAccess);
-            if(isset($assignUser)){
-                if($assignUser == false){
-                    array_push($idEmails, (object) [
-                        'user' => $userEmail,
-                        'msg' => "Unable to asign user for Digital Reporting",
-                    ]);
-                    continue;
-                }
-            }
-        }
-    }
     if (!$idEmails) {
         $response['bool'] = true;
         $response['usrs_msg'] = "Users updated";
@@ -1471,20 +1435,6 @@ function checkConstructsLicense($orgId){
         $response['msg'] = "Total constructs license registered with organizations is over the license purchased. Project created without Constructs.";
         return;
     }
-    return true;
-}
-
-function assignUserAccessDigitalReporting($userId, $userAccess){
-    global $CONN;
-    $return = array();
-
-    $updateSQL = "UPDATE users SET show_reporting = :0 WHERE user_id = :1";
-    $ok = $CONN->execute($updateSQL, array($userAccess, $userId));
-
-    if (!$ok) {
-        return false;
-    }
-
     return true;
 }
 

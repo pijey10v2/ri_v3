@@ -57,9 +57,6 @@
         case 'getCompleteGeoData':
             getCompleteGeoData();
         break;
-        case 'getCompleteGeoDataSSLR':
-            getCompleteGeoDataSSLR();
-        break;
         case 'getShpStyle':
             getShpStyle();
         break;
@@ -87,6 +84,7 @@
         case 'removeAerialGroup';
             removeAerialGroup();
         break;
+        
     };
     echo json_encode($response);
     
@@ -102,19 +100,7 @@
             return false;
         }
     }
-
-    function checkIfSSLRUser(){
-        global $CONN;
-        $email = $_SESSION['email'];
-        $pidnumber = $_SESSION['project_id'];
-        $count = $CONN->fetchOne("SELECT count(*) FROM pro_usr_rel WHERE Pro_ID = :0  AND  Usr_ID IN (SELECT user_id from users WHERE user_email =:1) AND Pro_Role IN ('Contract Executive', 'HOD (Contract and Finance)', 'Finance Representative')", array($pidnumber, $email));
-        if($count == 1){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
+    
     //-----------------------Video Camera / Live Video -----------------
     function addVideoCam(){
         global $response;
@@ -706,11 +692,10 @@
     function getCompleteGeoData(){      //used in project admin
         global $response;
         global $CONN;
-        global $IS_DOWNSTREAM;
-        
         $project_id = $_SESSION['project_id'];
         $projectOwner = $_SESSION['project_owner'];
-    
+        
+
         $check = checkIfProjectAdmin();
         if (!$check) {
             $response['bool'] = false;
@@ -746,56 +731,6 @@
             INNER JOIN projects p ON p.project_id_number = DP.Data_Owner_PID AND p.project_owner = :0
             LEFT JOIN Project_Layers PL ON PL.Data_ID = DP.Data_ID AND PL.Project_ID =:1
             ORDER BY PL.Attached_Date DESC", array($projectOwner, $project_id));
-        $response['bool'] = true;
-        $response['data'] = $fetchGeoData;
-    }
-
-    function getCompleteGeoDataSSLR(){      //used in project admin
-        global $response;
-        global $CONN;
-        global $IS_DOWNSTREAM;
-        
-        $project_id = $_SESSION['project_id'];
-        $projectOwner = $_SESSION['project_owner'];
-
-        $additionalQry = "";
-        $check = checkIfSSLRUser();
-
-        if (!$check) {
-            $response['bool'] = false;
-            $response['msg'] = "Insufficient privileges";
-            return;
-        };
-
-        $fetchGeoData = $CONN->fetchAll("SELECT 
-            DP.Added_By, 
-            DP.Added_Date, 
-            DP.Data_ID, 
-            DP.Data_Name, 
-            DP.Data_Type, 
-            DP.Data_URL, 
-            DP.Offset,
-            DP.X_Offset,
-            DP.Y_Offset, 
-            DP.Share, 
-            DP.Style, 
-            PL.Default_View, 
-            PL.Layer_ID, 
-            PL.Layer_Name,
-            PL.layerGroup, 
-            PL.Project_ID, 
-            PL.zindex,
-            PL.Attached_By,
-            PL.Attached_Date,
-            p.project_name as Data_Owner, 
-            p.project_id_number as Data_Owner_PID, 
-            p.project_id as Data_Owner_ID , 
-            Frequency = (SELECT DISTINCT COUNT(Data_ID) FROM Project_Layers WHERE Data_ID = DP.Data_ID) 
-            FROM Data_Pool DP
-            INNER JOIN projects p ON p.project_id_number = DP.Data_Owner_PID AND p.project_owner = :0
-            LEFT JOIN Project_Layers PL ON PL.Data_ID = DP.Data_ID AND p.project_id_number =:1 WHERE DP.Data_Type='B3DM' 
-            AND p.project_id_number =:2
-            ORDER BY PL.Attached_Date DESC", array($projectOwner, $project_id, $project_id));
         $response['bool'] = true;
         $response['data'] = $fetchGeoData;
     }

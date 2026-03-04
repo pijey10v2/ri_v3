@@ -842,225 +842,51 @@ function updateCardMT(data, dataRec, dataAging, dataAgingCode2){
     
 }
 
-function updateLandPart(landIssues, yearFilter, monthFilter) {
-    let latestYear = null;
-    let latestMonth = null;
-    let latestData = null;
-    let yearData = '';
-    let monthData = ' ';
+function updateLandPart(data, allData, dataMain){
+    var cumulIssueAll = (data.ttlCumulIssueAll) ? data.ttlCumulIssueAll : 0;
+    var cumulIssueBal = (data.ttlIssueBalance) ? data.ttlIssueBalance : 0;
+    var closeData = cumulIssueAll - cumulIssueBal;
 
-    const monthNames = {
-        Jan: "01",
-        Feb: "02",
-        Mar: "03",
-        Apr: "04",
-        May: "05",
-        Jun: "06",
-        Jul: "07",
-        Aug: "08",
-        Sep: "09",
-        Oct: "10",
-        Nov: "11",
-        Dec: "12"
-    };
+    var accumulIssue = (dataMain.issueAccumul) ? dataMain.issueAccumul : 0;
+    var solvedIssue = (dataMain.issueSolved) ? dataMain.issueSolved : 0;
+    var balIssue = (dataMain.issueBal) ? dataMain.issueBal : 0;
 
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var accumulKM = (dataMain.kmAccumul) ? dataMain.kmAccumul : 0;
+    var solvedKM = (dataMain.kmSolved) ? dataMain.kmSolved : 0;
+    var balKM = (dataMain.kmBal) ? dataMain.kmBal : 0;
 
-    if (yearFilter === "all" && monthFilter === "all") {
-        for (let year in landIssues) {
-            if (!isNaN(year)) {
-                for (let month in landIssues[year]) {
-                    if (months.includes(month)) {
-                        if (latestYear === null || year > latestYear || (year === latestYear && months.indexOf(month) > months.indexOf(latestMonth))) {
-                            latestYear = year;
-                            latestMonth = month;
-                            latestData = landIssues[year][month];
-                        }
-                    }
-                }
-            }
-        }
-    } else if (yearFilter !== "all" && monthFilter === "all") {
-        if (landIssues[yearFilter]) {
-            for (let month in landIssues[yearFilter]) {
-                if (months.includes(month)) {
-                    if (latestMonth === null || months.indexOf(month) > months.indexOf(latestMonth)) {
-                        latestMonth = month;
-                        latestData = landIssues[yearFilter][month];
-                    }
-                }
-            }
-        }
-    } else if (yearFilter !== "all" && monthFilter !== "all") {
-        if (landIssues[yearFilter] && landIssues[yearFilter][monthFilter]) {
-            latestData = landIssues[yearFilter][monthFilter];
-            console.log(latestData);
-        }
-    }
+    var year = (allData && allData.year) ? allData.year : '';
+    var month = (allData && allData.month) ? allData.month : '';
 
-    if (yearFilter !== "all") {
-        yearData = yearFilter;
-        if (monthFilter !== "all") {
-            monthData = monthNames[monthFilter] || ' ';
-        }else{
-            monthData = monthNames[latestMonth] || ' ';
-        }
-    }else{
-        yearData = latestYear;
-        if (latestMonth) {
-            monthData = monthNames[latestMonth] || ' ';
-        }
-    }
+    var cumulSolvedIssue = (dataMain.cumulativeSolvedIssue) ? dataMain.cumulativeSolvedIssue : 0;
+    var cumulSolvedIssueKM = (dataMain.cumulativeSolvedIssueKM) ? dataMain.cumulativeSolvedIssueKM : 0;
 
-    if (!latestData) {
-        $("#accumulIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\'\', \'\')">0</span>');
-        $("#solveIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\'\', \'\')">0</span>');
-        $("#balIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\'\', \'\')">0</span>');
-        return;
-    }
+    var balIssueVal = accumulIssue - cumulSolvedIssue;
+    var balKMVal = accumulKM - cumulSolvedIssueKM;
 
-    const cumulative = latestData.cumulative ? latestData.cumulative : 0;
-    const cumulativeResolved = latestData.cumulativeResolved ? latestData.cumulativeResolved : 0;
-    const cumulativeOpen = latestData.cumulativeOpen ? latestData.cumulativeOpen : 0;
+    $("#aiwiMain").html((data.aiwiMain) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+data.aiwiMain+'%' : 0);
+    $("#foeMain").html((data.foeMain) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+data.foeMain+'%' : 0);
+    $("#ttlCumulIssueAll").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+cumulIssueAll);
+    $("#ttlIssueBalance").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+cumulIssueBal);
+    $("#ttlIssueClosed").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+closeData);
 
-    $("#accumulIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\'' + yearData + '\', \'' + monthData + '\')">' + cumulative + '</span>');
-    $("#solveIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\'' + yearData + '\', \'' + monthData + '\')">' + cumulativeResolved + '</span>');
-    $("#balIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\'' + yearData + '\', \'' + monthData + '\')">' + cumulativeOpen + '</span>');
-}
+    $("#aiwiComplete").html((dataMain.aiwiPercentComplete) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.aiwiPercentComplete+'%' : 0);
+    $("#aiwiBal").html((dataMain.aiwiPercentBal) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.aiwiPercentBal+'%' : 0);
+    $("#aiwiCompleteKM").html((dataMain.aiwiKMcomplete) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.aiwiKMcomplete+'' : 0);
+    $("#aiwiBalKM").html((dataMain.aiwiKMbal) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.aiwiKMbal+'' : 0);
 
-function landAcquisitionTable(data, yearFilter, monthFilter) {
-    let yearData = '';
-    let monthData = ' ';
+    $("#foeComplete").html((dataMain.foePercentComplete) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.foePercentComplete+'%' : 0);
+    $("#foeBal").html((dataMain.foePercentBal) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.foePercentBal+'%' : 0);
+    $("#foeCompleteKM").html((dataMain.foeKMcomplete) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.foeKMcomplete+'' : 0);
+    $("#foeBalKM").html((dataMain.foeKMbal) ? '<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+dataMain.foeKMbal+'' : 0);
 
-    const monthNames = {
-        Jan: "01",
-        Feb: "02",
-        Mar: "03",
-        Apr: "04",
-        May: "05",
-        Jun: "06",
-        Jul: "07",
-        Aug: "08",
-        Sep: "09",
-        Oct: "10",
-        Nov: "11",
-        Dec: "12"
-    };
+    $("#accumulIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+accumulIssue);
+    $("#solveIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+cumulSolvedIssue);
+    $("#balIssue").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+balIssueVal);
+    $("#accumulKM").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+accumulKM);
+    $("#solveKM").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+cumulSolvedIssueKM);
+    $("#balKM").html('<span style="cursor: pointer;" onclick="openConOpDashboardLand(\''+year+'\', \''+month+'\')">'+balKMVal);
 
-    if (!data || Object.keys(data).length === 0) {
-        const noDataHTML = '<tr><td colspan="5"><center>No Data Available</center></td></tr>';
-        $("#projSummLandAcq").html(noDataHTML);
-        return;
-    }
-
-    let latestYear = null;
-    let latestMonth = null;
-    let latestData = null;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    if (yearFilter === "all" && monthFilter === "all") {
-        for (let year in data) {
-            if (!isNaN(year)) {
-                for (let month in data[year]) {
-                    if (months.includes(month)) {
-                        if (latestYear === null || year > latestYear || (year === latestYear && months.indexOf(month) > months.indexOf(latestMonth))) {
-                            latestYear = year;
-                            latestMonth = month;
-                            latestData = data[year][month];
-                        }
-                    }
-                }
-            }
-        }
-    } else if (yearFilter !== "all" && monthFilter === "all") {
-        if (data[yearFilter]) {
-            for (let month in data[yearFilter]) {
-                if (months.includes(month)) {
-                    if (latestMonth === null || months.indexOf(month) > months.indexOf(latestMonth)) {
-                        latestMonth = month;
-                        latestData = data[yearFilter][month];
-                    }
-                }
-            }
-        }
-    } else if (yearFilter !== "all" && monthFilter !== "all") {
-        if (data[yearFilter] && data[yearFilter][monthFilter]) {
-            latestData = data[yearFilter][monthFilter];
-        }
-    }
-
-    if (yearFilter !== "all") {
-        yearData = yearFilter;
-        if (monthFilter !== "all") {
-            monthData = monthNames[monthFilter] || ' ';
-        }else{
-            monthData = monthNames[latestMonth] || ' ';
-        }
-    }else{
-        yearData = latestYear;
-        if (latestMonth) {
-            monthData = monthNames[latestMonth] || ' ';
-        }
-    }
-
-    if (!latestData || !latestData['']) {
-        const noDataHTML = '<tr><td colspan="5"><center>No Data Available</center></td></tr>';
-        $("#projSummLandAcq").html(noDataHTML);
-        return;
-    }
-
-    const tData = latestData[''];
-    const cumuStatKM = tData.cumulativeStatusKM ? tData.cumulativeStatusKM : 0;
-    const cumuBalStatKM = tData.cumulativeBalStatusKM ? tData.cumulativeBalStatusKM : 0;
-    const cumuDisputeKM = tData.cumulativeDisputeKM ? tData.cumulativeDisputeKM : 0;
-
-    let chartTBodyHTML = '';
-    const totalOverAll = cumuStatKM + cumuBalStatKM;
-
-    let statusPercent = 0;
-    let roundedStatusPercent = 0;
-    let balStatusPercent = 0;
-    let roundedBalStatusPercent = 0;
-    let disputePercent = 0;
-    let roundedDisputePercent = 0;
-
-    const roundedCumuBalStatKM = cumuBalStatKM.toFixed(1);
-    const roundedTotalOverAll = totalOverAll.toFixed(1);
-
-    if (totalOverAll > 0) {
-        statusPercent = (cumuStatKM / totalOverAll) * 100;
-        roundedStatusPercent = Math.round(statusPercent).toFixed(0);
-
-        balStatusPercent = (cumuBalStatKM / totalOverAll) * 100;
-        roundedBalStatusPercent = Math.round(balStatusPercent).toFixed(0);
-
-        disputePercent = (cumuDisputeKM / totalOverAll) * 100;
-        roundedDisputePercent = Math.round(disputePercent).toFixed(0);
-    }
-
-    chartTBodyHTML += `
-        <tr>
-            <td>Land Acquisition Status</td>
-            <td><span style="cursor: pointer;" onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${cumuStatKM}</span></td>
-            <td><span style="cursor: pointer;" onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedStatusPercent} %</span></td>
-            <td><span style="cursor: pointer;" onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedCumuBalStatKM}</span></td>
-            <td><span style="cursor: pointer;" onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedBalStatusPercent} %</span></td>
-        </tr>
-        <tr>
-            <td>Land Disputed</td>
-            <td><span style="cursor: pointer;" onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${cumuDisputeKM}</span></td>
-            <td><span style="cursor: pointer;" onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedDisputePercent} %</span></td>
-            <td class="landColor"></td>
-            <td class="landColor"></td>
-        </tr>
-        <tr>
-            <td><b>Total Overall (KM)</b></td>
-            <td colspan="4"><center><span style="cursor: pointer;" onclick="openConOpDashboardLand('${yearData}', '${monthData}')">${roundedTotalOverAll}</span></center></td>
-        </tr>
-    `;
-
-    $("#projSummLandAcq").html(chartTBodyHTML);
 }
 
 function refreshInformation(proj = 'overall', year = 'all', month = 'all'){
@@ -1187,8 +1013,6 @@ function refreshInformation(proj = 'overall', year = 'all', month = 'all'){
             if(month == "Jan"){
                 yearPrev = parseInt(year) - 1;
             }
-        }else{
-            todayMonth = 'all';
         }
     }
 
@@ -1202,13 +1026,7 @@ function refreshInformation(proj = 'overall', year = 'all', month = 'all'){
     var allDataLand = (mainData && mainData.landManagement['overall'] && mainData.landManagement['overall'][year] && mainData.landManagement['overall'][year][month] && mainData.landManagement['overall'][year][month]['allData']) ? mainData.landManagement['overall'][year][month]['allData'] : [];
     var landManagement = (mainData && mainData.landManagement['overall'] && mainData.landManagement['overall'][year] && mainData.landManagement['overall'][year][month]) ? mainData.landManagement['overall'][year][month] : [];
     var landMain = (mainData && mainData.landMain['overall'] && mainData.landMain['overall'][year] && mainData.landMain['overall'][year][month]) ? mainData.landMain['overall'][year][month] : [];
-
-    // new template
-    var landAcquisition = (mainData && mainData.landAcquisition && mainData.landAcquisition['overall'] && mainData.landAcquisition['overall'] && mainData.landAcquisition['overall']) ? mainData.landAcquisition['overall'] : [];
-    var landIssues = (mainData && mainData.landIssues['overall'] && mainData.landIssues['overall'] && mainData.landIssues['overall']) ? mainData.landIssues['overall'] : [];
-    
-    updateLandPart(landIssues, year, month)
-    landAcquisitionTable(landAcquisition, year, month);
+    updateLandPart(landManagement, allDataLand, landMain)
 }
 
 function refreshDashboard(){

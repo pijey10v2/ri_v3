@@ -148,7 +148,7 @@ function viewUser()
     }
 
     //add code for support user (new)
-    $fetchUser = $CONN->fetchRow("SELECT u.user_id, u.user_firstname, u.user_lastname, u.user_email, u.user_type, o.orgName, u.user_country, u.user_org, u.created_by, u.created_time, u.last_update, u.updated_by, u.last_login, u.user_phone, u.support_user, u.profile_img, u.profile_header, u.user_designation FROM users u, organization o WHERE user_email = :0 AND u.user_org = o.orgID ", array($user_email));
+    $fetchUser = $CONN->fetchRow("SELECT u.user_id, u.user_firstname, u.user_lastname, u.user_email, u.user_type, o.orgName, u.user_country, u.user_org, u.created_by, u.created_time, u.last_update, u.updated_by, u.last_login, u.user_phone, u.support_user, u.profile_img, u.profile_header FROM users u, organization o WHERE user_email = :0 AND u.user_org = o.orgID ", array($user_email));
     
     $response['data'] = $fetchUser;
     $user_id = $fetchUser['user_id'];
@@ -190,7 +190,6 @@ function addUser()
         "user_type" => filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_STRING),
         "user_password" => filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING),
         "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING),
-        "user_designation" => filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING),
 
         //add code for support user
         "support_user" => filter_input(INPUT_POST, 'supuser', FILTER_SANITIZE_STRING)
@@ -229,12 +228,6 @@ function addUser()
         $name = substr($userDetails['user_country'], 0, $pos) . $str_to_insert . substr($userDetails['user_country'], $pos + 5);
         $userDetails['user_country'] = $name;
     }
-    $pos = strpos($userDetails['user_designation'], "&#39;", 0);
-    if ($pos) {
-        $str_to_insert = "'";
-        $name = substr($userDetails['user_designation'], 0, $pos) . $str_to_insert . substr($userDetails['user_designation'], $pos + 5);
-        $userDetails['user_designation'] = $name;
-    }
 
     if ((!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_firstname'])) || (!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_lastname']))) {
         $response['msg'] = "Invalid Name. Only alphabets, space and ' are allowed. No other special characters are allowed";
@@ -251,7 +244,7 @@ function addUser()
     $response['validation'] = $validation;
     if (!empty($validation)) { //name or id exists
         $response['bool'] = false;
-        $response['msg'] = $validation['userEmail'];
+        $response['msg'] = $validation;
         return;
     }
    
@@ -367,7 +360,6 @@ function updateUser()
         "user_country" => filter_input(INPUT_POST, 'country', FILTER_SANITIZE_STRING),
         "user_type" => filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_STRING),
         "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING),
-        "user_designation" => filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING),
         
         //add code for support user (new). need to change to boolean as the filter_input convert it to string
         "support_user" => (isset($_POST['supuser']) ? filter_var($_POST['supuser'], FILTER_VALIDATE_BOOLEAN) : false)
@@ -405,13 +397,6 @@ function updateUser()
         $str_to_insert = "'";
         $name = substr($userDetails['user_country'], 0, $pos) . $str_to_insert . substr($userDetails['user_country'], $pos + 5);
         $userDetails['user_country'] = $name;
-    }
-
-    $pos = strpos($userDetails['user_designation'], "&#39;", 0);
-    if ($pos) {
-        $str_to_insert = "'";
-        $name = substr($userDetails['user_designation'], 0, $pos) . $str_to_insert . substr($userDetails['user_designation'], $pos + 5);
-        $userDetails['user_designation'] = $name;
     }
 
     if ((!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_firstname'])) || (!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_lastname']))) {
@@ -990,13 +975,7 @@ function getContractorsConsultantsOrg()
 {
     global $response;
     global $CONN;
-    global $IS_DOWNSTREAM;
-
-    if($IS_DOWNSTREAM){
-        $fetchUsers = $CONN->fetchAll("SELECT * from organization WHERE orgType IN ('consultant', 'contractor', 'DBC')", array());
-    }else{
-        $fetchUsers = $CONN->fetchAll("SELECT * from organization WHERE orgType IN ('consultant', 'contractor')", array());
-    }
+    $fetchUsers = $CONN->fetchAll("SELECT * from organization WHERE orgType IN ('consultant', 'contractor')", array());
     $response = $fetchUsers;
 }
 
@@ -1004,8 +983,6 @@ function getAllUsers()
 {   
     global $response;
     global $CONN;
-    global $IS_DOWNSTREAM;
-
     $project_id = filter_input(INPUT_POST, 'project_id', FILTER_SANITIZE_STRING);
 
     if ($project_id !== 'None') {
@@ -1016,17 +993,9 @@ function getAllUsers()
             $project_id = $fetchParentId['parent_project_id_number'];
         }
 
-        if($IS_DOWNSTREAM){
-                $fetchUserList = $CONN->fetchAll("SELECT u.user_id, u.user_email, u.user_firstname, u.user_lastname, o.orgName, u.user_country, u.user_type, u.support_user, o.orgID, o.orgType,
-            r.Pro_ID FROM users u , organization o ,  pro_usr_rel r WHERE user_type != 'non_active' AND r.Pro_ID = :0 AND u.user_org = o.orgID AND
-            u.user_id = r.Usr_ID AND (o.orgType = 'owner' OR o.orgType = 'DBC') ORDER By user_id", array($project_id));
-        }else{
-                $fetchUserList = $CONN->fetchAll("SELECT u.user_id, u.user_email, u.user_firstname, u.user_lastname, o.orgName, u.user_country, u.user_type, u.support_user, o.orgID, o.orgType,
-            r.Pro_ID FROM users u , organization o ,  pro_usr_rel r WHERE user_type != 'non_active' AND r.Pro_ID = :0 AND u.user_org = o.orgID AND
-            u.user_id = r.Usr_ID AND o.orgType = 'owner' ORDER By user_id", array($project_id));
-        }
-        
-        
+        $fetchUserList = $CONN->fetchAll("SELECT u.user_id, u.user_email, u.user_firstname, u.user_lastname, o.orgName, u.user_country, u.user_type, u.support_user, o.orgID, o.orgType,
+        r.Pro_ID FROM users u , organization o ,  pro_usr_rel r WHERE user_type != 'non_active' AND r.Pro_ID = :0 AND u.user_org = o.orgID AND
+        u.user_id = r.Usr_ID AND o.orgType = 'owner' ORDER By user_id", array($project_id));
     } else {
         $fetchUserList = $CONN->fetchAll("SELECT u.user_id, u.user_email, u.user_firstname, u.user_lastname, o.orgName, u.user_country, u.user_type , u.support_user, o.orgID, o.orgType FROM
         users u , organization o WHERE user_type != 'non_active' AND u.user_org = o.orgID  ORDER By user_id", array());
@@ -1065,20 +1034,20 @@ function adminUserTableRefresh (){
     $parent_project_id_number = $resultCheck["parent_project_id_number"];
 
     if ($parent_project_id_number){
-        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgID, o.orgName FROM users u, organization o,  pro_usr_rel r WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgID = ".$CONN->quote($ownerOrg)." AND r.Pro_ID = ".$CONN->quote($parent_project_id_number)." AND u.user_id = r.Usr_ID AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
-       (SELECT u.user_id, u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgID, o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
-       (SELECT u.user_id , u.user_email , u.user_firstname , u.show_reporting, o.orgType , o.orgID, o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
+        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname, o.orgType , o.orgID, o.orgName FROM users u, organization o,  pro_usr_rel r WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgID = ".$CONN->quote($ownerOrg)." AND r.Pro_ID = ".$CONN->quote($parent_project_id_number)." AND u.user_id = r.Usr_ID AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
+       (SELECT u.user_id, u.user_email, u.user_firstname , o.orgType , o.orgID, o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
+       (SELECT u.user_id , u.user_email , u.user_firstname , o.orgType , o.orgID, o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
         $selectSQL = $CONN->fetchAll($userSql);
     }
     else{
-        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgID, o.orgName  FROM users u, organization o  WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgID = ".$CONN->quote($ownerOrg)." AND   u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
-        (SELECT u.user_id , u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgID, o.orgName FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.contractor_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
-        (SELECT u.user_id , u.user_email , u.user_firstname , u.show_reporting, o.orgType , o.orgID, o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.consultant_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
+        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname , o.orgType , o.orgID, o.orgName  FROM users u, organization o  WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgID = ".$CONN->quote($ownerOrg)." AND   u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
+        (SELECT u.user_id , u.user_email, u.user_firstname , o.orgType , o.orgID, o.orgName FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.contractor_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
+        (SELECT u.user_id , u.user_email , u.user_firstname, o.orgType , o.orgID, o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.consultant_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
         $selectSQL = $CONN->fetchAll($userSql);
     }
     $detailsUser = $selectSQL;
 
-    $otherSql = "SELECT u.user_id, u.user_email, u.user_firstname, u.show_reporting, p.Pro_Role, o.orgID, o.orgType, o.orgName FROM users u, pro_usr_rel p, organization o WHERE u.user_id = p.Usr_ID AND p.Pro_ID = :0 AND u.user_org = o.orgID ORDER BY o.orgID, u.user_id";
+    $otherSql = "SELECT u.user_id, u.user_email, u.user_firstname, p.Pro_Role, o.orgID, o.orgType, o.orgName FROM users u, pro_usr_rel p, organization o WHERE u.user_id = p.Usr_ID AND p.Pro_ID = :0 AND u.user_org = o.orgID ORDER BY o.orgID, u.user_id";
     $nextsSelectSQL = $CONN->fetchAll($otherSql, array($pid));
     $detailsNextUser = $nextsSelectSQL;
 

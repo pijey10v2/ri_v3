@@ -89,16 +89,12 @@ $html = '
                                                 <td id="revisedCompletionDate">N/A</td>
                                             </tr>
                                             <tr>
-                                                <td>Approved EOT from VO (Days)</td>
-                                                <td id="ApprovedEOTfromVO">N/A</td>
+                                                <td>Approved EOT No</td>
+                                                <td id="ApprovedEOT">N/A</td>
                                             </tr>
                                             <tr>
                                                 <td>Approved EOT (Days)</td>
                                                 <td id="ApprovedEOTDays">N/A</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Approved EOT Total (days)</td>
-                                                <td id="totalApprovedEOTDays">N/A</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -112,7 +108,7 @@ $html = '
                                     <table> 
                                         <tbody>
                                             <tr>
-                                                <td>Revised Contract Sum</td>
+                                                <td>Revied Contract Sum</td>
                                                 <td id="revisedContractSum">N/A</td>
                                             </tr>
                                             <tr>

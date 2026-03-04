@@ -948,6 +948,12 @@ var uploadType = "KML";
             case "AIC":
               input.setAttribute('accept', '.ecw,.tif,.tiff,.zip');
               break;
+            case "Excel":
+              input.setAttribute('accept', '.xls,.xlsx');
+              input.removeAttribute('multiple');
+              input.removeAttribute('webkitdirectory')
+              input.removeAttribute('mozdirectory')
+              break;
             default:
               input.setAttribute('webkitdirectory','');
               input.setAttribute('mozdirectory','');
@@ -982,6 +988,9 @@ var uploadType = "KML";
               geoDataClear()
               break;
             case "XML":
+              geoDataClear()
+              break;
+            case "EXCEl":
               geoDataClear()
               break;
             case "VIDEO":

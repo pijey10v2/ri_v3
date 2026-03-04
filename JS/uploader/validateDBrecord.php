@@ -25,11 +25,11 @@
 				$row = sqlsrv_has_rows($stmt);
 				if($row == false)
 				{
-					$myresult= array(
-						'msg' => "No Permission."
-				   );
-					echo (json_encode($myresult));
-					exit();
+				// 	$myresult= array(
+				// 		'msg' => "No Permission."
+				//    );
+				// 	echo (json_encode($myresult));
+				// 	exit();
 				}
 				foreach($layerName as $layer){
 					$sql = sqlsrv_query($conn, "SELECT Data_Name FROM Data_Pool WHERE Data_Name = '$layer'",$params,$options);

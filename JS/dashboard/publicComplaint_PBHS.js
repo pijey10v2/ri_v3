@@ -1,10 +1,5 @@
 var pcData;
 var textMonthtoNum = {"Jan":"01","Feb":"02","Mar":"03","Apr":"04","May":"05","Jun":"06","Jul":"07","Aug":"08","Sep":"09","Oct":"10","Nov":"11","Dec":"12"};
-var inPackageUuid = initInPackageUuid()
-
-function initInPackageUuid(){
-	return localStorage.inPackageUuid ? localStorage.inPackageUuid : ''
-}
 
 function conOpLink(status=''){
     if(localStorage.ui_pref != "ri_v3") return;
@@ -12,7 +7,7 @@ function conOpLink(status=''){
     var searchilter = getSearchFilterSabah();
     var linkWinTitle = 'Public Complaint'
     var linkName = 'dash_cons_PBS_card'
-    var linkParamArr = processFilterParamArr([status, searchilter.dateFrom, searchilter.dateTo, '', inPackageUuid])
+    var linkParamArr = processFilterParamArr([status, searchilter.dateFrom, searchilter.dateTo])
     if(status == ''){
         status = 'Total';
     }
@@ -38,17 +33,7 @@ function drawPCCharts (monthYear, data) {
 
     if (data) {
         for (const [idx, ele] of Object.entries(data)) {
-            if(idx == "QSHET"){
-                if(localStorage.isParent == "isParent" || localStorage.project_phase == "1B"){
-                    cat = "Quality, Safety, Health, Environment and Traffic";
-                }else{
-                    cat = "QSHET";
-                }
-            }else{
-                cat = idx;
-            }
-            
-            catArr.push(cat);
+            catArr.push(idx);
             dataArr.push((ele) ? parseInt(ele) : 0);
         }
     }
@@ -152,15 +137,14 @@ function drawPCCharts (monthYear, data) {
                     
                     var searchilter = getSearchFilterSabah();
                     var status = searchilter.status;
-                    var cardName = event.point.category.name;
-                    var category = (event.point.category.name == 'Quality, Safety, Health, Environment and Traffic') ? 'QSHET' : event.point.category.name;
-                    var jogetLink = (localStorage.project_phase == '1B') ? 'dash_cons_PBS_card_1B' : 'dash_cons_PBS_card';
+                    var category = event.point.category.name;
+                    var cardName = category;
                     if(category == ''){
                         category = 'N/A'
                         cardName = '';
                     }
-                    linkParamArr = processFilterParamArr([status, searchilter.dateFrom, searchilter.dateTo, category, inPackageUuid])
-                    window.parent.widgetConopOpen('Public Complaint', jogetLink, linkParamArr, 'Public Complaint - ' + (cardName));
+                    linkParamArr = processFilterParamArr([status, searchilter.dateFrom, searchilter.dateTo, category])
+                    window.parent.widgetConopOpen('Public Complaint', 'dash_cons_PBS_card', linkParamArr, 'Public Complaint - ' + (category));
                 }
             }
             

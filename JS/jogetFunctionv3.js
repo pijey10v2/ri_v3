@@ -1,6 +1,5 @@
 function openJogetForm(frameId, idActivity, appJoget, processSet, extraParam, projOwner = ''){
 	if (!JOGETLINK) return
-	var link = "";
 	var urlInbox;
 	var loading = $('.loader');
     loading.fadeIn();
@@ -15,16 +14,7 @@ function openJogetForm(frameId, idActivity, appJoget, processSet, extraParam, pr
 				urlInbox = JOGETLINK.finance_open_ClaimActivityForm + idActivity + "&_mode=assignment";
 				break;
 			case "VO":
-				if(extraParam.includes("SSLR Downstream")){
-					urlInbox = JOGETLINK.finance_open_VOActivityForm_SSLR2 + idActivity + "&_mode=assignment";
-				}else{
-					urlInbox = JOGETLINK.finance_open_VOActivityForm + idActivity + "&_mode=assignment";
-				}
-				break;
-			case "EOT":
-				if(extraParam.includes("SSLR Downstream")){
-					urlInbox = JOGETLINK.finance_open_EOTActivityForm_SSLR2 + idActivity + "&_mode=assignment";
-				}
+				urlInbox = JOGETLINK.finance_open_VOActivityForm + idActivity + "&_mode=assignment";
 				break;
 			case "Contract_Amend":
 				urlInbox = JOGETLINK.finance_list_ContractAmendForm + idActivity + "&_mode=assignment";
@@ -44,48 +34,26 @@ function openJogetForm(frameId, idActivity, appJoget, processSet, extraParam, pr
 		}
 		break;
 		case "constructInbox":
-			if(processSet == "emailView"){
-				link = "email_view_sslr_"+extraParam;
-				urlInbox = JOGETLINK[link] + idActivity;
-			}else if(processSet == "emailView1A"){
-				link = "email_view_sbh_"+extraParam;
-				urlInbox = JOGETLINK[link] + idActivity;
-			}else if(processSet == "emailView1B"){
-				link = "email_view_sbh_1b_"+extraParam;
-				urlInbox = JOGETLINK[link] + idActivity;
-			}else if(processSet == "rfiEdit"){
-				link = "cons_issue_verify_rfi";
-				urlInbox = JOGETLINK[link] + idActivity;
-			}else{
-				urlInbox = JOGETLINK.cons_open_inboxv3 + "_mode=assignment&activityId=" + idActivity;
-			}
+			urlInbox = JOGETLINK.cons_open_inboxv3 + "_mode=assignment&activityId=" + idActivity;
 		break;
 		case "documentInbox":
 			switch (processSet) {
 				case "Acknowledge":
-				case "acknowledge":
-					if(SYSTEM == 'KKR' && !IS_DOWNSTREAM){
+					if(SYSTEM == 'KKR'){
 						urlInbox = (projOwner == "SSLR2") ? JOGETLINK.doc_open_corr_acknowldge_sslr +  idActivity + extraParam : JOGETLINK.doc_open_corr_acknowldge +  idActivity + extraParam;
-					}else if(IS_DOWNSTREAM){
-						urlInbox = JOGETLINK.doc_open_corr_acknowldge_sslr +  idActivity + extraParam ;
 					}else{
 						urlInbox = JOGETLINK.doc_open_corr_acknowldge +  idActivity + extraParam;
 					}
 					break;
 				case "Respond/View":
-					if(SYSTEM == 'KKR' && !IS_DOWNSTREAM){
+					if(SYSTEM == 'KKR'){
 						urlInbox = (projOwner == "SSLR2") ? JOGETLINK.doc_open_corr_respond_sslr +  idActivity + extraParam : JOGETLINK.doc_open_corr_respond +  idActivity + extraParam;
-					}else if(IS_DOWNSTREAM){
-						urlInbox = JOGETLINK.doc_open_corr_respond_sslr +  idActivity + extraParam ;
 					}else{
 						urlInbox = JOGETLINK.doc_open_corr_respond +  idActivity + extraParam;
 					}
 					break;
 				case "markup":
 					urlInbox = JOGETLINK.cons_open_inboxv3_markup + "_mode=assignment&activityId=" + idActivity;
-					break;
-				case "markupView":
-					urlInbox = JOGETLINK.doc_markup_sabah_view + idActivity;
 					break;
 			}
 		break;
@@ -110,6 +78,8 @@ function openJogetForm(frameId, idActivity, appJoget, processSet, extraParam, pr
 					urlInbox = JOGETLINK.finance_list_ClaimActivityFormPerHqAsset + idActivity + "&_mode=assignment";
 					break;
 			}
+		case "serviceRequestAssetInbox":
+			urlInbox = JOGETLINK.fm_activity_form  +  idActivity + "&_mode=assignment";
 		break;
 	}
 	let url = urlInbox;
@@ -121,7 +91,7 @@ function openJogetForm(frameId, idActivity, appJoget, processSet, extraParam, pr
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 }
@@ -131,12 +101,6 @@ function openBumiList(){
 
 	var url = (localStorage.project_owner == "SSLR2") ? JOGETLINK['cons_datalist_BP_SSLR2'] : JOGETLINK['cons_datalist_BP'];
 
-	var inPackageUuid = localStorage.inPackageUuid ? localStorage.inPackageUuid : ''
-
-	if(inPackageUuid != ''){
-		url += '&inPackageUuid='+inPackageUuid
-	}
-
 	iframe = $("iframe.bumiDatalist");
 
 	iframe.hide();
@@ -144,33 +108,21 @@ function openBumiList(){
 	iframe.attr("src", url);
 	iframe.on("load", function () {
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
-
-	zoomToGetData();
 }
 
 function getLinkJoget(formID,frameId){
 	if (!JOGETLINK) return;
 	var url;
 	let title = "";
-	var idBulkExp = formID;
-	var process_1b = ["SA", "SMH", "PBC", "DCR", "RS", "SDL", "RFI"];
 	var checkVisibility = $(".modal-header").parent().parent(':visible');
 	if(checkVisibility.length > 0){
 		title = $(".modal-header a").text()
 	}
 	else{
 		title = "";
-	}
-
-	if(localStorage.project_phase == '1B'){
-		if(process_1b.includes(formID)){
-			formID = formID+"_1B";
-		}else{
-			formID = formID;
-		}
 	}
 
 	if(SYSTEM == 'OBYU'){
@@ -230,13 +182,13 @@ function getLinkJoget(formID,frameId){
 					url  = JOGETLINK['cons_manage_'+formID];
 				}
 			}else if(title == "Bulk Register Process" || title == "Bulk Register"){
-				if(localStorage.project_owner == "SSLR2" && JOGETLINK['cons_datalist_'+idBulkExp+'_SSLR2']){
-					if (JOGETLINK['cons_datalist_'+idBulkExp+'_SSLR2']) {
-						url  = JOGETLINK['cons_datalist_'+idBulkExp+'_SSLR2'];
+				if(localStorage.project_owner == "SSLR2" && JOGETLINK['cons_datalist_'+formID+'_SSLR2']){
+					if (JOGETLINK['cons_datalist_'+formID+'_SSLR2']) {
+						url  = JOGETLINK['cons_datalist_'+formID+'_SSLR2'];
 					}
 				}else{
-					if (JOGETLINK['cons_datalist_'+idBulkExp]) {
-						url  = JOGETLINK['cons_datalist_'+idBulkExp];
+					if (JOGETLINK['cons_datalist_'+formID]) {
+						url  = JOGETLINK['cons_datalist_'+formID];
 					}
 				}
 			}else if(title == "New Asset Process" || title == "Asset Project"){
@@ -274,7 +226,7 @@ function InitiateCoordless() {
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 
@@ -340,7 +292,7 @@ function InitiateCoordinate() {
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 
@@ -360,7 +312,7 @@ function openSetupDatalist(setup){
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 }
@@ -381,7 +333,7 @@ function openManageDatalist(manage){
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 }
@@ -411,11 +363,7 @@ function openAssetForm(id){
 			formID = 'asset_maintain_schedule_inspection_sabah'
 		}
 	}else if(id == 'WP'){
-		if(owner == 'JKR_SARAWAK'){
-			formID = 'asset_submit_maint_work_program'
-		}else{
-			formID = 'asset_submit_maint_work_program_sabah'
-		}
+		formID = 'asset_submit_maint_work_program'
 	}else if(id == 'DR'){
 		formID = 'asset_create_defect_detection'
 	}else if(id == 'NOD'){
@@ -452,8 +400,6 @@ function openAssetForm(id){
 		formID = 'asset_submit_work_budget_approval'
 	}else if(id == 'DR'){
 		formID = 'asset_create_defect_detection'
-	}else if(id == 'GAR'){
-		formID = 'asset_submit_maint_gar'
 	}
 	
 	url = getLinkJoget(formID,"")
@@ -470,7 +416,7 @@ function openAssetForm(id){
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 }
@@ -497,7 +443,7 @@ function bulkExportList(id){
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 }
@@ -525,54 +471,19 @@ function bulkExportAssetList(id, modal) {
     }
 
     iframe.attr("src", url).css("height", "100%").css("width", "100%");
-}   
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function waitJogetLogin(callback) {
-    let attempts = 0;
-    const maxRetries = 5;
-    let isLoggedIn = false;
+function openFromEmail(activityId, appProcess = 'constructInbox', setProcess = '', extraParam = '') {
+	if (!JOGETLINK) return
+	let idProcess = activityId;
 
-    try {
-        while (!isLoggedIn && attempts < maxRetries) {
-            console.log(`Attempt ${attempts + 1} of ${maxRetries}...`);
-            isLoggedIn = await checkingJogetLogin_promise();
-            attempts++;
+	let modalContainer = $(`.modal-container.myTask`)
+    let openPage1 = modalContainer.find("[data-page=1]")
 
-            if (!isLoggedIn && attempts < maxRetries) {
-                console.warn("Login failed, retrying in 0.5s...");
-                await sleep(500); // wait 0.5 second before next retry
-            }
-        }
-
-        if (isLoggedIn) {
-            await callback(); // only call if login successful
-        } else {
-            console.warn("Joget login failed after 5 attempts. Aborting.");
-        }
-    } catch (err) {
-        console.error("Unexpected error during login:", err);
-    }
-}
-
-
-function openFromEmail(activityId, appProcess = 'constructInbox', setProcess = '', extraParam = '', project_owner = '') {
-	waitJogetLogin(async () => {
-
-		if (!JOGETLINK) return
-		let idProcess = activityId;
-
-		let modalContainer = $(`.modal-container.myTask`)
-		let openPage1 = modalContainer.find("[data-page=1]")
-
-		$(".modal-header a").html('My Task')
-		openPage1.addClass("active")
-		openJogetForm('myTask', idProcess, appProcess, setProcess, extraParam, project_owner)
-		openWizardModalContainer('myTask', undefined, 55, 80)
-	});
+	$(".modal-header a").html('My Task')
+	openPage1.addClass("active")
+	openJogetForm('myTask', idProcess, appProcess, setProcess, extraParam)
+	openWizardModalContainer('myTask', undefined, 55, 80)
 }
 
 function openCloseFormV3(idForm, ele) {
@@ -611,7 +522,7 @@ function openCloseFormV3(idForm, ele) {
 	iframe.on("load", function () {
 		loading.fadeOut();
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 
@@ -634,7 +545,7 @@ function openAssetDatalist(asset){
 	iframe.attr("src", url);
 	iframe.on("load", function () {
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 }
@@ -655,7 +566,7 @@ function openPavementDatalist(pavement){
 	iframe.attr("src", url);
 	iframe.on("load", function () {
 		iframe.show();
-		$(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+		$(iframe)[0].contentWindow.postMessage(themeJoget, '*');
         localStorage.themeJoget = themeJoget
 	});
 }

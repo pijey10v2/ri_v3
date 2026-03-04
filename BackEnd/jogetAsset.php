@@ -1,4 +1,6 @@
 <?php
+
+
 session_start();
 include_once('class/jogetLink.class.php');
 global $api_username, $api_password, $jogetAssetHostIP, $JOGETLINKOBJ;
@@ -17,6 +19,14 @@ if (isset($_POST['functionName'])) {
     switch ($_POST['functionName']) {
         case "getListOfAssetNotification":
             getListOfAssetNotification(); //for Asset Inbox
+            break;
+        case "addAssetTableData":
+            $data = $_POST['mappings'];
+            $url = $_POST['url'];
+            addAssetTableData($data, $url);
+            break;
+        case "getFMAssetColumns":
+            getFMAssetColumns(); //for Asset Inbox
             break;
        
     }
@@ -44,3 +54,5 @@ function getListOfAssetNotification()
         echo $decodedText;
     }
 }
+
+

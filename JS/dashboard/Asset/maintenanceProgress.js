@@ -1149,8 +1149,9 @@ function drawNCPRoutine(data, monthYear){
 
 getPercentage = (val, total) => (total) ? Math.round((val/total)*100 * 10) / 10 : 0;
 
-function refreshInformation(packId = 'overall', year = 'all', month = 'all', activity = 'default', subActivity = 'default', assetTyp = 'default', wpcName = 'all'){
+function refreshInformation(packId = 'overall', year = 'all', month = 'all', activity = 'default', assetTyp = 'default', wpcName = 'all'){
 
+    console.log(progData)
     let act_routine = "";
 
     if(activity == 'R01 : PAVEMENT'){
@@ -1201,20 +1202,12 @@ function refreshInformation(packId = 'overall', year = 'all', month = 'all', act
     var dataClaim = (claimData && claimData.cardClaim) ? claimData.cardClaim : [];
     var dataChartClaim = (claimData && claimData.chartClaim) ? claimData.chartClaim : [];
 
-    var dataCyclic;
-    var dataNonCyclic;
-    
-    if(localStorage.project_owner == 'JKR_SARAWAK'){
-        dataCyclic = (wiData && wiData.chart && wiData.chart['Cyclic'] && wiData.chart['Cyclic'][activity] && wiData.chart['Cyclic'][activity][subActivity] && wiData.chart['Cyclic'][activity][subActivity][assetTyp]) ? wiData.chart['Cyclic'][activity][subActivity][assetTyp] : [];
-        dataNonCyclic = (wiData && wiData.chart && wiData.chart['Non Cyclic'] && wiData.chart['Non Cyclic'][activity] && wiData.chart['Non Cyclic'][activity][subActivity] && wiData.chart['Non Cyclic'][activity][subActivity][assetTyp]) ? wiData.chart['Non Cyclic'][activity][subActivity][assetTyp] : [];
-    }else{
-        dataCyclic = (wiData && wiData.chart && wiData.chart['Cyclic'] && wiData.chart['Cyclic'][activity] && wiData.chart['Cyclic'][activity][assetTyp]) ? wiData.chart['Cyclic'][activity][assetTyp] : [];
-        dataNonCyclic = (wiData && wiData.chart && wiData.chart['Non Cyclic'] && wiData.chart['Non Cyclic'][activity]) && wiData.chart['Non Cyclic'][activity][assetTyp] ? wiData.chart['Non Cyclic'][activity][assetTyp] : [];
-    }
+    var dataCyclic = (wiData && wiData.chart && wiData.chart['Cyclic'] && wiData.chart['Cyclic'][activity] && wiData.chart['Cyclic'][activity][assetTyp]) ? wiData.chart['Cyclic'][activity][assetTyp] : [];
+    var dataNonCyclic = (wiData && wiData.chart && wiData.chart['Non Cyclic'] && wiData.chart['Non Cyclic'][activity]) && wiData.chart['Non Cyclic'][activity][assetTyp] ? wiData.chart['Non Cyclic'][activity][assetTyp] : [];
 
     var dataBudget = (budgetData && budgetData.cardBudget) ? budgetData.cardBudget : [];
 
-    if(assetTyp == 'default' && subActivity == 'default'){
+    if(assetTyp == 'default'){
         dataPie = dataPie;
         dataPieStatus = dataPieStatus;
         dataRoutine = dataRoutine;
@@ -1255,21 +1248,13 @@ function refreshFromv3 (filterArr){
 	var year = filterArr.year;
 	var month = filterArr.month;
     var assetRoutine = filterArr.assetRoutine;
-    var subActivity = filterArr.assetSubAct;
 	var assetType = filterArr.assetType;
 
-    if(assetRoutine == "R03 : VEGETATION CONTROL & LITTER COLLECTION"){
-        subActivity = subActivity;
-    }else{
-        subActivity = 'default';
-    }
-
-    refreshInformation(wpc, year, month, assetRoutine, subActivity, assetType, wpcName);
+    refreshInformation(wpc, year, month, assetRoutine, assetType, wpcName);
 }
 
 function populateAssetActivity(data) {
     var optHTML;
-    var optHTMLsubAct;
     if (data) {
         if(data == "R05 : MAINTENANCE OF BRIDGES/CULVERT"){
             optHTML += '<option value="default">Select Asset Type</option>';
@@ -1278,30 +1263,15 @@ function populateAssetActivity(data) {
         }else{
             optHTML += '<option value="default">Select Asset Type</option>';
         }
-
-        if(data == "R03 : VEGETATION CONTROL & LITTER COLLECTION"){
-            optHTMLsubAct += '<option value="default">Select Sub Activity</option>';
-            optHTMLsubAct += '<option value="R03 - A : VEGETATION CONTROL">R03 - A : VEGETATION CONTROL</option>';
-            optHTMLsubAct += '<option value="R03 - B : LITTER COLLECTION">R03 - B : LITTER COLLECTION</option>';
-        }else{
-            optHTMLsubAct += '<option value="default">Select Sub Activity</option>';
-        }
     }
     if(localStorage.ui_pref == 'ri_v3'){
         window.parent.$('.assetTypeFilter').html(optHTML);
-        if(localStorage.project_owner == 'JKR_SARAWAK'){
-            window.parent.$('.subActivityFilter').html(optHTMLsubAct);
-        }
     }else{
         $('.assetTypeFilter').html(optHTML);
-        if(localStorage.project_owner == 'JKR_SARAWAK'){
-            $('.subActivityFilter').html(optHTMLsubAct);
-        }
     }
 }
 
 $(document).ready(function(){
-
     $('#activityFilter').change(function () {
         var selActivity = $('#activityFilter').val();
         populateAssetActivity(selActivity);

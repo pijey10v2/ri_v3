@@ -1,20 +1,19 @@
 var bumiInfo;
-var inPackageUuid = '';
-
-function initInPackageUuid(){
-	return localStorage.inPackageUuid ? localStorage.inPackageUuid : ''
-}
 
 function conOpLink(category=''){
 	var searchfilter = getSearchFilterSabah();
 	var cardname = category;
+	if(searchfilter.category != ''){
+		if(category == '' ){
+			category = searchfilter.category;
+		}else if(searchfilter.category != category){
+			category = '-'
+		}
+	}
 	if(category == '' ){
 		cardname = 'Consortium'
 	}
-
-	inPackageUuid = initInPackageUuid()
-	
-	var linkParamArr = processFilterParamArr([category, '', inPackageUuid])
+	var linkParamArr = processFilterParamArr([category])
     window.parent.widgetConopOpen('Bumiputera', 'dash_cons_BP_card', linkParamArr, "Bumiputera - " + cardname);
 }
 
@@ -27,11 +26,8 @@ function updateBumiCard(con, dom, des, nom){
 
 	$('#bumiConsortiumCard').html(bumiConsortiumCard);
 	$('#bumiDomesticCard').html(bumiDomesticCard);
+	$('#bumiDesignatedCard').html(bumiDesignatedCard);
 	$('#bumiNominatedCard').html(bumiNominatedCard);
-
-	if(localStorage.project_owner == 'JKR_SARAWAK'){
-		$('#bumiDesignatedCard').html(bumiDesignatedCard);
-	}
 }
 
 function populateBPPTable(tabInfo){
@@ -53,8 +49,7 @@ function populateBPPTable(tabInfo){
 }
 
 function openRecordList(recordId) {
-	inPackageUuid = initInPackageUuid()
-	var linkParamArr = processFilterParamArr(['', recordId, inPackageUuid]);
+	var linkParamArr = processFilterParamArr(['', recordId]);
 	if (localStorage.ui_pref == "ri_v3") {
 	  window.parent.widgetConopOpen('Bumiputera', "dash_cons_BP_card", linkParamArr, 'Bumiputera');
 	}
@@ -62,7 +57,6 @@ function openRecordList(recordId) {
 
 function refreshInformation(packId = 'overall', cat = 'overall'){
 	if (!bumiInfo) return;
-	if(cat == 'all'){ cat = 'overall' }
 
 	var cardInfo = (bumiInfo[packId] && bumiInfo[packId][cat] && bumiInfo[packId][cat]['cnt']) ? bumiInfo[packId][cat]['cnt'] : []; 
 	var con = (cardInfo.consortium) ? cardInfo.consortium : 0;

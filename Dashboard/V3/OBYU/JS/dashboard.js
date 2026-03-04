@@ -223,21 +223,6 @@ function refreshAllCharts() {
 }
 
 $(function () {
-    //disable dev tool
-	var prodFlag = localStorage.inspectFlag;
-
-    if(prodFlag == 'true'){
-        document.addEventListener("contextmenu", function(event) {
-            event.preventDefault();
-        });
-    
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "C") || (event.ctrlKey && event.shiftKey && event.key === "J")) {
-                event.preventDefault();
-            }
-        });
-    }
-
     $("#minimizeButton").on("click", function () {
         if ($(this).hasClass("active")) {
             $(this).removeClass("active")
@@ -403,38 +388,6 @@ $(function () {
                                           dataLabels: {
                                             enabled: true
                                           }
-                                        }
-                                    }
-                                })
-                            }else if(highchartID == "overallChart" || highchartID == "lawas01Chart" || highchartID == "lawas02Chart" || highchartID == "limbang01Chart" || highchartID == "limbang02Chart" || highchartID == "limbang03Chart"){
-                                chart.series.forEach(function (series) {
-
-                                    series.update({
-                                        dataLabels: {
-                                            enabled: true,
-                                            distance: 30,
-                                            format: '{point.y}km',
-                                            style: {
-                                                fontSize: '20px'
-                                            }
-                                        }
-                                    }, false); 
-                                });
-                        
-                                chart.redraw();
-
-                                chart.update({
-                                    chart: {
-                                        marginTop: -30,
-                                        marginLeft: 270
-                                    },
-                                    legend: {
-                                        layout: 'vertical',
-                                        align: 'left',
-                                        itemStyle: {
-                                            fontSize: '20px',
-                                            color: '#333',
-                                            width: 'auto'
                                         }
                                     }
                                 })

@@ -15,7 +15,6 @@ var upload_Counter
 var useremailid
 var assetid_input = false;
 var share;
-var animate;
 var completedUpload = false;
 
 function defaultUploadLayer(){
@@ -89,6 +88,20 @@ function OnClickXML() {
 	$("#R_input").attr('accept', '.xml');
 	dataType = "XML"
 	reg = /(.*?)\.(xml)$/;
+}
+
+function OnClickExcel() {
+	console.log('click here')
+	uploadType = "Excel"
+	geoDataClear()
+	hidepage()
+	$("#excelDiv").show()
+	$("#R_input").removeAttr('webkitdirectory')
+	$("#R_input").removeAttr('mozdirectory')
+	$("#R_input").removeAttr('multiple')
+	$("#R_input").attr('accept', '.xlsx, .xls');
+	dataType = "EXCEL"
+	reg = /(.*?)\.(xlsx|xls)$/;
 }
 
 function ProgressBar(ele) {
@@ -228,6 +241,59 @@ function ValidateServerFiles(callback) {
 						}
 
 					});
+				} else if (dataType == "EXCEL") {
+					kmlarray = obj.kmlarray
+
+					kmlarray.forEach(function (item) {
+						array_len = r.files.length;
+						UID = $.grep(r.files, function (v) {
+							return (item == v.fileName)
+						})[0];
+						r.removeFile(UID)	//remove file upload if no
+						RowID = $("#csvFileTBody .row.insight div").filter(function () {
+							//set status to indicate this has been removed
+							return $(this).html() == item;
+						}).attr("id")
+						RowID = (RowID.substring(0, 4)) + '4';
+						$("#" + RowID).html("Canceled")
+						var popArray = KmlFileArray.indexOf(item)
+						KmlFileArray.splice(popArray, 1)
+						KmlLayerArray.splice(popArray, 1)
+					})
+
+					$.confirm({
+						boxWidth: '50%',
+						useBootstrap: false,
+						title: 'Alert',
+						content: "File(s): " + kmlarray + " already exist in server. Please rename the file(s) on your local machine before uploading.",
+						buttons: {
+							OK: function () {
+								if (KmlFileArray.length > 0) {
+									$.confirm({
+										boxWidth: '30%',
+										useBootstrap: false,
+										title: 'Alert',
+										content: "Do you wish to upload the rest of the file(s)?",
+										buttons: {
+											confirm: function () {
+												callback()
+											},
+											cancel: function () {
+												RowID = $("#csvFileTBody .row.insight div").filter(function () {
+													//set status to indicate this has been removed
+													return $(this).html() == item;
+												}).attr("id")
+												RowID = (RowID.substring(0, 4)) + '4';
+												$("#" + RowID).html("Canceled")
+
+											}
+										}
+									});
+								}
+							}
+						}
+
+					});
 				}
 				else {	//b3dm or shp
 					$.confirm({
@@ -282,6 +348,7 @@ function geoDataClear() { //resetupload
 	$(".totalfiles").text("")
 	$("#fileTBody").text("")
 	$("#xmlFileTBody").text("")
+	$("#csvFileTBody").text("")
 	foldername = '';
 	$('#upload-progress').val(0)
 	KmlFileArray = [];
@@ -290,6 +357,7 @@ function geoDataClear() { //resetupload
 	Row_No = 0;
 	$("#filetb").hide()
 	$("#xmlfiletb").hide()
+	$("#csvfiletb").hide()
 	$("#bd3mName").val("")
 	$(".indicatorContainer").css("display", "none")
 	$("#jsonF_selection").empty();
@@ -297,6 +365,7 @@ function geoDataClear() { //resetupload
 	$(".buttonTab.insidePage .hidden").hide()
 	$("#add-file-btn").show()
 	$("#add-file-btn-xml").show()
+	$("#add-file-btn-excel").show()
 }
 
 function tempaddtolayerlist(layername, defDisplay) {
@@ -447,6 +516,47 @@ function ValidateJSON() {
 				}
 
 			}
+			else if (dataType == "EXCEL") {
+				KmlLayerArray = []
+				if (obj.result == true) {
+					var counter = 0;
+					kmlarray = obj.LayerArr
+					kmlarray.forEach(function (item, index) {
+						console.log("indeeeeeeeeeeeeex: "+index);
+						$.confirm({
+							boxWidth: '30%',
+							useBootstrap: false,
+							title: 'Alert!',
+							content: "'" + item + "' already exist in the database, please enter another name to proceed. Please rename the layer: <br><input type='text' id='layerRename_" + index + "' placeholder='Rename Here'/>",
+							buttons: {
+								confirm: function () {
+									KmlLayerArray.push($("#layerRename_" + index).val())
+									RowID = $("#csvFileTBody .row.insight div").filter(function () {
+										//set status to indicate this has been removed
+										return $(this).html() == item;
+									}).attr("id")
+									$("#" + RowID).html($("#layerRename_" + index).val())
+									$("#" + RowID).val($("#layerRename_" + index).val())
+
+									counter++
+									if (kmlarray.length == counter && kmlarray.length > 0) {
+										// ValidateJSON()
+									}
+								},
+								cancel: function () {
+									$(".indicatorContainer").css("display", "none")
+									return
+								}
+							}
+						});
+					})
+				}
+				else {
+					r.upload();
+					KmlLayerArray = [];
+				}
+
+			}
 			else {
 				if (obj.result == true) {
 					$.confirm({
@@ -487,6 +597,7 @@ function ValidateJSON() {
 }
 
 $(document).ready(function () {
+
 	r = new Resumable({
 		target: '../JS/uploader/upload.php',
 		testChunks: true,
@@ -513,6 +624,7 @@ $(document).ready(function () {
 
 	r.assignBrowse(document.getElementById('add-file-btn'));
 	r.assignBrowse(document.getElementById('add-file-btn-xml'));
+	r.assignBrowse(document.getElementById('add-file-btn-excel'));
 	$('#start-upload-btn').click(function () {
 		KmlLayerArray = [];
 		if (r.files.length == 0) {
@@ -537,7 +649,15 @@ $(document).ready(function () {
 				KmlLayerArray.push(inpVal)
 				$(".indicatorContainer").css("display", "block")
 			}
+		} else if(dataType == "EXCEL") {
+			r.opts.query.dataType = 'EXCEL';
+			for (i = 0; i < r.files.length; i++) {
+				inpVal = $("#layername"+i).val();
+				KmlLayerArray.push(inpVal)
+				$(".indicatorContainer").css("display", "block")
+			}
 		}
+		
 		else {
 			r.opts.query.dataType = 'KML';
 			for (i = 0; i < r.files.length; i++) {
@@ -602,6 +722,15 @@ $(document).ready(function () {
 				// });
 				geoDataClear()
 				return
+			}else if (dataType == "EXCEL") {
+				$.alert({
+					boxWidth: '30%',
+					useBootstrap: false,
+					title: 'Message',
+					content: 'Unknown files!","Unsupported file format selected. Only .csv is supported. Please try again',
+				});
+				geoDataClear()
+				return
 			}
 		}
 		if (dataType == "B3DM") {
@@ -649,8 +778,7 @@ $(document).ready(function () {
 				<div id="col_`+Row_No+1+`" class="middleBigColumn textContainer"><input id="layername`+Row_No+`" type="text" value="`+this_filename+`"></div>
 				<div id="col_`+Row_No+2+`" class="middleMediumColumn textContainer"><input type ="checkbox" id ="ckb`+Row_No+`" class = ""></div>
 				<div id="col_`+Row_No+3+`" class="middleMediumColumn textContainer"><input type ="checkbox" id ="share`+Row_No+`" class = ""></div>
-				<div id="col_`+Row_No+4+`" class="middleMediumColumn textContainer"><input type ="checkbox" id ="animate`+Row_No+`" class = ""></div>
-				<div id="col_`+Row_No+5+`" class="middleColumn textContainer">Pending</div>`;
+				<div id="col_`+Row_No+4+`" class="middleColumn textContainer">Pending</div>`;
 
 			$("#row"+Row_No).append(tableFileHTML);
 
@@ -678,6 +806,29 @@ $(document).ready(function () {
 			
 			Row_No++;
 		}
+		else if (dataType == "EXCEL") {
+			$(".totalfiles").html(r.files.length + " file(s)")
+			KmlFileArray.push(file.fileName)
+			$("div.panelImage").hide();
+			$("#csvfiletb").show();
+			$(".buttonTab.insidePage .hidden").show()
+			//add table contents
+			let tableFileHTML = '';
+			var row = $("#csvFileTBody").append('<div class="row insight" id="row'+Row_No+'"></div>') //create row
+
+			var this_filename = file.fileName
+			var this_layername = this_filename.split('.')[0];
+
+			tableFileHTML += `
+				<div id="col_`+Row_No+0+`" class="middleColumn textContainer">`+this_filename+`</div>
+				<div id="col_`+Row_No+1+`" class="middleBigColumn textContainer"><input id="layername`+Row_No+`" type="text" value="`+this_layername+`" readonly></div>
+				<div id="col_`+Row_No+2+`" class="middleColumn textContainer">Pending</div>`;
+
+			$("#row"+Row_No).append(tableFileHTML);
+			
+			Row_No++;
+		}
+		$("#add-file-btn-excel").hide().hide()
 		$("#add-file-btn-xml").hide().hide()
 		$("#add-file-btn").hide().hide()
 		progressBar.fileAdded();
@@ -690,7 +841,7 @@ $(document).ready(function () {
 			}).attr("id")
 			if (typeof RowID !== "undefined") {
 				RowID = RowID.substring(3, 4)
-				$("#col_" + RowID + 5).html((file.progress() * 100).toFixed(1) + '%')
+				$("#col_" + RowID + 4).html((file.progress() * 100).toFixed(1) + '%')
 			}
 		}
 		else if(dataType == "SHP"){
@@ -709,13 +860,10 @@ $(document).ready(function () {
 				return $("div", this).html() == file.fileName;
 			}).attr("id")
 			RowID = RowID.substring(3, 4)
-
-			$("#col_" + RowID + 5).html("Successful")
-			layername = $("#layername"+RowID).val()
+			$("#col_" + RowID + 4).html("Successful")
+			layername = $("#layername"+RowID).val();
 			Ckb = $("#ckb" + RowID).prop("checked")
 			share = $("#share" + RowID).prop("checked")
-			animate = $("#animate" + RowID).prop("checked")
-
 			$.ajax({
 				url: "../BackEnd/DataFunctions.php",
 				data: {
@@ -725,8 +873,7 @@ $(document).ready(function () {
 					lyr_name: layername,
 					url: "../Data/KML/" + file.fileName,
 					defaultView: Ckb,
-					offset: 0,
-					animate: animate
+					offset: 0
 				},
 				type: "POST",
 				dataType: "JSON",
@@ -784,6 +931,28 @@ $(document).ready(function () {
 					console.error(str);
 				}
 			})
+		}
+		else if (dataType == "EXCEL") {
+			RowID = $("#csvFileTBody .row.insight").filter(function () {
+				//compare filename with labeled 
+				return $("div", this).html() == file.fileName;
+			}).attr("id")
+			RowID = RowID.substring(3, 4)
+			$("#col_" + RowID + 2).html("Successful")
+			layername = $("#layername"+RowID).val();
+			Ckb = $("#ckb" + RowID).prop("checked")
+			share = $("#share" + RowID).prop("checked");
+
+			$('#uploadAssetData').trigger('click');
+			var file = "/../../Data/Others/AssetData/" + file.fileName;
+
+			$('#assetMappingFileUrl').val(file);
+
+    		$('.loader').fadeIn();
+
+			getJogetAssetDataColumns(file);
+
+			geoDataClear();
 		}
 	});
 
@@ -914,7 +1083,126 @@ $(document).ready(function () {
 				}
 			})
 		}
+
 	})
 
 	$("#reset-upload-btn").click(geoDataClear)
 })
+
+$('#add-file-btn-excel-test').on('click', function(){
+	$('#uploadAssetData').trigger('click');
+	var file = "/../../Data/Others/AssetData/A_SPACE_AREA (7).xlsx";
+
+	getJogetAssetDataColumns(file);
+	console.log('click here');
+});
+
+function getCsvAssetData(file){
+	$.ajax({
+		url: "../JS/uploader/uploadAssetData.php",
+		data: {
+			functionName: "getCSVAssetData", 
+			url: file,
+		},
+		type: "POST",
+		dataType: "JSON",
+		success: function (obj){
+			// display in div
+			var options = "<option value=''>-</option>";
+			obj.forEach(element => {
+				options += "<option value='"+element+"'>"+element.toUpperCase()+"</option>";
+			});
+			$('.tdAssetMapp').append("<select name='csvColumns[]'>"+options+"</select>");
+			
+			$('.loader').fadeOut();
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			var str = textStatus + " " + errorThrown;
+			console.error(str);
+		}
+	})
+}
+
+function getJogetAssetDataColumns(file){
+    var withUnit = ['gross_area', 'net_area', 'usable_height'];
+
+	$.ajax({
+		url: "../JS/uploader/uploadAssetData.php",
+		data: {
+			functionName: "getFMAssetColumns", 
+		},
+		type: "POST",
+		dataType: "JSON",
+		success: function (obj){
+			var columns = obj;
+			var content = "";
+			columns.forEach(element => {
+				var format = element.replace('_', '').toUpperCase();
+				if(withUnit.includes(element)){
+					format += ' <em>(with Unit Measure)</em>';
+				}
+				content += "<tr><td>"+format+"<input type='hidden' name='joget_attributes[]' value='"+element+"'></td><td class='tdAssetMapp'></td></tr>";
+			});
+
+			$('#assetDataMappingBody').html(content);
+			getCsvAssetData(file);
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			var str = textStatus + " " + errorThrown;
+			console.error(str);
+		}
+	})
+}
+
+function saveAssetDataMapping(){
+	$('.loader').fadeIn();
+	
+	var attributes = [];
+	var columns = [];
+	var unit = [];
+
+	$('input[name="joget_attributes[]"]').each(function() {
+		attributes.push($(this).val());
+	});
+	$('select[name="csvColumns[]"]').each(function() {
+		columns.push($(this).val());
+	});
+
+	var mapp = {};
+	$(attributes).each(function(k, val){
+		mapp[val] = columns[k];
+	});
+
+	var file = $('#assetMappingFileUrl').val();
+
+	$.ajax({
+		url: "../JS/uploader/uploadAssetData.php",
+		data: {
+			functionName: "addAssetTableData", 
+			mappings: mapp,
+			url : file,
+			unit : unit
+		},
+		type: "POST",
+		dataType: "JSON",
+		success: function (obj){
+			$('.loader').fadeOut();
+			
+			if(obj){
+				$.alert({
+					boxWidth: '30%',
+					useBootstrap: false,
+					title: 'Message',
+					content: obj.msg
+				});
+
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			var str = textStatus + " " + errorThrown;
+			console.error(str);
+		}
+	})
+
+
+}

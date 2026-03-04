@@ -4,7 +4,7 @@ include_once '../login/include/iot_notification.php';
 session_start();
 
 $response = array();
-$functionName = filter_input(INPUT_POST, 'functionName', FILTER_SANITIZE_STRING);
+$functionName = filter_input(INPUT_POST, 'functionName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 if (!$functionName) {
     $response['bool'] = false;
@@ -206,8 +206,8 @@ function getCurrentIoTData(){
 function getAssetIoTData(){
     global $response;
     global $CONN;
-    $asset_id = filter_input(INPUT_POST, 'asset_id', FILTER_SANITIZE_STRING);
-    $asset_type = filter_input(INPUT_POST, 'asset_type', FILTER_SANITIZE_STRING);
+    $asset_id = filter_input(INPUT_POST, 'asset_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $asset_type = filter_input(INPUT_POST, 'asset_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     
     $res = $CONN->fetchAll("SELECT COALESCE( convert(float, a.value), 0.00) as value, a.datetime from tb_sensor a where a.asset_id = :0 and a.asset_type =:1 order by a.datetime asc", array($asset_id, $asset_type));
     if(!$res){
@@ -255,8 +255,8 @@ function updateIoTNotification(){
 function getNotificationHistory(){
     global $response;
     global $CONN;
-    $asset_id = filter_input(INPUT_POST, 'asset_id', FILTER_SANITIZE_STRING);
-    $asset_type = filter_input(INPUT_POST, 'asset_type', FILTER_SANITIZE_STRING);
+    $asset_id = filter_input(INPUT_POST, 'asset_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $asset_type = filter_input(INPUT_POST, 'asset_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $res = $CONN->fetchAll("SELECT a.* FROM iot_notification a WHERE a.element_id = :0 AND a.iot_type = :1 ORDER BY a.created_at DESC", array($asset_id, $asset_type));
     

@@ -3,13 +3,13 @@ session_start();
 
 $function_name = isset($_POST['function_name']) ? $_POST['function_name'] : NULL;
 if (!NULL) {
-    $functionNameString = str_replace('"', "", $function_name);
+    $functionNameString = str_replace('"', "", $function_name ?? "");
 }
 
 $response = array();
-$functionName = filter_input(INPUT_POST, 'functionName', FILTER_SANITIZE_STRING);
-$packageID = filter_input(INPUT_POST, 'packageID', FILTER_SANITIZE_STRING);
-$isPackageChanged = filter_input(INPUT_POST, 'isPackageChanged', FILTER_SANITIZE_STRING);
+$functionName = filter_input(INPUT_POST, 'functionName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$packageID = filter_input(INPUT_POST, 'packageID', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$isPackageChanged = filter_input(INPUT_POST, 'isPackageChanged', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 if (isset($_POST['function_name'])) {
     $functionName = $functionNameString;
@@ -150,6 +150,9 @@ switch ($functionName) {
     case "getAgileData": 
         $response = getAgileData();
     break;
+    case 'getAssetTypeDataListFM':
+        $response = getAssetTypeDataListFM();
+    break;
     case "getAssetInfo": 
         $elementId = filter_input(INPUT_POST, 'elementId');
         if (!empty($elementId )) {
@@ -170,20 +173,6 @@ switch ($functionName) {
     break;
     case 'deleteIoTSensorData':
         deleteIoTSensorData();
-    break;
-    case 'getLayerId':
-        $layerPath = filter_input(INPUT_POST, 'layerPath');
-        $response = getLayerId($layerPath);
-    break;
-    case "getTrackAnimation";
-        $response = getTrackAnimation();
-    break;
-    case "switchAnimation";
-        $response = switchAnimation();
-    break;
-    case 'getAICDetailsById':
-        $aicId = $_POST['AIC_Id'] ?? null;
-        $response = getAICDetailsById($aicId);
     break;
 }
 
@@ -374,7 +363,7 @@ function uploadScreenshot(){
 
 function getReviewList(){
 
-    $url = filter_input(INPUT_POST, 'urlID', FILTER_SANITIZE_STRING);
+    $url = filter_input(INPUT_POST, 'urlID', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     global $api_username, $api_password, $JOGETLINKOBJ;
     $host = $url;
 
@@ -400,7 +389,7 @@ function getVideoCam() {
     global $response;
     global $CONN;
 
-    $pid = $_POST['project_id'] ?? $_SESSION['project_id'] ?? null;
+    $pid = $_SESSION['project_id'];
     $fetchVideoData = $CONN->fetchAll("SELECT * FROM videoPin WHERE projectID = :0", array($pid));
     if(!$fetchVideoData){
         $response['bool'] = false;
@@ -462,12 +451,12 @@ function addVideoCam(){
         return;
     };
 
-    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $long = filter_input(INPUT_POST, 'longitude', FILTER_VALIDATE_FLOAT);
     $lat = filter_input(INPUT_POST, 'latitude', FILTER_VALIDATE_FLOAT);
     $height = filter_input(INPUT_POST, 'height', FILTER_VALIDATE_FLOAT);
     $videoType = filter_input(INPUT_POST, 'vType', FILTER_VALIDATE_INT);
-    $videoURL = filter_input(INPUT_POST, 'vURL', FILTER_SANITIZE_STRING);
+    $videoURL = filter_input(INPUT_POST, 'vURL', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     // $videoURL = $_POST['vURL'];
     
     $email = $_SESSION['email'];
@@ -509,10 +498,10 @@ function updateVideoCam(){
     $pid = $_SESSION['project_id'];
 
     $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $height = filter_input(INPUT_POST, 'height', FILTER_VALIDATE_FLOAT);
     $videoType = filter_input(INPUT_POST, 'vType', FILTER_VALIDATE_INT);
-    $videoURL = filter_input(INPUT_POST, 'vURL', FILTER_SANITIZE_STRING);
+    $videoURL = filter_input(INPUT_POST, 'vURL', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     
     $fetchVideoData = $CONN->fetchRow("SELECT * FROM videoPin WHERE videoPinID = :0", array($id));
     if(!$fetchVideoData){
@@ -622,7 +611,7 @@ function getProjectLayerList(){
 
     $pid = $_SESSION['project_id'];
 
-    $fetchGeoLayers = $CONN->fetchAll("SELECT PL.Data_ID, PL.Layer_ID, PL.show_metadata, PL.Layer_Name, PL.Default_View, PL.Animation, DP.Data_Type, DP.Added_Date, DP.Data_Owner,
+    $fetchGeoLayers = $CONN->fetchAll("SELECT PL.Data_ID, PL.Layer_ID, PL.show_metadata, PL.Layer_Name, PL.Default_View,DP.Data_Type, DP.Added_Date, DP.Data_Owner,
     MD.md_mission_id, MD.md_date_created, MD.md_start_time, MD.md_end_time, MD.md_meta_id, MD.md_data_category, DP.Offset, DP.X_Offset, DP.Y_Offset
     FROM Project_Layers PL LEFT JOIN Data_Pool DP ON PL.Data_ID = DP.Data_ID 
     LEFT JOIN metadata MD ON PL.meta_id = MD.md_meta_id 
@@ -651,7 +640,7 @@ function renameLayer() {
     };
 
     $dataId = filter_input(INPUT_POST, 'data_id', FILTER_VALIDATE_INT);
-    $layerName = filter_input(INPUT_POST, 'layer_name', FILTER_SANITIZE_STRING);
+    $layerName = filter_input(INPUT_POST, 'layer_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $check = $CONN->fetchOne("SELECT count(*) FROM Project_Layers WHERE Data_ID =:0 AND Project_ID =:1", array($dataId, $pid));
     if ($check != 1) {
@@ -671,37 +660,6 @@ function renameLayer() {
     return $response;
 }
 
-function switchAnimation() {
-    global $response, $CONN;
-    $pid = $_SESSION['project_id'];
-
-    $check = checkIfProjectAdmin();
-    if (!$check) {
-        $response['bool'] = false;
-        $response['msg'] = "Insufficient privileges";
-        return;
-    };
-
-    $animationInput = filter_input(INPUT_POST, 'animation', FILTER_SANITIZE_STRING);
-    $dataId = filter_input(INPUT_POST, 'data_id', FILTER_VALIDATE_INT);
-
-    if ($animationInput == "Disable") {
-        $animationView = 1;
-    } else {
-        $animationView = 0;
-    }
-
-    $updateDefDisplay = $CONN->execute("UPDATE Project_Layers SET Animation =:0  WHERE Data_ID = :1 AND Project_ID = :2", array($animationView, $dataId, $pid));
-
-    if (!$updateDefDisplay) {
-        $response['bool'] = false;
-        $response['msg'] = "SQL Error while update record!";
-        return false;
-    }
-    $response['bool'] = true;
-    return $response;
-}
-
 function switchDefaultDisplay() {
     global $response, $CONN;
     $pid = $_SESSION['project_id'];
@@ -713,7 +671,7 @@ function switchDefaultDisplay() {
         return;
     };
 
-    $defViewInput = filter_input(INPUT_POST, 'defView', FILTER_SANITIZE_STRING);
+    $defViewInput = filter_input(INPUT_POST, 'defView', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $dataId = filter_input(INPUT_POST, 'data_id', FILTER_VALIDATE_INT);
 
     if ($defViewInput == "ON") {
@@ -1257,7 +1215,7 @@ function saveProjectwiseFileData() {
 }
 
 function saveImagePinData() {
-    global $response, $CONN, $IS_DOWNSTREAM;
+    global $response, $CONN;
     $user = $_SESSION['email'];
     $pid = $_SESSION['project_id'];
 
@@ -1289,18 +1247,8 @@ function saveImagePinData() {
 
     if (isset($_FILES['imageFile']) && !empty($_FILES['imageFile']['name'])) {
         $imageFName = $_FILES['imageFile']['name'];
-        $file_tmp =$_FILES['imageFile']['tmp_name']; 
-        
-        $destination = "../../Data/Projects/".$pid."/".$imageName;
-        if($IS_DOWNSTREAM){
-            if(move_uploaded_file($file_tmp, $destination)){
-                shell_exec('icacls "' . $destination . '" /grant IIS_IUSRS:F');
-            }else{
-                $response['msg'] = "Files upload failed";
-            }
-        }else{
-            move_uploaded_file($file_tmp, $destination);
-        }
+        $file_tmp =$_FILES['imageFile']['tmp_name'];
+        move_uploaded_file($file_tmp, "../../Data/Projects/".$pid."/".$imageName);
     } else {
         $response['msg'] = "Files is not attached";
     }
@@ -1643,10 +1591,10 @@ function attachOrDetachLayer(){
     $email = $_SESSION['email'];
     $pid = $_SESSION['project_id'];
 
-    $data_attach = filter_input(INPUT_POST, 'val', FILTER_SANITIZE_STRING);
+    $data_attach = filter_input(INPUT_POST, 'val', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $data_id     = filter_input(INPUT_POST, 'data_id', FILTER_VALIDATE_INT);
     $defaultView = filter_input(INPUT_POST, 'defaultView', FILTER_VALIDATE_BOOLEAN);
-    $lyr_name    = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+    $lyr_name    = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $checkLayer = $CONN->fetchOne("SELECT * FROM Project_Layers WHERE Project_ID =:0 AND Data_ID =:1", array($pid, $data_id));  //check attached or not
     
@@ -2044,13 +1992,12 @@ function getConfigDetailsPWPBi() {
 
 function getAppLink() {
     global $response, $CONN;
-    global $SYSTEM, $IS_DOWNSTREAM;
+    global $SYSTEM;
     $user_id = $_SESSION['user_id'];
 
-    $parentProject_id = filter_input(INPUT_POST, 'project_id_number', FILTER_SANITIZE_STRING);
-    $package_id = filter_input(INPUT_POST, 'package_id', FILTER_SANITIZE_STRING);
-    $project_owner = filter_input(INPUT_POST, 'projectOwner', FILTER_SANITIZE_STRING);
-    $project_phase = filter_input(INPUT_POST, 'projectPhase', FILTER_SANITIZE_STRING);
+    $parentProject_id = filter_input(INPUT_POST, 'project_id_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $package_id = filter_input(INPUT_POST, 'package_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $project_owner = filter_input(INPUT_POST, 'projectOwner', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $fetchProject =  $CONN->fetchRow("SELECT * from project_apps_process WHERE project_id = :0", array($parentProject_id));
 
@@ -2063,7 +2010,7 @@ function getAppLink() {
             $_SESSION['parent_project_id'] =   $CONN->fetchOne("SELECT project_id from projects WHERE project_id_number = :0", array($fetchProjectDetails['parent_project_id_number']));
         }
     }else{
-        $fetchProjectDetails = $CONN->fetchRow("SELECT project_id, project_name, project_owner, Project_type, project_wpc_id, latitude_1, latitude_2, longitude_1, longitude_2, location as loc, project_phase, wpc_abbr from projects WHERE project_id_number = :0", array($package_id));
+        $fetchProjectDetails = $CONN->fetchRow("SELECT project_id, project_name, project_owner, Project_type, project_wpc_id, latitude_1, latitude_2, longitude_1, longitude_2, location as loc from projects WHERE project_id_number = :0", array($package_id));
     }
 
     $fetchParentProjectDetails = $CONN->fetchRow("SELECT project_id from projects WHERE project_id_number = :0", array($parentProject_id));
@@ -2072,15 +2019,7 @@ function getAppLink() {
 
     $project_owner = ($SYSTEM == 'OBYU') ? $fetchProjectDetails['owner_org_id'] : $fetchProjectDetails['project_owner'];
 
-    if($project_owner == 'SSLR2'){
-        if($IS_DOWNSTREAM){
-            $access_control = json_decode(file_get_contents("access\accessControl_SSLR2_DOWNSTREAM.json"), true);
-        }else{
-            $access_control = json_decode(file_get_contents("access\accessControl_SSLR2.json"), true);
-        }
-    }else{
-        $access_control = json_decode(file_get_contents("access\accessControl_".$project_owner.".json"), true);
-    }
+    $access_control = json_decode(file_get_contents("access\accessControl_".$project_owner.".json"), true);
 
     $_SESSION['project_owner'] = ($SYSTEM == 'OBYU') ? $fetchProjectDetails['owner_org_id'] : $fetchProjectDetails['project_owner'];
 
@@ -2090,9 +2029,6 @@ function getAppLink() {
     $longitude2 = ((float)$fetchProjectDetails['longitude_2'] == 0) ? NULL : $fetchProjectDetails['longitude_2'];
 
     $_SESSION['projectID'] = $fetchProjectDetails['project_id'] ;
-    $_SESSION['project_name'] = $fetchProjectDetails['project_name'] ;
-    $_SESSION['project_phase'] = $fetchProjectDetails['project_phase'] ;
-    $_SESSION['wpc_abbr'] = $fetchProjectDetails['wpc_abbr'] ;
     $_SESSION['location'] = ($SYSTEM == 'KKR') ? $fetchProjectDetails['loc'] : "";
     
     $data['currUserEmail'] = $fetchUserDetails['user_email'];
@@ -2104,14 +2040,12 @@ function getAppLink() {
     $data['currProjectOwner'] = ($SYSTEM == 'OBYU') ? $fetchProjectDetails['owner_org_id'] : $fetchProjectDetails['project_owner'];
     $data['currWPCId'] = $fetchProjectDetails['project_wpc_id'];
     $data['project_type'] = $fetchProjectDetails['Project_type'];
-    $data['project_phase'] = $fetchProjectDetails['project_phase'];
-    $data['wpc_abbr'] = $fetchProjectDetails['wpc_abbr'];
 
     $data['pid'] = $package_id;
     $data['currPackageUuid'] = $package_id."_". $fetchProjectDetails['project_id']. "_" . $package_id;
 
     if($SYSTEM == 'KKR'){
-        $getPreloadAccess = preloadAccessKKR($fetchProject, $project_owner, $fetchUserDetails['user_org'], $fetchProjectRole['Pro_Role'], $fetchProjectDetails['Project_type'], $project_phase);
+        $getPreloadAccess = preloadAccessKKR($fetchProject, $project_owner, $fetchUserDetails['user_org'], $fetchProjectRole['Pro_Role'], $fetchProjectDetails['Project_type']);
     }else{
         $getPreloadAccess = preloadAccessOBYU($fetchProject, $project_owner, $fetchUserDetails['user_org'], $fetchProjectRole['Pro_Role']);
     }
@@ -2141,9 +2075,7 @@ function getAppLink() {
     }
 }
 
-function preloadAccessKKR($apps_link, $project_owner, $user_org, $project_role, $project_type, $project_phase) {
-    global $IS_DOWNSTREAM;
-    
+function preloadAccessKKR($apps_link, $project_owner, $user_org, $project_role, $project_type) {
     $accessArr = array();
     $controlArr = array();
     $compareArr = array();
@@ -2176,22 +2108,7 @@ function preloadAccessKKR($apps_link, $project_owner, $user_org, $project_role, 
     }
 
     if($project_type == 'CONSTRUCT'){
-
-        if($project_owner == 'JKR_SABAH'){
-            if($project_phase == '1B'){
-                $linkFile = dirname(__FILE__)."\access\accessControl_".$addOwner."_1B.json";
-            }else{
-                $linkFile = dirname(__FILE__)."\access\accessControl_".$addOwner.".json";
-            }
-        }else if($project_owner == 'SSLR2'){
-            if($IS_DOWNSTREAM){
-                $linkFile = dirname(__FILE__)."\access\accessControl_SSLR2_DOWNSTREAM.json";
-            }else{
-                $linkFile = dirname(__FILE__)."\access\accessControl_SSLR2.json";
-            }
-        }else{
-            $linkFile = dirname(__FILE__)."\access\accessControl_".$addOwner.".json";
-        }
+        $linkFile = dirname(__FILE__)."\access\accessControl_".$addOwner.".json";
 
         if(file_exists($linkFile)){
             $access_control = json_decode(file_get_contents($linkFile), true);
@@ -2200,16 +2117,9 @@ function preloadAccessKKR($apps_link, $project_owner, $user_org, $project_role, 
             $access_control = json_decode(file_get_contents("../BackEnd/accessControl.json"), true);
         }
     }else{
-        $linkFile = dirname(__FILE__)."\access\accessControlAsset_".$addOwner.".json";
-
-        if(file_exists($linkFile)){
-            $access_control = json_decode(file_get_contents($linkFile), true);
-        }
-        else{
-            $access_control = json_decode(file_get_contents("../BackEnd/accessControlAsset.json"), true);
-        }
+        $access_control = json_decode(file_get_contents("../BackEnd/accessControlAsset.json"), true);
     }
-    
+
     $roleUser = isset($project_role) ? $project_role : 'noRole';
 
     if($project_type == 'CONSTRUCT'){
@@ -2224,14 +2134,14 @@ function preloadAccessKKR($apps_link, $project_owner, $user_org, $project_role, 
                 $controlArr[$key] = $val;
             }
         }
-    } 
+    }
     
     if ($accessArr && $controlArr) {
         $assetMainMenu = array('RM','PM','EW','RFI','NCP','PAU');
         $assetMenuRM = array('RM','PM','EW','RFI','NCP','PAU','RI','AM','WP','WA','WI','DR','NOD','IVR','BRG','CVT','DRG','PAVE','RF','SLP');
         $assetMenuPM = array('RM','PM','EW','RFI','NCP','PAU','WO','WB');
-        $assetMenuEW = array('RM','PM','EW','RFI','NCP','PAU','NOE','GAR','WDR');
-        $assetMenu = array('RM','PM','EW','RI','AM','WP','WA','WI','DR','NOD','IVR','WO','WB','NOE','GAR','WDR','RFI','NCP','PAU','BRG','CVT','DRG','PAVE','RF','SLP');
+        $assetMenuEW = array('RM','PM','EW','RFI','NCP','PAU','NOE','WDR');
+        $assetMenu = array('RM','PM','EW','RI','AM','WP','WA','WI','DR','NOD','IVR','WO','WB','NOE','WDR','RFI','NCP','PAU','BRG','CVT','DRG','PAVE','RF','SLP');
 
         if($project_type == 'CONSTRUCT'){
             foreach ($accessArr as $index => $true) {
@@ -2566,7 +2476,6 @@ function preloadLocationData($package_id) {
 function getProjectPackages(){
     global $response;
     global $CONN;
-    global $SYSTEM;
     $parentProjectID = $_SESSION['project_id'];
 
     //check if this is a parent project,
@@ -2574,23 +2483,8 @@ function getProjectPackages(){
         return;
     }
 
-    if($SYSTEM == 'OBYU'){
-        $response = $CONN->fetchAll("SELECT CONCAT(project_id_number, '_', project_id, '_', project_id_number) as package_uuid_bumi, project_id as pid, project_name as pname, project_wpc_id as wpc_id from projects WHERE parent_project_id_number =:0", array($parentProjectID));
-    }else{
-  
-		$project_phase_clause = '';
-		if($_SESSION['user_org'] == 'pmc_1b' || $_SESSION['project_role'] == 'Head of Finance' || $_SESSION['project_role'] == 'Finance Head'){
-            //HOF and FH only can create for 1B
-			$project_phase_clause = " AND project_phase = '1B' ";
-		}else if($_SESSION['user_org'] == 'HSSI'){
-			$project_phase_clause = " AND  (project_phase != '1B' OR project_phase IS  NULL) ";
-		}
-
-        $response = $CONN->fetchAll("SELECT CONCAT(project_id_number, '_', project_id, '_', project_id_number) as package_uuid_bumi, project_id as pid, project_name as pname, project_wpc_id as wpc_id from projects WHERE parent_project_id_number =:0 $project_phase_clause ORDER BY project_name ASC", array($parentProjectID));
-
-    }
-    
-
+    //get and return list
+    $response = $CONN->fetchAll("SELECT CONCAT(project_id_number, '_', project_id, '_', project_id_number) as package_uuid_bumi, project_id as pid, project_name as pname, project_wpc_id as wpc_id from projects WHERE parent_project_id_number =:0", array($parentProjectID));
 }
 
 function fetchMetadata (){
@@ -2609,7 +2503,7 @@ function fetchMetadata (){
 
 function fetchAllDataPool(){
     global $response;
-    $package_id = filter_input(INPUT_POST, 'package_id', FILTER_SANITIZE_STRING);
+    $package_id = filter_input(INPUT_POST, 'package_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $getpreloadLocationData = preloadLocationData($package_id);
     
     $response = $getpreloadLocationData;
@@ -2629,12 +2523,12 @@ function saveGroupAerial (){
         return;
     };
 
-    $groupName = filter_input(INPUT_POST, 'groupName', FILTER_SANITIZE_STRING);
+    $groupName = filter_input(INPUT_POST, 'groupName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $groupID = filter_input(INPUT_POST, 'groupID', FILTER_VALIDATE_INT);
-    $subgroupName = filter_input(INPUT_POST, 'subgroupName', FILTER_SANITIZE_STRING);
+    $subgroupName = filter_input(INPUT_POST, 'subgroupName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $subgroupID = filter_input(INPUT_POST, 'subgroupID', FILTER_VALIDATE_INT);
-    $typeFunc = filter_input(INPUT_POST, 'typeFunc', FILTER_SANITIZE_STRING);
-    $aicID = filter_input(INPUT_POST, 'dataID', FILTER_SANITIZE_STRING);
+    $typeFunc = filter_input(INPUT_POST, 'typeFunc', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $aicID = filter_input(INPUT_POST, 'dataID', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     function checkGroupName($projectID, $name, $id){
         global $response;
@@ -2946,6 +2840,40 @@ function getAssetTypeDataList() {
     return $assetTypeArr;
 }
 
+function getAssetTypeDataListFM() {
+    global $JOGETLINKOBJ;
+
+    $useLink = 'fm_asset_data_list_json';
+    $projType = 'asset';
+
+    $api_username = $JOGETLINKOBJ->getAdminUserName($projType);
+    $api_password = $JOGETLINKOBJ->getAdminUserPassword($projType);
+    $host = $JOGETLINKOBJ->getLink($useLink);
+
+    $headers = array(
+        'Content-Type: application/json',
+        'Authorization: Basic ' . base64_encode("$api_username:$api_password"),
+    );
+
+    $ch = curl_init($host);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $return = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
+
+    $assetTypeArr = array();
+
+    if (!$err) {
+        $decodedText = html_entity_decode($return);
+        $assetTypeArr = json_decode($decodedText, true);
+    }
+
+    return $assetTypeArr;
+}
+
 function getAgileData(){
     $json_str = getCSVAssetList();  
     if ($json_str === null) {
@@ -2959,6 +2887,8 @@ function getAgileData(){
     }
     return $response;
 }
+
+
 
 function getCSVAssetList(){
     $current_directory = __DIR__;
@@ -3343,90 +3273,6 @@ function deleteIoTSensorData(){
         $response['bool'] = false;
         $response['msg'] = "Iot sensor has been deleted";
     }
-}
-
-function getLayerId($layer_path) {
-    global $CONN;
-
-    $pidnumber = $_SESSION['project_id'];
-
-    $layerData = $CONN->fetchAll("SELECT 
-       d.Data_ID,
-       p.Layer_ID,
-       d.Data_Name
-    FROM Project_Layers p
-    JOIN Data_Pool d ON p.Data_ID = d.Data_ID 
-    WHERE p.Project_ID =:0 AND d.Data_URL =:1", array($pidnumber, $layer_path));
-
-    $response['bool'] = true;
-    $response['data'] = $layerData;
-
-    return $response;
-}
-
-function getTrackAnimation() {
-    global $response;
-    global $CONN;
-
-    $pid = $_SESSION['project_id'];
-    $fetchVideoData = $CONN->fetchAll("SELECT 
-        p.Layer_ID,
-        p.Data_ID,
-        p.Layer_name,
-        p.Default_View,
-        p.Project_ID,
-        p.Animation,
-        d.Data_URL,
-        d.Data_Type
-     FROM Project_Layers p JOIN Data_Pool d ON p.Data_ID = d.Data_ID  WHERE project_ID = :0 AND Animation = 1", array($pid));
-    if(!$fetchVideoData){
-        $response['bool'] = false;
-        $response['msg'] = "No Track Animation Registered";
-    }
-        $response['bool'] = true;
-        $response['data'] = $fetchVideoData;
-        
-    return $response;
-}
-
-function getAICDetailsById($aicId) {
-    global $response, $CONN;
-
-    $aicDetails = $CONN->fetchAll(
-        "SELECT 
-            a.AIC_Id, 
-            a.Project_Id, 
-            a.Package_Id, 
-            a.Image_Type, 
-            a.Image_Captured_Date,
-            a.Registered_By, 
-            a.Registered_Date, 
-            a.Image_URL, 
-            a.Routine_Id, 
-            a.Routine_Type,
-            a.Use_Name, 
-            a.Image_Group, 
-            a.Image_SubGroup, 
-            p.project_id,
-            g.groupName,
-            sg.subGroupName
-        FROM AerialImageCompare a
-        LEFT JOIN projects p ON a.Package_Id = p.project_id_number
-        LEFT JOIN groupAerial g ON a.Image_Group = g.groupID
-        LEFT JOIN subgroupAerial sg ON a.Image_SubGroup = sg.subGroupID
-        WHERE a.AIC_Id = :0",
-        array($aicId)
-    );
-
-    if ($aicDetails) {
-        $response['bool'] = true;
-        $response['data'] = $aicDetails[0];
-    } else {
-        $response['bool'] = false;
-        $response['msg'] = 'No AIC record found for the given ID';
-    }
-
-    return $response;
 }
 
 ?>
