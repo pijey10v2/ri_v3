@@ -1,4 +1,5 @@
 <?php
+//V3
 if (session_status() == PHP_SESSION_NONE) session_start();
 require dirname(__DIR__).'/../login/include/_include.php';
 
@@ -25,11 +26,6 @@ class ExecDashboard{
     var $redVal;
     var $yellowVal;
     var $greenVal;
-    var $uiPref;
-    var $jogetHost;
-    var $jogetAdminUser;
-    var $jogetAdminPwd;
-    var $riHost;
 
     function __construct(){
 		global $CONN;
@@ -52,6 +48,8 @@ class ExecDashboard{
         }else if($this->userOrg == 'JKR'){
             $this->projectOwner = 'JKR_SABAH';
         }else if($this->userOrg == 'HSSI'){
+            $this->projectOwner = 'JKR_SABAH';
+        }else if($this->userOrg == 'pmc_1b'){
             $this->projectOwner = 'JKR_SABAH';
         }else{
             $this->projectOwner = 'JKR_SARAWAK';
@@ -129,19 +127,27 @@ class ExecDashboard{
     }
 
     function fetchProject(){
-        global $SYSTEM, $PROJECTIDNOSBH, $PROJECTIDNOSRWK;
+        global $SYSTEM, $PROJECTIDNOSBH, $PROJECTIDNOSRWK, $PRODUCTION_FLAG;
         if ($SYSTEM == 'OBYU'){
             $sql = "SELECT * FROM projects where owner_org_id=:0 AND status = 'active' ORDER BY project_name ASC";
             $fetchProject = $this->db->fetchAll($sql, array($this->userOrg));
             return $fetchProject;
         }else{
+
+            // hide hq package for DR since this package only want to register correspondence & document
+            $exclude_packageUuid = '';
+            if($PRODUCTION_FLAG){
+                $exclude_packageUuid = " AND p.project_id_number <> 397 ";
+            }else{
+                $exclude_packageUuid = " AND p.project_id_number <> 321 ";
+            }
             
             if ($this->userOrg == 'KKR') {
-                $sql = "SELECT * FROM projects p where (p.project_id_number IN (:0 , :1) OR p.parent_project_id_number IN (:2 , :3)) AND p.status = 'active' ORDER BY p.project_name ASC;";
+                $sql = "SELECT * FROM projects p where (p.project_id_number IN (:0 , :1) OR p.parent_project_id_number IN (:2 , :3)) AND p.status = 'active' $exclude_packageUuid ORDER BY p.project_name ASC;";
                 $fetchProject = $this->db->fetchAll($sql, array ($PROJECTIDNOSBH, $PROJECTIDNOSRWK, $PROJECTIDNOSBH, $PROJECTIDNOSRWK));
                 return $fetchProject;
             }else{
-                $sql = "SELECT * FROM projects p where p.project_owner=:0 AND (p.project_id_number =:1 OR p.parent_project_id_number =:2) AND p.status = 'active' ORDER BY p.project_name ASC";
+                $sql = "SELECT * FROM projects p where p.project_owner=:0 AND (p.project_id_number =:1 OR p.parent_project_id_number =:2) AND p.status = 'active' $exclude_packageUuid ORDER BY p.project_name ASC";
                 $fetchProject = $this->db->fetchAll($sql, array($this->projectOwner, $this->fetchProjectBasedId, $this->fetchProjectBasedId));
                 return $fetchProject;
             }
@@ -270,7 +276,11 @@ class ExecDashboard{
             $orgUsed = ($this->projectOwner == 'JKR_SABAH') ? 'JKR' : 'JKRS';
         }
 
-        $sql = "SELECT * FROM users u LEFT JOIN pro_usr_rel p ON p.Usr_ID = u.user_id where u.user_org=:0 AND p.Pro_Role = 'Project Manager'";
+        if($orgUsed == 'JKR'){
+            $sql = "SELECT * FROM users u LEFT JOIN pro_usr_rel p ON p.Usr_ID = u.user_id where u.user_org=:0 AND p.Pro_Role = 'Project Manager' AND u.user_designation = 'SOR'";
+        }else{
+            $sql = "SELECT * FROM users u LEFT JOIN pro_usr_rel p ON p.Usr_ID = u.user_id where u.user_org=:0 AND p.Pro_Role = 'Project Manager'";
+        }
         $fetchPM = $this->db->fetchAll($sql, array($orgUsed));
 
         foreach ($fetchPM as $v) {
@@ -477,6 +487,96 @@ class ExecDashboard{
         return $ret;
     }
 
+    function fetchDaysDelay(){
+        $ret = array();
+
+		if($this->projectOwner == 'OBYU'){
+            $url = $this->jogetHost."jw/web/json/data/list/conOp/list_ppuDashboard?"; 
+        }else{
+            $url = $this->jogetHost."jw/web/json/data/list/ri_construct/list_ppuForm?";
+        }
+        
+        $res = $this->jogetCURL($url);
+
+        if (isset($res['data'])) {
+            usort($res['data'], function($a, $b) {
+                $aU = $a['date_report'];
+                $bU = $b['date_report'];
+
+                if ($aU == $bU) {
+                    return strtotime($a['dateCreated']) - strtotime($b['dateCreated']);
+                }
+
+                return strtotime($aU) - strtotime($bU);
+            });
+
+            $dataArr = $res['data'];
+
+            if($dataArr){
+                foreach ($dataArr as $projProg) {
+                    // based on month and year
+                    $dateCreated = strtotime($projProg['date_report']);
+                    $year = date("Y", $dateCreated);
+                    $month = date("M", $dateCreated);
+                    $daysDelay = $projProg['no_days_delay'];
+
+                    $ret[$projProg['package_id']][$year][$month]['no_days_delay'] = $daysDelay;
+                }
+
+            }
+        }
+        return $ret;
+    }
+
+    function fetchOverallProgress(){
+        global $PROJECTIDNOSBH, $CONN;
+        $getSql = "SELECT CONCAT(project_id_number, '_', project_id, '_', project_id_number) as package_uuid FROM projects WHERE project_id_number=:0";
+        $getProjeId = $CONN->fetchOne($getSql, array($PROJECTIDNOSBH));
+
+        $ret = array();
+        $url = $this->jogetHost."jw/web/json/data/list/ri_construct/list_opuCardForm?d-3341121-fn_package_uuid=".$getProjeId;
+
+        $res = $this->jogetCURL($url);
+
+        if (isset($res['data'])) {
+            $dataArr = $res['data'];
+            $mainFlag1A = false;
+			$mainFlag1B = false;
+
+            if($dataArr){
+                foreach ($dataArr as $overallProg) {
+                    // based on month and year
+                    $year = $overallProg['year'];
+                    $currPhysical = $overallProg['curr_month_physical'];
+					$prevPhysical = $overallProg['prev_month_physical'];
+					$variance = $overallProg['variance'];
+					$flag1a = $overallProg['flag_1a'];
+					$flag1b = $overallProg['flag_1b'];
+
+					$month = (int)$overallProg['month'];
+					$monthName = date('M', mktime(0, 0, 0, $month, 10));
+
+					$phase = ($overallProg['project_phase'] !== '') ? $overallProg['project_phase'] : '1B';
+
+					if($mainFlag1A == false && $flag1a == true){
+						$mainFlag1A = true;
+					}
+
+					if($mainFlag1B == false && $flag1b == true){
+						$mainFlag1B = true;
+					}
+	
+					$ret['overall'][$year][$monthName][$phase]['curr_month_physical'] = $currPhysical;
+					$ret['overall'][$year][$monthName][$phase]['prev_month_physical'] = $prevPhysical;
+					$ret['overall'][$year][$monthName][$phase]['variance'] = $variance;
+					$ret['overall']['flag1A'] = $mainFlag1A;
+					$ret['overall']['flag1B'] = $mainFlag1B;
+                }
+            }
+        }
+        return $ret;
+    }
+
     function getDivisionHTML(){
 
         $this->userProj = $this->fetchProject();
@@ -492,9 +592,11 @@ class ExecDashboard{
         }
         else{
             $contractArr = $this->fetchContractDetails();
+            $overallProgressArr = $this->fetchOverallProgress();
         }
 
         $projProgressArr = $this->fetchProjectProgressForParent();
+        $projProgressDayDelay = $this->fetchDaysDelay();
         $rangeSetting = $this->fetchRange();
 
         $projectPackageTree = $this->buildTree($this->userProj);
@@ -506,10 +608,11 @@ class ExecDashboard{
         }
         
         $divisionHTML ='';
+        $progressBarHTML = '';
         $filterHTML ='';
         $cardPackage ='';
         $cardProj ='';
-
+        $valDaysDelay = '';
         
         $countAll = 0;
         $countComplete = 0;
@@ -548,6 +651,7 @@ class ExecDashboard{
         
         if($this->userOrg == 'KKR'){
                 if(($_SESSION['proj_owner_sbh'] == "1") && ($_SESSION['proj_owner_swk'] == "1")){
+                    $divisionHTML .= '<div class = "dashboardBodyExec">';
                     foreach ($projectPackageTree as $key){
                         if ($key['project_owner']  == 'JKR_SARAWAK'){
                             $projectIcon = $icnPrefix.$key['icon_url'];
@@ -720,14 +824,9 @@ class ExecDashboard{
                                                     $projectWPCID = (isset($children['project_wpc_id'])) ? $children['project_wpc_id'] : '';
                                                     $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
                                                     $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
-                                                    
-                                                    if(isset($pmSet[$children['project_id']])){
-                                                        $projectPM = (isset($pmSet[$children['project_id']])) ? $pmSet[$children['project_id']] : 'N/A';
-                                                    }
-                                                    else{
-                                                        $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
-                                                    }
-                                                    
+
+                                                    $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
+                                                                                                        
                                                     if(isset($contractorSet[$children['project_id']])){
                                                         $projectContractor = (isset($contractorSet[$children['project_id']])) ? $contractorSet[$children['project_id']] : 'N/A';
                                                     }
@@ -854,8 +953,14 @@ class ExecDashboard{
                             if(isset($key['children'])){
                                 if($key['project_type'] == 'ASSET') continue;
                                 $divisionHTML .= '
-                                    <div class="division">
-                                        <div class="row-container" style="padding: .8rem 0; font-size: 1rem; font-weight: bold;">'.$key['project_name'].'</div>
+                                    <div class="division '.$key['project_id'].'">
+                                        <div class="row-container" style="padding: .8rem 0; font-size: 1rem; font-weight: bold; align-items: center"">'.$key['project_name'].'
+                                            <select class="select-projectphase" data-projectid="'.$key['project_id'].'">
+                                                <option value="all">All</option>
+                                                <option value="1A">1A</option>
+                                                <option value="1B">1B</option>
+                                            </select>
+                                        </div>
                                         
                                         <div class="card-container mix-wrapper">';
                                         $cardPackage ='';
@@ -871,6 +976,7 @@ class ExecDashboard{
                                                 $projectWPCID = (isset($children['project_wpc_id'])) ? $children['project_wpc_id'] : '';
                                                 $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
                                                 $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
+                                                $projectPhase = (isset($children['project_phase'])) ? $children['project_phase'] : '1A';
                                                 
                                                 if(isset($pakageSet[$children['project_id']])){
                                                     $projectName = (isset($pakageSet[$children['project_id']])) ? $pakageSet[$children['project_id']] : 'N/A';
@@ -878,12 +984,7 @@ class ExecDashboard{
                                                     $projectName = (isset($children['project_name'])) ? $children['project_name'] : 'N/A';
                                                 }
                                                 
-                                                if(isset($pmSet[$children['project_id']])){
-                                                    $projectPM = (isset($pmSet[$children['project_id']])) ? $pmSet[$children['project_id']] : 'N/A';
-                                                }
-                                                else{
-                                                    $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
-                                                }
+                                                $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
                                                 
                                                 if(isset($contractorSet[$children['project_id']])){
                                                     $projectContractor = (isset($contractorSet[$children['project_id']])) ? $contractorSet[$children['project_id']] : 'N/A';
@@ -919,6 +1020,13 @@ class ExecDashboard{
                                                 }
                                                 else{
                                                     $varEachBef = (isset($variance['before'][$children['project_id']]['varPhyBef'])) ? number_format($variance['before'][$children['project_id']]['varPhyBef'], 2) : "N/A";
+                                                }
+
+                                                if(isset($projProgressDayDelay[$children['project_id']][$this->currentYear][$this->currentMonth]['no_days_delay'])){
+                                                    $valDaysDelay = $projProgressDayDelay[$children['project_id']][$this->currentYear][$this->currentMonth]['no_days_delay'];
+                                                    $varDaysDelay = '<br>('.$valDaysDelay.' Days)';
+                                                }else{
+                                                    $varDaysDelay = "";
                                                 }
                 
                                                 $pmName = ($key['project_owner'] == "JKR_SABAH") ? 'SOR' : 'PM';
@@ -960,12 +1068,19 @@ class ExecDashboard{
                                                         $progressBef = 'onTrack';
                                                         $explainBef = 'On Track';
                                                     }
+
+                                                    //check if variance is negative, then it showing no. of delay
+                                                    if($varEachNow < 0 && $valDaysDelay !== ''){
+                                                        $daysDelay = $varDaysDelay;
+                                                    }else{
+                                                        $daysDelay = "";
+                                                    }
                                                 }
                 
                                                 $countAll = $countAll +1;
                                                 $per =( $explain == 'Completed')?"" :"% ";
                                                 $cardPackage .= '
-                                                    <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$key['project_owner'].'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'">
+                                                    <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$key['project_owner'].'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'" data-project_phase="'.$projectPhase.'">
                                                         <div class="column-one">
                                                             <img src="'.$imgUrl.'"/>
                                                             <div class="title"><div class="text-ellipsis">'.$projectWPCID.'</div></div>
@@ -991,7 +1106,7 @@ class ExecDashboard{
                                                             <div class="footer '.$progress.'">
                                                                 <div><i class="fa-solid fa-circle-info"></i>
                                                                     <div class="indicator-container">
-                                                                        <span class="indicator-value">'.$varEachNow.$per.$explain.'</span>
+                                                                        <span class="indicator-value">'.$varEachNow.$per.$explain.$daysDelay.'</span>
                                                                         <span class="indicator-value-previous">'.$varEachBef.'% from previous month</span>
                                                                     </div>
                                                                 </div>
@@ -1111,6 +1226,7 @@ class ExecDashboard{
                                 }
             
                                 $divisionHTML .= '
+                                <div class = "dashboardBodyExec">
                                 <div class="division">
                                     <div class="row-container '.$progressProj.'">
                                         <div class="projImage">
@@ -1184,12 +1300,7 @@ class ExecDashboard{
                                                         $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
                                                         $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
                                                         
-                                                        if(isset($pmSet[$children['project_id']])){
-                                                            $projectPM = (isset($pmSet[$children['project_id']])) ? $pmSet[$children['project_id']] : 'N/A';
-                                                        }
-                                                        else{
-                                                            $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
-                                                        }
+                                                        $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
                                                         
                                                         if(isset($contractorSet[$children['project_id']])){
                                                             $projectContractor = (isset($contractorSet[$children['project_id']])) ? $contractorSet[$children['project_id']] : 'N/A';
@@ -1323,8 +1434,15 @@ class ExecDashboard{
                                 if(isset($key['children'])){
                                     if($key['project_type'] == 'ASSET') continue;
                                     $divisionHTML .= '
-                                        <div class="division">
-                                            <div class="row-container" style="padding: .8rem 0; font-size: 1rem; font-weight: bold;">'.$key['project_name'].'</div>
+                                        <div class = "dashboardBodyExec large">
+                                        <div class="division '.$key['project_id'].'">
+                                            <div class="row-container" style="padding: .8rem 0; font-size: 1rem; font-weight: bold;">'.$key['project_name'].'
+                                                <select class="select-projectphase" data-projectid="'.$key['project_id'].'">
+                                                    <option value="all">All</option>
+                                                    <option value="1A">1A</option>
+                                                    <option value="1B">1B</option>
+                                                </select>
+                                            </div>
                                             <div class="card-container mix-wrapper">';
                                             $cardPackage ='';
                                             foreach($key['children'] as $children){
@@ -1339,6 +1457,7 @@ class ExecDashboard{
                                                     $projectWPCID = (isset($children['project_wpc_id'])) ? $children['project_wpc_id'] : '';
                                                     $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
                                                     $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
+                                                    $projectPhase = (isset($children['project_phase'])) ? $children['project_phase'] : '1A';
                                                     
                                                     if(isset($pakageSet[$children['project_id']])){
                                                         $projectName = (isset($pakageSet[$children['project_id']])) ? $pakageSet[$children['project_id']] : 'N/A';
@@ -1346,12 +1465,7 @@ class ExecDashboard{
                                                         $projectName = (isset($children['project_name'])) ? $children['project_name'] : 'N/A';
                                                     }
                                                     
-                                                    if(isset($pmSet[$children['project_id']])){
-                                                        $projectPM = (isset($pmSet[$children['project_id']])) ? $pmSet[$children['project_id']] : 'N/A';
-                                                    }
-                                                    else{
-                                                        $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
-                                                    }
+                                                    $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
                                                     
                                                     if(isset($contractorSet[$children['project_id']])){
                                                         $projectContractor = (isset($contractorSet[$children['project_id']])) ? $contractorSet[$children['project_id']] : 'N/A';
@@ -1387,6 +1501,13 @@ class ExecDashboard{
                                                     }
                                                     else{
                                                         $varEachBef = (isset($variance['before'][$children['project_id']]['varPhyBef'])) ? number_format($variance['before'][$children['project_id']]['varPhyBef'], 2) : "N/A";
+                                                    }
+
+                                                    if(isset($projProgressDayDelay[$children['project_id']][$this->currentYear][$this->currentMonth]['no_days_delay'])){
+                                                        $valDaysDelay = $projProgressDayDelay[$children['project_id']][$this->currentYear][$this->currentMonth]['no_days_delay'];
+                                                        $varDaysDelay = '<br>('.$valDaysDelay.' Days)';
+                                                    }else{
+                                                        $varDaysDelay = "";
                                                     }
                     
                                                     $pmName = ($key['project_owner'] == "JKR_SABAH") ? 'SOR' : 'PM';
@@ -1428,12 +1549,19 @@ class ExecDashboard{
                                                             $progressBef = 'onTrack';
                                                             $explainBef = 'On Track';
                                                         }
+
+                                                        //check if variance is negative, then it showing no. of delay
+                                                        if($varEachNow < 0 && $valDaysDelay !== ''){
+                                                            $daysDelay = $varDaysDelay;
+                                                        }else{
+                                                            $daysDelay = "";
+                                                        }
                                                     }
                     
                                                     $countAll = $countAll +1;
                                                     $per =( $explain == 'Completed')?"" :"% ";
                                                     $cardPackage .= '
-                                                        <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$key['project_owner'].'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'">
+                                                        <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$key['project_owner'].'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'" data-project_phase="'.$projectPhase.'">
                                                             <div class="column-one">
                                                                 <img src="'.$imgUrl.'"/>
                                                                 <div class="title"><div class="text-ellipsis">'.$projectWPCID.'</div></div>
@@ -1459,7 +1587,7 @@ class ExecDashboard{
                                                                 <div class="footer '.$progress.'">
                                                                     <div><i class="fa-solid fa-circle-info"></i>
                                                                         <div class="indicator-container">
-                                                                            <span class="indicator-value">'.$varEachNow.$per.$explain.'</span>
+                                                                            <span class="indicator-value">'.$varEachNow.$per.$explain.$daysDelay.'</span>
                                                                             <span class="indicator-value-previous">'.$varEachBef.'% from previous month</span>
                                                                         </div>
                                                                     </div>
@@ -1483,184 +1611,385 @@ class ExecDashboard{
                     }
                 }
         }else{
-            foreach ($projectPackageTree as $key){
-                if ($this->projectOwner == 'JKR_SARAWAK' || $this->projectOwner == 'OBYU'){
-                    $projectIcon = $icnPrefix.$key['icon_url'];
-                    $imgUrl = (file_exists($projectIcon)) ? $projectIcon : $faviconPrefix.'favicon.ico';
-                    $projectID = (isset($key['project_id'])) ? $key['project_id'] : '';
-                    $currPackageUuid = (isset($key['project_id']) && isset($key['project_id_number'])) ? $key['project_id_number']."_". $key['project_id']. "_" . $key['project_id_number']: ""; 
-                    $projectStartDate = (isset($key['start_date'])) ? $key['start_date'] : 'N/A';
-                    $projectEndDate = (isset($key['end_date'])) ? $key['end_date'] : 'N/A';
-                    $projectDuration = (isset($key['duration'])) ? $key['duration'] : 'N/A';
-                    $projectName = (isset($key['project_name'])) ? $key['project_name'] : 'N/A';
-                    $projectWPCID = (isset($key['project_id'])) ? $key['project_id'] : '';
-                    $totProjAmount = 0;
-                    $startDate = '';
-                    $endDate = '';
-
-                    $physical_actual_parent = 0;
-                    $physical_schedule_parent = 0;
-                    $physical_schedule_parent = 0;
-                    $day_delay_parent = 0;
-
-                    $cardProj='';
-                    if(isset($key['children'])){
-                        foreach($key['children'] as $children){
-                            $projectContractAmount = (isset($contractArr[$children['project_id']]['originalAmount'])) ? $contractArr[$children['project_id']]['originalAmount'] : 0;
-                            $totProjAmount = $totProjAmount + $projectContractAmount;
-                            
-                            if (!$startDate){
-                                $startDate = $children['start_date'];
-                            }else if($children['start_date'] == $startDate){
-                                $startDate = $startDate;
-                            }else if($children['start_date'] < $startDate){
-                                $startDate = $children['start_date'];
-                            }else if($children['start_date'] > $startDate){
-                                $startDate = $startDate;
+            $createBody = true;
+            if(count($projectPackageTree) > 0){
+                foreach ($projectPackageTree as $key){
+                    if ($this->projectOwner == 'JKR_SARAWAK' || $this->projectOwner == 'OBYU'){
+                        $projectIcon = $icnPrefix.$key['icon_url'];
+                        $imgUrl = (file_exists($projectIcon)) ? $projectIcon : $faviconPrefix.'favicon.ico';
+                        $projectID = (isset($key['project_id'])) ? $key['project_id'] : '';
+                        $currPackageUuid = (isset($key['project_id']) && isset($key['project_id_number'])) ? $key['project_id_number']."_". $key['project_id']. "_" . $key['project_id_number']: ""; 
+                        $projectStartDate = (isset($key['start_date'])) ? $key['start_date'] : 'N/A';
+                        $projectEndDate = (isset($key['end_date'])) ? $key['end_date'] : 'N/A';
+                        $projectDuration = (isset($key['duration'])) ? $key['duration'] : 'N/A';
+                        $projectName = (isset($key['project_name'])) ? $key['project_name'] : 'N/A';
+                        $projectWPCID = (isset($key['project_id'])) ? $key['project_id'] : '';
+                        $totProjAmount = 0;
+                        $startDate = '';
+                        $endDate = '';
+    
+                        $physical_actual_parent = 0;
+                        $physical_schedule_parent = 0;
+                        $physical_schedule_parent = 0;
+                        $day_delay_parent = 0;
+    
+                        $cardProj='';
+                        if(isset($key['children'])){
+                            foreach($key['children'] as $children){
+                                $projectContractAmount = (isset($contractArr[$children['project_id']]['originalAmount'])) ? $contractArr[$children['project_id']]['originalAmount'] : 0;
+                                $totProjAmount = $totProjAmount + $projectContractAmount;
+                                
+                                if (!$startDate){
+                                    $startDate = $children['start_date'];
+                                }else if($children['start_date'] == $startDate){
+                                    $startDate = $startDate;
+                                }else if($children['start_date'] < $startDate){
+                                    $startDate = $children['start_date'];
+                                }else if($children['start_date'] > $startDate){
+                                    $startDate = $startDate;
+                                }
+    
+                                if (!$endDate){
+                                    $endDate = $children['end_date'];
+                                }else if($children['end_date'] == $endDate){
+                                    $endDate = $endDate;
+                                }else if($children['end_date'] > $endDate){
+                                    $endDate = $children['end_date'];
+                                }else if($children['end_date'] < $endDate){
+                                    $endDate = $endDate;
+                                }
                             }
-
-                            if (!$endDate){
-                                $endDate = $children['end_date'];
-                            }else if($children['end_date'] == $endDate){
-                                $endDate = $endDate;
-                            }else if($children['end_date'] > $endDate){
-                                $endDate = $children['end_date'];
-                            }else if($children['end_date'] < $endDate){
-                                $endDate = $endDate;
-                            }
+                            $contractAmt = number_format($totProjAmount, 2, ".", ",");
+                        }else{
+                            $contractAmt = 0.00;
                         }
-                        $contractAmt = number_format($totProjAmount, 2, ".", ",");
+                    
+                        if(isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_actual_parent'])){
+                            $physical_actual_parent = (isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_actual_parent'])) ? $projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_actual_parent'] : 0;
+                        }
+                        else{
+                            $physical_actual_parent = "N/A";
+                        }
+    
+                        if(isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_schedule_parent'])){
+                            $physical_schedule_parent = (isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_schedule_parent'])) ? $projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_schedule_parent'] : 0;
+                        }
+                        else{
+                            $physical_schedule_parent = "N/A";
+                        }
+                        if(isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['day_delay_parent'])){
+                            $day_delay_parent = (isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['day_delay_parent'])) ? $projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['day_delay_parent'].' day(s) delay' : 0;
+                        }else{
+                            $day_delay_parent = "N/A";
+                        }
+    
+                        if($physical_actual_parent == "N/A" || $physical_schedule_parent == "N/A"){
+                            $varEachNow = "N/A";
+                        }
+                        else{
+                            $varEachNow = (float) $physical_actual_parent - (float) $physical_schedule_parent;
+                        }
+    
+                        if($varEachNow == "N/A" ){
+                            $progressProj = 'notAvailable';
+                            $explain = '';
+                            $trend = '<i class="fa-solid fa-ban"></i>';
+                        }else if($varEachNow <= $redVal['1']){
+                            $progressProj = 'delay';
+                            $explain = 'Sick Project';
+                            $trend = '<i class="fa-solid fa-arrow-trend-down delay" style="font-weight: bold; color: red;"></i>';
+                            $varEachNow = $varEachNow . '%';
+                        }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
+                            $progressProj = 'alarming';
+                            $explain = 'Delayed Project';
+                            $trend = '<i class="fa-solid fa-diamond-exclamation" style="font-weight: bold; color: #ffc107;"></i>';
+                            $varEachNow = $varEachNow . '%';
+                        }else if($varEachNow > $yellowVal['1']){
+                            $progressProj = 'onTrack';
+                            $explain = 'On Schedule';
+                            $trend = '<i class="fa-solid fa-arrow-trend-up" style="font-weight: bold; color: #4caf50;"></i>';
+                            $varEachNow = $varEachNow . '%';
+                        }
+    
+                        if($createBody){
+                            $divisionHTML .= '<div class = "dashboardBodyExec">';
+                            $createBody = false;
+                        }
+                        $divisionHTML .= '
+                        <div class="division">
+                            <div class="row-container '.$progressProj.'">
+                                <div class="projImage">
+                                    <img src="'.$imgUrl.'"/>
+                                </div>
+                                <div class="projName">
+                                    <div class="name">'.$key['project_name'].'</div>
+                                    <div clas="amount">
+                                        <i class="fa-solid fa-circle-dollar"></i>
+                                        <span class="column-two one-line amount">RM'.$contractAmt.'</span>
+                                    </div>
+                                </div>
+                                <div class="ProjInfo">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="column-label small" title="Start Date"><i class="fa-light fa-calendar-days" style="margin-right: 5px"></i>Start Date</div>
+                                        </div>
+                                        <div class="row">
+                                            <span class="column-two progress">'.date("d M Y", strtotime($startDate)).'</span>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="column-label small" title="End Date"><i class="fa-light fa-calendar-days" style="margin-right: 5px"></i>End Date</div>
+                                        </div>
+                                        <div class="row">
+                                            <span class="column-two progress">'.date("d M Y", strtotime($endDate)).'</span>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="column-label small" title="Status"><i class="fa-light fa-bars-progress" style="margin-right: 5px"></i>Project Status</div>
+                                        </div>
+                                        <div class="row">
+                                            <span class="column-two indicator-value">'.$trend.'   '.$varEachNow.' '.$explain.'</span>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="column-label small" title="Days Delay"><i class="fa-light fa-calendar-clock" style="margin-right: 5px"></i>Days Delay</div>
+                                        </div>
+                                        <div class="row">
+                                            <span class="column-two indicator-value">'.$trend.'   '.$day_delay_parent.'</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-container mix-wrapper '.$progressProj.'">';
+                                if(isset($key['children'])){
+                                    if($key['project_type'] == 'ASSET') continue;
+                                        $cardPackage ='';
+                                        foreach($key['children'] as $children){
+                                            if(isset($children)){
+                                                //MR CHANG asked to skip this package
+                                                if($children['project_id'] == 'PBHS_Redline') continue;
+    
+                                                $projectIcon = $icnPrefix.$children['icon_url'];
+    
+                                                $imgUrl = (file_exists($projectIcon)) ? $projectIcon : $faviconPrefix.'favicon.ico';
+                                                $projectID = (isset($children['project_id'])) ? $children['project_id'] : '';
+                                                $currPackageUuid = (isset($children['project_id']) && isset($children['project_id_number'])) ? $children['project_id_number']."_". $children['project_id']. "_" . $children['project_id_number']: ""; 
+                                                $projectPhase = '';
+                                                
+                                                
+                                                if(isset($pakageSet[$children['project_id']])){
+                                                    $projectName = (isset($pakageSet[$children['project_id']])) ? $pakageSet[$children['project_id']] : 'N/A';
+                                                }else{
+                                                    $projectName = (isset($children['project_name'])) ? $children['project_name'] : 'N/A';
+                                                }
+    
+                                                $projectWPCID = (isset($children['project_wpc_id'])) ? $children['project_wpc_id'] : '';
+                                                $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
+                                                $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
+                                                
+                                                $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
+                                                
+                                                if(isset($contractorSet[$children['project_id']])){
+                                                    $projectContractor = (isset($contractorSet[$children['project_id']])) ? $contractorSet[$children['project_id']] : 'N/A';
+                                                }
+                                                else{
+                                                    $projectContractor = (isset($contractorNameArr[$children['contractor_org_id']])) ? $contractorNameArr[$children['contractor_org_id']] : 'N/A';
+                                                }
+                                            
+                                                $projectContractAmount = (isset($contractArr[$children['project_id']]['originalAmount'])) ? $contractArr[$children['project_id']]['originalAmount'] : 0;
+                                                $contractAmt = number_format($projectContractAmount, 2, ".", ",");
+    
+                                                if(isset($variance['now'][$children['project_id']]['phyAct'])){
+                                                    $phyActNow = (isset($variance['now'][$children['project_id']]['phyAct'])) ? number_format($variance['now'][$children['project_id']]['phyAct'], 2) : 0;
+                                                }else{
+                                                    $phyActNow = 0;
+                                                }
+    
+                                                if(isset($variance['now'][$children['project_id']]['varPhyCurr']) && $variance['now'][$children['project_id']]['varPhyCurr'] === 'N/A'){
+                                                    $varEachNow = "N/A";
+                                                }
+                                                else{
+                                                    $varEachNow = (isset($variance['now'][$children['project_id']]['varPhyCurr'])) ? number_format($variance['now'][$children['project_id']]['varPhyCurr'], 2) : "N/A";
+                                                }
+    
+                                                if(isset($variance['before'][$children['project_id']]['phyAct'])){
+                                                    $phyActBef = (isset($variance['before'][$children['project_id']]['phyAct'])) ? number_format($variance['before'][$children['project_id']]['phyAct'], 2) : 0;
+                                                }else{
+                                                    $phyActBef = 0;
+                                                }
+    
+                                                if(isset($variance['before'][$children['project_id']]['varPhyBef']) && $variance['before'][$children['project_id']]['varPhyBef'] === "N/A"){
+                                                    $varEachBef = "N/A";
+                                                }
+                                                else{
+                                                    $varEachBef = (isset($variance['before'][$children['project_id']]['varPhyBef'])) ? number_format($variance['before'][$children['project_id']]['varPhyBef'], 2) : "N/A";
+                                                }
+    
+                                                $pmName = ($this->projectOwner == "JKR_SABAH") ? 'SOR' : 'PM';
+    
+                                                if ($this->projectOwner == 'JKR_SARAWAK'){
+                                                    if($varEachNow == 0 && $phyActNow == 100.00){
+                                                        $progress = 'completed';
+                                                        $explain = 'Completed';
+                                                        $countComplete = $countComplete +1;
+                                                        $varEachNow = "";
+                                                    }else if($varEachNow == "N/A" ){
+                                                        $progress = 'notAvailable';
+                                                        $explain = 'Not Available';
+                                                        $countNA = $countNA +1;
+                                                    }else if($varEachNow <= $redVal['1']){
+                                                        $progress = 'delay';
+                                                        $explain = 'Sick Project';
+                                                        $countDelay = $countDelay +1;
+                                                    }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
+                                                        $progress = 'alarming';
+                                                        $explain = 'Delayed Project';
+                                                        $countAlarm = $countAlarm +1;
+                                                    }else if($varEachNow > $yellowVal['1']){
+                                                        $progress = 'onTrack';
+                                                        $explain = 'On Schedule';
+                                                        $countTrack = $countTrack +1;
+                                                    }
+    
+                                                    if($varEachBef == 0 && $phyActBef == 100.00){
+                                                        $progressBef = 'completed';
+                                                        $explainBef = 'Completed';
+                                                    }else if($varEachBef <= $redVal['1']){
+                                                        $progressBef = 'delay';
+                                                        $explainBef = 'Sick Project';
+                                                    }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
+                                                        $progressBef = 'alarming';
+                                                        $explainBef = 'Delay Project';
+                                                    }else if($varEachBef > $yellowVal['1']){
+                                                        $progressBef = 'onTrack';
+                                                        $explainBef = 'On Schedule';
+                                                    }
+                                                }else{
+                                                    if($varEachNow == 0 && $phyActNow == 100.00){
+                                                        $progress = 'completed';
+                                                        $explain = 'Completed';
+                                                        $countComplete = $countComplete +1;
+                                                        $varEachNow = "";
+                                                    }else if($varEachNow == "N/A" ){
+                                                        $progress = 'notAvailable';
+                                                        $explain = 'Not Available';
+                                                        $countNA = $countNA +1;
+                                                    }else if($varEachNow <= $redVal['1']){
+                                                        $progress = 'delay';
+                                                        $explain = 'Delay';
+                                                        $countDelay = $countDelay +1;
+                                                    }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
+                                                        $progress = 'alarming';
+                                                        $explain = 'Alarming';
+                                                        $countAlarm = $countAlarm +1;
+                                                    }else if($varEachNow > $yellowVal['1']){
+                                                        $progress = 'onTrack';
+                                                        $explain = 'On Track';
+                                                        $countTrack = $countTrack +1;
+                                                    }
+    
+                                                    if($varEachBef == 0 && $phyActBef == 100.00){
+                                                        $progressBef = 'completed';
+                                                        $explainBef = 'Completed';
+                                                    }else if($varEachBef <= $redVal['1']){
+                                                        $progressBef = 'delay';
+                                                        $explainBef = 'Delay';
+                                                    }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
+                                                        $progressBef = 'alarming';
+                                                        $explainBef = 'Alarming';
+                                                    }else if($varEachBef > $yellowVal['1'] ){
+                                                        $progressBef = 'onTrack';
+                                                        $explainBef = 'On Track';
+                                                    }
+                                                }
+    
+                                                $countAll = $countAll +1;
+                                                $per =( $explain == 'Completed')?"" :"% ";
+                                                $cardPackage .= '
+                                                    <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$this->projectOwner.'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'" data-project_phase="'.$projectPhase.'">
+                                                        <div class="column-one">
+                                                            <img src="'.$imgUrl.'"/>
+                                                            <div class="title"><div class="text-ellipsis">'.$projectWPCID.'</div></div>
+                                                            <div class="content">
+                                                                <div class="row height bold"><span class="description">'.$projectName.'</span></div>
+                                                                <div class="row column noBottom">
+                                                                    <div class="column-one">'.$pmName.'</div>
+                                                                    <span class="column-two clamp-text">'.$projectPM.'</span>
+                                                                </div>
+                                                                <div class="row column">
+                                                                    <div class="column-one">Contractor</div>
+                                                                    <span class="column-two one-line">'.$projectContractor.'</span>
+                                                                </div>
+                                                                <div class="row column align-center mobile bold">
+                                                                    <div class="column-one small"><i class="fa-solid fa-circle-dollar"></i></div>
+                                                                    <span class="column-two one-line amount">RM '.$contractAmt.' </span>
+                                                                </div>
+                                                                <div class="row column align-center mobile bold">
+                                                                    <div class="column-one small"><i class="fa-solid fa-clock-seven"></i></i></div>
+                                                                    <span class="column-two progress">'.$projectDuration.' Days</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="footer '.$progress.'">
+                                                                <div><i class="fa-solid fa-circle-info"></i>
+                                                                    <div class="indicator-container">
+                                                                        <span class="indicator-value">'.$varEachNow.$per.$explain.'</span>
+                                                                        <span class="indicator-value-previous">'.$varEachBef.'% from previous month</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="column-two"></div>
+                                                    </div>
+                                                ';
+                                            }
+                                        }
+                                        $divisionHTML .= " $cardPackage";
+                                }
+                                $divisionHTML .= '
+                            </div>
+                        </div>';
                     }else{
-                        $contractAmt = 0.00;
-                    }
-                
-                    if(isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_actual_parent'])){
-                        $physical_actual_parent = (isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_actual_parent'])) ? $projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_actual_parent'] : 0;
-                    }
-                    else{
-                        $physical_actual_parent = "N/A";
-                    }
-
-                    if(isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_schedule_parent'])){
-                        $physical_schedule_parent = (isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_schedule_parent'])) ? $projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['physical_schedule_parent'] : 0;
-                    }
-                    else{
-                        $physical_schedule_parent = "N/A";
-                    }
-                    if(isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['day_delay_parent'])){
-                        $day_delay_parent = (isset($projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['day_delay_parent'])) ? $projProgressArr[$projectID][$this->currentYear][$this->currentMonth]['day_delay_parent'].' day(s) delay' : 0;
-                    }else{
-                        $day_delay_parent = "N/A";
-                    }
-
-                    if($physical_actual_parent == "N/A" || $physical_schedule_parent == "N/A"){
-                        $varEachNow = "N/A";
-                    }
-                    else{
-                        $varEachNow = (float) $physical_actual_parent - (float) $physical_schedule_parent;
-                    }
-
-                    if($varEachNow == "N/A" ){
-                        $progressProj = 'notAvailable';
-                        $explain = '';
-                        $trend = '<i class="fa-solid fa-ban"></i>';
-                    }else if($varEachNow <= $redVal['1']){
-                        $progressProj = 'delay';
-                        $explain = 'Sick Project';
-                        $trend = '<i class="fa-solid fa-arrow-trend-down delay" style="font-weight: bold; color: red;"></i>';
-                        $varEachNow = $varEachNow . '%';
-                    }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
-                        $progressProj = 'alarming';
-                        $explain = 'Delayed Project';
-                        $trend = '<i class="fa-solid fa-diamond-exclamation" style="font-weight: bold; color: #ffc107;"></i>';
-                        $varEachNow = $varEachNow . '%';
-                    }else if($varEachNow > $yellowVal['1']){
-                        $progressProj = 'onTrack';
-                        $explain = 'On Schedule';
-                        $trend = '<i class="fa-solid fa-arrow-trend-up" style="font-weight: bold; color: #4caf50;"></i>';
-                        $varEachNow = $varEachNow . '%';
-                    }
-
-                    $divisionHTML .= '
-                    <div class="division">
-                        <div class="row-container '.$progressProj.'">
-                            <div class="projImage">
-                                <img src="'.$imgUrl.'"/>
-                            </div>
-                            <div class="projName">
-                                <div class="name">'.$key['project_name'].'</div>
-                                <div clas="amount">
-                                    <i class="fa-solid fa-circle-dollar"></i>
-                                    <span class="column-two one-line amount">RM'.$contractAmt.'</span>
-                                </div>
-                            </div>
-                            <div class="ProjInfo">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="column-label small" title="Start Date"><i class="fa-light fa-calendar-days" style="margin-right: 5px"></i>Start Date</div>
+                        if(isset($key['children'])){
+                            if($key['project_type'] == 'ASSET') continue;
+                            if($createBody){
+                                $divisionHTML .= '<div class = "dashboardBodyExec large">';
+                                $createBody = false;
+                            }
+                            $divisionHTML .= '
+                                <div class="division '.$key['project_id'].'">
+                                    <div class="row-container" style="padding: .8rem 0; font-size: 1rem; font-weight: bold; align-items: center"">'.$key['project_name'].'
+                                        <select class="select-projectphase" data-projectid="'.$key['project_id'].'">
+                                            <option value="all">All</option>
+                                            <option value="1A">1A</option>
+                                            <option value="1B">1B</option>
+                                        </select>
                                     </div>
-                                    <div class="row">
-                                        <span class="column-two progress">'.date("d M Y", strtotime($startDate)).'</span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="column-label small" title="End Date"><i class="fa-light fa-calendar-days" style="margin-right: 5px"></i>End Date</div>
-                                    </div>
-                                    <div class="row">
-                                        <span class="column-two progress">'.date("d M Y", strtotime($endDate)).'</span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="column-label small" title="Status"><i class="fa-light fa-bars-progress" style="margin-right: 5px"></i>Project Status</div>
-                                    </div>
-                                    <div class="row">
-                                        <span class="column-two indicator-value">'.$trend.'   '.$varEachNow.' '.$explain.'</span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="column-label small" title="Days Delay"><i class="fa-light fa-calendar-clock" style="margin-right: 5px"></i>Days Delay</div>
-                                    </div>
-                                    <div class="row">
-                                        <span class="column-two indicator-value">'.$trend.'   '.$day_delay_parent.'</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-container mix-wrapper '.$progressProj.'">';
-                            if(isset($key['children'])){
-                                if($key['project_type'] == 'ASSET') continue;
+                                    <div class="card-container mix-wrapper">';
                                     $cardPackage ='';
                                     foreach($key['children'] as $children){
                                         if(isset($children)){
-                                            //MR CHANG asked to skip this package
+                                            //MR CHANG asked to skip this packag;
                                             if($children['project_id'] == 'PBHS_Redline') continue;
-
+            
                                             $projectIcon = $icnPrefix.$children['icon_url'];
-
                                             $imgUrl = (file_exists($projectIcon)) ? $projectIcon : $faviconPrefix.'favicon.ico';
                                             $projectID = (isset($children['project_id'])) ? $children['project_id'] : '';
                                             $currPackageUuid = (isset($children['project_id']) && isset($children['project_id_number'])) ? $children['project_id_number']."_". $children['project_id']. "_" . $children['project_id_number']: ""; 
-                                            
+                                            $projectWPCID = (isset($children['project_wpc_id'])) ? $children['project_wpc_id'] : '';
+                                            $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
+                                            $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
+                                            $projectPhase = (isset($children['project_phase'])) ? $children['project_phase'] : '1A';
                                             
                                             if(isset($pakageSet[$children['project_id']])){
                                                 $projectName = (isset($pakageSet[$children['project_id']])) ? $pakageSet[$children['project_id']] : 'N/A';
                                             }else{
                                                 $projectName = (isset($children['project_name'])) ? $children['project_name'] : 'N/A';
                                             }
-
-                                            $projectWPCID = (isset($children['project_wpc_id'])) ? $children['project_wpc_id'] : '';
-                                            $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
-                                            $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
                                             
-                                            if(isset($pmSet[$children['project_id']])){
-                                                $projectPM = (isset($pmSet[$children['project_id']])) ? $pmSet[$children['project_id']] : 'N/A';
-                                            }
-                                            else{
-                                                $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
-                                            }
+                                            $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
                                             
                                             if(isset($contractorSet[$children['project_id']])){
                                                 $projectContractor = (isset($contractorSet[$children['project_id']])) ? $contractorSet[$children['project_id']] : 'N/A';
@@ -1671,35 +2000,42 @@ class ExecDashboard{
                                         
                                             $projectContractAmount = (isset($contractArr[$children['project_id']]['originalAmount'])) ? $contractArr[$children['project_id']]['originalAmount'] : 0;
                                             $contractAmt = number_format($projectContractAmount, 2, ".", ",");
-
+            
                                             if(isset($variance['now'][$children['project_id']]['phyAct'])){
                                                 $phyActNow = (isset($variance['now'][$children['project_id']]['phyAct'])) ? number_format($variance['now'][$children['project_id']]['phyAct'], 2) : 0;
                                             }else{
                                                 $phyActNow = 0;
                                             }
-
+            
                                             if(isset($variance['now'][$children['project_id']]['varPhyCurr']) && $variance['now'][$children['project_id']]['varPhyCurr'] === 'N/A'){
                                                 $varEachNow = "N/A";
                                             }
                                             else{
                                                 $varEachNow = (isset($variance['now'][$children['project_id']]['varPhyCurr'])) ? number_format($variance['now'][$children['project_id']]['varPhyCurr'], 2) : "N/A";
                                             }
-
+            
                                             if(isset($variance['before'][$children['project_id']]['phyAct'])){
                                                 $phyActBef = (isset($variance['before'][$children['project_id']]['phyAct'])) ? number_format($variance['before'][$children['project_id']]['phyAct'], 2) : 0;
-                                            }else{
+                                            }else {
                                                 $phyActBef = 0;
                                             }
-
+            
                                             if(isset($variance['before'][$children['project_id']]['varPhyBef']) && $variance['before'][$children['project_id']]['varPhyBef'] === "N/A"){
                                                 $varEachBef = "N/A";
                                             }
                                             else{
                                                 $varEachBef = (isset($variance['before'][$children['project_id']]['varPhyBef'])) ? number_format($variance['before'][$children['project_id']]['varPhyBef'], 2) : "N/A";
                                             }
-
+    
+                                            if(isset($projProgressDayDelay[$children['project_id']][$this->currentYear][$this->currentMonth]['no_days_delay'])){
+                                                $valDaysDelay = $projProgressDayDelay[$children['project_id']][$this->currentYear][$this->currentMonth]['no_days_delay'];
+                                                $varDaysDelay = '<br>('.$valDaysDelay.' Days)';
+                                            }else{
+                                                $varDaysDelay = "";
+                                            }
+            
                                             $pmName = ($this->projectOwner == "JKR_SABAH") ? 'SOR' : 'PM';
-
+            
                                             if ($this->projectOwner == 'JKR_SARAWAK'){
                                                 if($varEachNow == 0 && $phyActNow == 100.00){
                                                     $progress = 'completed';
@@ -1723,7 +2059,7 @@ class ExecDashboard{
                                                     $explain = 'On Schedule';
                                                     $countTrack = $countTrack +1;
                                                 }
-
+                                                
                                                 if($varEachBef == 0 && $phyActBef == 100.00){
                                                     $progressBef = 'completed';
                                                     $explainBef = 'Completed';
@@ -1760,7 +2096,7 @@ class ExecDashboard{
                                                     $explain = 'On Track';
                                                     $countTrack = $countTrack +1;
                                                 }
-
+    
                                                 if($varEachBef == 0 && $phyActBef == 100.00){
                                                     $progressBef = 'completed';
                                                     $explainBef = 'Completed';
@@ -1774,12 +2110,19 @@ class ExecDashboard{
                                                     $progressBef = 'onTrack';
                                                     $explainBef = 'On Track';
                                                 }
-                                            }
 
+                                                //check if variance is negative, then it showing no. of delay
+                                                if($varEachNow < 0 && $valDaysDelay !== ''){
+                                                    $daysDelay = $varDaysDelay;
+                                                }else{
+                                                    $daysDelay = "";
+                                                }
+                                            }
+            
                                             $countAll = $countAll +1;
                                             $per =( $explain == 'Completed')?"" :"% ";
                                             $cardPackage .= '
-                                                <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$this->projectOwner.'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'">
+                                                <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$this->projectOwner.'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'" data-project_phase="'.$projectPhase.'">
                                                     <div class="column-one">
                                                         <img src="'.$imgUrl.'"/>
                                                         <div class="title"><div class="text-ellipsis">'.$projectWPCID.'</div></div>
@@ -1805,7 +2148,7 @@ class ExecDashboard{
                                                         <div class="footer '.$progress.'">
                                                             <div><i class="fa-solid fa-circle-info"></i>
                                                                 <div class="indicator-container">
-                                                                    <span class="indicator-value">'.$varEachNow.$per.$explain.'</span>
+                                                                    <span class="indicator-value">'.$varEachNow.$per.$explain.$daysDelay.'</span>
                                                                     <span class="indicator-value-previous">'.$varEachBef.'% from previous month</span>
                                                                 </div>
                                                             </div>
@@ -1816,206 +2159,16 @@ class ExecDashboard{
                                             ';
                                         }
                                     }
-                                    $divisionHTML .= " $cardPackage";
-                            }
-                            $divisionHTML .= '
-                        </div>
-                    </div>';
-                }else{
-                    if(isset($key['children'])){
-                        if($key['project_type'] == 'ASSET') continue;
-                        $divisionHTML .= '
-                            <div class="division">
-                                <div class="row-container" style="padding: .8rem 0; font-size: 1rem; font-weight: bold;">'.$key['project_name'].'</div>
-                                <div class="card-container mix-wrapper">';
-                                $cardPackage ='';
-                                foreach($key['children'] as $children){
-                                    if(isset($children)){
-                                        //MR CHANG asked to skip this packag;
-                                        if($children['project_id'] == 'PBHS_Redline') continue;
-        
-                                        $projectIcon = $icnPrefix.$children['icon_url'];
-                                        $imgUrl = (file_exists($projectIcon)) ? $projectIcon : $faviconPrefix.'favicon.ico';
-                                        $projectID = (isset($children['project_id'])) ? $children['project_id'] : '';
-                                        $currPackageUuid = (isset($children['project_id']) && isset($children['project_id_number'])) ? $children['project_id_number']."_". $children['project_id']. "_" . $children['project_id_number']: ""; 
-                                        $projectWPCID = (isset($children['project_wpc_id'])) ? $children['project_wpc_id'] : '';
-                                        $projectStartDate = (isset($children['start_date'])) ? $children['start_date'] : 'N/A';
-                                        $projectDuration = (isset($children['duration'])) ? $children['duration'] : 'N/A';
-                                        
-                                        if(isset($pakageSet[$children['project_id']])){
-                                            $projectName = (isset($pakageSet[$children['project_id']])) ? $pakageSet[$children['project_id']] : 'N/A';
-                                        }else{
-                                            $projectName = (isset($children['project_name'])) ? $children['project_name'] : 'N/A';
-                                        }
-                                        
-                                        if(isset($pmSet[$children['project_id']])){
-                                            $projectPM = (isset($pmSet[$children['project_id']])) ? $pmSet[$children['project_id']] : 'N/A';
-                                        }
-                                        else{
-                                            $projectPM = (isset($sorNameArr[$children['project_id_number']])) ? $sorNameArr[$children['project_id_number']] : 'N/A';
-                                        }
-                                        
-                                        if(isset($contractorSet[$children['project_id']])){
-                                            $projectContractor = (isset($contractorSet[$children['project_id']])) ? $contractorSet[$children['project_id']] : 'N/A';
-                                        }
-                                        else{
-                                            $projectContractor = (isset($contractorNameArr[$children['contractor_org_id']])) ? $contractorNameArr[$children['contractor_org_id']] : 'N/A';
-                                        }
-                                    
-                                        $projectContractAmount = (isset($contractArr[$children['project_id']]['originalAmount'])) ? $contractArr[$children['project_id']]['originalAmount'] : 0;
-                                        $contractAmt = number_format($projectContractAmount, 2, ".", ",");
-        
-                                        if(isset($variance['now'][$children['project_id']]['phyAct'])){
-                                            $phyActNow = (isset($variance['now'][$children['project_id']]['phyAct'])) ? number_format($variance['now'][$children['project_id']]['phyAct'], 2) : 0;
-                                        }else{
-                                            $phyActNow = 0;
-                                        }
-        
-                                        if(isset($variance['now'][$children['project_id']]['varPhyCurr']) && $variance['now'][$children['project_id']]['varPhyCurr'] === 'N/A'){
-                                            $varEachNow = "N/A";
-                                        }
-                                        else{
-                                            $varEachNow = (isset($variance['now'][$children['project_id']]['varPhyCurr'])) ? number_format($variance['now'][$children['project_id']]['varPhyCurr'], 2) : "N/A";
-                                        }
-        
-                                        if(isset($variance['before'][$children['project_id']]['phyAct'])){
-                                            $phyActBef = (isset($variance['before'][$children['project_id']]['phyAct'])) ? number_format($variance['before'][$children['project_id']]['phyAct'], 2) : 0;
-                                        }else {
-                                            $phyActBef = 0;
-                                        }
-        
-                                        if(isset($variance['before'][$children['project_id']]['varPhyBef']) && $variance['before'][$children['project_id']]['varPhyBef'] === "N/A"){
-                                            $varEachBef = "N/A";
-                                        }
-                                        else{
-                                            $varEachBef = (isset($variance['before'][$children['project_id']]['varPhyBef'])) ? number_format($variance['before'][$children['project_id']]['varPhyBef'], 2) : "N/A";
-                                        }
-        
-                                        $pmName = ($this->projectOwner == "JKR_SABAH") ? 'SOR' : 'PM';
-        
-                                        if ($this->projectOwner == 'JKR_SARAWAK'){
-                                            if($varEachNow == 0 && $phyActNow == 100.00){
-                                                $progress = 'completed';
-                                                $explain = 'Completed';
-                                                $countComplete = $countComplete +1;
-                                                $varEachNow = "";
-                                            }else if($varEachNow == "N/A" ){
-                                                $progress = 'notAvailable';
-                                                $explain = 'Not Available';
-                                                $countNA = $countNA +1;
-                                            }else if($varEachNow <= $redVal['1']){
-                                                $progress = 'delay';
-                                                $explain = 'Sick Project';
-                                                $countDelay = $countDelay +1;
-                                            }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
-                                                $progress = 'alarming';
-                                                $explain = 'Delayed Project';
-                                                $countAlarm = $countAlarm +1;
-                                            }else if($varEachNow > $yellowVal['1']){
-                                                $progress = 'onTrack';
-                                                $explain = 'On Schedule';
-                                                $countTrack = $countTrack +1;
-                                            }
-                                            
-                                            if($varEachBef == 0 && $phyActBef == 100.00){
-                                                $progressBef = 'completed';
-                                                $explainBef = 'Completed';
-                                            }else if($varEachBef <= $redVal['1']){
-                                                $progressBef = 'delay';
-                                                $explainBef = 'Sick Project';
-                                            }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
-                                                $progressBef = 'alarming';
-                                                $explainBef = 'Delay Project';
-                                            }else if($varEachBef > $yellowVal['1']){
-                                                $progressBef = 'onTrack';
-                                                $explainBef = 'On Schedule';
-                                            }
-                                        }else{
-                                            if($varEachNow == 0 && $phyActNow == 100.00){
-                                                $progress = 'completed';
-                                                $explain = 'Completed';
-                                                $countComplete = $countComplete +1;
-                                                $varEachNow = "";
-                                            }else if($varEachNow == "N/A" ){
-                                                $progress = 'notAvailable';
-                                                $explain = 'Not Available';
-                                                $countNA = $countNA +1;
-                                            }else if($varEachNow <= $redVal['1']){
-                                                $progress = 'delay';
-                                                $explain = 'Delay';
-                                                $countDelay = $countDelay +1;
-                                            }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
-                                                $progress = 'alarming';
-                                                $explain = 'Alarming';
-                                                $countAlarm = $countAlarm +1;
-                                            }else if($varEachNow > $yellowVal['1']){
-                                                $progress = 'onTrack';
-                                                $explain = 'On Track';
-                                                $countTrack = $countTrack +1;
-                                            }
-
-                                            if($varEachBef == 0 && $phyActBef == 100.00){
-                                                $progressBef = 'completed';
-                                                $explainBef = 'Completed';
-                                            }else if($varEachBef <= $redVal['1']){
-                                                $progressBef = 'delay';
-                                                $explainBef = 'Delay';
-                                            }else if( $redVal['1'] < $varEachNow && $varEachNow <= $yellowVal['1']) {
-                                                $progressBef = 'alarming';
-                                                $explainBef = 'Alarming';
-                                            }else if($varEachBef > $yellowVal['1'] ){
-                                                $progressBef = 'onTrack';
-                                                $explainBef = 'On Track';
-                                            } 
-                                        }
-        
-                                        $countAll = $countAll +1;
-                                        $per =( $explain == 'Completed')?"" :"% ";
-                                        $cardPackage .= '
-                                            <div class="card cardProjSearch mix package '.$progress.'" data-name="'.$projectID.'" data-pname="'.$projectName.'" data-start-date="'.$projectStartDate.'" data-contract-amount="'.$projectContractAmount.'" data-package_uuid="'.$currPackageUuid.'" data-project_owner="'.$this->projectOwner.'" data-package_id="'.$projectID.'" data-user_org="'.$this->userOrg.'">
-                                                <div class="column-one">
-                                                    <img src="'.$imgUrl.'"/>
-                                                    <div class="title"><div class="text-ellipsis">'.$projectWPCID.'</div></div>
-                                                    <div class="content">
-                                                        <div class="row height bold"><span class="description">'.$projectName.'</span></div>
-                                                        <div class="row column noBottom">
-                                                            <div class="column-one">'.$pmName.'</div>
-                                                            <span class="column-two clamp-text">'.$projectPM.'</span>
-                                                        </div>
-                                                        <div class="row column">
-                                                            <div class="column-one">Contractor</div>
-                                                            <span class="column-two one-line">'.$projectContractor.'</span>
-                                                        </div>
-                                                        <div class="row column align-center mobile bold">
-                                                            <div class="column-one small"><i class="fa-solid fa-circle-dollar"></i></div>
-                                                            <span class="column-two one-line amount">RM '.$contractAmt.' </span>
-                                                        </div>
-                                                        <div class="row column align-center mobile bold">
-                                                            <div class="column-one small"><i class="fa-solid fa-clock-seven"></i></i></div>
-                                                            <span class="column-two progress">'.$projectDuration.' Days</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="footer '.$progress.'">
-                                                        <div><i class="fa-solid fa-circle-info"></i>
-                                                            <div class="indicator-container">
-                                                                <span class="indicator-value">'.$varEachNow.$per.$explain.'</span>
-                                                                <span class="indicator-value-previous">'.$varEachBef.'% from previous month</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="column-two"></div>
-                                            </div>
-                                        ';
-                                    }
-                                }
-                                    $divisionHTML .= " $cardProj";
-                                    $divisionHTML .= " $cardPackage
+                                        $divisionHTML .= " $cardProj";
+                                        $divisionHTML .= " $cardPackage
+                                    </div>
                                 </div>
-                            </div>
-                        ";
+                            ";
+                        }
                     }
                 }
+            }else{
+                $divisionHTML .= '<div class = "dashboardBodyExec">';
             }
         }
 
@@ -2024,6 +2177,129 @@ class ExecDashboard{
         $countAlarmPercent = ($countAll != 0) ? number_format((($countAlarm/$countAll)*100), 2) : 0;
         $countDelayPercent = ($countAll != 0) ? number_format((($countDelay/$countAll)*100), 2) : 0;
         $countNAPercent = ($countAll != 0) ? number_format((($countNA/$countAll)*100), 2) : 0;
+
+        //Start Overall Progress
+        if($this->userOrg == 'KKR'){
+            if(($_SESSION['proj_owner_sbh'] == "1") && ($_SESSION['proj_owner_swk'] == "1")){
+                $dashboardFooterClass = "";
+                $progressBarHTML .= "<div class='title'>Overall Progress </div>
+                                     <div class='progressBar'>
+                                        <div class='styling'></div>";
+                $countCompletePercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn completed' data-filter='.completed' style='--count-percent: \"".$countCompletePercent."%\"; --width-percent:".$countCompletePercent."%;'></div>";
+                $countTrackPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn onTrack' data-filter='.onTrack' style='--count-percent: \"".$countTrackPercent."%\";  --width-percent:".$countTrackPercent."%'></div>";
+                $countAlarmPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn alarming' data-filter='.alarming' style='--count-percent: \"".$countAlarmPercent."%\";  --width-percent:".$countAlarmPercent."%'></div>";
+                $countDelayPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn delay' data-filter='.delay' style='--count-percent: \"".$countDelayPercent."%\";  --width-percent:".$countDelayPercent."%'></div>";
+                $countNAPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn notAvailable' data-filter='.notAvailable' style='--count-percent: \"".$countNAPercent."%\";  --width-percent:".$countNAPercent."%'></div>";
+            }else if(($_SESSION['proj_owner_sbh'] !== "1") && ($_SESSION['proj_owner_swk'] == "1")){
+                $dashboardFooterClass = "";
+                $progressBarHTML .= "<div class='title'>Overall Progress </div>
+                                     <div class='progressBar'>
+                                        <div class='styling'></div>";
+                $countCompletePercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn completed' data-filter='.completed' style='--count-percent: \"".$countCompletePercent."%\"; --width-percent:".$countCompletePercent."%;'></div>";
+                $countTrackPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn onTrack' data-filter='.onTrack' style='--count-percent: \"".$countTrackPercent."%\";  --width-percent:".$countTrackPercent."%'></div>";
+                $countAlarmPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn alarming' data-filter='.alarming' style='--count-percent: \"".$countAlarmPercent."%\";  --width-percent:".$countAlarmPercent."%'></div>";
+                $countDelayPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn delay' data-filter='.delay' style='--count-percent: \"".$countDelayPercent."%\";  --width-percent:".$countDelayPercent."%'></div>";
+                $countNAPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn notAvailable' data-filter='.notAvailable' style='--count-percent: \"".$countNAPercent."%\";  --width-percent:".$countNAPercent."%'></div>";
+            }else if(($_SESSION['proj_owner_sbh'] == "1") && ($_SESSION['proj_owner_swk'] !== "1")){
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['curr_month_physical'])){
+                    $curr_month_physical_1A = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['curr_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['curr_month_physical'] : 'N/A';
+                }else{
+                    $curr_month_physical_1A = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['curr_month_physical'])){
+                    $curr_month_physical_1B = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['curr_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['curr_month_physical'] : 'N/A';
+                }else{
+                    $curr_month_physical_1B = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['prev_month_physical'])){
+                    $prev_month_physical_1A = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['prev_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['prev_month_physical'] : 'N/A';
+                }else{
+                    $prev_month_physical_1A = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['prev_month_physical'])){
+                    $prev_month_physical_1B = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['prev_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['prev_month_physical'] : 'N/A';
+                }else{
+                    $prev_month_physical_1B = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['variance'])){
+                    $variance_physical_1A = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['variance'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['variance'] : 'N/A';
+                }else{
+                    $variance_physical_1A = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['variance'])){
+                    $variance_physical_1B = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['variance'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['variance'] : 'M/A';
+                }else{
+                    $variance_physical_1B = "N/A";
+                }
+
+                $dashboardFooterClass = "desc";
+                $progressBarHTML .= "<div class='title bold'>Overall Progress :</div>
+                                        <div class='progressDesc'>";
+                $progressBarHTML .= "<span>Current Month Physical Progress (%) : <span id=\"curr_month_physical\">1A :  <b>|</b> 1B :  </span></span>";
+                $progressBarHTML .= "<span>Previous Month Physical Progress (%) : <span id=\"prev_month_physical\">1A : ".$prev_month_physical_1A." <b>|</b> 1B : ".$prev_month_physical_1B."</span></span>";
+                $progressBarHTML .= "<span>Variance (%) : <span id=\"variance_physical\">1A : ".$variance_physical_1A." <b>|</b> 1B : ".$variance_physical_1B."</span></span>";
+            }
+        }else{
+            if($this->projectOwner == 'JKR_SARAWAK' || $this->projectOwner == 'OBYU'){
+                $dashboardFooterClass = "";
+                $progressBarHTML .= "<div class='title'>Overall Progress </div>
+                                     <div class='progressBar'>
+                                        <div class='styling'></div>";
+                $countCompletePercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn completed' data-filter='.completed' style='--count-percent: \"".$countCompletePercent."%\"; --width-percent:".$countCompletePercent."%;'></div>";
+                $countTrackPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn onTrack' data-filter='.onTrack' style='--count-percent: \"".$countTrackPercent."%\";  --width-percent:".$countTrackPercent."%'></div>";
+                $countAlarmPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn alarming' data-filter='.alarming' style='--count-percent: \"".$countAlarmPercent."%\";  --width-percent:".$countAlarmPercent."%'></div>";
+                $countDelayPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn delay' data-filter='.delay' style='--count-percent: \"".$countDelayPercent."%\";  --width-percent:".$countDelayPercent."%'></div>";
+                $countNAPercent == "0" ? "" : $progressBarHTML .= "<div class='filter-btn notAvailable' data-filter='.notAvailable' style='--count-percent: \"".$countNAPercent."%\";  --width-percent:".$countNAPercent."%'></div>";
+            }else{
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['curr_month_physical'])){
+                    $curr_month_physical_1A = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['curr_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['curr_month_physical'] : 'N/A';
+                }else{
+                    $curr_month_physical_1A = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['curr_month_physical'])){
+                    $curr_month_physical_1B = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['curr_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['curr_month_physical'] : 'N/A';
+                }else{
+                    $curr_month_physical_1B = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['prev_month_physical'])){
+                    $prev_month_physical_1A = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['prev_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['prev_month_physical'] : 'N/A';
+                }else{
+                    $prev_month_physical_1A = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['prev_month_physical'])){
+                    $prev_month_physical_1B = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['prev_month_physical'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['prev_month_physical'] : 'N/A';
+                }else{
+                    $prev_month_physical_1B = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['variance'])){
+                    $variance_physical_1A = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['variance'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1A']['variance'] : 'N/A';
+                }else{
+                    $variance_physical_1A = "N/A";
+                }
+
+                if(isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['variance'])){
+                    $variance_physical_1B = (isset($overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['variance'])) ? $overallProgressArr['project_id'][$this->currentYear][$this->currentMonth]['1B']['variance'] : 'M/A';
+                }else{
+                    $variance_physical_1B = "N/A";
+                }
+
+                $dashboardFooterClass = "desc";
+                $progressBarHTML .= "<div class='title bold'>Overall Progress :</div>
+                                        <div class='progressDesc'>";
+                $progressBarHTML .= "<span>Current Month Physical Progress (%) : <span id=\"curr_month_physical\">1A :   <b>|</b> 1B :  </span></span>";
+                $progressBarHTML .= "<span>Previous Month Physical Progress (%) : <span id=\"prev_month_physical\">1A : ".$prev_month_physical_1A." <b>|</b> 1B : ".$prev_month_physical_1B."</span></span>";
+                $progressBarHTML .= "<span>Variance (%) : <span id=\"variance_physical\">1A : ".$variance_physical_1A." <b>|</b> 1B : ".$variance_physical_1B."</span>";
+            }
+        }
 
         if($this->projectOwner == 'JKR_SARAWAK'){
             $green = 'On Schedule';
@@ -2034,18 +2310,12 @@ class ExecDashboard{
             $yellow  = 'Alarming';
             $red = 'Delay';
         }
+
         $divisionHTML .="
             </div>
-            <div class= 'dashboardFooterExec'>
-                <div class='progressContainer'>
-                    <div class='title'>Overall Progress </div>
-                    <div class='progressBar'>
-                        <div class='styling'></div>";
-                        $countCompletePercent == "0" ? "" : $divisionHTML .= "<div class='filter-btn completed' data-filter='.completed' style='--count-percent: \"".$countCompletePercent."%\"; --width-percent:".$countCompletePercent."%;'></div>";
-                        $countTrackPercent == "0" ? "" : $divisionHTML .= "<div class='filter-btn onTrack' data-filter='.onTrack' style='--count-percent: \"".$countTrackPercent."%\";  --width-percent:".$countTrackPercent."%'></div>";
-                        $countAlarmPercent == "0" ? "" : $divisionHTML .= "<div class='filter-btn alarming' data-filter='.alarming' style='--count-percent: \"".$countAlarmPercent."%\";  --width-percent:".$countAlarmPercent."%'></div>";
-                        $countDelayPercent == "0" ? "" : $divisionHTML .= "<div class='filter-btn delay' data-filter='.delay' style='--count-percent: \"".$countDelayPercent."%\";  --width-percent:".$countDelayPercent."%'></div>";
-                        $countNAPercent == "0" ? "" : $divisionHTML .= "<div class='filter-btn notAvailable' data-filter='.notAvailable' style='--count-percent: \"".$countNAPercent."%\";  --width-percent:".$countNAPercent."%'></div>";
+            <div class= 'dashboardFooterExec ".$dashboardFooterClass."'>
+                <div class='progressContainer ".$dashboardFooterClass."'>";
+                        $divisionHTML .= $progressBarHTML;
                         $divisionHTML .="
                     </div>
                 </div>
@@ -2161,6 +2431,7 @@ class ExecDashboard{
                 return strtotime($aU) - strtotime($bU);
             });
             foreach ($res['data'] as $data) {
+                
                 // based on month and year
                 $dateCreated = strtotime($data['date_report']);
                 $year = date("Y", $dateCreated);
@@ -2198,13 +2469,21 @@ class ExecDashboard{
                             else{
                                 $fileLinkLast = $fileLink;
                             }
+
+                            if (!isset($ret['all']['overall'][$year][$month]['file'])) {
+                                $ret['all']['overall'][$year][$month]['file'] = [];
+                            }
+
+                            $typeVal = (!empty($ext[1]) && is_string($ext[1])) ? "{$ext[1]} Document" : '';
+
+                            $ret['all']['overall'][$year][$month]['file'][] = [
+                                'link' => $fileLinkLast ? $fileLinkLast : '',
+                                'name' => $fileData ? $fileData : '',
+                                'date' => $fileCreate ? $fileCreate : '',
+                                'type' => $typeVal ? $typeVal : ''
+                            ];
     
-                            $ret['all']['overall'][$year][$month]['file'][] = array(
-                                'link' => $fileLinkLast,
-                                'name' => $fileData,
-                                'date' => $fileCreate,
-                                'type' => "{$type} Document"
-                            );
+                            
                         }
                     }
 
@@ -2330,6 +2609,7 @@ class ExecDashboard{
 
     function getExecutiveData($packageUuid, $projectId){
         $this->setSessionDigitalReporting($projectId);
+        $ret = array();
 
         $execData = $this->fetchProjectProgress($packageUuid, $projectId);
         $projfeatureData = $this->fetchProjectFeature($packageUuid, $projectId);
@@ -2395,7 +2675,7 @@ class ExecDashboard{
                             <div class="columnOne M twoRow round shadow container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     PROJECT PROGRESS
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn" style="color: '.$color.'"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn" style="color: '.$color.'"></i></button>
                                 </div>
                                 <div class="rowTwo-T scrollbar-inner roundB" id = "projectProgressTable">
                                 </div>
@@ -2403,7 +2683,7 @@ class ExecDashboard{
                             <div class="columnTwo M twoRow shadow round container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     SITE DIARY (WEATHER)
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn" style="color: '.$color.'"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn" style="color: '.$color.'"></i></button>
                                 </div>
                                 <div class="rowTwo-T roundB" id = "weatherSDL">
                                 </div>
@@ -2413,7 +2693,7 @@ class ExecDashboard{
                             <div class="columnOne M twoRow shadow round container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     OVERALL ACCIDENT / INCIDENTS RECORD
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn" style="color: '.$color.'"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn" style="color: '.$color.'"></i></button>
                                 </div>
                                 <div class="rowTwo-T roundB" id = "OverallIncidentsAndAccidentsRecord">
                                 </div>
@@ -2421,7 +2701,7 @@ class ExecDashboard{
                             <div class="columnTwo M twoRow shadow round container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     PUBLIC COMPLAINT
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn" style="color: '.$color.'"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn" style="color: '.$color.'"></i></button>
                                 </div>
                                 <div class="rowTwo-T roundB" id = "pcCatChart">
                                 </div>
@@ -2433,7 +2713,7 @@ class ExecDashboard{
                             <div class="columnOne M twoRow round shadow container-full-screen">
                                 <div class="rowOne-T roundT" style="position: relative">
                                     PROJECT FEATURE
-                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn" style="color: '.$color.'"></i></button>
+                                    <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn" style="color: '.$color.'"></i></button>
 
                                 </div>
                                 <div class="rowTwo-T roundB scrollbar-inner" id = "projectFeatureTable">
@@ -2450,7 +2730,7 @@ class ExecDashboard{
                                 <div class="rowTwo ML twoRow round shadow container-full-screen">
                                     <div class="rowOne-T roundT" style="position: relative">
                                         FILE ATTACHMENT
-                                        <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn" style="color: '.$color.'"></i></button>
+                                        <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn" style="color: '.$color.'"></i></button>
                                     </div>
                                     <div class="rowTwo-T roundB scrollbar-inner" id="insert-nofile" style="padding: 0; width: 100%; height: calc(100% - 30px);">
                                         <table>
@@ -2472,7 +2752,7 @@ class ExecDashboard{
                         <div class="columnTwo M60 twoRow round shadow round container-full-screen">
                             <div class="rowOne-T roundT" style="position: relative">
                                 PAYMENT MADE FOR LAND
-                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand-wide fa-btn" style="color: '.$color.'"></i></button>
+                                <button class="expand btn-full-screen" onclick="chartFullScreen(this)"><i class="fa-solid fa-expand fa-btn" style="color: '.$color.'"></i></button>
                             </div>
                             <div class="rowTwo-T roundB twoColumn white-bg">
                                 <div class="columnOne L" id = "offerIssuedChart">
@@ -2691,6 +2971,7 @@ class ExecDashboard{
 
         $url = $this->jogetHost."jw/web/json/data/list/ri_construct/dashIncidentSarawak?d-249074-fn_package_uuid=" .$packageUuid;
         $res = $this->jogetCURL($url);
+
         if(isset($res['data'])){
             foreach ($res['data'] as $val) {
                 $dateCreated = strtotime($val['date_incident']);

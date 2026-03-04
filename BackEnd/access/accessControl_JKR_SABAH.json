@@ -225,11 +225,12 @@
                 "delete": false
             },
             "PBC": {
-                "create": false,
-                "read": false,
+                "create": true,
+                "org": "allOrg",
+                "read": true,
                 "update": false,
                 "verify": false,
-                "approve": false,
+                "approve": true,
                 "delete": false
             },
             "DA": {
@@ -264,7 +265,8 @@
                 "riskDescription": true,
                 "machinery": false,
                 "manpower": false,
-                "district": false
+                "district": false,
+                "ccPubc": true
             }
         },
         "Project_Document": {
@@ -375,41 +377,41 @@
             "NCR": {
                 "create": false,
                 "read": true,
-                "update": true,
+                "update": false,
                 "verify": false,
-                "approve": true,
+                "approve": false,
                 "delete": false
             },
             "WIR": {
                 "create": false,
-                "read": true,
+                "read": false,
                 "update": false,
                 "verify": false,
-                "approve": true,
+                "approve": false,
                 "delete": false
             },
             "RFI": {
                 "create": false,
                 "read": true,
-                "update": true,
+                "update": false,
                 "verify": false,
-                "approve": true,
+                "approve": false,
                 "delete": false
             },
             "MOS": {
                 "create": false,
                 "read": true,
-                "update": true,
+                "update": false,
                 "verify": false,
-                "approve": true,
+                "approve": false,
                 "delete": false
             },
             "RS": {
                 "create": false,
                 "read": true,
-                "update": true,
+                "update": false,
                 "verify": false,
-                "approve": true,
+                "approve": false,
                 "delete": false
             },
             "SDL": {
@@ -431,7 +433,7 @@
             "SD": {
                 "create": false,
                 "read": true,
-                "update": true,
+                "update": false,
                 "verify": false,
                 "approve": false,
                 "delete": false
@@ -441,16 +443,18 @@
                 "read": true,
                 "update": false,
                 "verify": false,
-                "approve": true,
+                "approve": false,
                 "delete": false
             },
             "SA":{
                 "create": false,
-                "read": true
+                "read": false,
+                "update": true
             },
             "SMH":{
                 "create": false,
-                "read": true
+                "read": false,
+                "update": true
             },
             "RR":{
                 "create" : false,
@@ -463,58 +467,58 @@
             "LR": {
                 "create": false,
                 "read": true,
-                "update": true,
-                "verify": true,
-                "approve": true,
-                "delete": true
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
             },
             "LI": {
                 "create": false,
                 "read": true,
-                "update": true,
-                "verify": true,
-                "approve": true,
-                "delete": true
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
             },
             "LE": {
                 "create": false,
                 "read": true,
-                "update": true,
-                "verify": true,
-                "approve": true,
-                "delete": true
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
             },
             "LS": {
                 "create": false,
                 "read": true,
-                "update": true,
-                "verify": true,
-                "approve": true,
-                "delete": true
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
             },
             "BR": {
                 "create": false,
                 "read": true,
-                "update": true,
-                "verify": true,
-                "approve": true,
-                "delete": true
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
             },
              "NOI": {
                 "create": false,
                 "read": true,
-                "update": true,
+                "update": false,
                 "verify": false,
-                "approve": true,
-                "delete": true
+                "approve": false,
+                "delete": false
             },
             "DCR": {
                 "create": false,
                 "read": true,
-                "update": true,
+                "update": false,
                 "verify": false,
-                "approve": true,
-                "delete": true
+                "approve": false,
+                "delete": false
             },
             "PBC": {
                 "create": true,
@@ -530,16 +534,26 @@
                 "read": true,
                 "update": true,
                 "verify": false,
-                "approve": true,
-                "delete": true
+                "approve": false,
+                "delete": false
             },
             "PU": {
                 "create": false,
                 "read": true,
                 "update": false,
                 "verify": false,
-                "approve": true,
+                "approve": false,
                 "delete": false
+            },
+            "SETUP": {
+                "workDiscipline": false,
+                "riskCategory": false,
+                "riskSubCategory": false,
+                "riskDescription": false,
+                "machinery": false,
+                "manpower": false,
+                "district": false,
+                "ccPubc": true
             }
         },
         "Project_Document": {
@@ -767,9 +781,10 @@
                 "delete": false
             },
             "BR": {
-                "create": false,
+                "create": true,
+                "org": "JKR",
                 "read": false,
-                "update": false,
+                "update": true,
                 "verify": false,
                 "approve": false,
                 "delete": false
@@ -1025,9 +1040,10 @@
                 "delete": false
             },
             "BR": {
-                "create": false,
+                "create": true,
+                "org": "JKR",
                 "read": false,
-                "update": false,
+                "update": true,
                 "verify": false,
                 "approve": false,
                 "delete": false
@@ -1900,8 +1916,10 @@
                 "update": true
             },
             "SMH":{
-                "create" : false,
-                "read" : false   
+                "create": true,
+                "org": "HSSI",
+                "read": false,
+                "update": true
             },
             "RR":{
                 "create" : false,
@@ -2512,7 +2530,8 @@
                 "update": false,
                 "verify": false,
                 "approve": false,
-                "delete": false
+                "delete": false,
+                "bulkApproval" : true
             },
             "RFI": {
                 "create": false,
@@ -2745,8 +2764,7 @@
         },
         "Construct": {
             "NCR": {
-                "create": true,
-                "org": "allOrg",
+                "create": false,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -2759,7 +2777,8 @@
                 "update": false,
                 "verify": false,
                 "approve": false,
-                "delete": false
+                "delete": false,
+                "bulkApproval" : true
             },
             "RFI": {
                 "create": false,
@@ -3248,7 +3267,7 @@
                 "create": true,
                 "org": "allOrg",
                 "read": false,
-                "update": false,
+                "update": true,
                 "verify": false,
                 "approve": false,
                 "delete": false
@@ -3672,6 +3691,16 @@
                 "verify": false,
                 "approve": false,
                 "delete": false
+            },
+            "SETUP": {
+                "workDiscipline": false,
+                "riskCategory": false,
+                "riskSubCategory": false,
+                "riskDescription": false,
+                "machinery": false,
+                "manpower": false,
+                "district": false,
+                "ccPubc": true
             }
         }
     },
@@ -4156,7 +4185,7 @@
                 "create": true,
                 "org": "allOrg",
                 "read": false,
-                "update": false,
+                "update": true,
                 "verify": false,
                 "approve": false,
                 "delete": false
@@ -4858,7 +4887,7 @@
                 "create": true,
                 "org":"allOrg",
                 "read": false,
-                "update": false,
+                "update": true,
                 "verify": false,
                 "approve": false,
                 "delete": false
@@ -5242,6 +5271,16 @@
                 "verify": false,
                 "approve": false,
                 "delete": false
+            },
+            "SETUP": {
+                "workDiscipline": false,
+                "riskCategory": false,
+                "riskSubCategory": false,
+                "riskDescription": false,
+                "machinery": false,
+                "manpower": false,
+                "district": false,
+                "ccPubc": true
             }
         },
         "Project_Document": {
@@ -7666,6 +7705,185 @@
                 "delete": false
             }
             
+        },
+        "Construct": {
+            "NCR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "WIR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RFI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MOS": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RS": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SDL": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "IR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SD": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "MS": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "SA":{
+                "create": false,
+                "read": false
+            },
+            "SMH":{
+                "create": false,
+                "read": false
+            },
+            "RR":{
+                "create" : false,
+                "read" : false    ,
+                "update": false
+            },
+            "PSU":{
+                "create" : false,
+                "read" : false
+            },
+            "LR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "LI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "LE": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "LS": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "BR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "NOI": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DCR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PBC": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DA": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "PU": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "RSDL": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            }
         }
         
     },
@@ -8409,6 +8627,16 @@
                 "verify": false,
                 "approve": true,
                 "delete": false
+            },
+            "SETUP": {
+                "workDiscipline": false,
+                "riskCategory": false,
+                "riskSubCategory": false,
+                "riskDescription": false,
+                "machinery": false,
+                "manpower": false,
+                "district": false,
+                "ccPubc": true
             }
         },
         "Project_Document": {

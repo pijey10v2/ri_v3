@@ -203,82 +203,50 @@ if ($showFilter) {
                             </div>
                             <div class="columnTwo L twoColumn">
                                 <div class="columnOne ML" id="landContainer" style="margin-right:'.(($dashObj->isWPC) ? '' : 'unset').'; flex: 1 1 auto">
-                                    <div class="rowOne-T round shadow landColor">LAND ACQUISITION</div>
+                                    <div class="rowOne-T round shadow landColor">LAND MANAGEMENT</div>
                                     <div class="rowTwo-T spacerTop transparent twoRow">
-                                        <div class="rowOne M shadow shadow round twoColumn">
-                                            <div class="columnOne tableContainer M twoRow">
-                                                <div class="rowOne-T roundT landColor">AIWI STATUS</div>
-                                                <div class="rowTwo-T tableContainer scrollbar-inner roundB shadow" id = "">
-                                                    <table id ="" class="landColor">
-                                                        <thead>
-                                                            <th class="landColor tableHeader">DETAIL</th>
-                                                            <th class="landColor tableHeader">COMPLETED</th>
-                                                            <th class="landColor tableHeader">BALANCE</th>
-                                                        </thead>
-                                                        <tbody id = "">
-                                                            <tr>
-                                                                <td>%</td>
-                                                                <td id = "aiwiComplete"></td>
-                                                                <td id = "aiwiBal"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>KM-RUN</td>
-                                                                <td id = "aiwiCompleteKM"></td>
-                                                                <td id = "aiwiBalKM"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div class="columnTwo M twoRow">
-                                                <div class="rowOne-T roundT landColor">FOE STATUS</div>
-                                                <div class="rowTwo-T tableContainer scrollbar-inner roundB shadow" id = "">
-                                                    <table id ="" class="landColor">
-                                                        <thead>
-                                                            <th class="landColor tableHeader">DETAIL</th>
-                                                            <th class="landColor tableHeader">COMPLETED</th>
-                                                            <th class="landColor tableHeader">BALANCE</th>
-                                                        </thead>
-                                                        <tbody id = "">
-                                                            <tr>
-                                                                <td>%</td>
-                                                                <td id = "foeComplete"></td>
-                                                                <td id = "foeBal"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>KM-RUN</td>
-                                                                <td id = "foeCompleteKM"></td>
-                                                                <td id = "foeBalKM"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                        <div class="rowTwo M twoRow">
+                                            <div class="rowTwo-T tableContainer scrollbar-inner roundB shadow" id="">
+                                                <table id="" class="landColor">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="landColor" rowspan="2">DESCRIPTION</th>
+                                                            <th class="landColor" colspan="2"><center>To Date</center></th>
+                                                            <th class="landColor" colspan="2"><center>Balance</center></th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th class="landColor">km</th>
+                                                            <th class="landColor">%</th>
+                                                            <th class="landColor">km</th>
+                                                            <th class="landColor">%</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="projSummLandAcq">
+                                                        
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                         <div class="rowTwo M twoRow">
-                                            <div class="rowOne-T roundT landColor">LMR (LAND MATTERS RESOLUTION) STATUS</div>
+                                            <div class="rowOne-T roundT landColor">LAND MANAGEMENT REPORT - ISSUES</div>
                                             <div class="rowTwo-T tableContainer scrollbar-inner roundB shadow" id = "">
                                                 <table id ="" class="landColor">
                                                     <thead>
-                                                        <th class="landColor">DETAIL</th>
-                                                        <th class="landColor"># OF ISSUE</th>
-                                                        <th class="landColor">KM-RUN</th>
+                                                        <th class="landColor">DESCRIPTION</th>
+                                                        <th class="landColor">NUMBER OF ISSUES</th>
                                                     </thead>
                                                     <tbody id = "">
                                                         <tr>
-                                                            <td>TOTAL ACCUMULATIVE CTD</td>
+                                                            <td>Total Accumulative to Date</td>
                                                             <td id = "accumulIssue"></td>
-                                                            <td id = "accumulKM"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td>TOTAL SOLVED</td>
+                                                            <td>Total Resolved to Date</td>
                                                             <td id = "solveIssue"></td>
-                                                            <td id = "solveKM"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td>BALANCE UNSOLVED</td>
+                                                            <td>Balance Unresolved to Date</td>
                                                             <td id = "balIssue"></td>
-                                                            <td id = "balKM"></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

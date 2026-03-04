@@ -1,4 +1,5 @@
 <?php
+// Dashboard\V3\Bumi_PBHS.php V3 file
 include_once '../dashboard.class.php';
 $dashObj = new RiDashboard('bumi', false, 0);
 
@@ -29,12 +30,6 @@ $html = '
                             <div class="head">Domestic</div>
                             <div class="body centerMiddle">
                                 <span id="bumiDomesticCard">0</span>
-                            </div>
-                        </div>
-                        <div class="infoContainer round shadow">
-                            <div class="head">Designated</div>
-                            <div class="body centerMiddle">
-                                <span id="bumiDesignatedCard">0</span>
                             </div>
                         </div>
                         <div class="infoContainer round shadow">
@@ -138,5 +133,12 @@ echo $html;
     }
     .clickableCard {
         cursor:pointer;
+    }
+    .tableContainer{
+        width: 100%;
+    }
+    table.legend{
+        margin-top: 10px;
+        height: calc(100% - 20px);
     }
 </style>

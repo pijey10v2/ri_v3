@@ -16,7 +16,7 @@
     function checkIfCorrectAppSet($app_id, $app){
         global $api_username, $api_password, $jogetHostIP, $JOGETLINKOBJ;
         $ret = array();
-        $processIdArray = explode('::', $app_id ?? "");
+        $processIdArray = explode('::', $app_id);
         $host = $jogetHostIP . "jw/web/json/workflow/process/list?packageId=".$processIdArray[0];
         $headers = array(
             'Content-Type: application/json',
@@ -78,7 +78,7 @@
         $appsRights = array();
 
         $projectId = filter_input(INPUT_POST, 'idProject', FILTER_VALIDATE_INT);
-        $pageOpen = filter_input(INPUT_POST, 'pageOpen', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $pageOpen = filter_input(INPUT_POST, 'pageOpen', FILTER_SANITIZE_STRING);
         $email = $_SESSION['email'];
         $userId = $_SESSION['user_id'];
         $_SESSION['project_list']  = $_SESSION['project_list'];
@@ -141,7 +141,7 @@
             $_SESSION['icon_url'] = $resSql['icon'];
             $_SESSION['file_method'] = trim($resSql['file_method']);
             $_SESSION['created_by'] = $resSql['created_by'];
-            $_SESSION['last_access'] = new DateTime($resSql['last_access'] ?? "");
+            $_SESSION['last_access'] = new DateTime($resSql['last_access']);
 
             if($_SESSION['ui_pref'] == "ri_v3"){
                 $_SESSION['prefix_loc'] = "../";
@@ -285,7 +285,7 @@
             $appSet["myConstruct"] = false;
             $appSet["myTask"] = false;
 
-            if (strpos($appsLinks['constructPackage_name'] ?? '', 'ri_asset') !== false) {
+            if (strpos($appsLinks['constructPackage_name'], 'ri_asset') !== false) {
                 $appSet["myAsset"] = true;
             }
 
@@ -501,7 +501,7 @@
         global $CONN;
         $userId = $_SESSION['user_id'];
         if (isset($_SESSION['fav_proj']) && !empty($_SESSION['fav_proj'])) {
-            $myArr = explode(',',$_SESSION['fav_proj'] ?? "");
+            $myArr = explode(',',$_SESSION['fav_proj']);
         } else {
             $myArr = array();
         }
@@ -532,7 +532,7 @@
         global $CONN;
         $userId = $_SESSION['user_id'];
         $getArr = $CONN->fetchOne('select fav_proj from users where user_id = :0', array($userId));
-        $getArr = explode(",", $getArr ?? "");
+        $getArr = explode(",", $getArr);
         return $getArr;
     }
 
@@ -921,7 +921,7 @@
                 echo json_encode($result);
                 break;
             case "setThemeMode":
-                $mode = filter_input(INPUT_POST, 'mode', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $mode = filter_input(INPUT_POST, 'mode', FILTER_SANITIZE_STRING);
                 $result = setThemeMode($mode);
                 echo json_encode($result);
                 break;
@@ -930,7 +930,7 @@
                 echo json_encode($result);
                 break;
             case "addToFav":
-                $proj = filter_input(INPUT_POST, 'projId', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $proj = filter_input(INPUT_POST, 'projId', FILTER_SANITIZE_STRING);
                 $result = addToFavourite($proj);
                 echo json_encode($result);
             break;
@@ -943,7 +943,7 @@
                 echo json_encode($result, true);
             break;
             case "setUIPreference":
-                $ui = filter_input(INPUT_POST, 'uipref', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $ui = filter_input(INPUT_POST, 'uipref', FILTER_SANITIZE_STRING);
                 $result = setUIPreference($ui);
                 echo json_encode($result);
                 break;

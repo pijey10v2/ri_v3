@@ -118,7 +118,12 @@ function drawCumulativeCertifiedPaymentContractSum(data){
                     var linkParamArr = processFilterParamArr([idData]);
 
                     if(localStorage.ui_pref == "ri_v3"){
-                        window.parent.widgetConopOpen("COST", "finance_dash_list_contract", linkParamArr, "Total Cumulative Certified Amount VS Revised Contract Sum");
+                        if(localStorage.usr_role == 'Finance Head' || localStorage.usr_role == 'Director' || localStorage.usr_role == 'Finance Officer'){
+                            window.parent.widgetConopOpen("COST", "finance_dash_list_contract", linkParamArr, "Total Cumulative Certified Amount VS Revised Contract Sum");
+                        }
+                        else{
+                            return;
+                        }
                     }
                 }
             } 
@@ -168,7 +173,12 @@ function drawVariationOrderNettContractSum(data){
                                 var linkParamArr = processFilterParamArr([idData]);
                     
                                 if(localStorage.ui_pref == "ri_v3"){
-                                    window.parent.widgetConopOpen("COST", "finance_dash_list_contract", linkParamArr, "Approved VO VS Original Contract Sum (RM)");
+                                    if(localStorage.usr_role == 'Finance Head' || localStorage.usr_role == 'Director' || localStorage.usr_role == 'Finance Officer'){
+                                        window.parent.widgetConopOpen("COST", "finance_dash_list_contract", linkParamArr, "Approved VO VS Original Contract Sum (RM)");
+                                    }
+                                    else{
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -181,7 +191,12 @@ function drawVariationOrderNettContractSum(data){
                                 var linkParamArr = processFilterParamArr([idData]);
                     
                                 if(localStorage.ui_pref == "ri_v3"){
-                                    window.parent.widgetConopOpen("COST", "finance_dash_list_contract", linkParamArr, "Approved VO VS Original Contract Sum (RM)");
+                                    if(localStorage.usr_role == 'Finance Head' || localStorage.usr_role == 'Director' || localStorage.usr_role == 'Finance Officer'){
+                                        window.parent.widgetConopOpen("COST", "finance_dash_list_contract", linkParamArr, "Approved VO VS Original Contract Sum (RM)");
+                                    }
+                                    else{
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -328,7 +343,7 @@ function updateContractDetails(data){
         projectTbHTML += '</tr>'
         projectTbHTML += '<tr onclick="openList(\'' + idData + '\', \'Contract Details\', \'finance_dash_list_contract\');">'
         projectTbHTML += '<td>LAD/Day (RM/Day)'
-        projectTbHTML += '<td>' + ((data.lad_per_day) ? (data.lad_per_day):'') + '</td>'
+        projectTbHTML += '<td>' + (data.lad_per_day ? Number(data.lad_per_day).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '') + '</td>'
         projectTbHTML += '</tr>';
     }
     $("#contractDetails").html(projectTbHTML);
@@ -562,7 +577,7 @@ function updateCardOverallPart2(data, data2, data3){
             else{
                 dataIPCTbHTML += '<tr>'
                 dataIPCTbHTML += '<td>'+idx+'</td>'
-                dataIPCTbHTML += '<td>'+ele.count+'</td>'
+                dataIPCTbHTML += '<td style="text-align: center;">'+ele.count+'</td>'
                 if(ele.totalAmountBasedOnPackage < 0){
                     dataIPCTbHTML += '<td style = "color: red">RM '+formatCurrency(ele.totalAmountBasedOnPackage)+'</td>'
 
@@ -676,7 +691,12 @@ function refreshFromv3 (filterArr){
 function openList(id, cardName, urlToUse){
     var linkParamArr = processFilterParamArr([id]);
     if(localStorage.ui_pref == "ri_v3"){
-        window.parent.widgetConopOpen("COST", urlToUse, linkParamArr, cardName);
+        if(localStorage.usr_role == 'Finance Head' || localStorage.usr_role == 'Director' || localStorage.usr_role == 'Finance Officer'){
+            window.parent.widgetConopOpen("COST", urlToUse, linkParamArr, cardName);
+        }
+        else{
+            return;
+        }
     }
 }
 

@@ -41,10 +41,12 @@ class RiDashboardKACC extends RiDashboard
 	}
 
 	function loadJS(){
+		$linkJSPre = ($_SESSION['ui_pref'] == "ri_v3") ? "../../../../../" : "../";
+
 		echo '
 			<script src="'.$this->pathRel.'../../JS/JsLibrary/jquery-3.5.1.js"></script>
 			<script src="../../JS/dashboard.js"></script>
-			<script src="'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http').'://code.highcharts.com/highcharts.js"></script>
+			<script src="'.$linkJSPre.'JS/highchart/v11/highcharts.js"></script>
 			'.((isset($_SESSION['ui_pref']) && $_SESSION['ui_pref'] == 'ri_v3') ? '<script src="../../../../../JS/v3.js"></script>' : '').'
 		';
 
@@ -52,16 +54,16 @@ class RiDashboardKACC extends RiDashboard
 			case 'cost':
 				echo '
 					<script src="JS/cost.js"></script>
-					<script src="https://code.highcharts.com/highcharts-more.js"></script>
-					<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+					<script src="'.$linkJSPre.'JS/highchart/v11/highcharts-more.js"></script>
+					<script src="'.$linkJSPre.'JS/highchart/v11/solid-gauge.js"></script>
 				';				
 				$this->enableMenu = true;
 				break;
 			case 'summary':
 				echo '
 					<script src="JS/summary.js"></script>
-					<script src="https://code.highcharts.com/highcharts-more.js"></script>
-					<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+					<script src="'.$linkJSPre.'JS/highchart/v11/highcharts-more.js"></script>
+					<script src="'.$linkJSPre.'JS/highchart/v11/solid-gauge.js"></script>
 				';				
 				$this->enableMenu = true;
 				break;
@@ -80,8 +82,8 @@ class RiDashboardKACC extends RiDashboard
 			case 'time':
 				echo '
 					<script src="JS/time.js"></script>
-					<script src="https://code.highcharts.com/highcharts-more.js"></script>
-					<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+					<script src="'.$linkJSPre.'JS/highchart/v11/highcharts-more.js"></script>
+					<script src="'.$linkJSPre.'JS/highchart/v11/solid-gauge.js"></script>
 				';
 				$this->enableMenu = true;
 				break;
@@ -89,8 +91,8 @@ class RiDashboardKACC extends RiDashboard
 
 		// disable all for now as it return error on highcharts
 		if ($this->enableMenu) {
-			echo '<script src="https://code.highcharts.com/modules/series-label.js"></script>
-	        <script src="https://code.highcharts.com/modules/exporting.js"></script>';
+			echo '<script src="'.$linkJSPre.'JS/highchart/v11/modules/series-label.js"></script>
+	        <script src="'.$linkJSPre.'JS/highchart/v11/exporting.js"></script>';
 		}
 	}
 

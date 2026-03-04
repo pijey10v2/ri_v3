@@ -19,10 +19,12 @@ class RiDashboardMRSB extends RiDashboard
 	}
 
 	function loadJS(){
+		$linkJSPre = ($_SESSION['ui_pref'] == "ri_v3") ? "../../../../../" : "../";
+
 		echo '
 			<script src="'.$this->pathRel.'../../JS/JsLibrary/jquery-3.5.1.js"></script>
 			<script src="../../JS/dashboard.js"></script>
-			<script src="'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http').'://code.highcharts.com/highcharts.js"></script>
+			<script src="'.$linkJSPre.'JS/highchart/v11/highcharts.js"></script>
 			'.((isset($_SESSION['ui_pref']) && $_SESSION['ui_pref'] == 'ri_v3') ? '<script src="../../../../../JS/v3.js"></script>' : '').'
 		';
 
@@ -33,8 +35,8 @@ class RiDashboardMRSB extends RiDashboard
 				break;
 			case 'risk':
 				echo '<script src="JS/risk.js"></script>
-				<script src="https://code.highcharts.com/highcharts-more.js"></script>
-				<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>';
+				<script src="'.$linkJSPre.'JS/highchart/v11/highcharts-more.js"></script>
+				<script src="'.$linkJSPre.'JS/highchart/v11/solid-gauge.js"></script>';
 				$this->enableMenu = true;
 				break;
 			case 'riskPackage':
@@ -67,14 +69,14 @@ class RiDashboardMRSB extends RiDashboard
 				break;
 			case 'land':
 				echo '<script src="JS/land.js"></script>
-				<script src="https://code.highcharts.com/highcharts-more.js"></script>';
+				<script src="'.$linkJSPre.'JS/highchart/v11/highcharts-more.js"></script>';
 				$this->enableMenu = true;
 				break;
 		}
 
 		if ($this->enableMenu) {
-			echo '<script src="https://code.highcharts.com/modules/series-label.js"></script>
-	        <script src="https://code.highcharts.com/modules/exporting.js"></script>';
+			echo '<script src="'.$linkJSPre.'JS/highchart/v11/series-label.js"></script>
+	        <script src="'.$linkJSPre.'JS/highchart/v11/exporting.js"></script>';
 		}
 	}
 
@@ -335,6 +337,7 @@ class RiDashboardMRSB extends RiDashboard
 			}
 
 			foreach ($resDocs as $resDocURL => $resDoc) {
+
 				if (isset($resDoc['data'])) {
 					// for filtering on ConOp
 					if (!isset($res['overall']['overall']['count']['allData'])) {
@@ -564,6 +567,38 @@ class RiDashboardMRSB extends RiDashboard
 									$res[$doc['package_id']][$doc['section']]['drawing']['cnt']['Revised']++;
 								}else{
 									$res[$doc['package_id']][$doc['section']]['drawing']['cnt']['Revised'] = 1;
+								}
+
+								// for filtering on ConOp
+								if (!isset($res['overall']['overall']['drawing']['revisedTotal']['Revised']['allData'])) {
+									$res['overall']['overall']['drawing']['revisedTotal']['Revised']['allData'] =  array('section' => '', 'document_type' => 'Drawing');
+								}
+								if (!isset($res[$doc['package_id']][$doc['section']]['drawing']['revisedTotal']['Revised']['allData'])) {
+									$res[$doc['package_id']][$doc['section']]['drawing']['revisedTotal']['Revised']['allData'] =  array('section' => $doc['section'], 'document_type' => 'Drawing');
+								}
+
+								if (isset($res['overall']['overall']['drawing']['revisedTotal']['Revised']['cnt'])) {
+									$res['overall']['overall']['drawing']['revisedTotal']['Revised']['cnt']++;
+								}else{
+									$res['overall']['overall']['drawing']['revisedTotal']['Revised']['cnt'] = 1;
+								}
+
+								if (isset($res[$doc['package_id']]['overall']['drawing']['revisedTotal']['Revised']['cnt'])) {
+									$res[$doc['package_id']]['overall']['drawing']['revisedTotal']['Revised']['cnt']++;
+								}else{
+									$res[$doc['package_id']]['overall']['drawing']['revisedTotal']['Revised']['cnt'] = 1;
+								}
+
+								if (isset($res['overall'][$doc['section']]['drawing']['revisedTotal']['Revised']['cnt'])) {
+									$res['overall'][$doc['section']]['drawing']['revisedTotal']['Revised']['cnt']++;
+								}else{
+									$res['overall'][$doc['section']]['drawing']['revisedTotal']['Revised']['cnt'] = 1;
+								}
+
+								if (isset($res[$doc['package_id']][$doc['section']]['drawing']['revisedTotal']['Revised']['cnt'])) {
+									$res[$doc['package_id']][$doc['section']]['drawing']['revisedTotal']['Revised']['cnt']++;
+								}else{
+									$res[$doc['package_id']][$doc['section']]['drawing']['revisedTotal']['Revised']['cnt'] = 1;
 								}
 							}
 						}
@@ -1781,7 +1816,7 @@ class RiDashboardMRSB extends RiDashboard
 	function fetchContractData(){
 		// take only latest one
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['finance_dash_contract'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('finance_dash_contract', array($this->projectID, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				$data = $res['data'];
@@ -1796,74 +1831,91 @@ class RiDashboardMRSB extends RiDashboard
 					$this->contractInfo[$this->projectID]['allData'] = array('id'=>$data[0]['id'], 'dateFrom' => '', 'dateTo' => '');
 				}
 			}
-		}
+		}else{
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['finance_dash_contract'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('finance_dash_contract', array('', $this->parentProjectID));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
-				$data = $res['data'];
-				usort($data, function ($b, $a) {
-				    $t1 = strtotime(str_replace('/', '-', $a['dateCreated']));
-				    $t2 = strtotime(str_replace('/', '-', $b['dateCreated']));
-				    return $t1 - $t2;
-				});
-				if (isset($data[0])) {
-					$co = $data[0];
-					$this->contractInfo[$childID['project_id']] = $data[0];
-					$this->contractInfo[$childID['project_id']]['allData'] = array('id'=>$data[0]['id'], 'dateFrom' => '', 'dateTo' => '');
+				$alldata = $res['data'];
+				$dataChild = [];
+				foreach($alldata as $allchildData){
 
-					if($co['original_contract_sum']){
-						$co['original_contract_sum'] = str_replace(",", "", $co['original_contract_sum']);
-						if(isset($this->contractInfo['overallProject']['ttlContractSum']['ttlAll'])){
-							$this->contractInfo['overallProject']['ttlContractSum']['ttlAll'] = $this->contractInfo['overallProject']['ttlContractSum']['ttlAll'] + (float) $co['original_contract_sum'];
-						}
-						else{
-							$this->contractInfo['overallProject']['ttlContractSum']['ttlAll'] = (float) $co['original_contract_sum'];
-						}
+					if(!in_array($allchildData['project_id'], $this->childProjectList)) continue;
 
-						$this->contractInfo['overallProject']['ttlContractSum'][$childID['project_name']] = (float) $co['original_contract_sum'];
-					}
+					$dataChild[$allchildData['project_id']][] = $allchildData;
+				}
 
-					if($co['revised_contract_sum']){
-						$co['revised_contract_sum'] = str_replace(",", "", $co['revised_contract_sum']);
-						if(isset($this->contractInfo['overallProject']['ttlRevised']['ttlAll'])){
-							$this->contractInfo['overallProject']['ttlRevised']['ttlAll'] = $this->contractInfo['overallProject']['ttlRevised']['ttlAll'] + (float) $co['revised_contract_sum'];
-						}
-						else{
-							$this->contractInfo['overallProject']['ttlRevised']['ttlAll'] = (float) $co['revised_contract_sum'];
-						}
-
-						$this->contractInfo['overallProject']['ttlRevised'][$childID['project_name']] = (float) $co['revised_contract_sum'];
-					}
-
-					if($co['cumulative_approved_vo_amount']){
-						$co['cumulative_approved_vo_amount'] = str_replace(",", "", $co['cumulative_approved_vo_amount']);
-						if(isset($this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'])){
-							$this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'] = $this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'] + (float) $co['cumulative_approved_vo_amount'];
-						}
-						else{
-							$this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'] = (float) $co['cumulative_approved_vo_amount'];
-						}
-					}
-
-					if($co['cumulative_approved_acs_amount']){
-						$co['cumulative_approved_acs_amount'] = str_replace(",", "", $co['cumulative_approved_acs_amount']);
-						if(isset($this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'])){
-							$this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'] = $this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'] + (float) $co['cumulative_approved_acs_amount'];
-						}
-						else{
-							$this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'] = (float) $co['cumulative_approved_acs_amount'];
-						}
-					}
+				foreach($this->childProjectInfo as $projectId){
+					$data = $dataChild[$projectId['project_id']];
 					
-					if($co['cumulative_ipc_amount']){
-						$co['cumulative_ipc_amount'] = str_replace(",", "", $co['cumulative_ipc_amount']);
-						if(isset($this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'])){
-							$this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'] = $this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'] + (float) $co['cumulative_ipc_amount'];
+					if(empty($data)) continue;
+	
+					usort($data, function ($b, $a) {
+						$t1 = strtotime(str_replace('/', '-', $a['dateCreated']));
+						$t2 = strtotime(str_replace('/', '-', $b['dateCreated']));
+						return $t1 - $t2;
+					});
+
+					if (isset($data[0])) {
+						$co = $data[0];
+
+						$childID['project_id'] = $co['project_id'];
+
+						$this->contractInfo[$childID['project_id']] = $data[0];
+						$this->contractInfo[$childID['project_id']]['allData'] = array('id'=>$data[0]['id'], 'dateFrom' => '', 'dateTo' => '');
+	
+						if($co['original_contract_sum']){
+							$co['original_contract_sum'] = str_replace(",", "", $co['original_contract_sum']);
+							if(isset($this->contractInfo['overallProject']['ttlContractSum']['ttlAll'])){
+								$this->contractInfo['overallProject']['ttlContractSum']['ttlAll'] = $this->contractInfo['overallProject']['ttlContractSum']['ttlAll'] + (float) $co['original_contract_sum'];
+							}
+							else{
+								$this->contractInfo['overallProject']['ttlContractSum']['ttlAll'] = (float) $co['original_contract_sum'];
+							}
+	
+							$this->contractInfo['overallProject']['ttlContractSum'][$projectId['project_name']] = (float) $co['original_contract_sum'];
 						}
-						else{
-							$this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'] = (float) $co['cumulative_ipc_amount'];
+	
+						if($co['revised_contract_sum']){
+							$co['revised_contract_sum'] = str_replace(",", "", $co['revised_contract_sum']);
+							if(isset($this->contractInfo['overallProject']['ttlRevised']['ttlAll'])){
+								$this->contractInfo['overallProject']['ttlRevised']['ttlAll'] = $this->contractInfo['overallProject']['ttlRevised']['ttlAll'] + (float) $co['revised_contract_sum'];
+							}
+							else{
+								$this->contractInfo['overallProject']['ttlRevised']['ttlAll'] = (float) $co['revised_contract_sum'];
+							}
+	
+							$this->contractInfo['overallProject']['ttlRevised'][$projectId['project_name']] = (float) $co['revised_contract_sum'];
+						}
+	
+						if($co['cumulative_approved_vo_amount']){
+							$co['cumulative_approved_vo_amount'] = str_replace(",", "", $co['cumulative_approved_vo_amount']);
+							if(isset($this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'])){
+								$this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'] = $this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'] + (float) $co['cumulative_approved_vo_amount'];
+							}
+							else{
+								$this->contractInfo['overallProject']['ttlVO']['ttlAll']['totalAmountBasedOnAll'] = (float) $co['cumulative_approved_vo_amount'];
+							}
+						}
+	
+						if($co['cumulative_approved_acs_amount']){
+							$co['cumulative_approved_acs_amount'] = str_replace(",", "", $co['cumulative_approved_acs_amount']);
+							if(isset($this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'])){
+								$this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'] = $this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'] + (float) $co['cumulative_approved_acs_amount'];
+							}
+							else{
+								$this->contractInfo['overallProject']['ttlACS']['ttlAll']['totalAmountBasedOnAll'] = (float) $co['cumulative_approved_acs_amount'];
+							}
+						}
+						
+						if($co['cumulative_ipc_amount']){
+							$co['cumulative_ipc_amount'] = str_replace(",", "", $co['cumulative_ipc_amount']);
+							if(isset($this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'])){
+								$this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'] = $this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'] + (float) $co['cumulative_ipc_amount'];
+							}
+							else{
+								$this->contractInfo['overallProject']['ttlIPC']['ttlAll']['totalAmountBasedOnAll'] = (float) $co['cumulative_ipc_amount'];
+							}
 						}
 					}
 				}
@@ -2216,8 +2268,13 @@ class RiDashboardMRSB extends RiDashboard
 		$ret = array();
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
 
+		$keyArrToSort = array(
+			'all'
+		); // year
+
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_SMH'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_SMH', array($this->projectID, ''));
+
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function($a, $b) {
@@ -2231,10 +2288,10 @@ class RiDashboardMRSB extends RiDashboard
 				}
 
 				foreach($res['data'] as $smh){
-					$ret['overall'][$smh['year']]['all']['cardCumulWithoutLti'] = (float) $smh['tmh_wolti'];
+					$ret['overall'][$smh['year']]['all']['cardCumulWithoutLti'] = (float) str_replace(',', '', $smh['tmh_wolti']);
 					$ret['overall'][$smh['year']]['all']['allData'] = array('year'=>$smh['year'], 'month'=> $smh['month']);
 
-					$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = (float) $smh['tmh_wolti'];
+					$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = (float) str_replace(',', '', $smh['tmh_wolti']);
 					$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['allData'] = array('year'=>$smh['year'], 'month'=> $smh['month']);
 					
 					if (!isset($ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['allData'])) {
@@ -2247,67 +2304,70 @@ class RiDashboardMRSB extends RiDashboard
 						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['allData'] =  array('year'=>$smh['year'], 'month'=> $smh['month']);
 					}
 
-					$ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
-					$ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
-					$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
+					$ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
+					$ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
+					$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
 
 				}
 			}
-		}
+		}else{
 
-		$keyArrToSort = array(
-			'all'
-		); // year
+			$url = $this->jogetLinkObj->getLink('construct_dash_SMH', array('', $this->parentProjectID));
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_SMH'].$childID['project_id'];
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function($a, $b) {
-				    return strtotime('01-'.$a['month'].'-'.$a['year']) - strtotime('01-'.$b['month'].'-'.$b['year']);
+					return strtotime('01-'.$a['month'].'-'.$a['year']) - strtotime('01-'.$b['month'].'-'.$b['year']);
 				});
 
-				if($res['data'] && isset($res['data'][count($res['data'])-1])){
-					$smhData = $res['data'][count($res['data'])-1];
+				if (!empty($res['data'])) {
 
-					if(isset($ret['overall']['all']['all']['cardCumulWithoutLti'])){
-						$ret['overall']['all']['all']['cardCumulWithoutLti'] = $ret['overall']['all']['all']['cardCumulWithoutLti'] + (float) $smhData['tmh_wolti'];
-					}
-					else{
-						$ret['overall']['all']['all']['cardCumulWithoutLti'] = (float) $smhData['tmh_wolti'];
-					}
+					// Get latest month & year
+					$latest = end($res['data']);
+					$latestMonth = $latest['month'];
+					$latestYear  = $latest['year'];
 
-					if(isset($ret['overall'][$smhData['year']]['all']['cardCumulWithoutLti'])){
-						$ret['overall'][$smhData['year']]['all']['cardCumulWithoutLti'] = $ret['overall'][$smhData['year']]['all']['cardCumulWithoutLti'] + (float) $smhData['tmh_wolti'];
-					}
-					else{
-						$ret['overall'][$smhData['year']]['all']['cardCumulWithoutLti'] = (float) $smhData['tmh_wolti'];
+					$total = 0;
+
+					foreach ($res['data'] as $row) {
+						if ($row['month'] == $latestMonth && $row['year'] == $latestYear) {
+							$total += (float) str_replace(',', '', $row['tmh_wolti']);
+						}
 					}
 
-					//-----------------START CHILD--------------------//
-					$ret[$childID['project_id']]['all']['all']['cardCumulWithoutLti'] = (float) $smhData['tmh_wolti'];
-					$ret[$childID['project_id']]['all']['all']['allData'] = array('year'=>$smhData['year'], 'month'=> $smhData['month']);
-					//-----------------END CHILD--------------------//
+					// Overall total
+					$ret['overall']['all']['all']['cardCumulWithoutLti'] = $total;
+
+					// Year total
+					$ret['overall'][$latestYear]['all']['cardCumulWithoutLti'] = $total;
+
+					$ret['overall']['all']['all']['allData'] = array(
+						'year'=>$latestYear,
+						'month'=>$latestMonth
+					);
 				}
 
 				foreach($res['data'] as $smh){
+					$childID['project_id'] = $smh['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
+
 					if(!in_array($smh['year'], $keyArrToSort)){
 						$keyArrToSort[] = $smh['year'];
 					}
 
 					if(isset($ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'])){
-						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = $ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] + (float) $smh['tmh_wolti'];
+						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = $ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] + (float) str_replace(',', '', $smh['tmh_wolti']);
 					}
 					else{
-						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = (float) $smh['tmh_wolti'];
+						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = (float) str_replace(',', '', $smh['tmh_wolti']);
 					}
 					$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['allData'] = array('year'=>$smh['year'], 'month'=> $smh['month']);	
 
 					//--------------START CHILD---------------//
-					$ret[$childID['project_id']][$smh['year']]['all']['cardCumulWithoutLti'] = (float) $smh['tmh_wolti'];
+					$ret[$childID['project_id']][$smh['year']]['all']['cardCumulWithoutLti'] = (float) str_replace(',', '', $smh['tmh_wolti']);
 					$ret[$childID['project_id']][$smh['year']]['all']['allData'] = array('year'=>$smh['year'], 'month'=> $smh['month']);
 
-					$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = (float) $smh['tmh_wolti'];
+					$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['cardCumulWithoutLti'] = (float) str_replace(',', '', $smh['tmh_wolti']);
 					$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['allData'] = array('year'=>$smh['year'], 'month'=> $smh['month']);
 					//---------------END CHILD---------------//
 					
@@ -2322,22 +2382,22 @@ class RiDashboardMRSB extends RiDashboard
 					}
 
 					if (isset($ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'])){
-						$ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = $ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] + (float) $smh['monthly_mh_wolti'];
+						$ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = $ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] + (float) str_replace(',', '', $smh['monthly_mh_wolti']);
 					}
 					else{
-						$ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
+						$ret['overall']['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
 					}
 					if (isset($ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'])){
-						$ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = $ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] + (float) $smh['monthly_mh_wolti'];
+						$ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = $ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] + (float) str_replace(',', '', $smh['monthly_mh_wolti']);
 					}
 					else{
-						$ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
+						$ret['overall'][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
 					}
 					if (isset($ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'])){
-						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = $ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] + (float) $smh['monthly_mh_wolti'];
+						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = $ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] + (float) str_replace(',', '', $smh['monthly_mh_wolti']);
 					}
 					else{
-						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
+						$ret['overall'][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
 					}
 
 					//---------------START CHILD-------------//
@@ -2351,12 +2411,12 @@ class RiDashboardMRSB extends RiDashboard
 						$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['allData'] =  array('year'=>$smh['year'], 'month'=> $smh['month']);
 					}
 
-					$ret[$childID['project_id']]['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
-					$ret[$childID['project_id']]['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalCumulWithoutLTI'] = (float) $smh['tmh_wolti'];
-					$ret[$childID['project_id']][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
-					$ret[$childID['project_id']][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalCumulWithoutLTI'] = (float) $smh['tmh_wolti'];
-					$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) $smh['monthly_mh_wolti'];
-					$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalCumulWithoutLTI'] = (float) $smh['tmh_wolti'];
+					$ret[$childID['project_id']]['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
+					$ret[$childID['project_id']]['all']['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalCumulWithoutLTI'] = (float) str_replace(',', '', $smh['tmh_wolti']);
+					$ret[$childID['project_id']][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
+					$ret[$childID['project_id']][$smh['year']]['all']['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalCumulWithoutLTI'] = (float) str_replace(',', '', $smh['tmh_wolti']);
+					$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalWithoutLTI'] = (float) str_replace(',', '', $smh['monthly_mh_wolti']);
+					$ret[$childID['project_id']][$smh['year']][$monthNumtoHalf[$smh['month']]]['chart'][$monthNumtoHalf[$smh['month']].'-'.$smh['year']]['totalCumulWithoutLTI'] = (float) str_replace(',', '', $smh['tmh_wolti']);
 					//---------------END CHILD----------------//
 
 				}
@@ -2629,7 +2689,7 @@ class RiDashboardMRSB extends RiDashboard
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_NCR'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_NCR', array($this->projectID, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				$dataArr = $res['data'];
@@ -3100,25 +3160,25 @@ class RiDashboardMRSB extends RiDashboard
 					}
 				}
 			}
-		}
+		}else{
 
-		$valYrData = 0;
-		$valMthData = 0;
-		$valYrPending = 0;
-		$valMthPending = 0;
-		$valYrClosed = 0;
-		$valMthClosed = 0;
+			$valYrData = 0;
+			$valMthData = 0;
+			$valYrPending = 0;
+			$valMthPending = 0;
+			$valYrClosed = 0;
+			$valMthClosed = 0;
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_NCR'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_NCR', array('', $this->parentProjectID));
 			$res = $this->jogetCURL($url);
+
 			if (isset($res['data'])) {
+
 				$dataArr = $res['data'];
-				
 				usort($dataArr, function ($a, $b) {
-				    $t1 = strtotime($a['date_issued']);
-				    $t2 = strtotime($b['date_issued']);
-				    return $t1 - $t2;
+					$t1 = strtotime($a['date_issued']);
+					$t2 = strtotime($b['date_issued']);
+					return $t1 - $t2;
 				});
 
 				$total = 1;
@@ -3133,6 +3193,10 @@ class RiDashboardMRSB extends RiDashboard
 				$total100Plusquality = 0;
 
 				foreach($dataArr as $ncr){
+
+					$childID['project_id'] = $ncr['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
+
 					$mthCT = $this->getMonthfromTSRange(new DateTime($ncr['date_issued']), $this->cutoffDay);
 					$dateCreated = strtotime($ncr['date_issued']);
 
@@ -4008,7 +4072,8 @@ class RiDashboardMRSB extends RiDashboard
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_NOI'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_NOI', array($this->projectID, ''));
+
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				$dataArr = $res['data'];
@@ -4204,28 +4269,29 @@ class RiDashboardMRSB extends RiDashboard
 				}
 				
 			}
-		}
+		}else{
+			$valYrData = 0;
+			$valMthData = 0;
+			$valYrPending = 0;
+			$valMthPending = 0;
+			$valYrClosed = 0;
+			$valMthClosed = 0;
 
-		$valYrData = 0;
-		$valMthData = 0;
-		$valYrPending = 0;
-		$valMthPending = 0;
-		$valYrClosed = 0;
-		$valMthClosed = 0;
-
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_NOI'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_NOI', array('', $this->parentProjectID));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				$dataArr = $res['data'];
 				
 				usort($dataArr, function ($a, $b) {
-				    $t1 = strtotime($a['date_issued']);
-				    $t2 = strtotime($b['date_issued']);
-				    return $t1 - $t2;
+					$t1 = strtotime($a['date_issued']);
+					$t2 = strtotime($b['date_issued']);
+					return $t1 - $t2;
 				});
 				
 				foreach($res['data'] as $noi){
+					$childID['project_id'] = $noi['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
+
 					if($noi['discipline'] != "Quality") continue;
 					$mthCT = $this->getMonthfromTSRange(new DateTime($noi['date_issued']), $this->cutoffDay);
 
@@ -4635,7 +4701,6 @@ class RiDashboardMRSB extends RiDashboard
 				
 			}
 		}
-
 		return $ret;
 	}
 
@@ -4644,7 +4709,7 @@ class RiDashboardMRSB extends RiDashboard
 		$monthFulltoHalf = ["January"=>"Jan","February"=>"Feb","March"=>"Mar","April"=>"Apr","May"=>"May","June"=>"Jun","July"=>"Jul","August"=>"Aug","September"=>"Sep","October"=>"Oct","November"=>"Nov","December"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_RFI'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_RFI', array($this->projectID, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				
@@ -4716,17 +4781,18 @@ class RiDashboardMRSB extends RiDashboard
 
 				}
 			}
-		}
+		}else{
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_RFI'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_RFI', array('', $this->parentProjectID));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function($b, $a) {
-				    return strtotime('01-'.$a['month'].'-'.$a['year']) - strtotime('01-'.$b['month'].'-'.$b['year']);
+					return strtotime('01-'.$a['month'].'-'.$a['year']) - strtotime('01-'.$b['month'].'-'.$b['year']);
 				});
 				
 				foreach($res['data'] as $rfi){
+					$childID['project_id'] = $rfi['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
 
 					//-------------Quality Management Dashboard--------------//
 					// for filter conOp
@@ -4860,7 +4926,7 @@ class RiDashboardMRSB extends RiDashboard
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_MS'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_MS', array($this->projectID, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				
@@ -5182,20 +5248,22 @@ class RiDashboardMRSB extends RiDashboard
 				}
 
 			}
-		}
+		}else{
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_MS'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_MS', array('', $this->parentProjectID));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
-				
+
 				usort($res['data'], function ($a, $b) {
-				    $t1 = strtotime($a['submission_date']);
-				    $t2 = strtotime($b['submission_date']);
-				    return $t1 - $t2;
+					$t1 = strtotime($a['submission_date']);
+					$t2 = strtotime($b['submission_date']);
+					return $t1 - $t2;
 				});
 
 				foreach($res['data'] as $ms){
+					$childID['project_id'] = $ms['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
+
 					$mthCT = $this->getMonthfromTSRange(new DateTime($ms['submission_date']), $this->cutoffDay);
 					$dateCreated = strtotime($ms['submission_date']);
 
@@ -5357,7 +5425,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall']['all']['all']['byAgingNull']['more100'])) {
 							$ret['overall']['all']['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall']['all']['all']['byAgingNull']['less14']++;
 						}
@@ -5383,7 +5451,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall'][$mthCT['yr']]['all']['byAgingNull']['more100'])) {
 							$ret['overall'][$mthCT['yr']]['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall'][$mthCT['yr']]['all']['byAgingNull']['less14']++;
 						}
@@ -5409,7 +5477,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'])) {
 							$ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['less14']++;
 						}
@@ -5437,7 +5505,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']]['all']['all']['byAgingNull']['more100'])) {
 							$ret[$childID['project_id']]['all']['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']]['all']['all']['byAgingNull']['less14']++;
 						}
@@ -5463,7 +5531,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingNull']['more100'])) {
 							$ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingNull']['less14']++;
 						}
@@ -5489,7 +5557,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'])) {
 							$ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['less14']++;
 						}
@@ -5780,7 +5848,8 @@ class RiDashboardMRSB extends RiDashboard
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_MT'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_MT', array($this->projectID, ''));
+
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				
@@ -6099,20 +6168,22 @@ class RiDashboardMRSB extends RiDashboard
 				}
 				
 			}
-		}
+		}else{
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_MT'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_MT', array('', $this->parentProjectID));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				
 				usort($res['data'], function ($a, $b) {
-				    $t1 = strtotime($a['submission_date']);
-				    $t2 = strtotime($b['submission_date']);
-				    return $t1 - $t2;
+					$t1 = strtotime($a['submission_date']);
+					$t2 = strtotime($b['submission_date']);
+					return $t1 - $t2;
 				});
 
 				foreach($res['data'] as $ms){
+					$childID['project_id'] = $ms['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
+
 					$mthCT = $this->getMonthfromTSRange(new DateTime($ms['submission_date']), $this->cutoffDay);
 					$dateCreated = strtotime($ms['submission_date']);
 
@@ -6279,7 +6350,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall']['all']['all']['byAgingNull']['more100'])) {
 							$ret['overall']['all']['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall']['all']['all']['byAgingNull']['less14']++;
 						}
@@ -6305,7 +6376,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall'][$mthCT['yr']]['all']['byAgingNull']['more100'])) {
 							$ret['overall'][$mthCT['yr']]['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall'][$mthCT['yr']]['all']['byAgingNull']['less14']++;
 						}
@@ -6331,7 +6402,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'])) {
 							$ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['less14']++;
 						}
@@ -6358,7 +6429,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']]['all']['all']['byAgingNull']['more100'])) {
 							$ret[$childID['project_id']]['all']['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']]['all']['all']['byAgingNull']['less14']++;
 						}
@@ -6384,7 +6455,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingNull']['more100'])) {
 							$ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingNull']['less14']++;
 						}
@@ -6410,7 +6481,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'])) {
 							$ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingNull']['less14']++;
 						}
@@ -6487,7 +6558,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall']['all']['all']['byAgingWith']['more100'])) {
 							$ret['overall']['all']['all']['byAgingWith']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall']['all']['all']['byAgingWith']['less14']++;
 						}
@@ -6513,7 +6584,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall'][$mthCT['yr']]['all']['byAgingWith']['more100'])) {
 							$ret['overall'][$mthCT['yr']]['all']['byAgingWith']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall'][$mthCT['yr']]['all']['byAgingWith']['less14']++;
 						}
@@ -6539,7 +6610,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingWith']['more100'])) {
 							$ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingWith']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret['overall'][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingWith']['less14']++;
 						}
@@ -6566,7 +6637,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']]['all']['all']['byAgingWith']['more100'])) {
 							$ret[$childID['project_id']]['all']['all']['byAgingWith']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']]['all']['all']['byAgingWith']['less14']++;
 						}
@@ -6592,7 +6663,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingWith']['more100'])) {
 							$ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingWith']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']][$mthCT['yr']]['all']['byAgingWith']['less14']++;
 						}
@@ -6618,7 +6689,7 @@ class RiDashboardMRSB extends RiDashboard
 						if (!isset($ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingWith']['more100'])) {
 							$ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingWith']['more100'] = 0;
 						}
-	
+
 						if($diffDays <= 14){
 							$ret[$childID['project_id']][$mthCT['yr']][$monthNumtoHalf[$mthCT['mth']]]['byAgingWith']['less14']++;
 						}
@@ -6699,7 +6770,8 @@ class RiDashboardMRSB extends RiDashboard
 		$monthFulltoHalf = ["January"=>"Jan","February"=>"Feb","March"=>"Mar","April"=>"Apr","May"=>"May","June"=>"Jun","July"=>"Jul","August"=>"Aug","September"=>"Sep","October"=>"Oct","November"=>"Nov","December"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_WIR'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_WIR', array($this->projectID, ''));
+
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				
@@ -6819,17 +6891,18 @@ class RiDashboardMRSB extends RiDashboard
 
 				}
 			}
-		}
+		}else{
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_WIR'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_WIR', array('', $this->parentProjectID));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function($b, $a) {
-				    return strtotime('01-'.$a['month'].'-'.$a['year']) - strtotime('01-'.$b['month'].'-'.$b['year']);
+					return strtotime('01-'.$a['month'].'-'.$a['year']) - strtotime('01-'.$b['month'].'-'.$b['year']);
 				});
 				
 				foreach($res['data'] as $wir){
+					$childID['project_id'] = $wir['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
 
 					//-------------Quality Management Dashboard--------------//
 					// for filter
@@ -7050,8 +7123,8 @@ class RiDashboardMRSB extends RiDashboard
 					//-------------END CHILD-------------------//
 				}
 			}
-		}
 
+		}
 
 		return $ret;
 	}
@@ -7061,7 +7134,7 @@ class RiDashboardMRSB extends RiDashboard
 		$monthFulltoHalf = ["January"=>"Jan","February"=>"Feb","March"=>"Mar","April"=>"Apr","May"=>"May","June"=>"Jun","July"=>"Jul","August"=>"Aug","September"=>"Sep","October"=>"Oct","November"=>"Nov","December"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_RR'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_RR', array($this->projectID, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function ($b, $a) {
@@ -7132,30 +7205,32 @@ class RiDashboardMRSB extends RiDashboard
 
 				}
 			}
-		}
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_RR'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_RR', array('', $this->parentProjectID));
+
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function ($b, $a) {
-				    $t1 = strtotime($a['date_identified']);
-				    $t2 = strtotime($b['date_identified']);
-				    return $t1 - $t2;
+					$t1 = strtotime($a['date_identified']);
+					$t2 = strtotime($b['date_identified']);
+					return $t1 - $t2;
 				});
 				
 				foreach($res['data'] as $rr){
+					$childID['project_id'] = $rr['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
+	
 					$dateCreated = strtotime($rr['date_identified']);
 					$year = date("Y", $dateCreated);
 					$month = date("M", $dateCreated);
-
+	
 					//-------------Main Summary Dashboard--------------//
 					// for conOp data filter 
 					$mthYrFirstDay = date('01/m/Y', $dateCreated);
 					$mthYrLastDay = date('t/m/Y', $dateCreated);
 					$yrFirstDay = date('01/01/Y', $dateCreated);
 					$yrLastDay = date('31/12/Y', $dateCreated);
-
+	
 					if (!isset($ret['overall']['all']['all']['card']['riskStatus']['allData'])) {
 						$ret['overall']['all']['all']['card']['riskStatus']['allData'] = array('dateFrom'=>'', 'dateTo'=> '');
 					}
@@ -7166,7 +7241,7 @@ class RiDashboardMRSB extends RiDashboard
 						$ret['overall'][$year][$month]['card']['riskStatus']['allData'] = array('dateFrom'=>$mthYrFirstDay, 'dateTo'=> $mthYrLastDay);
 					}
 					// for conOp data filter end
-
+	
 					if (isset($ret['overall']['all']['all']['card']['riskStatus'][$rr['risk_status']])) {
 						$ret['overall']['all']['all']['card']['riskStatus'][$rr['risk_status']]++;
 					}else{
@@ -7182,7 +7257,7 @@ class RiDashboardMRSB extends RiDashboard
 					}else{
 						$ret['overall'][$year][$month]['card']['riskStatus'][$rr['risk_status']] = 1;
 					}
-
+	
 					//----------------START CHILD----------------------//
 					// for conOp filter
 					if (!isset($ret[$childID['project_id']]['all']['all']['card']['riskStatus']['allData'])) {
@@ -7194,7 +7269,7 @@ class RiDashboardMRSB extends RiDashboard
 					if (!isset($ret[$childID['project_id']][$year][$month]['card']['riskStatus']['allData'])) {
 						$ret[$childID['project_id']][$year][$month]['card']['riskStatus']['allData'] = array('dateFrom'=>$mthYrFirstDay, 'dateTo'=> $mthYrLastDay);
 					}
-
+	
 					if (isset($ret[$childID['project_id']]['all']['all']['card']['riskStatus'][$rr['risk_status']])) {
 						$ret[$childID['project_id']]['all']['all']['card']['riskStatus'][$rr['risk_status']]++;
 					}else{
@@ -7211,7 +7286,7 @@ class RiDashboardMRSB extends RiDashboard
 						$ret[$childID['project_id']][$year][$month]['card']['riskStatus'][$rr['risk_status']] = 1;
 					}
 					//----------------END CHILD--------------------//
-
+	
 				}
 			}
 		}
@@ -7225,7 +7300,7 @@ class RiDashboardMRSB extends RiDashboard
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_PBC'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_PBC', array($this->projectID, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function ($a, $b) {
@@ -7279,19 +7354,22 @@ class RiDashboardMRSB extends RiDashboard
 					$total++;
 				}
 			}
-		}
+		}else{
 
-		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_PBC'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_PBC', array('', $this->parentProjectID));
+
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function ($a, $b) {
-				    $t1 = strtotime($a['date_received']);
-				    $t2 = strtotime($b['date_received']);
-				    return $t1 - $t2;
+					$t1 = strtotime($a['date_received']);
+					$t2 = strtotime($b['date_received']);
+					return $t1 - $t2;
 				});
 				
 				foreach($res['data'] as $pbc){
+					$childID['project_id'] = $pbc['package_id'];
+					if(!in_array($childID['project_id'], $this->childProjectList)) continue;
+
 					$mthCT = $this->getMonthfromTSRange(new DateTime($pbc['date_received']), $this->cutoffDay);
 
 					//-------------Main Summary Dashboard--------------//
@@ -7393,7 +7471,7 @@ class RiDashboardMRSB extends RiDashboard
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
 
 		if ($this->isWPC) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_PBC'].$this->projectID;
+			$url = $this->jogetLinkObj->getLink('construct_dash_PBC', array($this->projectID, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 
@@ -7496,7 +7574,7 @@ class RiDashboardMRSB extends RiDashboard
 		}
 
 		foreach ($this->childProjectInfo as $childID) {
-			$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_PBC'].$childID['project_id'];
+			$url = $this->jogetLinkObj->getLink('construct_dash_PBC', array($childID['project_id'], ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function ($a, $b) {
@@ -7675,6 +7753,11 @@ class RiDashboardMRSB extends RiDashboard
 		return $ret;
 	}
 
+	function isValidDate($date, $format = 'Y-m-d') {
+    	$d = DateTime::createFromFormat($format, $date);
+		return $d && $d->format($format) === $date;
+	}
+
 	function fetchEVNTData(){
 		$ret = array();
 		$monthNumtoHalf = ["01"=>"Jan","02"=>"Feb","03"=>"Mar","04"=>"Apr","05"=>"May","06"=>"Jun","07"=>"Jul","08"=>"Aug","09"=>"Sep","10"=>"Oct","11"=>"Nov","12"=>"Dec"];
@@ -7689,7 +7772,11 @@ class RiDashboardMRSB extends RiDashboard
 				    return $t1 - $t2;
 				});
 				foreach($res['data'] as $evt){
-					$mthCT = $this->getMonthfromTSRange(new DateTime($evt['date_event']), $this->cutoffDay);
+					if($this->isValidDate($evt['date_event'])){
+						$mthCT = $this->getMonthfromTSRange(new DateTime($evt['date_event']), $this->cutoffDay);
+					}else{
+						continue;
+					}
 					//-------------Stakeholder Management Dashboard--------------//
 					// for filter dashboard to conop
 					if (!isset($ret['overall']['all']['all']['allData'])) {
@@ -7778,8 +7865,11 @@ class RiDashboardMRSB extends RiDashboard
 				});
 				
 				foreach($res['data'] as $evt){
-					$mthCT = $this->getMonthfromTSRange(new DateTime($evt['date_event']), $this->cutoffDay);
-
+					if($this->isValidDate($evt['date_event'])){
+						$mthCT = $this->getMonthfromTSRange(new DateTime($evt['date_event']), $this->cutoffDay);
+					}else{
+						continue;
+					}
 					//-------------Stakeholder Management Dashboard--------------//
 					// for filter dashboard to conop
 					if (!isset($ret['overall']['all']['all']['allData'])) {
@@ -8032,22 +8122,22 @@ class RiDashboardMRSB extends RiDashboard
 				// FOR LMR STATUS TABLE
 				// issue accumulative ctd
 				if(isset($ret['overall']['all']['all']['issueAccumul'])){
-					$ret['overall']['all']['all']['issueAccumul'] = $ret['overall']['all']['all']['issueAccumul'] + (float) $lm['ttl_accumulative_ctd_issue'];
+					$ret['overall']['all']['all']['issueAccumul'] = $ret['overall']['all']['all']['issueAccumul'] + (float) $lm['ttl_new_issues'];
 				}
 				else{
-					$ret['overall']['all']['all']['issueAccumul'] = (float) $lm['ttl_accumulative_ctd_issue'];
+					$ret['overall']['all']['all']['issueAccumul'] = (float) $lm['ttl_new_issues'];
 				}
 				if(isset($ret['overall'][$lm['year']]['all']['issueAccumul'])){
-					$ret['overall'][$lm['year']]['all']['issueAccumul'] = $ret['overall'][$lm['year']]['all']['issueAccumul'] + (float) $lm['ttl_accumulative_ctd_issue'];
+					$ret['overall'][$lm['year']]['all']['issueAccumul'] = $ret['overall'][$lm['year']]['all']['issueAccumul'] + (float) $lm['ttl_new_issues'];
 				}
 				else{
-					$ret['overall'][$lm['year']]['all']['issueAccumul'] = (float) $lm['ttl_accumulative_ctd_issue'];
+					$ret['overall'][$lm['year']]['all']['issueAccumul'] = (float) $lm['ttl_new_issues'];
 				}
 				if(isset($ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['issueAccumul'])){
-					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['issueAccumul'] = $ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['issueAccumul'] + (float) $lm['ttl_accumulative_ctd_issue'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['issueAccumul'] = $ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['issueAccumul'] + (float) $lm['ttl_new_issues'];
 				}
 				else{
-					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['issueAccumul'] = (float) $lm['ttl_accumulative_ctd_issue'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['issueAccumul'] = (float) $lm['ttl_new_issues'];
 				}
 
 				// issue solved
@@ -8542,7 +8632,193 @@ class RiDashboardMRSB extends RiDashboard
 		return $ret;
 	}
 
+	function fetchLandManageDataV2($main = false){
+		$monthHalftext = ['01'=>"Jan",'02'=>"Feb",'03'=>"Mar",'04'=>"Apr",'05'=>"May",'06'=>"Jun",'07'=>"Jul",'08'=>"Aug",'09'=>"Sep",'10'=>"Oct",'11'=>"Nov",'12'=>"Dec"];
+
+		$ret = array();
+		$arrayId = array();
+
+		if ($this->isWPC){
+			$project_id = $this->parentProjectID;
+		}
+		else{
+			$project_id = $this->projectID;
+		}
+
+		$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LM'].$project_id;
+		$res = $this->jogetCURL($url);
+
+		if (isset($res['data'])) {
+			$dataArr = $res['data'];
+
+			usort($dataArr, function ($a, $b) {
+				$t1 = strtotime('01-'.$a['month'].'-'.$a['year']);
+				$t2 = strtotime('01-'.$b['month'].'-'.$b['year']);
+
+				return $t1 - $t2;
+			});
+
+			$urlLms = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LMS'];
+			$resLms = $this->jogetCURL($urlLms);
+
+			$urlLmrs = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LMRS_copy'];
+			$resLmrs = $this->jogetCURL($urlLmrs);
+
+			$urlLmrt = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LMR'];
+			$resLmrt = $this->jogetCURL($urlLmrt);
+
+			$urlLtr = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LTR'];
+			$resLtr = $this->jogetCURL($urlLtr);
+
+			foreach ($dataArr as $lm) {
+				
+				$idUsed = $lm['id'];
+
+				$arrayId[] = $idUsed;
+				$ret['idForEach'][$lm['year']][$monthHalftext[$lm['month']]] = $idUsed;
+
+				if (!isset($ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['allData'])) {
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['allData'] = array('year'=>$lm['year'], 'month' => $lm['month']);
+				}
+
+				//FOR MAIN SUMMARY
+				if(isset($ret['overall']['all']['all']['ttlIssueBalance'])){
+					$ret['overall']['all']['all']['ttlIssueBalance'] = $ret['overall']['all']['all']['ttlIssueBalance'] + (float) $lm['type_total_bal_issues'];
+				}
+				else{
+					$ret['overall']['all']['all']['ttlIssueBalance'] = (float) $lm['type_total_bal_issues'];
+				}
+
+				if(isset($ret['overall'][$lm['year']]['all']['ttlIssueBalance'])){
+					$ret['overall'][$lm['year']]['all']['ttlIssueBalance'] = $ret['overall'][$lm['year']]['all']['ttlIssueBalance'] + (float) $lm['type_total_bal_issues'];
+				}
+				else{
+					$ret['overall'][$lm['year']]['all']['ttlIssueBalance'] = (float) $lm['type_total_bal_issues'];
+				}
+
+				if(isset($ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['ttlIssueBalance'])){
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['ttlIssueBalance'] = $ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['ttlIssueBalance'] + (float) $lm['type_total_bal_issues'];
+				}
+				else{
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]]['ttlIssueBalance'] = (float) $lm['type_total_bal_issues'];
+				}
+
+				if(!$main){
+					//FOR LAND SYNOPSIS
+
+					if (isset($resLms['data'])) {
+						foreach ($resLms['data'] as $lms) {
+							if($lms['c_parent_id'] == $idUsed){
+								if($lms['c_sypnosis'] == '') continue;
+								$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['synopsis'][] = $lms['c_sypnosis'];
+							}
+						}
+					}
+
+					//FOR LMR - SECTION
+					$ltrArray = array();
+					$order = ['Limbang 1', 'Limbang 2', 'Limbang 3', 'Lawas 1', 'Lawas 2'];
+
+					if (isset($resLmrs['data'])) {
+						usort($resLmrs['data'], function ($a, $b) use ($order) {
+							$aIndex = array_search($a['section'], $order);
+							$bIndex = array_search($b['section'], $order);
+							return $aIndex - $bIndex;
+						});
+						foreach ($resLmrs['data'] as $lmrs) {
+							if($lmrs['parent_id'] == $idUsed){
+								if($lmrs['section'] == '') continue;
+								$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['lmr-section'][$lmrs['section']] = $lmrs;
+							}
+						}
+					}
+
+					//FOR LMR - SECTION - TOTAL 
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlCFIssue'] = $lm['ttl_unresolved_issues'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlNewIssue'] = $lm['ttl_new_issues'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlSolvedIssue'] = $lm['ttl_solved_issues'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlBalIssue'] = $lm['ttl_bal_unresolved_issues'];
+
+					//FOR LMR - SECTION - TOTAL ACCUMULATIVE (ALL) CTD
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlAccCFIssue'] = $lm['ttl_accumul_cf_issues'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlAccCFkm'] = $lm['ttl_accumul_cf_km'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlAccCTDIssue'] = $lm['ttl_accumulative_ctd_issue'];
+					$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['total']['ttlAccCTDkm'] = $lm['ttl_accumulative_ctd_km'];
+
+					//FOR LAND TRACKING
+					$arryLandTracking = array();
+					$ltrArray = array();
+					$order = ['Limbang', 'Lawas'];
+
+					if (isset($resLtr['data'])) {
+						
+						usort($resLtr['data'], function ($a, $b) use ($order) {
+							$aIndex = array_search($a['package'], $order);
+							$bIndex = array_search($b['package'], $order);
+							$sortComparison = $aIndex - $bIndex;
+						
+							if ($sortComparison !== 0) {
+								return $sortComparison;
+							}
+						
+							if ($a['stage'] == $b['stage']) {
+								return strcmp($a['section'], $b['section']);
+							}
+						
+							return strcmp($a['stage'], $b['stage']);
+						});
+
+
+						foreach ($resLtr['data'] as $ltr) {
+							if($ltr['parent_id'] == $idUsed){
+								if($ltr['package'] == '' || $ltr['section'] == '') continue;
+
+								$ltrArray[] = $ltr;
+
+								$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['data'][$ltr['critical_milestone']][$ltr['stage']][$ltr['package']][$ltr['section']][] = $ltr;
+								$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['dataUsed'][$ltr['critical_milestone']][$ltr['stage']][$ltr['section']][] = $ltr;
+
+								if(isset($ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['count']['countSectionWithPackage'][$ltr['package']])){
+									if(!in_array($ltr['section'], $ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['count']['countSectionWithPackage'][$ltr['package']])){
+										$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['count']['countSectionWithPackage'][$ltr['package']][] = $ltr['section'];
+									}
+								}
+								else{
+									$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['count']['countSectionWithPackage'][$ltr['package']][] = $ltr['section'];
+									
+								}
+
+								if(isset($arryLandTracking[$ltr['package']])){
+									if(!in_array($ltr['section'], $arryLandTracking[$ltr['package']])){
+										$arryLandTracking[$ltr['package']][] = $ltr['section'];
+									}
+								}
+								else{
+									$arryLandTracking[$ltr['package']][] = $ltr['section'];
+								}
+							}
+						}
+					}
+
+					if($resLtr['data']){
+						foreach ($arryLandTracking as $key=>$value) {
+							foreach ($value as $key1) {
+								foreach ($ltrArray as $keyLtr) {
+									if(!isset($ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['data'][$keyLtr['critical_milestone']][$keyLtr['stage']][$key][$key1])){
+										$ret['overall'][$lm['year']][$monthHalftext[$lm['month']]][$idUsed]['landTracking']['data'][$keyLtr['critical_milestone']][$keyLtr['stage']][$key][$key1][] = 0;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return $ret;
+	}
+
 	function fetchLandTimeDbData (){
+		$monthHalftext = ['01'=>"Jan",'02'=>"Feb",'03'=>"Mar",'04'=>"Apr",'05'=>"May",'06'=>"Jun",'07'=>"Jul",'08'=>"Aug",'09'=>"Sep",'10'=>"Oct",'11'=>"Nov",'12'=>"Dec"];
 		$ret = array();
 
 		if ($this->isWPC){
@@ -8557,30 +8833,63 @@ class RiDashboardMRSB extends RiDashboard
 
 		$order = ['Limbang 1', 'Limbang 2', 'Limbang 3', 'Lawas 1', 'Lawas 2'];
 
+		//FOR LAND DATABASE
+		$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LD'].$project_id;
+		$resDatabase = $this->jogetCURL($url);
+		usort($resDatabase['data'], function ($a, $b) use ($order) {
+			$aIndex = array_search($a['section'], $order);
+			$bIndex = array_search($b['section'], $order);
+			return $aIndex - $bIndex;
+		});
+
+		$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LT'].$project_id;
+		$resLt = $this->jogetCURL($url);
+		usort($resLt['data'], function ($a, $b) {
+			$t1 = strtotime('01-'.$a['month'].'-'.$a['year']);
+			$t2 = strtotime('01-'.$b['month'].'-'.$b['year']);
+
+			return $t1 - $t2;
+		});
+
+		$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LAT'].$project_id;
+		$resLat = $this->jogetCURL($url);
+		usort($resLat['data'], function ($a, $b) {
+			return strtotime($a['date']) - strtotime($b['date']);
+		});
+
 		if (isset($res['data'])) {
 			foreach ($res['data'] as $ltd) {
 				$idUsed = $ltd['id'];
+			
 				$ret['overall']['all']['all']['allData'][$ltd['category']]['idForConop']= $idUsed;
 				
 				//FOR LAND DATABASE
 				if($ltd['category'] == 'Database'){
-					$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LD'].$idUsed;
-					$res = $this->jogetCURL($url);
-					if (isset($res['data'])) {
-						usort($res['data'], function ($a, $b) use ($order) {
-							$aIndex = array_search($a['section'], $order);
-							$bIndex = array_search($b['section'], $order);
-							return $aIndex - $bIndex;
-						});
-						foreach ($res['data'] as $ld) {
+					$rDb = array();
+
+					if (isset($resDatabase['data'])) {
+						foreach ($resDatabase['data'] as $ld) {
+
+							if($ld['parent_id'] != $idUsed) continue;
+
+							// overall - all - all
 							$ret['overall']['all']['all']['landDatabase']['KM-RUN'][$ld['section']]= $ld['km_run'];
-							$ret['overall']['all']['all']['landDatabase']['KM-RUN%'][$ld['section']]= $ld['km_run_percentage'];
+							$ret['overall']['all']['all']['landDatabase']['ACRE'][$ld['section']]= $ld['acreage'];
 							$ret['overall']['all']['all']['landDatabase']['LOTS'][$ld['section']]= $ld['lots'];
-							$ret['overall']['all']['all']['landDatabase']['LOTS%'][$ld['section']]= $ld['lots_percentage'];
-							$ret['overall']['all']['all']['landDatabase']['ACREAGE'][$ld['section']]= $ld['acreage'];
-							$ret['overall']['all']['all']['landDatabase']['ACREAGE%'][$ld['section']]= $ld['acreage_percentage'];
-							$ret['overall']['all']['all']['landDatabase']['#STRUCTURES'][$ld['section']]= $ld['structure'];
-							$ret['overall']['all']['all']['landDatabase']['#STRUCTURES%'][$ld['section']]= $ld['structure_percentage'];
+							$ret['overall']['all']['all']['landDatabase']['STRUCTURES'][$ld['section']]= $ld['structure'];
+
+							// overall - year - all
+							$ret['overall'][$ld['year']]['all']['landDatabase']['KM-RUN'][$ld['section']]= $ld['km_run'];
+							$ret['overall'][$ld['year']]['all']['landDatabase']['ACRE'][$ld['section']]= $ld['acreage'];
+							$ret['overall'][$ld['year']]['all']['landDatabase']['LOTS'][$ld['section']]= $ld['lots'];
+							$ret['overall'][$ld['year']]['all']['landDatabase']['STRUCTURES'][$ld['section']]= $ld['structure'];
+
+							// overall - year - month
+							$ret['overall'][$ld['year']][$monthHalftext[$ld['month']]]['landDatabase']['KM-RUN'][$ld['section']]= $ld['km_run'];
+							$ret['overall'][$ld['year']][$monthHalftext[$ld['month']]]['landDatabase']['ACRE'][$ld['section']]= $ld['acreage'];
+							$ret['overall'][$ld['year']][$monthHalftext[$ld['month']]]['landDatabase']['LOTS'][$ld['section']]= $ld['lots'];
+							$ret['overall'][$ld['year']][$monthHalftext[$ld['month']]]['landDatabase']['STRUCTURES'][$ld['section']]= $ld['structure'];
+
 						}
 	
 					}
@@ -8588,32 +8897,31 @@ class RiDashboardMRSB extends RiDashboard
 
 				//FOR LAND TIMELINE
 				if($ltd['category'] == 'Timeline'){
-					$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LT'].$idUsed;
-					$res = $this->jogetCURL($url);
-					if (isset($res['data'])) {
-						usort($res['data'], function ($a, $b) {
-							$t1 = strtotime('01-'.$a['month'].'-'.$a['year']);
-							$t2 = strtotime('01-'.$b['month'].'-'.$b['year']);
-			
-							return $t1 - $t2;
-						});
+					if (isset($resLt['data'])) {
 
-						foreach ($res['data'] as $lt) {
+						foreach ($resLt['data'] as $lt) {
+							if($lt['parent_id'] != $idUsed) continue;
+
 							$ret['overall']['all']['all']['landTimeline']['data'][] = $lt;
+
+							$ret['overall'][$lt['year_data']]['all']['landTimeline']['data'][] = $lt;
+
+							$ret['overall'][$lt['year_data']][$monthHalftext[$lt['month_data']]]['landTimeline']['data'][] = $lt;
 						}
 	
 					}
 
 					//FOR TARGET ASSUMPTIONS
-					$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LAT'].$idUsed;
-					$res = $this->jogetCURL($url);
-					if (isset($res['data'])) {
-						usort($res['data'], function ($a, $b) {
-							return strtotime($a['date']) - strtotime($b['date']);
-						});
+					if (isset($resLat['data'])) {
 
-						foreach ($res['data'] as $lat) {
+						foreach ($resLat['data'] as $lat) {
+							if($lat['parent_id'] != $idUsed) continue;
+
 							$ret['overall']['all']['all']['landTimeline']['assumption'][] = $lat;
+
+							$ret['overall'][$lat['year']]['all']['landTimeline']['assumption'][] = $lat;
+
+							$ret['overall'][$lat['year']][$monthHalftext[$lat['month']]]['landTimeline']['assumption'][] = $lat;
 						}
 	
 					}
@@ -8713,6 +9021,318 @@ class RiDashboardMRSB extends RiDashboard
 
 	}
 
+	function fetchLandAcquisitionLand(){
+		$monthHalftext = ['01'=>"Jan",'02'=>"Feb",'03'=>"Mar",'04'=>"Apr",'05'=>"May",'06'=>"Jun",'07'=>"Jul",'08'=>"Aug",'09'=>"Sep",'10'=>"Oct",'11'=>"Nov",'12'=>"Dec"];
+
+		$ret = array();
+
+		if ($this->isWPC){
+			$project_id = $this->parentProjectID;
+		}
+		else{
+			$project_id = $this->projectID;
+		}
+		
+		$order = ['Limbang 1', 'Limbang 2', 'Limbang 3', 'Lawas 1', 'Lawas 2'];
+
+		$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LMAcq'].$project_id;
+		$res = $this->jogetCURL($url);
+
+		if (isset($res['data'])) {
+			if (isset($res['data'])) {
+				usort($res['data'], function ($a, $b) use ($order) {
+					$aIndex = array_search($a['section'], $order);
+					$bIndex = array_search($b['section'], $order);
+					return $aIndex - $bIndex;
+				});
+				foreach ($res['data'] as $la) {
+					$year = $la['year'];
+					$month = $monthHalftext[$la['month']];
+
+					// year - month
+					if(isset($ret['overall'][$year][$month][$la['section']]['cumulativeStatusKM'])){
+						$ret['overall'][$year][$month][$la['section']]['cumulativeStatusKM'] = $ret['overall'][$year][$month][$la['section']]['cumulativeStatusKM'] + (float) $la['land_acquisition_status_km'];
+					}
+					else{
+						$ret['overall'][$year][$month][$la['section']]['cumulativeStatusKM'] = (float) $la['land_acquisition_status_km'];
+					}
+
+					if(isset($ret['overall'][$year][$month][$la['section']]['cumulativeStatusPercent'])){
+						$ret['overall'][$year][$month][$la['section']]['cumulativeStatusPercent'] = $ret['overall'][$year][$month][$la['section']]['cumulativeStatusPercent'] + (float) $la['land_acquisition_status'];
+					}
+					else{
+						$ret['overall'][$year][$month][$la['section']]['cumulativeStatusPercent'] = (float) $la['land_acquisition_status'];
+					}
+
+					if(isset($ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusKM'])){
+						$ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusKM'] = $ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusKM'] + (float) $la['bal_land_acquisition_status_km'];
+					}
+					else{
+						$ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusKM'] = (float) $la['bal_land_acquisition_status_km'];
+					}
+
+					if(isset($ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusPercent'])){
+						$ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusPercent'] = $ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusPercent'] + (float) $la['bal_land_acquisition_status'];
+					}
+					else{
+						$ret['overall'][$year][$month][$la['section']]['cumulativeBalStatusPercent'] = (float) $la['bal_land_acquisition_status'];
+					}
+
+					if(isset($ret['overall'][$year][$month][$la['section']]['cumulativeOverallKM'])){
+						$ret['overall'][$year][$month][$la['section']]['cumulativeOverallKM'] = $ret['overall'][$year][$month][$la['section']]['cumulativeOverallKM'] + (float) $la['total_overall_km'];
+					}
+					else{
+						$ret['overall'][$year][$month][$la['section']]['cumulativeOverallKM'] = (float) $la['total_overall_km'];
+					}
+
+					if(isset($ret['overall'][$year][$month][$la['section']]['cumulativeDisputeKM'])){
+						$ret['overall'][$year][$month][$la['section']]['cumulativeDisputeKM'] = $ret['overall'][$year][$month][$la['section']]['cumulativeDisputeKM'] + (float) $la['land_disputed_km'];
+					}
+					else{
+						$ret['overall'][$year][$month][$la['section']]['cumulativeDisputeKM'] = (float) $la['land_disputed_km'];
+					}
+
+					if(isset($ret['overall'][$year][$month][$la['section']]['cumulativeDisputePercent'])){
+						$ret['overall'][$year][$month][$la['section']]['cumulativeDisputePercent'] = $ret['overall'][$year][$month][$la['section']]['cumulativeDisputePercent'] + (float) $la['land_disputed'];
+					}
+					else{
+						$ret['overall'][$year][$month][$la['section']]['cumulativeDisputePercent'] = (float) $la['land_disputed'];
+					}
+
+				}
+			}
+		}
+
+		return $ret;
+	}
+
+	function fetchLandAcquisition(){
+		$monthHalftext = ['01'=>"Jan",'02'=>"Feb",'03'=>"Mar",'04'=>"Apr",'05'=>"May",'06'=>"Jun",'07'=>"Jul",'08'=>"Aug",'09'=>"Sep",'10'=>"Oct",'11'=>"Nov",'12'=>"Dec"];
+
+		$ret = array();
+
+		if ($this->isWPC){
+			$project_id = $this->parentProjectID;
+		}
+		else{
+			$project_id = $this->projectID;
+		}
+		
+		$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LMAcq'].$project_id;
+		$res = $this->jogetCURL($url);
+
+		if (isset($res['data'])) {
+			foreach ($res['data'] as $la) {
+				$year = $la['year'];
+				$month = $monthHalftext[$la['month']];
+
+				// all - all
+				if(isset($ret['overall']['all']['all']['cumulativeStatusKM'])){
+					$ret['overall']['all']['all']['cumulativeStatusKM'] = $ret['overall']['all']['all']['cumulativeStatusKM'] + (float) $la['land_acquisition_status_km'];
+				}
+				else{
+					$ret['overall']['all']['all']['cumulativeStatusKM'] = (float) $la['land_acquisition_status_km'];
+				}
+
+				if(isset($ret['overall']['all']['all']['cumulativeStatusPercent'])){
+					$ret['overall']['all']['all']['cumulativeStatusPercent'] = $ret['overall']['all']['all']['cumulativeStatusPercent'] + (float) $la['land_acquisition_status'];
+				}
+				else{
+					$ret['overall']['all']['all']['cumulativeStatusPercent'] = (float) $la['land_acquisition_status'];
+				}
+
+				if(isset($ret['overall']['all']['all']['cumulativeBalStatusKM'])){
+					$ret['overall']['all']['all']['cumulativeBalStatusKM'] = $ret['overall']['all']['all']['cumulativeBalStatusKM'] + (float) $la['bal_land_acquisition_status_km'];
+				}
+				else{
+					$ret['overall']['all']['all']['cumulativeBalStatusKM'] = (float) $la['bal_land_acquisition_status_km'];
+				}
+
+				if(isset($ret['overall']['all']['all']['cumulativeBalStatusPercent'])){
+					$ret['overall'][$year]['all']['cumulativeBalStatusPercent'] = $ret['overall']['all']['all']['cumulativeBalStatusPercent'] + (float) $la['bal_land_acquisition_status'];
+				}
+				else{
+					$ret['overall']['all']['all']['cumulativeBalStatusPercent'] = (float) $la['bal_land_acquisition_status'];
+				}
+
+				if(isset($ret['overall']['all']['all']['cumulativeOverallKM'])){
+					$ret['overall']['all']['all']['cumulativeOverallKM'] = $ret['overall']['all']['all']['cumulativeOverallKM'] + (float) $la['total_overall_km'];
+				}
+				else{
+					$ret['overall']['all']['all']['cumulativeOverallKM'] = (float) $la['total_overall_km'];
+				}
+
+				if(isset($ret['overall']['all']['all']['cumulativeDisputeKM'])){
+					$ret['overall']['all']['all']['cumulativeDisputeKM'] = $ret['overall']['all']['all']['cumulativeDisputeKM'] + (float) $la['land_disputed_km'];
+				}
+				else{
+					$ret['overall']['all']['all']['cumulativeDisputeKM'] = (float) $la['land_disputed_km'];
+				}
+
+				if(isset($ret['overall']['all']['all']['cumulativeDisputePercent'])){
+					$ret['overall']['all']['all']['cumulativeDisputePercent'] = $ret['overall']['all']['all']['cumulativeDisputePercent'] + (float) $la['land_disputed'];
+				}
+				else{
+					$ret['overall']['all']['all']['cumulativeDisputePercent'] = (float) $la['land_disputed'];
+				}
+
+				// year - all
+				if(isset($ret['overall'][$year]['all']['cumulativeStatusKM'])){
+					$ret['overall'][$year]['all']['cumulativeStatusKM'] = $ret['overall'][$year]['all']['cumulativeStatusKM'] + (float) $la['land_acquisition_status_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeStatusKM'] = (float) $la['land_acquisition_status_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeStatusPercent'])){
+					$ret['overall'][$year]['all']['cumulativeStatusPercent'] = $ret['overall'][$year]['all']['cumulativeStatusPercent'] + (float) $la['land_acquisition_status'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeStatusPercent'] = (float) $la['land_acquisition_status'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeBalStatusKM'])){
+					$ret['overall'][$year]['all']['cumulativeBalStatusKM'] = $ret['overall'][$year]['all']['cumulativeBalStatusKM'] + (float) $la['bal_land_acquisition_status_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeBalStatusKM'] = (float) $la['bal_land_acquisition_status_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeBalStatusPercent'])){
+					$ret['overall'][$year]['all']['cumulativeBalStatusPercent'] = $ret['overall'][$year]['all']['cumulativeBalStatusPercent'] + (float) $la['bal_land_acquisition_status'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeBalStatusPercent'] = (float) $la['bal_land_acquisition_status'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeOverallKM'])){
+					$ret['overall'][$year]['all']['cumulativeOverallKM'] = $ret['overall'][$year]['all']['cumulativeOverallKM'] + (float) $la['total_overall_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeOverallKM'] = (float) $la['total_overall_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeDisputeKM'])){
+					$ret['overall'][$year]['all']['cumulativeDisputeKM'] = $ret['overall'][$year]['all']['cumulativeDisputeKM'] + (float) $la['land_disputed_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeDisputeKM'] = (float) $la['land_disputed_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeDisputePercent'])){
+					$ret['overall'][$year]['all']['cumulativeDisputePercent'] = $ret['overall'][$year]['all']['cumulativeDisputePercent'] + (float) $la['land_disputed'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeDisputePercent'] = (float) $la['land_disputed'];
+				}
+
+				// year - month
+				if(isset($ret['overall'][$year]['all']['cumulativeStatusKM'])){
+					$ret['overall'][$year]['all']['cumulativeStatusKM'] = $ret['overall'][$year]['all']['cumulativeStatusKM'] + (float) $la['land_acquisition_status_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeStatusKM'] = (float) $la['land_acquisition_status_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeStatusPercent'])){
+					$ret['overall'][$year]['all']['cumulativeStatusPercent'] = $ret['overall'][$year]['all']['cumulativeStatusPercent'] + (float) $la['land_acquisition_status'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeStatusPercent'] = (float) $la['land_acquisition_status'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeBalStatusKM'])){
+					$ret['overall'][$year]['all']['cumulativeBalStatusKM'] = $ret['overall'][$year]['all']['cumulativeBalStatusKM'] + (float) $la['bal_land_acquisition_status_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeBalStatusKM'] = (float) $la['bal_land_acquisition_status_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeBalStatusPercent'])){
+					$ret['overall'][$year]['all']['cumulativeBalStatusPercent'] = $ret['overall'][$year]['all']['cumulativeBalStatusPercent'] + (float) $la['bal_land_acquisition_status'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeBalStatusPercent'] = (float) $la['bal_land_acquisition_status'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeOverallKM'])){
+					$ret['overall'][$year]['all']['cumulativeOverallKM'] = $ret['overall'][$year]['all']['cumulativeOverallKM'] + (float) $la['total_overall_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeOverallKM'] = (float) $la['total_overall_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeDisputeKM'])){
+					$ret['overall'][$year]['all']['cumulativeDisputeKM'] = $ret['overall'][$year]['all']['cumulativeDisputeKM'] + (float) $la['land_disputed_km'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeDisputeKM'] = (float) $la['land_disputed_km'];
+				}
+
+				if(isset($ret['overall'][$year]['all']['cumulativeDisputePercent'])){
+					$ret['overall'][$year]['all']['cumulativeDisputePercent'] = $ret['overall'][$year]['all']['cumulativeDisputePercent'] + (float) $la['land_disputed'];
+				}
+				else{
+					$ret['overall'][$year]['all']['cumulativeDisputePercent'] = (float) $la['land_disputed'];
+				}
+			}
+		}
+
+		return $ret;
+	}
+
+	function fetchLandIssues(){
+		$monthHalftext = ['01'=>"Jan",'02'=>"Feb",'03'=>"Mar",'04'=>"Apr",'05'=>"May",'06'=>"Jun",'07'=>"Jul",'08'=>"Aug",'09'=>"Sep",'10'=>"Oct",'11'=>"Nov",'12'=>"Dec"];
+		$monthToNum = array_flip($monthHalftext); 
+	
+		$ret = array();
+		$maxMonthPerYear = array();
+	
+		if ($this->isWPC){
+			$project_id = $this->parentProjectID;
+		} else {
+			$project_id = $this->projectID;
+		}
+	
+		$order = ['Limbang 1', 'Limbang 2', 'Limbang 3', 'Lawas 1', 'Lawas 2'];
+	
+		$url = $this->jogetLinkObj->jogetAppLink['api']['construct_dash_LMRS_list'].$project_id;
+		$res = $this->jogetCURL($url);
+	
+		if (isset($res['data'])) {
+			usort($res['data'], function ($a, $b) use ($order) {
+				$aIndex = array_search($a['section'], $order);
+				$bIndex = array_search($b['section'], $order);
+				return $aIndex - $bIndex;
+			});
+	
+			foreach ($res['data'] as $lmrs) {
+				$year = $lmrs['year'];
+				$month = $monthHalftext[$lmrs['month']];
+	
+				if(isset($ret['overall'][$year][$month]['cumulative'])){
+					$ret['overall'][$year][$month]['cumulative'] += (float) $lmrs['bal_cumulative'];
+				} else {
+					$ret['overall'][$year][$month]['cumulative'] = (float) $lmrs['bal_cumulative'];
+				}
+	
+				if(isset($ret['overall'][$year][$month]['cumulativeResolved'])){
+					$ret['overall'][$year][$month]['cumulativeResolved'] += (float) $lmrs['bal_cumulative_resolved'];
+				} else {
+					$ret['overall'][$year][$month]['cumulativeResolved'] = (float) $lmrs['bal_cumulative_resolved'];
+				}
+	
+				if(isset($ret['overall'][$year][$month]['cumulativeOpen'])){
+					$ret['overall'][$year][$month]['cumulativeOpen'] += (float) $lmrs['bal_unresolved_issues'];
+				} else {
+					$ret['overall'][$year][$month]['cumulativeOpen'] = (float) $lmrs['bal_unresolved_issues'];
+				}
+			}
+		}
+	
+		return $ret;
+	}	
+
 	function getHSETInfo(){
 		$ncrHset = $this->fetchNCRData();
 		$saHset = $this->fetchSAData();
@@ -8765,8 +9385,10 @@ class RiDashboardMRSB extends RiDashboard
 		$pbcData = $this->fetchPUBCData();
 		$msData = $this->fetchMSData();
 		$mtData = $this->fetchMTData();
-		$lmData = $this->fetchLandManageData(true);
+		$lmData = $this->fetchLandManageDataV2(true);
 		$lmMainData = $this->fetchLandDataMain();
+		$lmAcquisition = $this->fetchLandAcquisitionLand();
+		$lmIssues = $this->fetchLandIssues();
 
 		$this->fetchProgressData();
 
@@ -8798,6 +9420,8 @@ class RiDashboardMRSB extends RiDashboard
 			'mt' => $mtData,
 			'landManagement' => $lmData,
 			'landMain' => $lmMainData,
+			'landAcquisition' => $lmAcquisition,
+			'landIssues' => $lmIssues
 		);
 
 		return $ret;
@@ -8817,15 +9441,14 @@ class RiDashboardMRSB extends RiDashboard
 	}
 
 	function getLandInfo(){
-		$lmData = $this->fetchLandManageData(); //LAND SYNOPSIS + LAND TRACKING + AIWI + FOE
+		$lmData = $this->fetchLandManageDataV2(); //LAND SYNOPSIS + LAND TRACKING + LAND ISSUE
 		$ltdData = $this->fetchLandTimeDbData(); //LAND DATABASE + LAND TIMELINE
-		$lwtgData = $this->fetchLandWTGData();
-
+		$laData = $this->fetchLandAcquisitionLand();
 
 		$ret = array(
 			'landManagement' => $lmData,
 			'landTimelineDatabase' => $ltdData,
-			'landWTG' => $lwtgData
+			'landAcquisitionData' => $laData,
 		);
 
 		return $ret;

@@ -300,7 +300,12 @@ echo '
             <link rel="stylesheet" href="../../../CSS/V3/Wizard.css">
             <link rel="stylesheet" href="../../../CSS/'.$theme.'/RVguiStyle.css">  
             <script src="../../../JS/JsLibrary/jquery-3.5.1.js"></script>                        <!--     JS for jquery-->
-            <script type="text/javascript" src="../../../JS/fontawesome.js"></script>
+            <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/all.min.css">
+            <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/fontawesome.min.css">
+            <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/solid.min.css">
+            <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/regular.min.css">
+            <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/brands.min.css">
+
             <link rel="stylesheet" href="../../../JS/JsLibrary/jquery-confirm.min.css">
             <script src="../../../JS/JsLibrary/jquery-confirm.min.js"></script>
         </head>

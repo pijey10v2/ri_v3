@@ -67,7 +67,12 @@ $html = '
         <link rel="stylesheet" href="../../../JS/JsLibrary/jquery-confirm.min.css">
         <script src="../../../JS/JsLibrary/jquery-confirm.min.js"></script>
         <script src = "../../../JS/asset/mlpAnalysis.js"></script>
-        <script src="../../../JS/fontawesome.js"></script>
+        <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/all.min.css">
+        <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/fontawesome.min.css">
+        <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/solid.min.css">
+        <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/regular.min.css">
+        <link rel="stylesheet" href="../../../CSS/fontawesome7/fontawesome-free/css/brands.min.css">
+
     </head>
     <body style="background: transparent" class='.$themeClass.'>
         <div class="assetContainer">

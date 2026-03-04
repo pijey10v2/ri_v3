@@ -7,7 +7,7 @@ $jogetLinkObj->setToGlobalJSVariable();
 ?>
 <head>
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
+        href="../CSS/openLayer.css"
         type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
@@ -17,7 +17,7 @@ $jogetLinkObj->setToGlobalJSVariable();
             border: solid;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+    <script src="../JS/JsLibrary/openLayer/openLayer.js"></script>
 </head>
 
 <body>

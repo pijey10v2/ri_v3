@@ -30,9 +30,6 @@ class RiDashboard
 	private $api_username;
 	private $api_password;
 	private $jogetConstructApp, $jogetDocApp, $jogetPFSApp;
-	private $wpc_id;
-	private $isDownStream;
-	private $projectPhase;
 
 	function __construct($dash, $ajax = false, $loadFilter = 1){
 		global $CONN, $IS_DOWNSTREAM;
@@ -69,6 +66,7 @@ class RiDashboard
 		$this->uiPreference = $_SESSION['ui_pref'];
 		$this->parentProjectId = (isset($_SESSION['is_Parent']) && ($_SESSION['is_Parent'] != "isParent") && isset($_SESSION['parent_project_id'])) ? $_SESSION['parent_project_id'] : $_SESSION['projectID'];
 		$this->isDownStream = $IS_DOWNSTREAM;
+		$this->projectPhase = (isset($_SESSION['project_phase'])) ? $_SESSION['project_phase'] : '';
 		
 		// load joget link
 		include_once(dirname(__DIR__).'../Backend/class/jogetLink.class.php');
@@ -240,10 +238,18 @@ class RiDashboard
 		$this->WPCOptionsV3['overall'] = 'Overall';
 
 		if($this->project_owner == 'JKR_SABAH'){
+			// skip hq package for dashboard filter since this package only want to register correspondence & document
+			$skipProjArr = ['Test01', 'PanBorneo_Sabah'];
 			foreach ($this->childProjectInfo as $child) {
-				
-				$this->WPCOptions[$child['project_id']] = $child['project_wpc_id'];
-				$this->WPCOptionsV3[$child['project_id']][$child['package_uuid']] = $child['project_wpc_id'];
+				if(in_array($child['project_id'], $skipProjArr)) continue;
+
+				if($this->jogetConstructApp == 'ri_asset'){
+					$this->WPCOptions[$child['project_id']] = $child['project_name'].' ('.$child['project_id'].')';
+					$this->WPCOptionsV3[$child['project_id']][$child['package_uuid']] = $child['project_name'].' ('.$child['project_id'].')';
+				}else{
+					$this->WPCOptions[$child['project_id']] = $child['project_wpc_id'];
+					$this->WPCOptionsV3[$child['project_id']][$child['package_uuid']] = $child['project_wpc_id'];
+				}
 
 			}
 		}
@@ -332,15 +338,33 @@ class RiDashboard
 		// check if parent project or not
 		$this->isWPC = ($this->projectInfo['parent_project_id_number']) ? true : false;
 
+		$project_phase_clause = '';
+		if($_SESSION['user_org'] == 'pmc_1b'){
+			$project_phase_clause = " AND project_phase = '1B' ";
+		}else if($_SESSION['user_org'] == 'HSSI'){
+			$project_phase_clause = " AND  (project_phase != '1B' OR project_phase IS  NULL) ";
+		}
 
 		// get child project infomation
-		$this->childProjectInfo = $this->db->fetchAll("select * from projects where parent_project_id_number = :0 and status = 'active'", array($this->projectInfo['project_id_number']));
+		$this->childProjectInfo = $this->db->fetchAll("select * from projects where parent_project_id_number = :0 and status = 'active' $project_phase_clause", array($this->projectInfo['project_id_number']));
 		foreach ($this->childProjectInfo as $key => $val) {
 			$val['package_uuid'] = $val['project_id_number']."_". $val['project_id']. "_" . $val['project_id_number'];
 			$this->childProjectInfo[$key] = $val;
+
+			$packageUuids[] =  $val['package_uuid'] ;
 			
 		}
-	
+
+		
+
+		if (isset($packageUuids) && count($packageUuids) > 0) {
+			$inPackageUuid = implode('","', $packageUuids) ; 
+			$_SESSION['inPackageUuid'] = $inPackageUuid;
+		} else {
+			$_SESSION['inPackageUuid'] = '';
+		}
+  
+ 
 	}
 
 	function getSectionOption(){
@@ -1026,8 +1050,13 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_RR', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_RR', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			$ret['url'] = $url;
+			
 			if (isset($res['data'])) {
 
 				usort($res['data'], function ($a, $b) use ($riskRatingOrder) {
@@ -1532,9 +1561,10 @@ class RiDashboard
 		
 		return $ret;
 	}
+	
+	
 
-	function getBumiInfo(){
-		// get based on projects and filter by wpc
+	function getBumiInfo(){ 
 		$ret = array();
 		if ($this->isWPC) {
 			$url = $this->jogetLinkObj->getLink('dash_cons_BP').$this->currPackageUuid;
@@ -1606,9 +1636,13 @@ class RiDashboard
 				}
 			}
 		}else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_BP').$this->currPackageUuid;
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			
+			$url = $this->jogetLinkObj->getLink('dash_cons_BP').$this->currPackageUuid.$extraParam;
 			$res = $this->jogetCURL($url);
-
+			$ret['url'] = $url;
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $bumi) {
 					switch (strtolower($bumi['participant_status'])) {
@@ -2019,11 +2053,15 @@ class RiDashboard
 			}
 		}
 		else{
+			
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
 			//RFI Sabah is WIR Sarawak
 			if(isset($this->rfiDataAPI['data']) && $this->rfiDataAPI['data']){
 				$res = $this->rfiDataAPI ;
 			}else{
-				$url = $this->jogetLinkObj->getLink('dash_cons_RFI_urw', array('', $this->projectID));
+				$url = $this->jogetLinkObj->getLink('dash_cons_RFI_urw', array('', $this->projectID)).$extraParam;
 				$res = $this->jogetCURL($url);
 			}
 			if (isset($res['data'])) {
@@ -2117,7 +2155,7 @@ class RiDashboard
 			}
 
 			//RFIT Sabah is RFI Sarawak
-			$url = $this->jogetLinkObj->getLink('dash_cons_RFIT', array('', $this->projectID));
+			$url = $this->jogetLinkObj->getLink('dash_cons_RFIT', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $rfit) {
@@ -2210,7 +2248,7 @@ class RiDashboard
 			}
 
 			//DCR Sabah
-			$url = $this->jogetLinkObj->getLink('dash_cons_DCR', array('', $this->projectID));
+			$url = $this->jogetLinkObj->getLink('dash_cons_DCR', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $dcr) {
@@ -2302,7 +2340,7 @@ class RiDashboard
 			}
 
 			//MS Sabah
-			$url = $this->jogetLinkObj->getLink('dash_cons_MSurw', array('', $this->projectID));
+			$url = $this->jogetLinkObj->getLink('dash_cons_MSurw', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $ms) {
@@ -2395,7 +2433,7 @@ class RiDashboard
 			}
 
 			//SM/NOI Sabah
-			$url = $this->jogetLinkObj->getLink('dash_cons_NOIurw', array('', $this->projectID));
+			$url = $this->jogetLinkObj->getLink('dash_cons_NOIurw', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $noi) {
@@ -2488,7 +2526,7 @@ class RiDashboard
 			}
 
 			//NCR Sabah
-			$url = $this->jogetLinkObj->getLink('dash_cons_NCRurw', array('', $this->projectID));
+			$url = $this->jogetLinkObj->getLink('dash_cons_NCRurw', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $ncr) {
@@ -2601,7 +2639,10 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_PU', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_PU', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				usort($res['data'], function($a, $b) {
@@ -2662,15 +2703,11 @@ class RiDashboard
 
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $li) {
-					$date = new DateTime($li['dateCreated']);
-					if ($date) {
-						$li['dateCreated'] = $date->format('d-m-Y h:i:s A');
-					}
 
 					// based on month and year
-					$dateCreated = strtotime($li['dateCreated']);
-					$year = date("Y", $dateCreated);
-					$month = date("M", $dateCreated);
+					$issueDate = strtotime($li['c_issue_date']);
+					$year = date("Y", $issueDate);
+					$month = date("M", $issueDate);
 					
 					//filter for all
 					$ret['overall']['all']['all']['tableLi']['overall']['all'][] = $li;
@@ -2705,15 +2742,11 @@ class RiDashboard
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
 				foreach ($res['data'] as $li) {
-					$date = new DateTime($li['dateCreated']);
-					if ($date) {
-						$li['dateCreated'] = $date->format('d-m-Y h:i:s A');
-					}
-
+					
 					// based on month and year
-					$dateCreated = strtotime($li['dateCreated']);
-					$year = date("Y", $dateCreated);
-					$month = date("M", $dateCreated);
+					$issueDate = strtotime($li['c_issue_date']);
+					$year = date("Y", $issueDate);
+					$month = date("M", $issueDate);
 					
 					//filter for all
 					$ret['overall']['all']['all']['tableLi']['overall']['all'][] = $li;
@@ -2769,63 +2802,145 @@ class RiDashboard
 		return $ret;
 	}
 
-	function fetchLandEncumbrancesDataSSLR(){
+	function fetchLandEncumbrancesDataSSLR($packVal,$yearVal,$monthVal){
 		$ret = array();
+		$months = ["Jan" => 1, "Feb" => 2, "Mar" => 3, "Apr" => 4,"May" => 5, "Jun" => 6, "Jul" => 7, "Aug" => 8,"Sep" => 9, "Oct" => 10, "Nov" => 11, "Dec" => 12];
+		$mth =  [1 => "Jan", 2 => "Feb", 3 => "Mar", 4 => "Apr",5 => "May", 6 => "Jun", 7 => "Jul", 8 => "Aug",9 => "Sep", 10 => "Oct", 11 => "Nov", 12 => "Dec"];
+
 		$overallTotalLength = 0;
 		$overallFreeEnc = 0;
 		$overallTotalEnc = 0;
+		$ttlFoePercent = 0;
+		$ttlEncPercent = 0;
+		$ttlRecords = 0;
+		$ttlVal = [];
+		$ttlLengthVal = [];
+		$ttlFreeEncVal = [];
+		$ttlEncVal = [];
+		$ttlFoePerVal = [];
+		$ttlEncPercVal = [];
+
+		$mthVal = ($monthVal == "all") ? $monthVal : $months[$monthVal];
 
 		// Return all data that already registered
 		if ($this->isWPC) {
 			$url = $this->jogetLinkObj->getLink('dash_cons_LE', array($this->currPackageUuid, ''));
 			$res = $this->jogetCURL($url);
 			if (isset($res['data'])) {
+
+				usort($res['data'], function($a, $b) {
+					$aU = '01-'.$a['month'].'-'.$a['year'];
+					$bU = '01-'.$b['month'].'-'.$b['year'];
+
+					if ($aU == $bU) {
+						return strtotime($a['issue_date']) - strtotime($b['issue_date']);
+					}
+
+					return strtotime($aU) - strtotime($bU);
+				});
+
 				foreach($res['data'] as $eachLandData) {
 
 					// based on month and year
-					$dateCreated = strtotime($eachLandData['dateCreated']);
+					$dateCreated = strtotime($eachLandData['issue_date']);
 					$year = date("Y", $dateCreated);
 					$month = date("M", $dateCreated);
+					$valMth = isset($months[$month]) ? $months[$month] : null;
 
-					$ret['encData']['overall']['all']['all']['overall']['all'] = $eachLandData;
-					$ret['encData']['overall'][$year]['all']['overall']['all'] = $eachLandData;
-					$ret['encData']['overall'][$year][$month]['overall']['all'] = $eachLandData;
-					$ret['encData']['overall'][$year][$month]['overall'][$eachLandData['issue_status']] = $eachLandData;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']] = $eachLandData;
+					$freeEnc = (float) str_replace(',', '', $eachLandData['free_encumbrances']);
+					$ttlLength = (float) str_replace(',', '',   $eachLandData['total_length']);
+					$ttlEnc = (float) str_replace(',', '',  $eachLandData['total_encumbrances']);
+					$foePercentage = (float) str_replace(',', '',  $eachLandData['foe_percentage']);
+					$encPercentage = (float) str_replace(',', '',  $eachLandData['encumbrances_percentage']);
 
-					$ret['totalEnc']['overall']['all']['all']['overall']['all'][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year]['all']['overall']['all'][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year][$month]['overall']['all'][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year][$month]['overall'][$eachLandData['issue_status']][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']][] = $eachLandData;
-
-					$overallFreeEnc = $overallFreeEnc + (float) str_replace(',', '', $eachLandData['free_encumbrances']);
-					$overallTotalLength = $overallTotalLength + (float) str_replace(',', '',   $eachLandData['total_length']);
-					$overallTotalEnc = $overallTotalEnc + (float) str_replace(',', '',  $eachLandData['total_encumbrances']);
-
-					$ret['encData']['overall']['all']['all']['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall']['all']['all']['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall']['all']['all']['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year]['all']['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year]['all']['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year]['all']['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year][$month]['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year][$month]['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year][$month]['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['total_encumbrances'] = $overallTotalEnc;
+					// Filtering conditions
+					if ($yearVal == "all" && $mthVal == "all") {
+						// Sum all records
+						$overallFreeEnc += $freeEnc;
+						$overallTotalLength += $ttlLength;
+						$overallTotalEnc += $ttlEnc;
+						$ttlFoePercent += $foePercentage;
+						$ttlEncPercent += $encPercentage;
+						$ttlRecords++;
+					}else if($yearVal == "all" && $valMth <= $mthVal){
+						// Sum records for a specific month across all years
+						$ret['encData']['overall']['all'][$month]['foe_percent'] = ($ret['encData']['overall']['all'][$month]['foe_percent'] ?? 0) + $foePercentage;
+						$ret['encData']['overall']['all'][$month]['enc_percent'] = ($ret['encData']['overall']['all'][$month]['enc_percent'] ?? 0) + $encPercentage;
+						$ret['totalEnc']['overall']['all'][$month] = ($ret['totalEnc']['overall']['all'][$month] ?? 0) + 1;
+						$ret['encData']['overall']['all'][$month]['free_enc'] = ($ret['encData']['overall']['all'][$month]['free_enc'] ?? 0) + $freeEnc;
+						$ret['encData']['overall']['all'][$month]['ttl_length'] = ($ret['encData']['overall']['all'][$month]['ttl_length'] ?? 0) + $ttlLength;
+						$ret['encData']['overall']['all'][$month]['ttl_enc'] = ($ret['encData']['overall']['all'][$month]['ttl_enc'] ?? 0) + $ttlEnc;
+					}else if($yearVal == $year && $mthVal == "all"){
+						// Sum records for a specific year across all months
+						$ret['encData']['overall'][$year]['all']['foe_percent'] = ($ret['encData']['overall'][$year]['all']['foe_percent'] ?? 0) + $foePercentage;
+						$ret['encData']['overall'][$year]['all']['enc_percent'] = ($ret['encData']['overall'][$year]['all']['enc_percent'] ?? 0) + $encPercentage;
+						$ret['totalEnc']['overall'][$year]['all'] = ($ret['totalEnc']['overall'][$year]['all'] ?? 0) + 1;
+						$ret['encData']['overall'][$year]['all']['free_enc'] = ($ret['encData']['overall'][$year]['all']['free_enc'] ?? 0) + $freeEnc;
+						$ret['encData']['overall'][$year]['all']['ttl_length'] = ($ret['encData']['overall'][$year]['all']['ttl_length'] ?? 0) + $ttlLength;
+						$ret['encData']['overall'][$year]['all']['ttl_enc'] = ($ret['encData']['overall'][$year]['all']['ttl_enc'] ?? 0) + $ttlEnc;
+					} else if($yearVal == $year && $valMth <= $mthVal){
+						// Sum records for the specific year and month
+						if (!isset($ttlVal[$year])) {
+							$ttlVal[$year] = 1; // Or whatever initial value you want
+							$ttlLengthVal[$year] = $ttlLength;
+							$ttlFreeEncVal[$year] = $freeEnc;
+							$ttlEncVal[$year] = $ttlEnc;
+							$ttlFoePerVal[$year] = $foePercentage;
+							$ttlEncPercVal[$year] = $encPercentage;
+						}else{
+							$ttlVal[$year] += 1;
+							$ttlLengthVal[$year] += $ttlLength;
+							$ttlFreeEncVal[$year] += $freeEnc;
+							$ttlEncVal[$year] += $ttlEnc;
+							$ttlFoePerVal[$year] += $foePercentage;
+							$ttlEncPercVal[$year] += $encPercentage;
+						}
+						$ret['encData']['overall'][$year][$month]['foe_percent'] = $ttlFoePerVal[$year];
+						$ret['encData']['overall'][$year][$month]['enc_percent'] = $ttlEncPercVal[$year];
+						$ret['totalEnc']['overall'][$year][$month] = $ttlVal[$year];
+						$ret['encData']['overall'][$year][$month]['free_enc'] = $ttlFreeEncVal[$year];
+						$ret['encData']['overall'][$year][$month]['ttl_length'] = $ttlLengthVal[$year];
+						$ret['encData']['overall'][$year][$month]['ttl_enc'] = $ttlEncVal[$year];
+						
+						
+					}
+										
 				}
 
-				$ret['encData']['overall']['all']['all']['overall']['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData']['overall']['all']['all']['overall']['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
+				
+				if ($yearVal !== "all" && $monthVal !== "all") {
+
+					$ret['encData']['overall'][$yearVal][$monthVal]['foe'] = ($ret['encData']['overall'][$yearVal][$monthVal]['foe_percent'] ?? 0);
+					$ret['encData']['overall'][$yearVal][$monthVal]['encumbrances'] = ($ret['encData']['overall'][$yearVal][$monthVal]['enc_percent'] ?? 0);
+					$ret['totalEnc']['overall'][$yearVal][$monthVal] = ($ret['totalEnc']['overall'][$yearVal][$monthVal] ?? 0);
+					$ret['encData']['overall'][$yearVal][$monthVal]['free_encumbrances'] = ($ret['encData']['overall'][$yearVal][$monthVal]['free_enc'] ?? 0);
+					$ret['encData']['overall'][$yearVal][$monthVal]['total_length'] = ($ret['encData']['overall'][$yearVal][$monthVal]['ttl_length'] ?? 0);
+					$ret['encData']['overall'][$yearVal][$monthVal]['total_encumbrances'] = ($ret['encData']['overall'][$yearVal][$monthVal]['ttl_enc'] ?? 0);
+
+				} else if ($yearVal !== "all" && $monthVal === "all") {
+					$ret['encData']['overall'][$yearVal]['all']['foe'] = ($ret['encData']['overall'][$yearVal]['all']['foe_percent'] ?? 0);
+					$ret['encData']['overall'][$yearVal]['all']['encumbrances'] = ($ret['encData']['overall'][$yearVal]['all']['enc_percent'] ?? 0);
+					$ret['totalEnc']['overall'][$yearVal]['all'] = ($ret['totalEnc']['overall'][$yearVal]['all'] ?? 0);
+					$ret['encData']['overall'][$yearVal]['all']['free_encumbrances'] = ($ret['encData']['overall'][$yearVal]['all']['free_enc'] ?? 0);
+					$ret['encData']['overall'][$yearVal]['all']['total_length'] = ($ret['encData']['overall'][$yearVal]['all']['ttl_length'] ?? 0);
+					$ret['encData']['overall'][$yearVal]['all']['total_encumbrances'] = ($ret['encData']['overall'][$yearVal]['all']['ttl_enc'] ?? 0);
+
+				} else if ($yearVal === "all" && $monthVal !== "all") {
+					$ret['encData']['overall']['all'][$monthVal]['foe'] = ($ret['encData']['overall']['all'][$monthVal]['foe_percent'] ?? 0);
+					$ret['encData']['overall']['all'][$monthVal]['encumbrances'] = ($ret['encData']['overall']['all'][$monthVal]['enc_percent'] ?? 0);
+					$ret['totalEnc']['overall']['all'][$monthVal] = ($ret['totalEnc']['overall']['all'][$monthVal] ?? 0);
+					$ret['encData']['overall']['all'][$monthVal]['free_encumbrances'] = ($ret['encData']['overall']['all'][$monthVal]['free_enc'] ?? 0);
+					$ret['encData']['overall']['all'][$monthVal]['total_length'] = ($ret['encData']['overall']['all'][$monthVal]['ttl_length'] ?? 0);
+					$ret['encData']['overall']['all'][$monthVal]['total_encumbrances'] = ($ret['encData']['overall']['all'][$monthVal]['ttl_enc'] ?? 0);
+				} else {
+					$ret['encData']['overall']['all']['all']['foe'] = $ttlFoePercent;
+					$ret['encData']['overall']['all']['all']['encumbrances'] = $ttlEncPercent;
+					$ret['totalEnc']['overall']['all']['all'] = $ttlRecords;
+					$ret['encData']['overall']['all']['all']['free_encumbrances'] = $overallFreeEnc;
+					$ret['encData']['overall']['all']['all']['total_length'] = $overallTotalLength;
+					$ret['encData']['overall']['all']['all']['total_encumbrances'] = $overallTotalEnc;
+				}
+
 
 			}
 
@@ -2838,122 +2953,197 @@ class RiDashboard
 				foreach($res['data'] as $eachLandData) {
 
 					// based on month and year
-					$dateCreated = strtotime($eachLandData['dateCreated']);
+					$dateCreated = strtotime($eachLandData['issue_date']);
 					$year = date("Y", $dateCreated);
 					$month = date("M", $dateCreated);
 
-					$ret['encData']['overall']['all']['all']['overall']['all'] = $eachLandData;
-					$ret['encData']['overall'][$year]['all']['overall']['all'] = $eachLandData;
-					$ret['encData']['overall'][$year][$month]['overall']['all'] = $eachLandData;
-					$ret['encData']['overall'][$year][$month]['overall'][$eachLandData['issue_status']] = $eachLandData;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']] = $eachLandData;
+					$freeEnc = (float) str_replace(',', '', $eachLandData['free_encumbrances']);
+					$ttlLength = (float) str_replace(',', '',   $eachLandData['total_length']);
+					$ttlEnc = (float) str_replace(',', '',  $eachLandData['total_encumbrances']);
+					$foePercentage = (float) str_replace(',', '',  $eachLandData['foe_percentage']);
+					$encPercentage = (float) str_replace(',', '',  $eachLandData['encumbrances_percentage']);
 
-					$ret['encData'][$eachLandData['package_id']]['all']['all']['overall']['all'] = $eachLandData;
-					$ret['encData'][$eachLandData['package_id']][$year]['all']['overall']['all'] = $eachLandData;
-					$ret['encData'][$eachLandData['package_id']][$year][$month]['overall']['all'] = $eachLandData;
-					$ret['encData'][$eachLandData['package_id']][$year][$month]['overall'][$eachLandData['issue_status']] = $eachLandData;
-					$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']][$eachLandData['issue_status']] = $eachLandData;
+					if($packVal == "overall"){
 
-					$ret['totalEnc']['overall']['all']['all']['overall']['all'][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year]['all']['overall']['all'][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year][$month]['overall']['all'][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year][$month]['overall'][$eachLandData['issue_status']][] = $eachLandData;
-					$ret['totalEnc']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']][] = $eachLandData;
+						// Filtering conditions
+					if ($yearVal == "all" && $mthVal == "all") {
+						// Sum all records
+						$overallFreeEnc += $freeEnc;
+						$overallTotalLength += $ttlLength;
+						$overallTotalEnc += $ttlEnc;
+						$ttlFoePercent += $foePercentage;
+						$ttlEncPercent += $encPercentage;
+						$ttlRecords++;
+					}else if($yearVal == "all" && $valMth <= $mthVal){
+						// Sum records for a specific month across all years
+						$ret['encData']['overall']['all'][$month]['foe_percent'] = ($ret['encData']['overall']['all'][$month]['foe_percent'] ?? 0) + $foePercentage;
+						$ret['encData']['overall']['all'][$month]['enc_percent'] = ($ret['encData']['overall']['all'][$month]['enc_percent'] ?? 0) + $encPercentage;
+						$ret['totalEnc']['overall']['all'][$month] = ($ret['totalEnc']['overall']['all'][$month] ?? 0) + 1;
+						$ret['encData']['overall']['all'][$month]['free_enc'] = ($ret['encData']['overall']['all'][$month]['free_enc'] ?? 0) + $freeEnc;
+						$ret['encData']['overall']['all'][$month]['ttl_length'] = ($ret['encData']['overall']['all'][$month]['ttl_length'] ?? 0) + $ttlLength;
+						$ret['encData']['overall']['all'][$month]['ttl_enc'] = ($ret['encData']['overall']['all'][$month]['ttl_enc'] ?? 0) + $ttlEnc;
+					}else if($yearVal == $year && $mthVal == "all"){
+						// Sum records for a specific year across all months
+						$ret['encData']['overall'][$year]['all']['foe_percent'] = ($ret['encData']['overall'][$year]['all']['foe_percent'] ?? 0) + $foePercentage;
+						$ret['encData']['overall'][$year]['all']['enc_percent'] = ($ret['encData']['overall'][$year]['all']['enc_percent'] ?? 0) + $encPercentage;
+						$ret['totalEnc']['overall'][$year]['all'] = ($ret['totalEnc']['overall'][$year]['all'] ?? 0) + 1;
+						$ret['encData']['overall'][$year]['all']['free_enc'] = ($ret['encData']['overall'][$year]['all']['free_enc'] ?? 0) + $freeEnc;
+						$ret['encData']['overall'][$year]['all']['ttl_length'] = ($ret['encData']['overall'][$year]['all']['ttl_length'] ?? 0) + $ttlLength;
+						$ret['encData']['overall'][$year]['all']['ttl_enc'] = ($ret['encData']['overall'][$year]['all']['ttl_enc'] ?? 0) + $ttlEnc;
+					} else if($yearVal == $year && $valMth <= $mthVal){
+						// Sum records for the specific year and month
+						if (!isset($ttlVal[$year])) {
+							$ttlVal[$year] = 1; // Or whatever initial value you want
+							$ttlLengthVal[$year] = $ttlLength;
+							$ttlFreeEncVal[$year] = $freeEnc;
+							$ttlEncVal[$year] = $ttlEnc;
+							$ttlFoePerVal[$year] = $foePercentage;
+							$ttlEncPercVal[$year] = $encPercentage;
+						}else{
+							$ttlVal[$year] += 1;
+							$ttlLengthVal[$year] += $ttlLength;
+							$ttlFreeEncVal[$year] += $freeEnc;
+							$ttlEncVal[$year] += $ttlEnc;
+							$ttlFoePerVal[$year] += $foePercentage;
+							$ttlEncPercVal[$year] += $encPercentage;
+						}
+						$ret['encData']['overall'][$year][$month]['foe_percent'] = $ttlFoePerVal[$year];
+						$ret['encData']['overall'][$year][$month]['enc_percent'] = $ttlEncPercVal[$year];
+						$ret['totalEnc']['overall'][$year][$month] = $ttlVal[$year];
+						$ret['encData']['overall'][$year][$month]['free_enc'] = $ttlFreeEncVal[$year];
+						$ret['encData']['overall'][$year][$month]['ttl_length'] = $ttlLengthVal[$year];
+						$ret['encData']['overall'][$year][$month]['ttl_enc'] = $ttlEncVal[$year];
+						
+						
+					}
+					}else if($packVal == $eachLandData['package_id']){
+						// Filtering conditions
+						if ($yearVal == "all" && $mthVal == "all") {
+							// Sum all records
+							$overallFreeEnc += $freeEnc;
+							$overallTotalLength += $ttlLength;
+							$overallTotalEnc += $ttlEnc;
+							$ttlFoePercent += $foePercentage;
+							$ttlEncPercent += $encPercentage;
+							$ttlRecords++;
+						}else if($yearVal == "all" && $valMth <= $mthVal){
+							// Sum records for a specific month across all years
+							$ret['encData'][$eachLandData['package_id']]['all'][$month]['foe_percent'] = ($ret['encData'][$eachLandData['package_id']]['all'][$month]['foe_percent'] ?? 0) + $foePercentage;
+							$ret['encData'][$eachLandData['package_id']]['all'][$month]['enc_percent'] = ($ret['encData'][$eachLandData['package_id']]['all'][$month]['enc_percent'] ?? 0) + $encPercentage;
+							$ret['totalEnc'][$eachLandData['package_id']]['all'][$month] = ($ret['totalEnc'][$eachLandData['package_id']]['all'][$month] ?? 0) + 1;
+							$ret['encData'][$eachLandData['package_id']]['all'][$month]['free_enc'] = ($ret['encData'][$eachLandData['package_id']]['all'][$month]['free_enc'] ?? 0) + $freeEnc;
+							$ret['encData'][$eachLandData['package_id']]['all'][$month]['ttl_length'] = ($ret['encData'][$eachLandData['package_id']]['all'][$month]['ttl_length'] ?? 0) + $ttlLength;
+							$ret['encData'][$eachLandData['package_id']]['all'][$month]['ttl_enc'] = ($ret['encData'][$eachLandData['package_id']]['all'][$month]['ttl_enc'] ?? 0) + $ttlEnc;
+						}else if($yearVal == $year && $mthVal == "all"){
+							// Sum records for a specific year across all months
+							$ret['encData'][$eachLandData['package_id']][$year]['all']['foe_percent'] = ($ret['encData'][$eachLandData['package_id']][$year]['all']['foe_percent'] ?? 0) + $foePercentage;
+							$ret['encData'][$eachLandData['package_id']][$year]['all']['enc_percent'] = ($ret['encData'][$eachLandData['package_id']][$year]['all']['enc_percent'] ?? 0) + $encPercentage;
+							$ret['totalEnc'][$eachLandData['package_id']][$year]['all'] = ($ret['totalEnc'][$eachLandData['package_id']][$year]['all'] ?? 0) + 1;
+							$ret['encData'][$eachLandData['package_id']][$year]['all']['free_enc'] = ($ret['encData'][$eachLandData['package_id']][$year]['all']['free_enc'] ?? 0) + $freeEnc;
+							$ret['encData'][$eachLandData['package_id']][$year]['all']['ttl_length'] = ($ret['encData'][$eachLandData['package_id']][$year]['all']['ttl_length'] ?? 0) + $ttlLength;
+							$ret['encData'][$eachLandData['package_id']][$year]['all']['ttl_enc'] = ($ret['encData'][$eachLandData['package_id']][$year]['all']['ttl_enc'] ?? 0) + $ttlEnc;
+						} else if($yearVal == $year && $valMth <= $mthVal){
+							// Sum records for the specific year and month
+							if (!isset($ttlVal[$year])) {
+								$ttlVal[$year] = 1; // Or whatever initial value you want
+								$ttlLengthVal[$year] = $ttlLength;
+								$ttlFreeEncVal[$year] = $freeEnc;
+								$ttlEncVal[$year] = $ttlEnc;
+								$ttlFoePerVal[$year] = $foePercentage;
+								$ttlEncPercVal[$year] = $encPercentage;
+							}else{
+								$ttlVal[$year] += 1;
+								$ttlLengthVal[$year] += $ttlLength;
+								$ttlFreeEncVal[$year] += $freeEnc;
+								$ttlEncVal[$year] += $ttlEnc;
+								$ttlFoePerVal[$year] += $foePercentage;
+								$ttlEncPercVal[$year] += $encPercentage;
+							}
+							$ret['encData'][$eachLandData['package_id']][$year][$month]['foe_percent'] = $ttlFoePerVal[$year];
+							$ret['encData'][$eachLandData['package_id']][$year][$month]['enc_percent'] = $ttlEncPercVal[$year];
+							$ret['totalEnc'][$eachLandData['package_id']][$year][$month] = $ttlVal[$year];
+							$ret['encData'][$eachLandData['package_id']][$year][$month]['free_enc'] = $ttlFreeEncVal[$year];
+							$ret['encData'][$eachLandData['package_id']][$year][$month]['ttl_length'] = $ttlLengthVal[$year];
+							$ret['encData'][$eachLandData['package_id']][$year][$month]['ttl_enc'] = $ttlEncVal[$year];
+							
+							
+						}
+					}
 
-					$ret['totalEnc'][$eachLandData['package_id']]['all']['all']['overall']['all'][] = $eachLandData;
-					$ret['totalEnc'][$eachLandData['package_id']][$year]['all']['overall']['all'][] = $eachLandData;
-					$ret['totalEnc'][$eachLandData['package_id']][$year][$month]['overall']['all'][] = $eachLandData;
-					$ret['totalEnc'][$eachLandData['package_id']][$year][$month]['overall'][$eachLandData['issue_status']][] = $eachLandData;
-					$ret['totalEnc'][$eachLandData['package_id']][$year][$month][$eachLandData['section']][$eachLandData['issue_status']][] = $eachLandData;
-
-					$overallFreeEnc = $overallFreeEnc + (float) str_replace(',', '', $eachLandData['free_encumbrances']);
-					$overallTotalLength = $overallTotalLength + (float) str_replace(',', '',   $eachLandData['total_length']);
-					$overallTotalEnc = $overallTotalEnc + (float) str_replace(',', '',  $eachLandData['total_encumbrances']);
-
-					$ret['encData']['overall']['all']['all']['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall']['all']['all']['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall']['all']['all']['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData'][$eachLandData['package_id']]['all']['all']['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData'][$eachLandData['package_id']]['all']['all']['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData'][$eachLandData['package_id']]['all']['all']['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year]['all']['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year]['all']['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year]['all']['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData'][$eachLandData['package_id']][$year]['all']['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData'][$eachLandData['package_id']][$year]['all']['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData'][$eachLandData['package_id']][$year]['all']['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year][$month]['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year][$month]['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year][$month]['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData'][$eachLandData['package_id']][$year][$month]['overall']['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData'][$eachLandData['package_id']][$year][$month]['overall']['all']['total_length'] = $overallTotalLength;
-					$ret['encData'][$eachLandData['package_id']][$year][$month]['overall']['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']]['all']['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']]['all']['total_length'] = $overallTotalLength;
-					$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']]['all']['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['total_length'] = $overallTotalLength;
-					$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['total_encumbrances'] = $overallTotalEnc;
-
-					$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['free_encumbrances'] = $overallFreeEnc;
-					$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['total_length'] = $overallTotalLength;
-					$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['total_encumbrances'] = $overallTotalEnc;
 				}
-			
-				$ret['encData']['overall']['all']['all']['overall']['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData']['overall']['all']['all']['overall']['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
 
-				$ret['encData']['overall'][$year]['all']['overall']['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData']['overall'][$year]['all']['overall']['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
+				if($packVal === "overall"){
 
-				$ret['encData']['overall'][$year][$month]['overall']['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData']['overall'][$year][$month]['overall']['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-				$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData']['overall'][$year][$month][$eachLandData['section']]['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-				$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData']['overall'][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-				// child 
-				$ret['encData'][$eachLandData['package_id']]['all']['all']['overall']['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData'][$eachLandData['package_id']]['all']['all']['overall']['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-				$ret['encData'][$eachLandData['package_id']][$year]['all']['overall']['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData'][$eachLandData['package_id']][$year]['all']['overall']['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-				$ret['encData'][$eachLandData['package_id']][$year][$month]['overall']['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData'][$eachLandData['package_id']][$year][$month]['overall']['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-				$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']]['all']['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']]['all']['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-				$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['foe']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				$ret['encData'][$eachLandData['package_id']][$year][$month][$eachLandData['section']][$eachLandData['issue_status']]['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-
-
-				// foreach ($arrPackageID as $pk) {
-				// 	$ret['encData'][$pk]['foc']  = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-				// 	$ret['encData'][$pk]['encumbrances']  = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-				// }
-			
+					if ($yearVal !== "all" && $monthVal !== "all") {
+	
+						$ret['encData']['overall'][$yearVal][$monthVal]['foe'] = ($ret['encData']['overall'][$yearVal][$monthVal]['foe_percent'] ?? 0);
+						$ret['encData']['overall'][$yearVal][$monthVal]['encumbrances'] = ($ret['encData']['overall'][$yearVal][$monthVal]['enc_percent'] ?? 0);
+						$ret['totalEnc']['overall'][$yearVal][$monthVal] = ($ret['totalEnc']['overall'][$yearVal][$monthVal] ?? 0);
+						$ret['encData']['overall'][$yearVal][$monthVal]['free_encumbrances'] = ($ret['encData']['overall'][$yearVal][$monthVal]['free_enc'] ?? 0);
+						$ret['encData']['overall'][$yearVal][$monthVal]['total_length'] = ($ret['encData']['overall'][$yearVal][$monthVal]['ttl_length'] ?? 0);
+						$ret['encData']['overall'][$yearVal][$monthVal]['total_encumbrances'] = ($ret['encData']['overall'][$yearVal][$monthVal]['ttl_enc'] ?? 0);
+	
+					} elseif ($yearVal !== "all" && $monthVal === "all") {
+						$ret['encData']['overall'][$yearVal]['all']['foe'] = ($ret['encData']['overall'][$yearVal]['all']['foe_percent'] ?? 0);
+						$ret['encData']['overall'][$yearVal]['all']['encumbrances'] = ($ret['encData']['overall'][$yearVal]['all']['enc_percent'] ?? 0);
+						$ret['totalEnc']['overall'][$yearVal]['all'] = ($ret['totalEnc']['overall'][$yearVal]['all'] ?? 0);
+						$ret['encData']['overall'][$yearVal]['all']['free_encumbrances'] = ($ret['encData']['overall'][$yearVal]['all']['free_enc'] ?? 0);
+						$ret['encData']['overall'][$yearVal]['all']['total_length'] = ($ret['encData']['overall'][$yearVal]['all']['ttl_length'] ?? 0);
+						$ret['encData']['overall'][$yearVal]['all']['total_encumbrances'] = ($ret['encData']['overall'][$yearVal]['all']['ttl_enc'] ?? 0);
+	
+					} elseif ($yearVal === "all" && $monthVal !== "all") {
+						$ret['encData']['overall']['all'][$monthVal]['foe'] = ($ret['encData']['overall']['all'][$monthVal]['foe_percent'] ?? 0);
+						$ret['encData']['overall']['all'][$monthVal]['encumbrances'] = ($ret['encData']['overall']['all'][$monthVal]['enc_percent'] ?? 0);
+						$ret['totalEnc']['overall']['all'][$monthVal] = ($ret['totalEnc']['overall']['all'][$monthVal] ?? 0);
+						$ret['encData']['overall']['all'][$monthVal]['free_encumbrances'] = ($ret['encData']['overall']['all'][$monthVal]['free_enc'] ?? 0);
+						$ret['encData']['overall']['all'][$monthVal]['total_length'] = ($ret['encData']['overall']['all'][$monthVal]['ttl_length'] ?? 0);
+						$ret['encData']['overall']['all'][$monthVal]['total_encumbrances'] = ($ret['encData']['overall']['all'][$monthVal]['ttl_enc'] ?? 0);
+					} else {
+						$ret['encData']['overall']['all']['all']['foe'] = $ttlFoePercent;
+						$ret['encData']['overall']['all']['all']['encumbrances'] = $ttlEncPercent;
+						$ret['totalEnc']['overall']['all']['all'] = $ttlRecords;
+						$ret['encData']['overall']['all']['all']['free_encumbrances'] = $overallFreeEnc;
+						$ret['encData']['overall']['all']['all']['total_length'] = $overallTotalLength;
+						$ret['encData']['overall']['all']['all']['total_encumbrances'] = $overallTotalEnc;
+					}
+				}else{
+					if ($yearVal !== "all" && $monthVal !== "all") {
+	
+						$ret['encData'][$packVal][$yearVal][$monthVal]['foe'] = ($ret['encData'][$packVal][$yearVal][$monthVal]['foe_percent'] ?? 0);
+						$ret['encData'][$packVal][$yearVal][$monthVal]['encumbrances'] = ($ret['encData'][$packVal][$yearVal][$monthVal]['enc_percent'] ?? 0);
+						$ret['totalEnc'][$packVal][$yearVal][$monthVal] = ($ret['totalEnc'][$packVal][$yearVal][$monthVal] ?? 0);
+						$ret['encData'][$packVal][$yearVal][$monthVal]['free_encumbrances'] = ($ret['encData'][$packVal][$yearVal][$monthVal]['free_enc'] ?? 0);
+						$ret['encData'][$packVal][$yearVal][$monthVal]['total_length'] = ($ret['encData'][$packVal][$yearVal][$monthVal]['ttl_length'] ?? 0);
+						$ret['encData'][$packVal][$yearVal][$monthVal]['total_encumbrances'] = ($ret['encData'][$packVal][$yearVal][$monthVal]['ttl_enc'] ?? 0);
+	
+					} elseif ($yearVal !== "all" && $monthVal === "all") {
+						$ret['encData'][$packVal][$yearVal]['all']['foe'] = ($ret['encData'][$packVal][$yearVal]['all']['foe_percent'] ?? 0);
+						$ret['encData'][$packVal][$yearVal]['all']['encumbrances'] = ($ret['encData'][$packVal][$yearVal]['all']['enc_percent'] ?? 0);
+						$ret['totalEnc'][$packVal][$yearVal]['all'] = ($ret['totalEnc'][$packVal][$yearVal]['all'] ?? 0);
+						$ret['encData'][$packVal][$yearVal]['all']['free_encumbrances'] = ($ret['encData'][$packVal][$yearVal]['all']['free_enc'] ?? 0);
+						$ret['encData'][$packVal][$yearVal]['all']['total_length'] = ($ret['encData'][$packVal][$yearVal]['all']['ttl_length'] ?? 0);
+						$ret['encData'][$packVal][$yearVal]['all']['total_encumbrances'] = ($ret['encData'][$packVal][$yearVal]['all']['ttl_enc'] ?? 0);
+	
+					} elseif ($yearVal === "all" && $monthVal !== "all") {
+						$ret['encData'][$packVal]['all'][$monthVal]['foe'] = ($ret['encData'][$packVal]['all'][$monthVal]['foe_percent'] ?? 0);
+						$ret['encData'][$packVal]['all'][$monthVal]['encumbrances'] = ($ret['encData'][$packVal]['all'][$monthVal]['enc_percent'] ?? 0);
+						$ret['totalEnc'][$packVal]['all'][$monthVal] = ($ret['totalEnc'][$packVal]['all'][$monthVal] ?? 0);
+						$ret['encData'][$packVal]['all'][$monthVal]['free_encumbrances'] = ($ret['encData'][$packVal]['all'][$monthVal]['free_enc'] ?? 0);
+						$ret['encData'][$packVal]['all'][$monthVal]['total_length'] = ($ret['encData'][$packVal]['all'][$monthVal]['ttl_length'] ?? 0);
+						$ret['encData'][$packVal]['all'][$monthVal]['total_encumbrances'] = ($ret['encData'][$packVal]['all'][$monthVal]['ttl_enc'] ?? 0);
+					} else {
+						$ret['encData'][$packVal]['all']['all']['foe'] = $ttlFoePercent;
+						$ret['encData'][$packVal]['all']['all']['encumbrances'] = $ttlEncPercent;
+						$ret['totalEnc'][$packVal]['all']['all'] = $ttlRecords;
+						$ret['encData'][$packVal]['all']['all']['free_encumbrances'] = $overallFreeEnc;
+						$ret['encData'][$packVal]['all']['all']['total_length'] = $overallTotalLength;
+						$ret['encData'][$packVal]['all']['all']['total_encumbrances'] = $overallTotalEnc;
+					}
+				}
+						
 			}
 		}
 
-		$ret['encCardData']['overall']['all']['all']['overall']['all']['totalFOE'] = ($overallTotalLength != 0 && $overallTotalLength > $overallFreeEnc) ?  number_format(($overallFreeEnc/$overallTotalLength)*100, 2) : 0;
-		$ret['encCardData']['overall']['all']['all']['overall']['all']['totalEnc'] = ($overallTotalLength != 0 && $overallTotalLength > $overallTotalEnc) ?  number_format(($overallTotalEnc/$overallTotalLength)*100, 2) : 0;
-		
 		return $ret;
 	}
 
@@ -3607,8 +3797,12 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_LS', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_LS', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data'])) {
 
 				// sort by date and month
@@ -4621,7 +4815,10 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_LS', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_LS', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
 			
 			//FOR FILTER LCM
@@ -4752,7 +4949,7 @@ class RiDashboard
 		return $ret;
 	}
 
-	function getLandInfo(){
+	function getLandInfo($packageId, $year, $month){
 		if ($this->project_owner == 'JKR_SABAH') {
 			$ret = array(
 				"filterLCM" => $this->getLCMNoList(),
@@ -4762,7 +4959,7 @@ class RiDashboard
 		}else if ($this->project_owner == 'SSLR2') {
 			$ret = array(
 				"issue" => $this->fetchLandIssueDataSSLR(),
-				"encumbrances" => $this->fetchLandEncumbrancesDataSSLR()
+				"encumbrances" => $this->fetchLandEncumbrancesDataSSLR($packageId,$year,$month)
 			);
 		} else {
 			$ret = array(
@@ -4961,8 +5158,11 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_INC', array('', $this->projectID));
-			$res = $this->jogetCURL($url);
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ;
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_INC', array('', $this->projectID)).$extraParam;
+			$res = $this->jogetCURL($url); 
 			if(isset($res['data'])){
 				foreach ($res['data'] as $val) {
 					$dateCreated = strtotime($val['date_incident']);
@@ -5264,8 +5464,12 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_SMH', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ;
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_SMH', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data'])) {
 				$resData = $res['data'];
 
@@ -5315,13 +5519,13 @@ class RiDashboard
 							$ret[$data['package_id']]['overall']['chart'][$data['year']][$data['month']][$this->mthLookUp[strtoupper($data['month'])].'-'.$data['year']] = $d;
 							$ret[$data['package_id']]['overall']['byYr'][$data['year']][$data['month']][$this->mthLookUp[strtoupper($data['month'])].'-'.$data['year']] = $d;
 		
-							$ret[$data['package_id']]['overall']['card']['all']['all']['woLTI'] = $data['culmulative_mh_wlti'];
-							$ret[$data['package_id']]['overall']['card'][$data['year']]['all']['woLTI'] = $data['culmulative_mh_wlti'];
-							$ret[$data['package_id']]['overall']['card'][$data['year']][$data['month']]['woLTI'] = $data['culmulative_mh_wlti'];
+							$ret[$data['package_id']]['overall']['card']['all']['all']['woLTI'] = $data['culmulative_mh_wtlti'];
+							$ret[$data['package_id']]['overall']['card'][$data['year']]['all']['woLTI'] = $data['culmulative_mh_wtlti'];
+							$ret[$data['package_id']]['overall']['card'][$data['year']][$data['month']]['woLTI'] = $data['culmulative_mh_wtlti'];
 	
-							$ret[$data['package_id']]['overall']['card']['all']['all']['wLTI'] = $data['culmulative_mh_wtlti'];
-							$ret[$data['package_id']]['overall']['card'][$data['year']]['all']['wLTI'] = $data['culmulative_mh_wtlti'];
-							$ret[$data['package_id']]['overall']['card'][$data['year']][$data['month']]['wLTI'] = $data['culmulative_mh_wtlti'];
+							$ret[$data['package_id']]['overall']['card']['all']['all']['wLTI'] = $data['culmulative_mh_wlti'];
+							$ret[$data['package_id']]['overall']['card'][$data['year']]['all']['wLTI'] = $data['culmulative_mh_wlti'];
+							$ret[$data['package_id']]['overall']['card'][$data['year']][$data['month']]['wLTI'] = $data['culmulative_mh_wlti'];
 
 							//-----------------------END CHILD---------------------------//
 						}
@@ -5718,8 +5922,12 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_SA', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ;
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_SA', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data']) && $res['data']) {
 				usort($res['data'], function($a, $b) {
 				    return strcmp($a["package_id"], $b["package_id"]);
@@ -6627,11 +6835,16 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_SDL', array('', $this->projectID));
-			$res = $this->jogetCURL($url);
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_SDL', array('', $this->projectID)).$extraParam;
+			$res = $this->jogetCURL($url, 100);
+			
 
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $sd) {
+					
 
 					// based on month and year
 					$dateCreated = strtotime($sd['submission_date']);
@@ -7104,6 +7317,598 @@ class RiDashboard
 
 						//---------------END CHILD---------------//
 					}
+
+				}
+			}
+		}
+		return $ret;
+	}
+
+	function fetchSDInfo_opt($limit, $offset){
+		$ret = array();
+		if ($this->isWPC) {
+			$url = $this->jogetLinkObj->getLink('dash_cons_SDL', array($this->currPackageUuid, ''));
+			$res = $this->jogetCURL($url);
+
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $sd) {
+
+					// based on month and year
+					$dateCreated = strtotime($sd['submission_date']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", $dateCreated);
+
+					if($this->project_owner == "JKR_SABAH"){
+						$ret['overall']['all']['all']['raw'][] = $sd;
+						$ret['overall'][$year]['all']['raw'][] = $sd;
+						$ret['overall'][$year][$month]['raw'][] = $sd;
+					
+						if (isset($ret['overall']['all']['all']['card']['ttl_manpower'])){
+							$ret['overall']['all']['all']['card']['ttl_manpower'] = $ret['overall']['all']['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall']['all']['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+
+						if (isset($ret['overall'][$year]['all']['card']['ttl_manpower'])){
+							$ret['overall'][$year]['all']['card']['ttl_manpower'] = $ret['overall'][$year]['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall'][$year]['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+
+						if (isset($ret['overall'][$year][$month]['card']['ttl_manpower'])){
+							$ret['overall'][$year][$month]['card']['ttl_manpower'] = $ret['overall'][$year][$month]['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall'][$year][$month]['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+
+						// machinery
+						if (isset($ret['overall']['all']['all']['card']['ttl_machinery'])){
+							$ret['overall']['all']['all']['card']['ttl_machinery'] = $ret['overall']['all']['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall']['all']['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+						if (isset($ret['overall'][$year]['all']['card']['ttl_machinery'])){
+							$ret['overall'][$year]['all']['card']['ttl_machinery'] = $ret['overall'][$year]['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall'][$year]['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+						if (isset($ret['overall'][$year][$month]['card']['ttl_machinery'])){
+							$ret['overall'][$year][$month]['card']['ttl_machinery'] = $ret['overall'][$year][$month]['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall'][$year][$month]['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+
+						// weather
+						if (isset($ret['overall']['all']['all']['weather']['sunny'])) {
+							$ret['overall']['all']['all']['weather']['sunny'] = $ret['overall']['all']['all']['weather']['sunny'] + (float) $sd['count_weather_s'];
+						}else{
+							$ret['overall']['all']['all']['weather']['sunny'] = (float) $sd['count_weather_s'];
+						}
+
+						if (isset($ret['overall']['all']['all']['weather']['cloudy'])) {
+							$ret['overall']['all']['all']['weather']['cloudy'] = $ret['overall']['all']['all']['weather']['cloudy'] + (float) $sd['count_weather_c'];
+						}else{
+							$ret['overall']['all']['all']['weather']['cloudy']  = (float) $sd['count_weather_c'];
+						}
+						
+						if (isset($ret['overall']['all']['all']['weather']['rain'])){
+							$ret['overall']['all']['all']['weather']['rain'] = $ret['overall']['all']['all']['weather']['rain'] + (float) $sd['count_weather_r'];
+						}else{
+							$ret['overall']['all']['all']['weather']['rain'] = (float) $sd['count_weather_r'];
+						}
+
+						if (isset($ret['overall']['all']['all']['weather']['drizzle'])) {
+							$ret['overall']['all']['all']['weather']['drizzle'] = $ret['overall']['all']['all']['weather']['drizzle'] + (float) $sd['count_weather_d'];
+						}else{
+							$ret['overall']['all']['all']['weather']['drizzle'] = (float) $sd['count_weather_d'];
+						}
+
+						// weather for year
+						if (isset($ret['overall'][$year]['all']['weather']['sunny'])) {
+							$ret['overall'][$year]['all']['weather']['sunny'] = $ret['overall'][$year]['all']['weather']['sunny'] + (float) $sd['count_weather_s'];
+						}else{
+							$ret['overall'][$year]['all']['weather']['sunny'] = (float) $sd['count_weather_s'];
+						}
+
+						if (isset($ret['overall'][$year]['all']['weather']['cloudy'])) {
+							$ret['overall'][$year]['all']['weather']['cloudy'] = $ret['overall'][$year]['all']['weather']['cloudy'] + (float) $sd['count_weather_c'];
+						}else{
+							$ret['overall'][$year]['all']['weather']['cloudy']  = (float) $sd['count_weather_c'];
+						}
+						
+						if (isset($ret['overall'][$year]['all']['weather']['rain'])){
+							$ret['overall'][$year]['all']['weather']['rain'] = $ret['overall'][$year]['all']['weather']['rain'] + (float) $sd['count_weather_r'];
+						}else{
+							$ret['overall'][$year]['all']['weather']['rain'] = (float) $sd['count_weather_r'];
+						}
+
+						if (isset($ret['overall'][$year]['all']['weather']['drizzle'])) {
+							$ret['overall'][$year]['all']['weather']['drizzle'] = $ret['overall'][$year]['all']['weather']['drizzle'] + (float) $sd['count_weather_d'];
+						}else{
+							$ret['overall'][$year]['all']['weather']['drizzle'] = (float) $sd['count_weather_d'];
+						}
+
+						// weather for year & month
+						if (isset($ret['overall'][$year][$month]['weather']['sunny'])) {
+							$ret['overall'][$year][$month]['weather']['sunny'] = $ret['overall'][$year][$month]['weather']['sunny'] + (float) $sd['count_weather_s'];
+						}else{
+							$ret['overall'][$year][$month]['weather']['sunny'] = (float) $sd['count_weather_s'];
+						}
+
+						if (isset($ret['overall'][$year][$month]['weather']['cloudy'])) {
+							$ret['overall'][$year][$month]['weather']['cloudy'] = $ret['overall'][$year][$month]['weather']['cloudy'] + (float) $sd['count_weather_c'];
+						}else{
+							$ret['overall'][$year][$month]['weather']['cloudy']  = (float) $sd['count_weather_c'];
+						}
+						
+						if (isset($ret['overall'][$year][$month]['weather']['rain'])){
+							$ret['overall'][$year][$month]['weather']['rain'] = $ret['overall'][$year][$month]['weather']['rain'] + (float) $sd['count_weather_r'];
+						}else{
+							$ret['overall'][$year][$month]['weather']['rain'] = (float) $sd['count_weather_r'];
+						}
+
+						if (isset($ret['overall'][$year][$month]['weather']['drizzle'])) {
+							$ret['overall'][$year][$month]['weather']['drizzle'] = $ret['overall'][$year][$month]['weather']['drizzle'] + (float) $sd['count_weather_d'];
+						}else{
+							$ret['overall'][$year][$month]['weather']['drizzle'] = (float) $sd['count_weather_d'];
+						}
+
+					}
+					else{
+
+						$ret['overall']['overall']['all']['all']['raw'][] = $sd;
+						$ret['overall']['overall'][$year]['all']['raw'][] = $sd;
+						$ret['overall']['overall'][$year][$month]['raw'][] = $sd;
+					
+						if (isset($ret['overall']['overall']['all']['all']['card']['ttl_manpower'])){
+							$ret['overall']['overall']['all']['all']['card']['ttl_manpower'] = $ret['overall']['overall']['all']['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall']['overall']['all']['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+						if (isset($ret['overall']['overall'][$year]['all']['card']['ttl_manpower'])){
+							$ret['overall']['overall'][$year]['all']['card']['ttl_manpower'] = $ret['overall']['overall'][$year]['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall']['overall'][$year]['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+						if (isset($ret['overall']['overall'][$year][$month]['card']['ttl_manpower'])){
+							$ret['overall']['overall'][$year][$month]['card']['ttl_manpower'] = $ret['overall']['overall'][$year][$month]['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall']['overall'][$year][$month]['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+
+						if (isset($ret['overall']['overall']['all']['all']['card']['ttl_machinery'])){
+							$ret['overall']['overall']['all']['all']['card']['ttl_machinery'] = $ret['overall']['overall']['all']['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall']['overall']['all']['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+						if (isset($ret['overall']['overall'][$year]['all']['card']['ttl_machinery'])){
+							$ret['overall']['overall'][$year]['all']['card']['ttl_machinery'] = $ret['overall']['overall'][$year]['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall']['overall'][$year]['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+						if (isset($ret['overall']['overall'][$year][$month]['card']['ttl_machinery'])){
+							$ret['overall']['overall'][$year][$month]['card']['ttl_machinery'] = $ret['overall']['overall'][$year][$month]['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall']['overall'][$year][$month]['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+
+						$ret['overall']['overall']['all']['all']['count'] = (isset($ret['overall']['overall']['all']['all']['count'])) ? $ret['overall']['overall']['all']['all']['count'] + 1 : 1;
+						$ret['overall']['overall'][$year]['all']['count'] = (isset($ret['overall']['overall'][$year]['all']['count'])) ? $ret['overall']['overall'][$year]['all']['count'] + 1 : 1;
+						$ret['overall']['overall'][$year][$month]['count'] = (isset($ret['overall']['overall'][$year][$month]['count'])) ? $ret['overall']['overall'][$year][$month]['count'] + 1 : 1;
+
+						$ret['overall'][$sd['section']]['all']['all']['count'] = (isset($ret['overall'][$sd['section']]['all']['all']['count'])) ? $ret['overall'][$sd['section']]['all']['all']['count'] + 1 : 1;
+						$ret['overall'][$sd['section']][$year]['all']['count'] = (isset($ret['overall'][$sd['section']][$year]['all']['count'])) ? $ret['overall'][$sd['section']][$year]['all']['count'] + 1 : 1;
+						$ret['overall'][$sd['section']][$year][$month]['count'] = (isset($ret['overall'][$sd['section']][$year][$month]['count'])) ? $ret['overall'][$sd['section']][$year][$month]['count'] + 1 : 1;
+
+						//FOR SECTION
+						$ret['overall'][$sd['section']]['all']['all']['raw'][] = $sd;
+						$ret['overall'][$sd['section']][$year]['all']['raw'][] = $sd;
+						$ret['overall'][$sd['section']][$year][$month]['raw'][] = $sd;
+											
+						if (isset($ret['overall'][$sd['section']]['all']['all']['card']['ttl_manpower'])){
+							$ret['overall'][$sd['section']]['all']['all']['card']['ttl_manpower'] = $ret['overall'][$sd['section']]['all']['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall'][$sd['section']]['all']['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+						if (isset($ret['overall'][$sd['section']][$year]['all']['card']['ttl_manpower'])){
+							$ret['overall'][$sd['section']][$year]['all']['card']['ttl_manpower'] = $ret['overall'][$sd['section']][$year]['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall'][$sd['section']][$year]['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+						if (isset($ret['overall'][$sd['section']][$year][$month]['card']['ttl_manpower'])){
+							$ret['overall'][$sd['section']][$year][$month]['card']['ttl_manpower'] = $ret['overall'][$sd['section']][$year][$month]['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+						}
+						else{
+							$ret['overall'][$sd['section']][$year][$month]['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+						}
+
+						if (isset($ret['overall'][$sd['section']]['all']['all']['card']['ttl_machinery'])){
+							$ret['overall'][$sd['section']]['all']['all']['card']['ttl_machinery'] = $ret['overall'][$sd['section']]['all']['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall'][$sd['section']]['all']['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+						if (isset($ret['overall'][$sd['section']][$year]['all']['card']['ttl_machinery'])){
+							$ret['overall'][$sd['section']][$year]['all']['card']['ttl_machinery'] = $ret['overall'][$sd['section']][$year]['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall'][$sd['section']][$year]['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+						if (isset($ret['overall'][$sd['section']][$year][$month]['card']['ttl_machinery'])){
+							$ret['overall'][$sd['section']][$year][$month]['card']['ttl_machinery'] = $ret['overall'][$sd['section']][$year][$month]['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+						}
+						else{
+							$ret['overall'][$sd['section']][$year][$month]['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+						}
+
+						$ret['overall']['overall']['all']['all']['card']['avg_manpower'] = round($ret['overall']['overall']['all']['all']['card']['ttl_manpower'] / $ret['overall']['overall']['all']['all']['count']);
+						$ret['overall']['overall'][$year]['all']['card']['avg_manpower'] = round($ret['overall']['overall'][$year]['all']['card']['ttl_manpower'] / $ret['overall']['overall'][$year]['all']['count']);
+						$ret['overall']['overall'][$year][$month]['card']['avg_manpower'] = round($ret['overall']['overall'][$year][$month]['card']['ttl_manpower'] / $ret['overall']['overall'][$year][$month]['count']);
+
+						$ret['overall']['overall']['all']['all']['card']['avg_machinery'] = round($ret['overall']['overall']['all']['all']['card']['ttl_machinery'] / $ret['overall']['overall']['all']['all']['count']);
+						$ret['overall']['overall'][$year]['all']['card']['avg_machinery'] = round($ret['overall']['overall'][$year]['all']['card']['ttl_machinery'] / $ret['overall']['overall'][$year]['all']['count']);
+						$ret['overall']['overall'][$year][$month]['card']['avg_machinery'] = round($ret['overall']['overall'][$year][$month]['card']['ttl_machinery'] / $ret['overall']['overall'][$year][$month]['count']);
+
+						$ret['overall'][$sd['section']]['all']['all']['card']['avg_manpower'] = round($ret['overall'][$sd['section']]['all']['all']['card']['ttl_manpower'] / $ret['overall'][$sd['section']]['all']['all']['count']);
+						$ret['overall'][$sd['section']][$year]['all']['card']['avg_manpower'] = round($ret['overall'][$sd['section']][$year]['all']['card']['ttl_manpower'] / $ret['overall'][$sd['section']][$year]['all']['count']);
+						$ret['overall'][$sd['section']][$year][$month]['card']['avg_manpower'] = round($ret['overall'][$sd['section']][$year][$month]['card']['ttl_manpower'] / $ret['overall'][$sd['section']][$year][$month]['count']);
+
+						$ret['overall'][$sd['section']]['all']['all']['card']['avg_machinery'] = round($ret['overall'][$sd['section']]['all']['all']['card']['ttl_machinery'] / $ret['overall'][$sd['section']]['all']['all']['count']);
+						$ret['overall'][$sd['section']][$year]['all']['card']['avg_machinery'] = round($ret['overall'][$sd['section']][$year]['all']['card']['ttl_machinery'] / $ret['overall'][$sd['section']][$year]['all']['count']);
+						$ret['overall'][$sd['section']][$year][$month]['card']['avg_machinery'] = round($ret['overall'][$sd['section']][$year][$month]['card']['ttl_machinery'] / $ret['overall'][$sd['section']][$year][$month]['count']);
+
+					}
+
+				}
+			}
+		}
+		else{
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_SDL', array('', $this->projectID)).$extraParam;
+			$res = $this->jogetCURL($url, $limit, $offset);
+			
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $sd) {				
+
+					// based on month and year
+					$dateCreated = strtotime($sd['submission_date']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", $dateCreated);
+
+					$ret['overall']['all']['all']['raw'][] = $sd;
+					$ret['overall'][$year]['all']['raw'][] = $sd;
+					$ret['overall'][$year][$month]['raw'][] = $sd;
+
+					//-------------START CHILD-------------//
+					$ret[$sd['package_id']]['all']['all']['raw'][] = $sd;
+					$ret[$sd['package_id']][$year]['all']['raw'][] = $sd;
+					$ret[$sd['package_id']][$year][$month]['raw'][] = $sd;
+					//-------------END CHILD---------------//
+				
+					if (isset($ret['overall']['all']['all']['card']['ttl_manpower'])){
+						$ret['overall']['all']['all']['card']['ttl_manpower'] = $ret['overall']['all']['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+					}
+					else{
+						$ret['overall']['all']['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+					}
+					if (isset($ret['overall'][$year]['all']['card']['ttl_manpower'])){
+						$ret['overall'][$year]['all']['card']['ttl_manpower'] = $ret['overall'][$year]['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+					}
+					else{
+						$ret['overall'][$year]['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+					}
+					if (isset($ret['overall'][$year][$month]['card']['ttl_manpower'])){
+						$ret['overall'][$year][$month]['card']['ttl_manpower'] = $ret['overall'][$year][$month]['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+					}
+					else{
+						$ret['overall'][$year][$month]['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+					}
+
+					if (isset($ret['overall']['all']['all']['card']['ttl_machinery'])){
+						$ret['overall']['all']['all']['card']['ttl_machinery'] = $ret['overall']['all']['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+					}
+					else{
+						$ret['overall']['all']['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+					}
+					if (isset($ret['overall'][$year]['all']['card']['ttl_machinery'])){
+						$ret['overall'][$year]['all']['card']['ttl_machinery'] = $ret['overall'][$year]['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+					}
+					else{
+						$ret['overall'][$year]['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+					}
+					if (isset($ret['overall'][$year][$month]['card']['ttl_machinery'])){
+						$ret['overall'][$year][$month]['card']['ttl_machinery'] = $ret['overall'][$year][$month]['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+					}
+					else{
+						$ret['overall'][$year][$month]['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+					}
+
+					//-----------------START CHILD--------------------//
+					if (isset($ret[$sd['package_id']]['all']['all']['card']['ttl_manpower'])){
+						$ret[$sd['package_id']]['all']['all']['card']['ttl_manpower'] = $ret[$sd['package_id']]['all']['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+					}
+					else{
+						$ret[$sd['package_id']]['all']['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+					}
+					if (isset($ret[$sd['package_id']][$year]['all']['card']['ttl_manpower'])){
+						$ret[$sd['package_id']][$year]['all']['card']['ttl_manpower'] = $ret[$sd['package_id']][$year]['all']['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+					}
+					else{
+						$ret[$sd['package_id']][$year]['all']['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+					}
+					if (isset($ret[$sd['package_id']][$year][$month]['card']['ttl_manpower'])){
+						$ret[$sd['package_id']][$year][$month]['card']['ttl_manpower'] = $ret[$sd['package_id']][$year][$month]['card']['ttl_manpower'] + (int) $sd['total_manpower'];
+					}
+					else{
+						$ret[$sd['package_id']][$year][$month]['card']['ttl_manpower'] = (int) $sd['total_manpower'];
+					}
+
+					if (isset($ret[$sd['package_id']]['all']['all']['card']['ttl_machinery'])){
+						$ret[$sd['package_id']]['all']['all']['card']['ttl_machinery'] = $ret[$sd['package_id']]['all']['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+					}
+					else{
+						$ret[$sd['package_id']]['all']['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+					}
+					if (isset($ret[$sd['package_id']][$year]['all']['card']['ttl_machinery'])){
+						$ret[$sd['package_id']][$year]['all']['card']['ttl_machinery'] = $ret[$sd['package_id']][$year]['all']['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+					}
+					else{
+						$ret[$sd['package_id']][$year]['all']['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+					}
+					if (isset($ret[$sd['package_id']][$year][$month]['card']['ttl_machinery'])){
+						$ret[$sd['package_id']][$year][$month]['card']['ttl_machinery'] = $ret[$sd['package_id']][$year][$month]['card']['ttl_machinery'] + (int) $sd['total_machinery'];
+					}
+					else{
+						$ret[$sd['package_id']][$year][$month]['card']['ttl_machinery'] = (int) $sd['total_machinery'];
+					}
+					//------------------END CHILD--------------------//
+
+					// weather
+					if (isset($ret['overall']['all']['all']['weather']['sunny'])) {
+						$ret['overall']['all']['all']['weather']['sunny'] = $ret['overall']['all']['all']['weather']['sunny'] + (float) $sd['count_weather_s'];
+					}else{
+						$ret['overall']['all']['all']['weather']['sunny'] = (float) $sd['count_weather_s'];
+					}
+
+					if (isset($ret['overall']['all']['all']['weather']['cloudy'])) {
+						$ret['overall']['all']['all']['weather']['cloudy'] = $ret['overall']['all']['all']['weather']['cloudy'] + (float) $sd['count_weather_c'];
+					}else{
+						$ret['overall']['all']['all']['weather']['cloudy']  = (float) $sd['count_weather_c'];
+					}
+					
+					if (isset($ret['overall']['all']['all']['weather']['rain'])){
+						$ret['overall']['all']['all']['weather']['rain'] = $ret['overall']['all']['all']['weather']['rain'] + (float) $sd['count_weather_r'];
+					}else{
+						$ret['overall']['all']['all']['weather']['rain'] = (float) $sd['count_weather_r'];
+					}
+
+					if (isset($ret['overall']['all']['all']['weather']['drizzle'])) {
+						$ret['overall']['all']['all']['weather']['drizzle'] = $ret['overall']['all']['all']['weather']['drizzle'] + (float) $sd['count_weather_d'];
+					}else{
+						$ret['overall']['all']['all']['weather']['drizzle'] = (float) $sd['count_weather_d'];
+					}
+
+					//-----------------START CHILD-------------------//
+					if (isset($ret[$sd['package_id']]['all']['all']['weather']['sunny'])) {
+						$ret[$sd['package_id']]['all']['all']['weather']['sunny'] = $ret[$sd['package_id']]['all']['all']['weather']['sunny'] + (float) $sd['count_weather_s'];
+					}else{
+						$ret[$sd['package_id']]['all']['all']['weather']['sunny'] = (float) $sd['count_weather_s'];
+					}
+
+					if (isset($ret[$sd['package_id']]['all']['all']['weather']['cloudy'])) {
+						$ret[$sd['package_id']]['all']['all']['weather']['cloudy'] = $ret[$sd['package_id']]['all']['all']['weather']['cloudy'] + (float) $sd['count_weather_c'];
+					}else{
+						$ret[$sd['package_id']]['all']['all']['weather']['cloudy']  = (float) $sd['count_weather_c'];
+					}
+					
+					if (isset($ret[$sd['package_id']]['all']['all']['weather']['rain'])){
+						$ret[$sd['package_id']]['all']['all']['weather']['rain'] = $ret[$sd['package_id']]['all']['all']['weather']['rain'] + (float) $sd['count_weather_r'];
+					}else{
+						$ret[$sd['package_id']]['all']['all']['weather']['rain'] = (float) $sd['count_weather_r'];
+					}
+
+					if (isset($ret[$sd['package_id']]['all']['all']['weather']['drizzle'])) {
+						$ret[$sd['package_id']]['all']['all']['weather']['drizzle'] = $ret[$sd['package_id']]['all']['all']['weather']['drizzle'] + (float) $sd['count_weather_d'];
+					}else{
+						$ret[$sd['package_id']]['all']['all']['weather']['drizzle'] = (float) $sd['count_weather_d'];
+					}
+					//-----------------END CHILD-------------------//
+
+					// weather for year
+					if (isset($ret['overall'][$year]['all']['weather']['sunny'])) {
+						$ret['overall'][$year]['all']['weather']['sunny'] = $ret['overall'][$year]['all']['weather']['sunny'] + (float) $sd['count_weather_s'];
+					}else{
+						$ret['overall'][$year]['all']['weather']['sunny'] = (float) $sd['count_weather_s'];
+					}
+
+					if (isset($ret['overall'][$year]['all']['weather']['cloudy'])) {
+						$ret['overall'][$year]['all']['weather']['cloudy'] = $ret['overall'][$year]['all']['weather']['cloudy'] + (float) $sd['count_weather_c'];
+					}else{
+						$ret['overall'][$year]['all']['weather']['cloudy']  = (float) $sd['count_weather_c'];
+					}
+					
+					if (isset($ret['overall'][$year]['all']['weather']['rain'])){
+						$ret['overall'][$year]['all']['weather']['rain'] = $ret['overall'][$year]['all']['weather']['rain'] + (float) $sd['count_weather_r'];
+					}else{
+						$ret['overall'][$year]['all']['weather']['rain'] = (float) $sd['count_weather_r'];
+					}
+
+					if (isset($ret['overall'][$year]['all']['weather']['drizzle'])) {
+						$ret['overall'][$year]['all']['weather']['drizzle'] = $ret['overall'][$year]['all']['weather']['drizzle'] + (float) $sd['count_weather_d'];
+					}else{
+						$ret['overall'][$year]['all']['weather']['drizzle'] = (float) $sd['count_weather_d'];
+					}
+
+					//---------------START CHILD----------------//
+					if (isset($ret[$sd['package_id']][$year]['all']['weather']['sunny'])) {
+						$ret[$sd['package_id']][$year]['all']['weather']['sunny'] = $ret[$sd['package_id']][$year]['all']['weather']['sunny'] + (float) $sd['count_weather_s'];
+					}else{
+						$ret[$sd['package_id']][$year]['all']['weather']['sunny'] = (float) $sd['count_weather_s'];
+					}
+
+					if (isset($ret[$sd['package_id']][$year]['all']['weather']['cloudy'])) {
+						$ret[$sd['package_id']][$year]['all']['weather']['cloudy'] = $ret[$sd['package_id']][$year]['all']['weather']['cloudy'] + (float) $sd['count_weather_c'];
+					}else{
+						$ret[$sd['package_id']][$year]['all']['weather']['cloudy']  = (float) $sd['count_weather_c'];
+					}
+					
+					if (isset($ret[$sd['package_id']][$year]['all']['weather']['rain'])){
+						$ret[$sd['package_id']][$year]['all']['weather']['rain'] = $ret[$sd['package_id']][$year]['all']['weather']['rain'] + (float) $sd['count_weather_r'];
+					}else{
+						$ret[$sd['package_id']][$year]['all']['weather']['rain'] = (float) $sd['count_weather_r'];
+					}
+
+					if (isset($ret[$sd['package_id']][$year]['all']['weather']['drizzle'])) {
+						$ret[$sd['package_id']][$year]['all']['weather']['drizzle'] = $ret[$sd['package_id']][$year]['all']['weather']['drizzle'] + (float) $sd['count_weather_d'];
+					}else{
+						$ret[$sd['package_id']][$year]['all']['weather']['drizzle'] = (float) $sd['count_weather_d'];
+					}
+					//---------------END CHILD----------------//
+
+					// weather for year & month
+					if (isset($ret['overall'][$year][$month]['weather']['sunny'])) {
+						$ret['overall'][$year][$month]['weather']['sunny'] = $ret['overall'][$year][$month]['weather']['sunny'] + (float) $sd['count_weather_s'];
+					}else{
+						$ret['overall'][$year][$month]['weather']['sunny'] = (float) $sd['count_weather_s'];
+					}
+
+					if (isset($ret['overall'][$year][$month]['weather']['cloudy'])) {
+						$ret['overall'][$year][$month]['weather']['cloudy'] = $ret['overall'][$year][$month]['weather']['cloudy'] + (float) $sd['count_weather_c'];
+					}else{
+						$ret['overall'][$year][$month]['weather']['cloudy']  = (float) $sd['count_weather_c'];
+					}
+					
+					if (isset($ret['overall'][$year][$month]['weather']['rain'])){
+						$ret['overall'][$year][$month]['weather']['rain'] = $ret['overall'][$year][$month]['weather']['rain'] + (float) $sd['count_weather_r'];
+					}else{
+						$ret['overall'][$year][$month]['weather']['rain'] = (float) $sd['count_weather_r'];
+					}
+
+					if (isset($ret['overall'][$year][$month]['weather']['drizzle'])) {
+						$ret['overall'][$year][$month]['weather']['drizzle'] = $ret['overall'][$year][$month]['weather']['drizzle'] + (float) $sd['count_weather_d'];
+					}else{
+						$ret['overall'][$year][$month]['weather']['drizzle'] = (float) $sd['count_weather_d'];
+					}
+
+					//-----------------START CHILD------------------//
+					if (isset($ret[$sd['package_id']][$year][$month]['weather']['sunny'])) {
+						$ret[$sd['package_id']][$year][$month]['weather']['sunny'] = $ret[$sd['package_id']][$year][$month]['weather']['sunny'] + (float) $sd['count_weather_s'];
+					}else{
+						$ret[$sd['package_id']][$year][$month]['weather']['sunny'] = (float) $sd['count_weather_s'];
+					}
+
+					if (isset($ret[$sd['package_id']][$year][$month]['weather']['cloudy'])) {
+						$ret[$sd['package_id']][$year][$month]['weather']['cloudy'] = $ret[$sd['package_id']][$year][$month]['weather']['cloudy'] + (float) $sd['count_weather_c'];
+					}else{
+						$ret[$sd['package_id']][$year][$month]['weather']['cloudy']  = (float) $sd['count_weather_c'];
+					}
+					
+					if (isset($ret[$sd['package_id']][$year][$month]['weather']['rain'])){
+						$ret[$sd['package_id']][$year][$month]['weather']['rain'] = $ret[$sd['package_id']][$year][$month]['weather']['rain'] + (float) $sd['count_weather_r'];
+					}else{
+						$ret[$sd['package_id']][$year][$month]['weather']['rain'] = (float) $sd['count_weather_r'];
+					}
+
+					if (isset($ret[$sd['package_id']][$year][$month]['weather']['drizzle'])) {
+						$ret[$sd['package_id']][$year][$month]['weather']['drizzle'] = $ret[$sd['package_id']][$year][$month]['weather']['drizzle'] + (float) $sd['count_weather_d'];
+					}else{
+						$ret[$sd['package_id']][$year][$month]['weather']['drizzle'] = (float) $sd['count_weather_d'];
+					}
+					//------------------END CHILD--------------------//
+
+					
+
+				}
+			}
+		}
+		return $ret;
+	}
+
+	function fetchSDTtl_opt($year,$month){
+		$ret = array();
+		if ($this->isWPC) {
+
+			$yr = ($year = 'all') ? date("Y") : $year;
+			$mth = ($month = 'all') ? date("m") : $month;
+			$year_mth = $yr.'-'.$mth;
+			// $inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = '&year_mth='.$year_mth;
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_SDL_opt', array($this->currPackageUuid, '')).$extraParam;
+			$res = $this->jogetCURL($url);
+
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $sd) {				
+
+					// based on month and year
+					$dateCreated = strtotime($sd['submission_date']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", $dateCreated);
+
+					$ret['overall']['all']['all']['card']['ttl_manpower'] += $sd['ttl_manpower'];
+					$ret['overall'][$year]['all']['card']['ttl_manpower'] += $sd['ttl_manpower'];
+					$ret['overall'][$year][$month]['card']['ttl_manpower'] += $sd['ttl_manpower'];
+
+					$ret['overall']['all']['all']['card']['ttl_machinery'] += $sd['ttl_machinery'];
+					$ret['overall'][$year]['all']['card']['ttl_machinery'] += $sd['ttl_machinery'];
+					$ret['overall'][$year][$month]['card']['ttl_machinery'] += $sd['ttl_machinery'];									
+
+				}
+			}
+		}
+		else{
+
+			$yr = ($year = 'all') ? date("Y") : $year;
+			$mth = ($month = 'all') ? date("m") : $month;
+			$year_mth = $yr.'-'.$mth;
+			// $inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = '&year_mth='.$year_mth;
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_SDL_opt', array('', $this->projectID)).$extraParam;
+			$res = $this->jogetCURL($url);
+			
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $sd) {				
+
+					// based on month and year
+					$dateCreated = strtotime($sd['submission_date']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", $dateCreated);
+
+					$ret['overall']['all']['all']['card']['ttl_manpower'] += $sd['ttl_manpower'];
+					$ret['overall'][$year]['all']['card']['ttl_manpower'] += $sd['ttl_manpower'];
+					$ret['overall'][$year][$month]['card']['ttl_manpower'] += $sd['ttl_manpower'];
+
+					// child
+					$ret[$sd['package_id']]['all']['all']['card']['ttl_manpower'] += $sd['ttl_manpower'];
+					$ret[$sd['package_id']][$year]['all']['card']['ttl_manpower'] += $sd['ttl_manpower'];
+					$ret[$sd['package_id']][$year][$month]['card']['ttl_manpower'] += $sd['ttl_manpower'];
+
+					$ret['overall']['all']['all']['card']['ttl_machinery'] += $sd['ttl_machinery'];
+					$ret['overall'][$year]['all']['card']['ttl_machinery'] += $sd['ttl_machinery'];
+					$ret['overall'][$year][$month]['card']['ttl_machinery'] += $sd['ttl_machinery'];
+
+					//child
+					$ret[$sd['package_id']]['all']['all']['card']['ttl_machinery'] += $sd['ttl_machinery'];
+					$ret[$sd['package_id']][$year]['all']['card']['ttl_machinery'] += $sd['ttl_machinery'];
+					$ret[$sd['package_id']][$year][$month]['card']['ttl_machinery'] += $sd['ttl_machinery'];
+									
 
 				}
 			}
@@ -8864,13 +9669,13 @@ class RiDashboard
 							$ms['approval_status'] = "R";
 						}
 						else if($ms['approval_status'] == "Code 1: Approved"){
-							$ms['approval_status'] = "Code 1";
+							$ms['approval_status'] = "Approved";
 						}
 						else if($ms['approval_status'] == "Code 2: Approved with Comments"){
-							$ms['approval_status'] = "Code 2";
+							$ms['approval_status'] = "Approved";
 						}
 						else if($ms['approval_status'] == "Code 3: Not Approved and Resubmit"){
-							$ms['approval_status'] = "Code 3";
+							$ms['approval_status'] = "Not Approved";
 						}
 
 						if (isset($ret['overall']['overall']['byStatus']['all']['all'][$ms['approval_status']])) {
@@ -9329,16 +10134,16 @@ class RiDashboard
 						if(($ms['acknowledge'] != "") && ($ms['approval_status'] == "")){
 							$ms['approval_status'] = "R";
 						}
-						
-						if($ms['approval_status'] == "Code 1: Approved"){
-							$ms['approval_status'] = "Code 1";
+						else if($ms['approval_status'] == "Code 1: Approved"){
+							$ms['approval_status'] = "Approved";
 						}
 						else if($ms['approval_status'] == "Code 2: Approved with Comments"){
-							$ms['approval_status'] = "Code 2";
+							$ms['approval_status'] = "Approved";
 						}
 						else if($ms['approval_status'] == "Code 3: Not Approved and Resubmit"){
-							$ms['approval_status'] = "Code 3";
+							$ms['approval_status'] = "Not Approved";
 						}
+
 
 						if (isset($ret['overall']['overall']['byStatus']['all']['all'][$ms['approval_status']])) {
 							$ret['overall']['overall']['byStatus']['all']['all'][$ms['approval_status']]++;
@@ -10387,8 +11192,12 @@ class RiDashboard
 			}
 		}
 		else {
-			$url = $this->jogetLinkObj->getLink('dash_cons_MS', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_MS', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			// project -> section
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $ms) {
@@ -11675,6 +12484,20 @@ class RiDashboard
 					$ret['overall']['overall']['raw'][] = $ma;
 					
 					if(($ma['acknowledge'] != "")){
+
+						if($ma['approval_code'] == ""){
+							$ma['approval_code'] = "R";
+						}
+						else if($ma['approval_code'] == "Code 1"){
+							$ma['approval_code'] = "Approved";
+						}
+						else if($ma['approval_code'] == "Code 2"){
+							$ma['approval_code'] = "Approved";
+						}
+						else if($ma['approval_code'] == "Code 3"){
+							$ma['approval_code'] = "Not Approved";
+						}
+
 						if(($ma['acknowledge'] != "") && ($ma['approval_code'] == "")){
 							$ma['approval_code'] = "R";
 						}
@@ -11990,10 +12813,22 @@ class RiDashboard
 					$ret['overall']['overall']['raw'][] = $ma;
 					$ret[$ma['package_id']]['overall']['raw'][] = $ma;
 
-					if(($ma['acknowledge'] != "")){
+					if(($ma['acknowledge'] != "")){ 
+
 						if(($ma['acknowledge'] != "") && ($ma['approval_code'] == "")){
 							$ma['approval_code'] = "R";
 						}
+						else if($ma['approval_code'] == "Code 1"){
+							$ma['approval_code'] = "Approved";
+						}
+						else if($ma['approval_code'] == "Code 2"){
+							$ma['approval_code'] = "Approved";
+						}
+						else if($ma['approval_code'] == "Code 3"){
+							$ma['approval_code'] = "Not Approved";
+						}
+						
+
 						// by status
 						if (isset($ret['overall']['overall']['byStatus']['all']['all'][$ma['approval_code']])) {
 							$ret['overall']['overall']['byStatus']['all']['all'][$ma['approval_code']]++;
@@ -12694,8 +13529,13 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_MT', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_MT', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
+
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $ma) {
 					// based on month and year
@@ -13218,8 +14058,12 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink($rfi_link, array('',$this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink($rfi_link, array('',$this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			$ret['url'] = $url;
 			$this->rfiDataAPI = $res;
 			if (isset($res['data']) && $res['data']) {
 				// usort($res['data'], function ($a, $b) {
@@ -13744,7 +14588,7 @@ class RiDashboard
 						$ret['overall'][$rfi['section']]['card'][$year][$month]['cumulative'] = 1;
 					}
 				
-					$status = ($rfi['rfi_acknowledge'] == 'True') ? "replied" : "remaining";
+					$status = ($rfi['rfi_acknowledge'] == 'Approved') ? "replied" : "remaining";
 					if (isset($ret['overall']['overall']['card']['all']['all'][$status]['cumul'])) {
 						$ret['overall']['overall']['card']['all']['all'][$status]['cumul']++;
 					}else{
@@ -14450,8 +15294,12 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_RFIT', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_RFIT', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data']) && $res['data']) {
 				usort($res['data'], function($a, $b) {
 					return strtotime($a['date_request']) - strtotime($b['date_request']);
@@ -14818,8 +15666,13 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_NOI', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			
+			$url = $this->jogetLinkObj->getLink('dash_cons_NOI', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			$ret['url'] = $url;
 			
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $noi) {
@@ -16722,8 +17575,12 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_NCR', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_NCR', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $ncr) {
@@ -18707,9 +19564,13 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_RFI', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			$url = $this->jogetLinkObj->getLink('dash_cons_RFI', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
-			
+			$ret['url'] = $url;
+
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $wir) {
 					// based on month and year
@@ -18760,16 +19621,105 @@ class RiDashboard
 		return $ret;
 	}
 
+	function fetchRFISabahInfo_opt(){
+		$ret = array();
+
+		if ($this->isWPC) {
+			$url = $this->jogetLinkObj->getLink('dash_cons_RFI_opt', array($this->currPackageUuid, ''));
+			$res = $this->jogetCURL($url);
+
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $wir) {
+					// based on month and year
+					$year = $wir['date_year'];
+					$month = $wir['date_month'];
+
+					// wir - status
+					$wir['status'] = ($wir['status'] == 'Pending') ? "Open" : "Closed";
+					if (isset($ret['overall']['rfiStatus']['all']['all'][$wir['status']])) {
+						$ret['overall']['rfiStatus']['all']['all'][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret['overall']['rfiStatus']['all']['all'][$wir['status']] = $wir['total_sum'];
+					}
+					if (isset($ret['overall']['rfiStatus'][$year]['all'][$wir['status']])) {
+						$ret['overall']['rfiStatus'][$year]['all'][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret['overall']['rfiStatus'][$year]['all'][$wir['status']] = $wir['total_sum'];
+					}
+					if (isset($ret['overall']['rfiStatus'][$year][$month][$wir['status']])) {
+						$ret['overall']['rfiStatus'][$year][$month][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret['overall']['rfiStatus'][$year][$month][$wir['status']] = $wir['total_sum'];
+					}
+				}
+			}
+		}
+		else{
+
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_RFI_opt', array('', $this->projectID)).$extraParam;
+			$res = $this->jogetCURL($url);
+			
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $wir) {
+					// based on month and year
+					$year = $wir['date_year'];
+					$month = $wir['date_month'];
+
+					// wir - status
+					$wir['status'] = ($wir['status'] == 'Pending') ? "Open" : "Closed";
+					if (isset($ret['overall']['rfiStatus']['all']['all'][$wir['status']])) {
+						$ret['overall']['rfiStatus']['all']['all'][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret['overall']['rfiStatus']['all']['all'][$wir['status']] = $wir['total_sum'];
+					}
+					if (isset($ret['overall']['rfiStatus'][$year]['all'][$wir['status']])) {
+						$ret['overall']['rfiStatus'][$year]['all'][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret['overall']['rfiStatus'][$year]['all'][$wir['status']] = $wir['total_sum'];
+					}
+					if (isset($ret['overall']['rfiStatus'][$year][$month][$wir['status']])) {
+						$ret['overall']['rfiStatus'][$year][$month][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret['overall']['rfiStatus'][$year][$month][$wir['status']] = $wir['total_sum'];
+					}
+
+					//------------START CHILD--------------//
+					if (isset($ret[$wir['package_id']]['rfiStatus']['all']['all'][$wir['status']])) {
+						$ret[$wir['package_id']]['rfiStatus']['all']['all'][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret[$wir['package_id']]['rfiStatus']['all']['all'][$wir['status']] = $wir['total_sum'];
+					}
+					if (isset($ret[$wir['package_id']]['rfiStatus'][$year]['all'][$wir['status']])) {
+						$ret[$wir['package_id']]['rfiStatus'][$year]['all'][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret[$wir['package_id']]['rfiStatus'][$year]['all'][$wir['status']] = $wir['total_sum'];
+					}
+					if (isset($ret[$wir['package_id']]['rfiStatus'][$year][$month][$wir['status']])) {
+						$ret[$wir['package_id']]['rfiStatus'][$year][$month][$wir['status']] += $wir['total_sum'];
+					}else{
+						$ret[$wir['package_id']]['rfiStatus'][$year][$month][$wir['status']] = $wir['total_sum'];
+					}
+					//------------END CHILD----------------//
+
+				}
+			}
+		}
+
+		return $ret;
+	}
+
 	function getQualityInfo(){
 		$ret = array();
 		$urw_flag = false;
 		if ($this->project_owner == "JKR_SABAH"){
-			$ret['sd'] = $this->fetchSDInfo();
 			$ret['ma'] = $this->fetchMASabahInfo();
 			$ret['ms'] = $this->fetchMSSabahInfo();
 			$ret['ncr'] = $this->getNCRSabahdata();
 			$ret['rfit'] = $this->fetchRFITInfo();
-			$ret['rfi'] = $this->fetchRFISabahInfo();
+			$ret['rfi'] = $this->fetchRFISabahInfo_opt();
 			$ret['noi'] = $this->getNOISabahdata();	
 
 		}
@@ -18792,6 +19742,18 @@ class RiDashboard
 			$ret['noi'] = $this->getNOIdata();
 			$ret['wir'] = $this->getWIRdata();	
 			$ret['section'] = $this->getSectionList();
+		}
+		return $ret;
+	}
+
+	function getSdlInfo($limit, $offset, $year, $month){
+		$ret = [
+			'sd' => [],
+			'sd_ttl' => []
+		];
+		if ($this->project_owner == "JKR_SABAH"){
+			$ret['sd'] = $this->fetchSDInfo_opt($limit, $offset);
+			$ret['sd_ttl'] = $this->fetchSDTtl_opt($year, $month); 
 		}
 		return $ret;
 	}
@@ -19551,8 +20513,10 @@ class RiDashboard
 	}
 
 	function fetchRegisteredDocInfo(){
+		global $PRODUCTION_FLAG;
 		$ret = array();
 		$monthHalftext = ['01'=>"Jan",'02'=>"Feb",'03'=>"Mar",'04'=>"Apr",'05'=>"May",'06'=>"Jun",'07'=>"Jul",'08'=>"Aug",'09'=>"Sep",'10'=>"Oct",'11'=>"Nov",'12'=>"Dec"];
+		$extraParam2 = "";
 
 		if ($this->isWPC) {
 			$url = $this->jogetLinkObj->getLink('dash_doc_register_doc', array($this->currPackageUuid, ''));
@@ -19701,8 +20665,19 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_doc_register_doc', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ;
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			// skip hq package for dashboard data since this package only want to register correspondence & document
+			if($PRODUCTION_FLAG){
+				$extraParam2 = ($this->project_owner == 'JKR_SABAH') ? '&packageUuidHQ=397_PanBorneo_Sabah_397' : '';
+			}else{
+				$extraParam2 = ($this->project_owner == 'JKR_SABAH') ? '&packageUuidHQ=321_Test01_321' : '';
+			}
+
+			$url = $this->jogetLinkObj->getLink('dash_doc_register_doc', array('', $this->projectID)).$extraParam.$extraParam2;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $doc) {
 					//for filter year and month
@@ -20199,7 +21174,9 @@ class RiDashboard
 	}
 
 	function fetchCorrInfo(){
+		global $PRODUCTION_FLAG;
 		$ret = array();
+		$extraParam2 = "";
 
 		if ($this->isWPC) {
 			$url = $this->jogetLinkObj->getLink('dash_doc_register_corr', array($this->currPackageUuid, ''));
@@ -20636,8 +21613,19 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_doc_register_corr', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ;
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			// skip hq package for dashboard data since this package only want to register correspondence & document
+			if($PRODUCTION_FLAG){
+				$extraParam2 = ($this->project_owner == 'JKR_SABAH') ? '&packageUuidHQ=397_PanBorneo_Sabah_397' : '';
+			}else{
+				$extraParam2 = ($this->project_owner == 'JKR_SABAH') ? '&packageUuidHQ=321_Test01_321' : '';
+			}
+
+			$url = $this->jogetLinkObj->getLink('dash_doc_register_corr', array('', $this->projectID)).$extraParam.$extraParam2;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $corr) {
 					// based on month and year
@@ -21580,8 +22568,12 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_PBS', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ;
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+
+			$url = $this->jogetLinkObj->getLink('dash_cons_PBS', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $pc) {
 					// based on month and year
@@ -22667,8 +23659,13 @@ class RiDashboard
 			}
 		}
 		else{
-			$url = $this->jogetLinkObj->getLink('dash_cons_RS', array('', $this->projectID));
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			
+			$url = $this->jogetLinkObj->getLink('dash_cons_RS', array('', $this->projectID)).$extraParam;
 			$res = $this->jogetCURL($url);
+			
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $rs) {
 					// based on month and year
@@ -22884,6 +23881,104 @@ class RiDashboard
 						$ret[$rs['package_id']][$year][$month]['chart'][$rsStatus][$rs['category']] = 1;
 					}
 					//-----------END CHILD---------------//
+				}
+			}
+		}
+		return $ret;
+	}
+
+	function fetchMonthlyRsStatus($yr, $mth, $prevMth, $prevYr){
+		$ret = array();
+
+		$startDateObj = DateTime::createFromFormat('j-n-Y', '26-'.$prevMth.'-'.$prevYr);
+		$endDateObj = DateTime::createFromFormat('j-n-Y', '25-'.$mth.'-'.$yr);
+		
+		$startDate = $startDateObj->format('Y-m-d');
+		$endDate = $endDateObj->format('Y-m-d');
+
+		if ($this->isWPC) {
+			$url = $this->jogetLinkObj->getLink('dash_cons_RS_1B', array($this->currPackageUuid, '', $startDate, $endDate));
+			$res = $this->jogetCURL($url);
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $rs) {
+					// based on month and year
+					$dateCreated = strtotime($rs['date_request']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", strtotime($rs['month']));
+
+					//filter for all
+					$ret['overall']['all']['all']['reportRS']['raw'][] = $rs;
+					$ret['overall'][$year]['all']['reportRS']['raw'][] = $rs;
+					$ret['overall'][$year][$month]['reportRS']['raw'][] = $rs;
+
+					if (isset($ret['overall']['byStatus'][$rs['status']])) {
+						$ret['overall']['byStatus'][$rs['status']]++;
+					}else{
+						$ret['overall']['byStatus'][$rs['status']] = 1;
+					}
+
+					if (isset($ret['overall']['byAction'][$rs['action']])) {
+						$ret['overall']['byAction'][$rs['action']]++;
+					}else{
+						$ret['overall']['byAction'][$rs['action']] = 1;
+					}
+					
+				}
+			}
+		}
+		else{
+			$inPackageUuid = $_SESSION['inPackageUuid'] ? urlencode($_SESSION['inPackageUuid']) : '' ; 
+			$extraParam = ($this->project_owner == 'JKR_SABAH') ? '&inPackageUuid='.$inPackageUuid : '';
+			 
+			
+			$url = $this->jogetLinkObj->getLink('dash_cons_RS_1B', array('', $this->projectID, $startDate, $endDate)).$extraParam;
+			$res = $this->jogetCURL($url);
+			
+			if (isset($res['data']) && $res['data']) {
+				foreach ($res['data'] as $rs) {
+					// based on month and year
+					$dateCreated = strtotime($rs['date_request']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", strtotime($rs['month']));
+
+					if (isset($ret['overall']['parentTbl'][$rs['wpc']][$rs['action']])) {
+						$ret['overall']['parentTbl'][$rs['wpc']][$rs['action']]++;
+					}else{
+						$ret['overall']['parentTbl'][$rs['wpc']][$rs['action']] = 1;
+					}
+
+					//filter for all
+					$ret['overall']['all']['all']['reportRS']['raw'][] = $rs;
+					$ret['overall'][$year]['all']['reportRS']['raw'][] = $rs;
+					$ret['overall'][$year][$month]['reportRS']['raw'][] = $rs;
+
+					$ret[$rs['package_id']]['all']['all']['reportRS']['raw'][] = $rs;
+					$ret[$rs['package_id']][$year]['all']['reportRS']['raw'][] = $rs;
+					$ret[$rs['package_id']][$year][$month]['reportRS']['raw'][] = $rs;
+
+					if (isset($ret['overall']['byStatus'][$rs['status']])) {
+						$ret['overall']['byStatus'][$rs['status']]++;
+					}else{
+						$ret['overall']['byStatus'][$rs['status']] = 1;
+					}
+
+					if (isset($ret[$rs['package_id']]['byStatus'][$rs['status']])) {
+						$ret[$rs['package_id']]['byStatus'][$rs['status']]++;
+					}else{
+						$ret[$rs['package_id']]['byStatus'][$rs['status']] = 1;
+					}
+
+					if (isset($ret['overall']['byAction'][$rs['action']])) {
+						$ret['overall']['byAction'][$rs['action']]++;
+					}else{
+						$ret['overall']['byAction'][$rs['action']] = 1;
+					}
+
+					if (isset($ret[$rs['package_id']]['byAction'][$rs['action']])) {
+						$ret[$rs['package_id']]['byAction'][$rs['action']]++;
+					}else{
+						$ret[$rs['package_id']]['byAction'][$rs['action']] = 1;
+					}
 				}
 			}
 		}
@@ -23329,7 +24424,9 @@ class RiDashboard
 						}
 	
 						if($co['completion_date']){
-							$co['completion_date'] = DateTime::createFromFormat('d/m/Y', $co['completion_date'])->format('d-m-Y');
+							if(DateTime::createFromFormat('d/m/Y', $co['completion_date'])){
+								$co['completion_date'] = DateTime::createFromFormat('d/m/Y', $co['completion_date'])->format('d-m-Y');
+							}
 						}
 	
 						$ret['overall'] = $co;
@@ -24151,7 +25248,7 @@ class RiDashboard
 			
 			if(isset($res['data'])){
 				usort($res['data'], function($a, $b) {
-				    return (int) $a['ipc_no'] - (int) $b['ipc_no'];
+					return (int) preg_replace('/[^0-9]/', '', $a['ipa_no']) - (int) preg_replace('/[^0-9]/', '', $b['ipa_no']);
 				});
 
 				foreach ($res['data'] as $co) {
@@ -24218,7 +25315,7 @@ class RiDashboard
 			$res = $this->jogetCURL($url);
 			if(isset($res['data'])){
 				usort($res['data'], function($a, $b) {
-				    return (int) $a['ipc_no'] - (int) $b['ipc_no'];
+					return (int) preg_replace('/[^0-9]/', '', $a['ipa_no']) - (int) preg_replace('/[^0-9]/', '', $b['ipa_no']);
 				});
 
 				foreach ($res['data'] as $co) {
@@ -24676,6 +25773,12 @@ class RiDashboard
 						$ret['overall']['all']['calculateCard']['voNo'][$key] = $co['vo_id'];
 					}
 
+					if(isset($ret['overall']['all']['calculateCard']['totalEot'])){
+						$ret['overall']['all']['calculateCard']['totalEot'] += (double) str_replace(",", "", $co['granted_eot']);
+					}else{
+						$ret['overall']['all']['calculateCard']['totalEot'] = (double) str_replace(",", "", $co['granted_eot']);
+					}
+
 					// year filter
 					// addition
 
@@ -24709,6 +25812,12 @@ class RiDashboard
 						$ret['overall'][$year]['calculateCard']['voNo'][$key] = $co['vo_id'];
 					}else{
 						$ret['overall'][$year]['calculateCard']['voNo'][$key] = $co['vo_id'];
+					}
+
+					if(isset($ret['overall'][$year]['calculateCard']['totalEot'])){
+						$ret['overall'][$year]['calculateCard']['totalEot'] += (double) str_replace(",", "", $co['granted_eot']);
+					}else{
+						$ret['overall'][$year]['calculateCard']['totalEot'] = (double) str_replace(",", "", $co['granted_eot']);
 					}
 				}
 			}
@@ -24765,6 +25874,12 @@ class RiDashboard
 						$ret[$childID['project_id']]['all']['calculateCard']['voNo'][$key] = $co['vo_id'];
 					}
 
+					if(isset($ret['overall']['all']['calculateCard']['totalEot'])){
+						$ret[$childID['project_id']]['all']['calculateCard']['totalEot'] += (double) str_replace(",", "", $co['granted_eot']);
+					}else{
+						$ret[$childID['project_id']]['all']['calculateCard']['totalEot'] = (double) str_replace(",", "", $co['granted_eot']);
+					}
+
 					// year filter
 					// addition
 
@@ -24798,6 +25913,12 @@ class RiDashboard
 						$ret[$childID['project_id']][$year]['calculateCard']['voNo'][$key] = $co['vo_id'];
 					}else{
 						$ret[$childID['project_id']][$year]['calculateCard']['voNo'][$key] = $co['vo_id'];
+					}
+
+					if(isset($ret['overall'][$year]['calculateCard']['totalEot'])){
+						$ret[$childID['project_id']][$year]['calculateCard']['totalEot'] += (double) str_replace(",", "", $co['granted_eot']);
+					}else{
+						$ret[$childID['project_id']][$year]['calculateCard']['totalEot'] = (double) str_replace(",", "", $co['granted_eot']);
 					}
 				}
 			}
@@ -25241,6 +26362,11 @@ class RiDashboard
 				foreach ($res['data'] as $br) {
 					if(empty($br['c_package_id']) || $br['c_package_id'] == 'null') continue;
 
+					// skip if type is empty
+					if (empty(trim($br['c_road_furniture_type'])) || $br['c_road_furniture_type'] == 'null') continue;
+
+					$type = $br['c_road_furniture_type'];
+
 					// total
 					if (isset($ret['overall']['card']['roadFurnitureAll']['total'])) {
 						$ret['overall']['card']['roadFurnitureAll']['total']++;
@@ -25255,12 +26381,18 @@ class RiDashboard
 						$ret['overall']['chart']['roadFurnitureSection'][$br['c_package_id']]['Road Furniture'] = 1;
 					}
 
-					// by type
-					if (isset($ret['overall']['chart']['roadType'][$br['c_road_furniture_type']])) {
-						$ret['overall']['chart']['roadType'][$br['c_road_furniture_type']]++;
-					}else{
-						$ret['overall']['chart']['roadType'][$br['c_road_furniture_type']] = 1;
+					// by type — IGNORE empty keys
+					if (isset($ret['overall']['chart']['roadType'][$type])) {
+						$ret['overall']['chart']['roadType'][$type]++;
+					} else {
+						$ret['overall']['chart']['roadType'][$type] = 1;
 					}
+					// by type
+					// if (isset($ret['overall']['chart']['roadType'][$br['c_road_furniture_type']])) {
+					// 	$ret['overall']['chart']['roadType'][$br['c_road_furniture_type']]++;
+					// }else{
+					// 	$ret['overall']['chart']['roadType'][$br['c_road_furniture_type']] = 1;
+					// }
 				}
 			}
 		}
@@ -25270,6 +26402,9 @@ class RiDashboard
 			if (isset($res['data']) && $res['data']) {
 				foreach ($res['data'] as $br) {
 					if(empty($br['c_package_id']) || $br['c_package_id'] == 'null') continue;
+
+					// Skip rows with empty type
+            		if (empty($br['c_road_furniture_type'])) continue;
 
 					// total
 					if (isset($ret['overall']['card']['roadFurnitureAll']['total'])) {
@@ -25588,8 +26723,10 @@ class RiDashboard
 		return $ret;
 	}
 
-	public function getReportSubmissionInfo(){
-		$ret = $this->fetchReportInfo();
+	public function getReportSubmissionInfo($yr = false, $mth = false, $prevMth = false, $prevYr = false){
+		$ret = array();
+		$ret['reportRS'] = $this->fetchMonthlyRsStatus($yr, $mth, $prevMth, $prevYr);
+		$ret['reportInfo'] = $this->fetchReportInfo();
 		return $ret;
 	}
 
@@ -26553,6 +27690,330 @@ class RiDashboard
 	}
 
 	function getWorkInstructData(){
+		$ret = array();
+		if ($this->isWPC) {
+			// add back $this->currPackageUuid
+			$url = $this->jogetLinkObj->getLink('dash_asset_workInstruct', array($this->currPackageUuid, ''));
+			$res = $this->jogetCURL($url);
+
+			if (isset($res['data'])){
+				foreach ($res['data'] as $type) {
+
+					// based on month and year
+					$dateCreated = strtotime($type['c_work_date']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", $dateCreated);
+
+					$firstDate = date('Y-m-01', strtotime($type['c_work_date']));
+					$lastDate = date('Y-m-t', strtotime($type['c_work_date']));
+
+					//filter by default activity & asset type
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type & sub activity
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type, sub activity and asset catg
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type, default sub act and asset catg
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+				}
+			}
+		}
+		else{
+			$url = $this->jogetLinkObj->getLink('dash_asset_workInstruct', array('', $this->projectID));
+			$res = $this->jogetCURL($url);
+
+			if (isset($res['data'])){
+				foreach ($res['data'] as $type) {
+					$dateCreated = strtotime($type['c_work_date']);
+					$year = date("Y", $dateCreated);
+					$month = date("M", $dateCreated);
+
+					//filter by default activity & asset type
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type & sub activity
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type, sub activity and asset catg
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type, default sub act and asset catg
+					if (isset($ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall']['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret['overall'][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					// --------------------------------------------------------CHILD -----------------------------------------------------------------------------//
+
+					//filter by default activity & asset type
+					if (isset($ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']]['default']['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type
+					if (isset($ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default']['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type & sub activity
+					if (isset($ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']]['default'][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type, sub activity and asset catg
+					if (isset($ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']][$type['c_sub_activity']][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					//filter by activity type, default sub act and asset catg
+					if (isset($ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']]['all']['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year]['all']['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+					if (isset($ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']])) {
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']]++;
+					}else{
+						$ret[$type['c_package_id']][$year][$month]['chart'][$type['c_type_of_activity']][$type['c_activity']]['default'][$type['c_asset_category']][$month.'-'.$year][$type['c_wi_status']] = 1;
+					}
+
+				}
+			}
+		}
+
+		return $ret;
+	}
+
+	function getWorkInstructDataSbh(){
 		$ret = array();
 		if ($this->isWPC) {
 			// add back $this->currPackageUuid
@@ -27576,7 +29037,7 @@ class RiDashboard
 
 			if (isset($res['data'])){
 
-				sort($res['data'], function($a, $b) {
+				usort($res['data'], function($a, $b) {
 				    $aU = '01-'.$a['month'].'-'.$a['year'];
 					$bU = '01-'.$b['month'].'-'.$b['year'];
 
@@ -28653,7 +30114,11 @@ class RiDashboard
 
 	function getMaintenanceProg(){
 		$ret = array();
-		$ret['wi'] = $this->getWorkInstructData();
+		if ($this->project_owner == "JKR_SABAH"){
+			$ret['wi'] = $this->getWorkInstructDataSbh();
+		}else{
+			$ret['wi'] = $this->getWorkInstructData();
+		}
 		$ret['ncp'] = $this->getNCPData();
 		$ret['claim'] = $this->getClaimTtl();
 		$ret['budget'] = $this->getBudgetData();
@@ -28661,13 +30126,14 @@ class RiDashboard
 		return $ret;
 	}
 
-	function jogetCURL($url, $row = false){
+	function jogetCURL($url, $row = false, $offset = 0){
 		if (!$url) return false;
 	    $headers = array(
 	        'Content-Type: application/json',
 	        'Authorization: Basic ' . base64_encode("$this->api_username:$this->api_password")
 	    );
-    	$url = $url.'&rows='.(($row) ? $row : '90000');
+    	// $url = $url.'&rows='.(($row) ? $row : '90000');
+		$url = $url . '&rows=' . ($row ?: '90000') . '&offset=' . $offset;
 	    $ch = curl_init($url);
 	    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -28682,4 +30148,5 @@ class RiDashboard
 	        return json_decode($return, true);
 	    }	
 	}
+	
 }

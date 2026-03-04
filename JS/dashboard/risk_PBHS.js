@@ -1,5 +1,11 @@
 var riskData;
 var dashBoardTitle = 'Risk Register';
+var inPackageUuid = initInPackageUuid() 
+
+function initInPackageUuid(){
+  return localStorage.inPackageUuid ? localStorage.inPackageUuid : ''
+}
+
 
 function conOpLink(process, status){
   if(localStorage.ui_pref != "ri_v3") return;
@@ -30,8 +36,10 @@ function conOpLink(process, status){
 			cardName = 'Trend Alert'
 			break;
 	}
+
+  var addtlparam = '&inPackageUuid='+inPackageUuid;
   
-  	window.parent.widgetConopOpen(process, linkName, linkParamArr, linkWinTitle + " - " + cardName);
+  	window.parent.widgetConopOpen(process, linkName, linkParamArr, linkWinTitle + " - " + cardName, addtlparam);
 }
 
 function refreshDashboard(){
@@ -101,7 +109,8 @@ function populateRiskTable(data){
 function openRecordList(recordId) {
   var linkParamArr = processFilterParamArr(['', '', '', '', '', recordId]);
   if (localStorage.ui_pref == "ri_v3") {
-    window.parent.widgetConopOpen(dashBoardTitle, "dash_cons_RR_card", linkParamArr, dashBoardTitle);
+    var addtlparam = '&inPackageUuid='+inPackageUuid;
+    window.parent.widgetConopOpen(dashBoardTitle, "dash_cons_RR_card", linkParamArr, dashBoardTitle, addtlparam);
   }
 }
 
@@ -202,7 +211,8 @@ function drawRiskCategoryChart(monthYear, data) {
 
                   var linkParamArr = processFilterParamArr(['', searchFilter.dateFrom, searchFilter.dateTo, event.point.name, searchFilter.risk]);
                   
-                  window.parent.widgetConopOpen(dashBoardTitle, "dash_cons_RR_card", linkParamArr, dashBoardTitle + '-' + event.point.name);
+                  var addtlparam = '&inPackageUuid='+inPackageUuid;
+                  window.parent.widgetConopOpen(dashBoardTitle, "dash_cons_RR_card", linkParamArr, dashBoardTitle + '-' + event.point.name, addtlparam);
               }
             }
         }],

@@ -116,12 +116,12 @@ $html = '
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="columnTwo M40 twoRow">
-                                        <div class="rowOne M twoRow round">
+                                    <div class="columnTwo M40 twoRow print-absolute">
+                                        <div class="rowOne M twoRow round print-fit-content">
                                             <div class="rowOne-T roundT">MS STATUS</div>
                                             <div class="dash-charts rowTwo-T roundB" id="MSStatusCharts"></div> 
                                         </div>
-                                        <div class="rowTwo M twoRow round">
+                                        <div class="rowTwo M twoRow round print-fit-content">
                                             <div class="rowOne-T roundT">MA STATUS</div>
                                             <div class="dash-charts rowTwo-T roundB" id="MAStatusCharts"></div> 
                                         </div>
@@ -410,5 +410,21 @@ echo $html;
     }
     .clickableCard {
         cursor:pointer;
+    }
+
+    @media print{
+        .print-absolute{
+            position: absolute;
+            top: 0px;
+            width: 55%;
+        }
+
+        .print-fit-content{
+            height: fit-content;
+        }
+
+        .printML{
+            width: 435px !important;
+        }
     }
 </style>

@@ -993,10 +993,6 @@ var uploadType = "KML";
             case "AIC":
               aicClear();
               break;
-            case "Excel":
-              input.setAttribute('accept', '.xls,.xlsx');
-              input.removeAttribute('multiple');
-              break;
             default:
               input.setAttribute('webkitdirectory','');
               input.setAttribute('mozdirectory','');

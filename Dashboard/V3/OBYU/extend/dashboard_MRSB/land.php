@@ -40,6 +40,7 @@ if($showFilter){
         <link rel="stylesheet" href="../../'.$dashObj->pathRel.'CSS/swiper-bundle.css">
         <script src = "../../'.$dashObj->pathRel.'JS/scrollBarCollapse.js"></script> 
         <script src = "../../'.$dashObj->pathRel.'JS/swiper-bundle.min.js"></script>
+        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/accessibility.js"></script>
     </head>
     <body class='.$themeClass.'>';
 if($showFilter){
@@ -99,24 +100,202 @@ if ($showHeader) {
         $html .=
                 '<div class="layout oneRow mySwiper" id="lOne" style="overflow:hidden;">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide" id="page-1">
-                        <div class="oneRow twoRow" style="width:calc(100% - 60px); margin: 0 30px;">
-                            <div class="rowOne SM twoRow">
-                                <div class="rowOne-T roundt">Synopsis</div>
-                                <div class="rowTwo-T roundb" id="landSynopsis" style="overflow-y: auto">
+                    <div class="swiper-slide" id="page1">
+                        <div class="oneRow" style="width:calc(100% - 60px); margin: 0 30px;">
+                            <div class="rowOne M twoRow ">
+                                <div class="rowOne M threeColumn">
+                                    <div class="columnOne M twoRow">
+                                        <div class="rowOne-T roundt">NCH OVERALL LAND DASHBOARD</div>
+                                        <div class="rowTwo-T roundb twoRow flex id="" >
+                                            <div class="rowOne flex" style="flex: 1 1 auto" id="overallChart"></div>
+                                            <div class="rowTwo oneRow">
+                                                <div class="rowOne tableContainer roundB shadow flex row">
+                                                    <table id="overallTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th rowspan="2">DESCRIPTION</th>
+                                                                <th colspan="2"><center>To Date</center></th>
+                                                                <th colspan="2"><center>Balance</center></th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="overallTBody">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="columnTwo M twoRow">
+                                        <div class="rowOne-T roundt">NCH LAWAS SECTION 01 LAND DASHBOARD </div>
+                                        <div class="rowTwo-T roundb twoRow flex" id="">
+                                            <div class="rowOne flex" style="flex: 1 1 auto" id="lawas01Chart"></div>
+                                            <div class="rowTwo M oneRow">
+                                                <div class="rowOne tableContainer roundB shadow flex row">
+                                                    <table id="">
+                                                        <thead>
+                                                            <tr>
+                                                                <th rowspan="2">DESCRIPTION</th>
+                                                                <th colspan="2"><center>To Date</center></th>
+                                                                <th colspan="2"><center>Balance</center></th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="lawas01TBody">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="columnThree M twoRow">
+                                        <div class="rowOne-T roundt">NCH LAWAS SECTION 02 LAND DASHBOARD </div>
+                                        <div class="rowTwo-T roundb twoRow flex" id="">
+                                            <div class="rowOne flex" style="flex: 1 1 auto" id="lawas02Chart"></div>
+                                            <div class="rowTwo M oneRow">
+                                                <div class="rowOne tableContainer roundB shadow flex row">
+                                                    <table id="">
+                                                        <thead>
+                                                            <tr>
+                                                                <th rowspan="2">DESCRIPTION</th>
+                                                                <th colspan="2"><center>To Date</center></th>
+                                                                <th colspan="2"><center>Balance</center></th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="lawas02TBody">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="rowTwo ML twoRow">
-                                <div class="rowOne-T roundt">Land Database</div>
-                                <div class="rowTwo-T roundb" id="landDatabase">
+                                <div class="rowTwo M threeColumn">
+                                    <div class="columnOne M twoRow">
+                                        <div class="rowOne-T roundt">NCH LIMBANG SECTION 01 LAND DASHBOARD </div>
+                                        <div class="rowTwo-T roundb twoRow flex" id="">
+                                            <div class="rowOne flex" style="flex: 1 1 auto" id="limbang01Chart"></div>
+                                            <div class="rowTwo M oneRow">
+                                                <div class="rowOne tableContainer roundB shadow flex row">
+                                                    <table id="">
+                                                        <thead>
+                                                            <tr>
+                                                                <th rowspan="2">DESCRIPTION</th>
+                                                                <th colspan="2"><center>To Date</center></th>
+                                                                <th colspan="2"><center>Balance</center></th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="limbang01TBody">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="columnTwo M twoRow">
+                                        <div class="rowOne-T roundt">NCH LIMBANG SECTION 02 LAND DASHBOARD </div>
+                                        <div class="rowTwo-T roundb twoRow flex" id="">
+                                            <div class="rowOne flex" style="flex: 1 1 auto" id="limbang02Chart"></div>
+                                            <div class="rowTwo M oneRow">
+                                                <div class="rowOne tableContainer roundB shadow flex row">
+                                                    <table id="">
+                                                        <thead>
+                                                            <tr>
+                                                                <th rowspan="2">DESCRIPTION</th>
+                                                                <th colspan="2"><center>To Date</center></th>
+                                                                <th colspan="2"><center>Balance</center></th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="limbang02TBody">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="columnThree M twoRow">
+                                        <div class="rowOne-T roundt">NCH LIMBANG SECTION 03 LAND DASHBOARD </div>
+                                        <div class="rowTwo-T roundb twoRow flex" id="">
+                                            <div class="rowOne flex" style="flex: 1 1 auto" id="limbang03Chart"></div>
+                                            <div class="rowTwo M oneRow">
+                                                <div class="rowOne tableContainer roundB shadow flex row">
+                                                    <table id="">
+                                                        <thead>
+                                                            <tr>
+                                                                <th rowspan="2">DESCRIPTION</th>
+                                                                <th colspan="2"><center>To Date</center></th>
+                                                                <th colspan="2"><center>Balance</center></th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                                <th>km</th>
+                                                                <th>%</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="limbang03TBody">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide" id="page-2">
-                        <div class="oneRow" style="width:calc(100% - 60px); margin: 0 30px;">
-                            <div class="rowOne M twoRow shadow round">
-                                <div class="rowOne-T roundt">Timeline</div>
+                    <div class="swiper-slide" id="page2">
+                        <div class="oneRow twoRow" style="width:calc(100% - 60px); margin: 0 30px; display:flex; flex-direction: column; height:100%;">
+                            <div class="rowOne L twoRow" style="flex: 1 1 auto;">
+                                <div class="rowOne-T roundt">LAND SUMMARY</div>
+                                <div class="rowTwo-T roundb" id="landSynopsis" style="overflow-y: auto">
+                                </div>
+                            </div>
+                            <div class="rowTwo S twoRow" style="height: fit-content;">
+                                <div class="rowOne-T roundt">LAND DATABASE</div>
+                                <div class="rowTwo-T roundb" style="overflow: auto">
+                                    <table class="landDatabaseTable">
+                                        <thead id = "landDatabaseHead">
+                                        </thead>
+                                        <tbody id = "landDatabaseBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide" id="page-3">
+                        <div class="oneRow twoRow" style="width:calc(100% - 60px); margin: 0 30px;">
+                            <div class="rowOne M twoRow">
+                                <div class="rowOne-T roundt">LAND TIMELINE</div>
                                 <div class="rowTwo-T roundb" style="overflow: auto">
                                     <table class="timelineTable">
                                         <thead id = "timelineHead">
@@ -126,60 +305,26 @@ if ($showHeader) {
                                     </table>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide" id="page-3">
-                        <div class="oneRow M twoRow round shadow" style="width:calc(100% - 60px); margin: 0 30px;">
-                            <div class="rowOne-T roundt">Land Tracking</div>
-                            <div class="rowTwo-T roundb landTracking" style="overflow: auto;">
-                                <table class="landTrackingTable">
-                                    <thead id = "landTrackHead">
-                                    </thead>
-                                    <tbody id = "landTrackingBody">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide" id="page-4">
-                        <div class="oneRow twoColumn" style="width:calc(100% - 60px); height:100%; margin: 0 30px;">
-                            <div class="columnOne M twoRow round shadow">
-                                <div class="rowOne-T roundt">AIWI STATUS STAGE 1 AS AT <span class="textUppercase" id="AIWITitle"></span></div>
-                                <div class="rowTwo-T roundb" id = "aiwiChart">
-                                </div>
-                            </div>
-                            <div class="columnTwo M twoRow round shadow">
-                                <div class="rowOne-T roundt">FOE STATUS STAGE 2 AS AT <span class="textUppercase" id="FOETitle"></span></div>
-                                <div class="rowTwo-T roundb" id = "foeChart">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide" id="page-5">
-                        <div class="rowOne M twoRow" style="width:calc(100% - 60px); height:100%; margin: 0 30px">
-                            <div class="rowOne ML twoRow round shadow" id="lmrSectionTableHeight">
-                                <div class="rowOne-T roundt">LMR - Section</div>
+                            <div class="rowOne M twoRow round shadow" id="lmrSectionTableHeight">
+                                <div class="rowOne-T roundt">LAND MANAGEMENT REPORT - ISSUES</div>
                                 <div class="rowTwo-T roundb" style="overflow: auto;">
                                     <table class="lmrSectionTable" style="height: 100%">
                                         <thead class="lmr">
                                             <tr class="firstTrLmr">
-                                                <th rowspan="3">SECTION</th>
-                                                <th rowspan="3">DETAIL</th>
-                                                <th colspan="3">LAST MONTH</th>
-                                                <th colspan="3">THIS MONTH</th>
-                                                <th rowspan="3">VARIANCE (# of issues)</th>
+                                                <th rowspan="3" style="text-align: center;">SECTION</th>
+                                                <th colspan="3" style="text-align: center;">PREVIOUS AS OF <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-prev-section"></span>&nbsp;<span id="cutOff-year-prev-section"></span></th>
+                                                <th colspan="6" style="text-align: center;" class="currentCol">CURRENT AS OF <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-curr-section">'.date("F", strtotime($dashObj->cutOffDate)).'</span>&nbsp;<span id="cutOff-year-curr-section">'.date("Y", strtotime($dashObj->cutOffDate)).'</span></th>
                                             </tr>
                                             <tr class="secondTrLmr">
-                                                <th colspan="3" class="textAlign">AS AT <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-prev-section"></span>&nbsp;<span id="cutOff-year-prev-section"></span></th>
-                                                <th colspan="3" class="textAlign">AS AT <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-curr-section">'.date("F", strtotime($dashObj->cutOffDate)).'</span>&nbsp;<span id="cutOff-year-curr-section">'.date("Y", strtotime($dashObj->cutOffDate)).'</span></th>
-                                            </tr>
-                                            <tr class="thirdTrLmr">
-                                                <th># of Issues</th>
-                                                <th>KM-Run</th>
-                                                <th>KM-Run %</th>
-                                                <th># of Issues</th>
-                                                <th>KM-Run</th>
-                                                <th>KM-Run %</th>
+                                                <th style="text-align: center;">CUMULATIVE</th>
+                                                <th style="text-align: center;">CUMULATIVE RESOLVED</th>
+                                                <th style="text-align: center;">CUMULATIVE OPEN</th>
+                                                <th style="text-align: center;" class="currentCol">NEW ISSUE</th>
+                                                <th style="text-align: center;" class="currentCol">ISSUE RESOLVED</th>
+                                                <th style="text-align: center;" class="currentCol">OPEN</th>
+                                                <th style="text-align: center;" class="currentCol">CUMULATIVE</th>
+                                                <th style="text-align: center;" class="currentCol">CUMULATIVE RESOLVED</th>
+                                                <th style="text-align: center;" class="currentCol">CUMULATIVE OPEN</th>
                                             </tr>
                                         </thead>
                                         <tbody id = "lmrSectionTable">
@@ -189,94 +334,18 @@ if ($showHeader) {
                                     </table>
                                 </div>
                             </div>
-                            <div class="rowTwo SM twoRow round shadow" id="accumulativeTableHeight">
-                                <div class="rowOne-T roundt">TOTAL ACCUMULATIVE ISSUES (ALL) (CTD)</div>
-                                <div class="rowTwo-T roundb" style="overflow: auto;">
-                                    <table class="accumulativeIssueTable" style="height: 100%">
-                                        <thead>
-                                            <tr class="firstTrLmr">
-                                                <th rowspan="3">DETAIL</th>
-                                                <th colspan="3">LAST MONTH</th>
-                                                <th colspan="3">THIS MONTH</th>
-                                                <th rowspan="3">VARIANCE (# OF ISSUES)</th>
-                                            </tr>
-                                            <tr class="secondTrLmr">
-                                                <th colspan="3">AS AT <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-prev-section-ctd"></span>&nbsp;<span id="cutOff-year-prev-section-ctd"></span></th>
-                                                <th colspan="3">AS AT <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-curr-section-ctd">'.date("F", strtotime($dashObj->cutOffDate)).'</span>&nbsp;<span id="cutOff-year-curr-section-ctd">'.date("Y", strtotime($dashObj->cutOffDate)).'</span></th>
-                                            </tr>
-                                            <tr class="thirdTrLmr">
-                                                <th># OF ISSUES</th>
-                                                <th>KM-RUN</th>
-                                                <th>KM-RUN%</th>
-                                                <th># OF ISSUES</th>
-                                                <th>KM-RUN</th>
-                                                <th>KM-RUN%</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot id="accumulativeIssueTable">
-                                            <tr>
-                                                <th style="width: 50px">C/F Accumulative</th>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr>
-                                                <th>New Issues</th>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>Variance</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Accumulative CTD</th>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    <div class="swiper-slide" id="page-6">
-                        <div class="oneRow oneColumn" style="width:calc(100% - 60px); height:100%; margin: 0 30px;">
-                            <div class="columnOne M twoRow round shadow">
-                                <div class="rowOne-T roundt">LMR - Types</div>
-                                <div class="rowTwo-T roundb" style="overflow: auto;">
-                                    <table class="lmrTypesTable">
-                                        <thead class="lmr">
-                                            <tr class="firstTrLmrType">
-                                                <th rowspan="2">TYPE OF ISSUE</th>
-                                                <th rowspan="2">DETAIL</th>
-                                                <th>LAST MONTH</th>
-                                                <th>THIS MONTH</th>
-                                                <th>VARIANCE</th>
-                                                <th rowspan="2">TOTAL ACCUMULATIVE (CTD)</th>
-                                            </tr>
-                                            <tr class="secondTrLmrType">
-                                                <th>AS AT <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-prev-type"></span>&nbsp;<span id="cutOff-year-prev-type"></span></th>
-                                                <th>AS AT <span id="cutOff-day">'.$dashObj->cutoffDay.'</span>&nbsp;<span id="cutOff-month-curr-type">'.date("F", strtotime($dashObj->cutOffDate)).'</span>&nbsp;<span id="cutOff-year-curr-type">'.date("Y", strtotime($dashObj->cutOffDate)).'</span></th>
-                                                <th>(+-)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id = "lmrTypeTable">
-                                        </tbody>
-                                        <tfoot id = "lmrTypeFootTable">
-                                        </tfoot>
-                                    </table>
-                                </div>
+                    <div class="swiper-slide" id="page-4">
+                        <div class="oneRow M twoRow round shadow" style="width:calc(100% - 60px); margin: 0 30px;">
+                            <div class="rowOne-T roundt">LAND TRACKING</div>
+                            <div class="rowTwo-T roundb landTracking" style="overflow: auto;">
+                                <table class="landTrackingTable">
+                                    <thead id = "landTrackHead">
+                                    </thead>
+                                    <tbody id = "landTrackingBody">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -294,7 +363,13 @@ if ($showHeader) {
         $html .=
         '</div>
     </div>
-    <script src="../../'.$dashObj->pathRel.'JS/fontawesome.js"></script>
+    <!-- <script src="../../'.$dashObj->pathRel.'JS/fontawesome.js"></script> -->
+    <link rel="stylesheet" href="../../../../../CSS/fontawesome7/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../../../../../CSS/fontawesome7/fontawesome-free/css/fontawesome.min.css">
+    <link rel="stylesheet" href="../../../../../CSS/fontawesome7/fontawesome-free/css/solid.min.css">
+    <link rel="stylesheet" href="../../../../../CSS/fontawesome7/fontawesome-free/css/regular.min.css">
+    <link rel="stylesheet" href="../../../../../CSS/fontawesome7/fontawesome-free/css/brands.min.css">
+
 </body>
 </html>
 ';
@@ -313,7 +388,7 @@ echo $html;
         --on-surface: black;
         --thumb-track: #f1f1f1;
     }
-
+ 
     body.dark_red{
         --primary-dimmer: rgb(49,49,49);
         --on-primary: white;
@@ -323,7 +398,7 @@ echo $html;
         --on-surface: black;
         --thumb-track: #f1f1f1;
     }
-
+ 
     /*header changes*/
     h4 {
         font-size: 1.3em;
@@ -336,7 +411,7 @@ echo $html;
         margin-left: 30px;
         width: calc(100% - 225px);
     }
-
+ 
     .dashboardHeader .title h3{
         text-align: unset;
         margin-bottom: 4px;
@@ -370,15 +445,15 @@ echo $html;
     tbody#phyMainTable > tr > td {
         cursor:default;
     }
-
+ 
     tbody#financeMainTable > tr > td {
         cursor:default;
     }
-
+ 
     thead > tr:first-child{
         border-top: 2px solid var(--border-bottom);
     }
-
+ 
     thead > tr > th{
         cursor:default;
         position: sticky;
@@ -389,55 +464,80 @@ echo $html;
         background-color: var(--primary-dimmer);
         color: var(--on-primary);
     }
-
+ 
     .timelineTable thead tr:first-child th{
         border-top: 2px solid var(--border-bottom);
     }
-
+ 
     .landTrackingTable thead > tr > th{
-        border-left: 2px solid var(--border-bottom);
-        border-bottom: 2px solid var(--border-bottom);
+        border: 1px solid black;
+        padding: 8px;
     }
-
-    thead > tr > th > .indicator{
-        position: absolute;
-        left: calc(50% - 40px);
-        bottom: 33px;
+ 
+    tbody > tr > td > .indicator{
+        border: 0px solid var(--border-bottom);
+        bottom: 10px;
         color: black;
         text-align: center;
-        padding: 5px;
-        transform: translate(-50%, 0);
+        padding: 3px;
+        position: absolute;
+        top: -10px;
     }
-
-    thead > tr > th > .indicator > .text{
-        border: 1px solid var(--border-bottom);
-        padding: 5px;
+ 
+    tbody > tr:last-child > td{
+        border-bottom: 0px;
+    }
+ 
+    tbody > tr > td > .indicator > .text{
         color: var(--on-surface);
-        background-color: var(--surface);
+        display: flex;
+        justify-content: center;
     }
-
-    thead > tr > th > .indicator > i{
+ 
+    tbody > tr > td > .indicator > .text > div{
+        padding: 3px;
+        width: fit-content;
+        border: 1px solid var(--border-bottom);
+        background: var(--surface);
+    }
+ 
+    tbody > tr > td > .indicator > i{
         margin: 10px 0;
         font-size: 1rem;
+        text-align: center;
         color: red;
     }
-
-    thead > tr > th > .indicator.early{
+ 
+    tbody > tr > td > .indicator.early{
         left: 0%;
     }
-    thead > tr > th > .indicator.mid{
-        left: 50%;
+    tbody > tr > td > .indicator.mid{
+        left: 0%;
+        width: calc(100% - 6px);
     }
-    thead > tr > th > .indicator.late{
+    tbody > tr > td > .indicator.late{
         left: 100%;
     }
-
-    thead > tr > th > .indicator.fixed{
+ 
+    .indicator.early i, .indicator.early .text {
+        position: relative;
+        left: -50%;
+    }
+    .indicator.mid i, .indicator.mid .text {
+        position: relative;
+        left: 0px;
+    }
+    .indicator.late i, .indicator.late .text {
+        position: relative;
+        left: -55%;
+    }
+ 
+    tbody > tr > td > .indicator.fixed{
         text-align: right;
         left: unset;
     }
-
-    thead > tr > th > .indicator.fixed > .text{
+ 
+    tbody > tr > td > .indicator.fixed > .text{
         border: 1px solid black;
         padding: 5px;
         text-align: center;
@@ -451,6 +551,11 @@ echo $html;
         z-index: 1;
         background-color: var(--primary-dimmer);
         color: var(--on-primary);
+        border-top: 3px solid #7d7c7c;
+    }
+
+    tfoot > tr > td{
+        border-top: 3px solid #7d7c7c;
     }
     table{
         border-collapse: separate;
@@ -460,7 +565,7 @@ echo $html;
     }
     table.timelineTable{
         position: relative;
-        top:120px;
+        top:2px;
     }
     table.timelineTable > thead > tr > th:last-child{
         position: sticky;
@@ -470,22 +575,22 @@ echo $html;
         position: sticky;
         right:0px;
     }
-
+ 
     table.timelineTable > tbody > tr:nth-of-type(even) > td{
         background: var(--top);
         color: var(--on-surface);
     }
-
+ 
     table.timelineTable > tbody > tr:nth-of-type(odd) > td{
         background: var(--surface);
         color: var(--on-surface)
     }
-
+ 
     tr:nth-of-type(odd){
         background: var(--surface);
         color: var(--on-surface);
     }
-
+ 
     tr:nth-of-type(even) {
         background: var(--top);
         color: var(--on-surface);
@@ -496,7 +601,7 @@ echo $html;
         position: sticky;
         left: 0;
     }
-
+ 
     .timelineTable tbody th, .lmrSectionTable tbody th, .lmrTypesTable tbody th {
         position: -webkit-sticky; /* for Safari */
         position: sticky;
@@ -506,67 +611,76 @@ echo $html;
         background-color: var(--primary-dimmer);
         color: var(--on-primary);
     }
-
+ 
     .landTrackingTable tbody th {
         background: var(--thumb-track);
         color: var(--on-surface);
+        border: 1px solid black;
+        padding: 8px;
     }
-
+ 
     th::after {
         bottom: 0;
         border-bottom: 1px solid gray;
     }
-
+ 
     .landTrackingTable td{
-        padding: 0 30px;
+        border: 1px solid black;
+        padding: 8px;
     }
-
+ 
     .timelineTable td, .lmrSectionTable td, .lmrTypesTable td, .accumulativeIssueTable td{
         border-left: 2px solid var(--border-bottom);
         border-bottom: 2px solid var(--border-bottom);
     }
-
+ 
+    .timelineTable td.indicatorData {
+        border-left: 0px solid var(--border-bottom);
+        position: relative;
+        height: 84px;
+    }
+ 
     .timelineTable tr td:last-child, .lmrSectionTable tr td:last-child, .lmrTypesTable tr td:last-child, .accumulativeIssueTable tr td:last-child{
         border-right: 2px solid var(--border-bottom);
     }
-
+ 
     td > i{
         margin-right: 10px;
         text-align: left;
         font-size: 1rem;
     }
-
+ 
     td > i.fa-caret-up{
         color: green;
     }
-
+ 
     td > i.fa-hyphen{
         color: #ff9a33;
     }
-
+ 
     td > i.fa-caret-down{
         color: red;
     }
-
+ 
     .textAlign{
         text-align: center;
     }
-
+ 
     #landSynopsis i{
         margin: 1.2rem 15px 0 10px;
         color: var(--on-surface);
     }
-
+ 
     #landSynopsis .paragraph{
         display:flex;
     }
-
+ 
     #landSynopsis p{
         font-size:1rem;
         margin-right: 5px;
         color: var(--on-surface);
     }
-
+ 
     .clickable {
         cursor:pointer!important;
     }
@@ -578,6 +692,9 @@ echo $html;
     }
     .green{
         background: radial-gradient(circle at 9px 9px, #52BE80, #22874d) !important;
+    }
+    .landColor {
+        background-color: var(--primary) !important;
     }
     .textLabel{
         font-size:2.2em;
@@ -593,7 +710,7 @@ echo $html;
     .textUppercase{
         text-transform: uppercase;
     }
-
+ 
     @media screen and (max-width: 1366px){
         .textLabel{
             font-size:16px;
@@ -604,7 +721,7 @@ echo $html;
             font-size: 9px;
         }
     }
-
+ 
     @media screen and (min-height: 723px){
         .textLabel{
             font-size:2.2em;
@@ -615,7 +732,7 @@ echo $html;
             font-size: 13px;
         }
     }
-
+ 
     @media screen and (min-width: 1280p){
         .textLabel{
             font-size:3em;
@@ -626,21 +743,20 @@ echo $html;
             font-size: 15px;
         }
     }
-
+ 
     @media print{
         table.lmrSectionTable, table.lmrTypesTable{
             font-size: 9px !important;
         }
     }
+
+    .currentCol{
+        filter: brightness(150%);
+        font-weight: normal;
+    }
 </style>
 
-<script>
-    var swiper = new Swiper(".mySwiper", {
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    });
+<script>;
 
     setSecondThirdRow = () =>{
         let firstRowHeight
@@ -679,6 +795,13 @@ echo $html;
     }
 
     $(document).ready(function(){
+
+        var swiper = new Swiper(".mySwiper", {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            }
+        })
 
         setSecondThirdRow()
         earlyMidLateArrow()
@@ -741,6 +864,8 @@ echo $html;
         var lmrSectionTableHeight = 0;
         var accumulativeTableHeight = 0;
         accumulativeTableHeight = $('#accumulativeTableHeight').height() + 10;
+
+
     })
     
 </script>

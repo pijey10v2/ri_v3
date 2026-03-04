@@ -72,7 +72,8 @@ switch ($functionName) {
     case 'getContractorsConsultantsUser':
         getContractorsConsultantsUser();
         break;
-
+    case 'updateUserList':
+        updateUserList();
 };
 echo json_encode($response);
 
@@ -109,8 +110,9 @@ function updateUserProfileV3(){
     $country = filter_input(INPUT_POST, 'country', FILTER_SANITIZE_STRING);
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+    $designation = filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING);
 
-    _updateUserProfile($fname, $lname, $country, $phone, $password);
+    _updateUserProfile($fname, $lname, $country, $phone, $password, $designation);
 }
 
 function updateUserForgetPwd(){
@@ -154,7 +156,7 @@ function viewUser(){
         return $response;
     }
 
-    $fetchUser = $CONN->fetchRow("SELECT u.user_id, u.user_firstname, u.user_lastname, u.user_email, u.user_type, o.orgName, u.user_country, u.user_phone, u.user_org, u.created_by, u.created_time, u.last_update, u.updated_by, u.last_login, u.support_user, u.profile_img, u.profile_header FROM users u, organization o WHERE user_email = :0 AND u.user_org = o.orgID ", array($user_email));
+    $fetchUser = $CONN->fetchRow("SELECT u.user_id, u.user_firstname, u.user_lastname, u.user_email, u.user_type, o.orgName, u.user_country, u.user_phone, u.user_org, u.created_by, u.created_time, u.last_update, u.updated_by, u.last_login, u.support_user, u.profile_img, u.profile_header, u.user_designation FROM users u, organization o WHERE user_email = :0 AND u.user_org = o.orgID ", array($user_email));
     $response['data'] = $fetchUser;
     $user_id = $fetchUser['user_id'];
     if (isset($_SESSION['project_id'])) {
@@ -196,6 +198,7 @@ function addUser(){
         "user_type" => filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_STRING),
         "user_password" => filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING),
         "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING),
+        "user_designation" => filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING),
 
         //add code for support user
         "support_user" => filter_input(INPUT_POST, 'supuser', FILTER_VALIDATE_BOOLEAN),
@@ -233,6 +236,12 @@ function addUser(){
         $name = substr($userDetails['user_country'], 0, $pos) . $str_to_insert . substr($userDetails['user_country'], $pos + 5);
         $userDetails['user_country'] = $name;
     }
+    $pos = strpos($userDetails['user_designation'], "&#39;", 0);
+    if ($pos) {
+        $str_to_insert = "'";
+        $name = substr($userDetails['user_designation'], 0, $pos) . $str_to_insert . substr($userDetails['user_designation'], $pos + 5);
+        $userDetails['user_designation'] = $name;
+    }
 
     if ((!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_firstname'])) || (!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_lastname']))) {
         $response['msg'] = "Invalid Name. Only alphabets, space and ' are allowed. No other special characters are allowed";
@@ -245,7 +254,7 @@ function addUser(){
     $response['validation'] = $validation;
     if (!empty($validation)) { //name or id exists
         $response['bool'] = false;
-        $response['msg'] = $validation;
+        $response['msg'] = $validation['userEmail'];
         return;
     }
 
@@ -256,17 +265,17 @@ function addUser(){
     }
 
     if (!empty($orgDetails['orgtype'])) { //new organization
-        $resp = jogetUserRegistration( $jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
-        $resp1 = jogetUserRegistration($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
+        $resp = jogetUserRegistration( $jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
+        $resp1 = jogetUserRegistration($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
         if($userDetails['support_user'] == true && $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){
-            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
+            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName'], $orgDetails['orgDescription'] );
             $response['support'] = $resp2;
         }
     } else {
-        $resp = jogetUserRegistration($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName']);
-        $resp1 = jogetUserRegistration($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName']);
+        $resp = jogetUserRegistration($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName']);
+        $resp1 = jogetUserRegistration($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName']);
         if($userDetails['support_user'] == true && $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){
-            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $orgDetails['orgID'], $orgDetails['orgName'] );
+            $resp2 = jogetUserRegistration($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $userDetails['user_email'], $jogetSup, $userDetails['user_password'], $userDetails['user_designation'], $orgDetails['orgID'], $orgDetails['orgName'] );
             $response['support'] = $resp2;
         }
     }
@@ -394,7 +403,8 @@ function updateUser(){
         "user_country" => filter_input(INPUT_POST, 'country', FILTER_SANITIZE_STRING),
         "user_type" => filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_STRING),
         "support_user" => filter_input(INPUT_POST, 'supuser', FILTER_VALIDATE_BOOLEAN),
-        "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING)
+        "user_phone" => filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING),
+        "user_designation" => filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_STRING)
     );
     if (isset($_POST['password'])) {
         $userDetails['user_password'] = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
@@ -434,6 +444,13 @@ function updateUser(){
         $userDetails['user_country'] = $name;
     }
 
+    $pos = strpos($userDetails['user_designation'], "&#39;", 0);
+    if ($pos) {
+        $str_to_insert = "'";
+        $name = substr($userDetails['user_designation'], 0, $pos) . $str_to_insert . substr($userDetails['user_designation'], $pos + 5);
+        $userDetails['user_designation'] = $name;
+    }
+
     if ((!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_firstname'])) || (!preg_match("/^[ a-zA-z'.]*$/", $userDetails['user_lastname']))) {
         $response['msg'] = "Invalid Name. Only alphabets, space and ' are allowed. No other special characters are allowed";
         $response['data'] = "open";
@@ -452,8 +469,8 @@ function updateUser(){
    $resp ="";
    $resp2 = "";
     if (!empty($userDetails['user_password'])) {
-        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_password']);
-        $resp1 = jogetUserUpdate($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup,  $userDetails['user_password']);
+        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation'], $userDetails['user_password']);
+        $resp1 = jogetUserUpdate($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation'],  $userDetails['user_password']);
         if(isset($support_user_change) && $support_user_change == true){ //either added or removed as support user
             if($userDetails['support_user'] == true){// user has been added as support user - add to support joget
                 if( $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){ //support joget is not the same as construct or asset joget
@@ -478,7 +495,7 @@ function updateUser(){
             if($userDetails['support_user'] == true){// user is a support user . so update the details
                 if( $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){ //support joget is not the same as construct or asset joget
                   
-                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_password']);
+                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation'], $userDetails['user_password']);
                    
                 }
             }
@@ -513,15 +530,15 @@ function updateUser(){
             if($userDetails['support_user'] == true){// user is a support user . so update the details
                 if( $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){ //support joget is not the same as construct or asset joget
                   
-                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup);
+                    $resp2 = jogetUserUpdate($jogetSupportHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation']);
                    
                 }
                 
             }
 
         }
-        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup);
-        $resp1 = jogetUserUpdate($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup);
+        $resp = jogetUserUpdate($jogetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation']);
+        $resp1 = jogetUserUpdate($jogetAssetHostIP, $userDetails['user_firstname'], $userDetails['user_lastname'], $fetchUserEmail, $jogetSup, $userDetails['user_designation']);
     }
     $myresp = json_decode($resp);
     $myresp1 = json_decode($resp1);
@@ -724,6 +741,7 @@ function reactivateUser(){
     global $jogetAssetHostIP;
     global $jogetHostIP;
     global $jogetSupportHostIP;
+    global $IS_DOWNSTREAM;
 
     if (!$_SESSION['isSysadmin']) {
         $response['bool'] = false;
@@ -771,7 +789,11 @@ function reactivateUser(){
     }
     $myresp = json_decode($result);
     $myresp1 = json_decode($result1);
-    if ($myresp == "" || $myresp1 == "") { //user/users were not de activated .. so exit
+    if ( !$IS_DOWNSTREAM && ($myresp == "" || $myresp1 == "")) { //user/users were not de activated .. so exit
+        $response['msg'] = "Unable to recover the user/users in the joget system. please check the joget connection.";
+        $response['data'] = "close";
+        return;
+    } else if ( $IS_DOWNSTREAM && $myresp == "" ) { //user/users were not de activated .. so exit
         $response['msg'] = "Unable to recover the user/users in the joget system. please check the joget connection.";
         $response['data'] = "close";
         return;
@@ -959,7 +981,7 @@ function updateUserProfile(){
     _updateUserProfile($fname, $lname, $country, $phone, $password);
 }
 
-function _updateUserProfile($fname, $lname, $country, $phone, $password){
+function _updateUserProfile($fname, $lname, $country, $phone, $password, $designation){
     if (!isset($_SESSION['email'])) {
         $response['bool'] = false;
         $response['msg'] = "Insufficient parameter";
@@ -996,6 +1018,12 @@ function _updateUserProfile($fname, $lname, $country, $phone, $password){
         $name = substr($country, 0, $pos) . $str_to_insert . substr($country, $pos + 5);
         $country = $name;
     }
+    $pos = strpos($designation, "&#39;", 0);
+    if ($pos) {
+        $str_to_insert = "'";
+        $name = substr($designation, 0, $pos) . $str_to_insert . substr($designation, $pos + 5);
+        $designation = $name;
+    }
 
     if ((!preg_match("/^[ a-zA-z'.]*$/", $fname)) || (!preg_match("/^[ a-zA-z'.]*$/", $lname))) {
         $response['msg'] = "Invalid Name. Only alphabets, space and ' are allowed. No other special characters are allowed";
@@ -1005,13 +1033,13 @@ function _updateUserProfile($fname, $lname, $country, $phone, $password){
     }
 
     if (isset($_POST['password'])) {
-        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup, $password);
-        $resp1 = jogetUserUpdate($jogetAssetHostIP, $fname, $lname, $email, $jogetSup, $password);
+        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup, $designation,  $password);
+        $resp1 = jogetUserUpdate($jogetAssetHostIP, $fname, $lname, $email, $jogetSup, $designation, $password);
         if( $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){
             //check if the user is support user first
             
             if($support_user){
-                $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup , $password);
+                $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup , $designation, $password);
                 $myresp2 = json_decode($resp2);
                 if ($myresp2 == "" ) { //user was not updated in joget. so exit
                     $response['msg'] = "Unable to update to the joget system. please check the joget connection.";
@@ -1052,13 +1080,13 @@ function _updateUserProfile($fname, $lname, $country, $phone, $password){
             }
         }
     } else {
-        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup);
-        $resp1 = jogetUserUpdate($jogetAssetHostIP, $fname, $lname, $email, $jogetSup);
+        $resp = jogetUserUpdate($jogetHostIP, $fname, $lname, $email, $jogetSup, $designation);
+        $resp1 = jogetUserUpdate($jogetAssetHostIP, $fname, $lname, $email, $jogetSup, $designation);
         if( $jogetAssetHostIP != $jogetSupportHostIP && $jogetSupportHostIP != $jogetHostIP){
             //check if the user is support user first
             $support_user =  $CONN->fetchOne("SELECT support_user FROM users WHERE user_email =:0", array($email));
             if($support_user){
-                $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup);
+                $resp2 = jogetUserUpdate($jogetSupportHostIP, $fname, $lname, $email, $jogetSup, $designation);
                 $myresp2 = json_decode($resp2);
                 if ($myresp2 == "" ) { //user was not updated in joget. so exit
                     $response['msg'] = "Unable to update to the joget system. please check the joget connection.";
@@ -1214,22 +1242,22 @@ function adminUserTableRefresh (){
     
     if ($parent_project_id_number){
 
-        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname, o.orgType , o.orgName FROM users u, organization o,  pro_usr_rel r WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'owner' AND r.Pro_ID = ".$CONN->quote($parent_project_id_number)." AND u.user_id = r.Usr_ID AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
-        (SELECT u.user_id, u.user_email, u.user_firstname , o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
-        (SELECT u.user_id , u.user_email , u.user_firstname , o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
-        (SELECT u.user_id , u.user_email , u.user_firstname , o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'DBC' and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
+        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgName FROM users u, organization o,  pro_usr_rel r WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'owner' AND r.Pro_ID = ".$CONN->quote($parent_project_id_number)." AND u.user_id = r.Usr_ID AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
+        (SELECT u.user_id, u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
+        (SELECT u.user_id , u.user_email , u.user_firstname , u.show_reporting, o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
+        (SELECT u.user_id , u.user_email , u.user_firstname , u.show_reporting, o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'DBC' and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
 
         $selectSQL = $CONN->fetchAll($userSql);
         
     }
     else{
-        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname , o.orgType , o.orgName  FROM users u, organization o  WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'owner' AND   u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
-        (SELECT u.user_id , u.user_email, u.user_firstname , o.orgType , o.orgName FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.contractor_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
-        (SELECT u.user_id , u.user_email , u.user_firstname, o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.consultant_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
-        (SELECT u.user_id , u.user_email , u.user_firstname, o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'DBC' and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
+        $userSql = "SELECT u.user_id, u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgName  FROM users u, organization o  WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'owner' AND   u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member') union
+        (SELECT u.user_id , u.user_email, u.user_firstname , u.show_reporting, o.orgType , o.orgName FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'contractor' AND p.contractor_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.contractor_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
+        (SELECT u.user_id , u.user_email , u.user_firstname , u.show_reporting, o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'consultant' AND p.consultant_org_id = o.orgID and p.project_id_number = ".$CONN->quote($pid)." AND p.consultant_org_id != NULL AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))union
+        (SELECT u.user_id , u.user_email , u.user_firstname , u.show_reporting, o.orgType , o.orgName  FROM users u, organization o , projects p WHERE u.user_type !='non_active' AND u.user_org = o.orgID AND o.orgType = 'DBC' and p.project_id_number = ".$CONN->quote($pid)." AND u.user_id NOT IN ( SELECT Usr_ID  FROM pro_usr_rel WHERE Pro_ID = ".$CONN->quote($pid)." AND Pro_Role!= 'non_Member'))";
         $selectSQL = $CONN->fetchAll($userSql);
     }
-    $otherSql = "SELECT u.user_id, u.user_email, u.user_firstname, p.Pro_Role, o.orgName, o.orgType FROM users u, pro_usr_rel p, organization o WHERE u.user_id = p.Usr_ID AND p.Pro_ID = :0 AND p.Pro_Role != 'non_Member' AND u.user_org = o.orgID  ORDER BY o.orgID, u.user_id";
+    $otherSql = "SELECT u.user_id, u.user_email, u.user_firstname, u.show_reporting, p.Pro_Role, o.orgName, o.orgType FROM users u, pro_usr_rel p, organization o WHERE u.user_id = p.Usr_ID AND p.Pro_ID = :0 AND p.Pro_Role != 'non_Member' AND u.user_org = o.orgID  ORDER BY o.orgID, u.user_id";
     
     $detailsUser = $selectSQL;
 
@@ -1321,4 +1349,93 @@ function removeAssociateProjects($userids_array) {
         error_log('removeAssociateProjects:: user id(s) empty. Unable to remove project(s)');
         return $response;
     }
+}
+
+//update users from project admin lists
+function updateUserList(){
+    global $response;
+    global $CONN;
+    global $jogetAssetHostIP;
+    global $jogetHostIP;
+    global $jogetSupportHostIP;
+
+    $idEmails = [];
+    
+    if(isset($_POST['userListProjAdmin'])){
+        $userListProjAdmin = json_decode($_POST['userListProjAdmin']);
+
+        foreach($userListProjAdmin as $userList){
+            $userId = $userList->user_id;
+            $userEmail = $userList->user_email;
+            $userDesignation = $userList->user_designation;
+            $userFirstName =  $CONN->fetchOne("SELECT user_firstname FROM users WHERE user_email =:0", array($userEmail));
+            $userLastName =  $CONN->fetchOne("SELECT user_lastname FROM users WHERE user_email =:0", array($userEmail));
+            $userSupport =  $CONN->fetchOne("SELECT support_user FROM users WHERE user_email =:0", array($userEmail));
+
+            if (!filter_var($userList->user_id, FILTER_VALIDATE_INT)) {
+                $response['bool'] = false;
+                $response['msg'] = "Invalid user parameter";
+                array_push($idEmails, $userList->user_email);
+                return $response;
+                continue;
+            }
+            if (!filter_var($userList->user_email, FILTER_VALIDATE_EMAIL)) {
+                $response['bool'] = false;
+                $response['msg'] = "Invalid user email";
+                array_push($idEmails, $userList->user_email);
+                return $response;
+                continue;
+            }
+
+            if($userSupport == true){
+                $jogetSup = "true";
+            }else{
+                $jogetSup = "false";
+            }
+
+            $assignUser = assignUserDesignation($userId, $userDesignation);
+            if(isset($assignUser)){
+                if($assignUser == false){
+                    $response['bool'] = false;
+                    $response['msg'] = "Unable to update user(s) designation";
+
+                    array_push($idEmails, (object) [
+                        'user' => $userEmail,
+                        'usrs_msg' => "Invalid user designation parameter",
+                    ]);
+                    continue;
+                }else{
+                    $response['bool'] = true;
+                    $response['msg'] = "User(s) successfully updated.";
+
+                    $resp = jogetUserUpdate($jogetHostIP, $userFirstName, $userLastName, $userEmail, $jogetSup, $userDesignation);
+                    $resp1 = jogetUserUpdate($jogetAssetHostIP, $userFirstName, $userLastName, $userEmail, $jogetSup, $userDesignation);
+                    
+                    $myresp = json_decode($resp);
+                    $myresp1 = json_decode($resp1);
+                    if ($myresp == ""  || $myresp1 == "") { //user was not updated in joget. so exit
+                        $response['msg'] = "Unable to update to the joget system. please check the joget connection.";
+                        $response['data'] = "close";
+                        return $response;
+                    }
+                    continue;
+                }
+            }
+        }
+        return $response;
+    }
+}
+
+function assignUserDesignation($userId, $userDesignation){
+    global $CONN;
+    $return = array();
+
+    $updateSQL = "UPDATE users SET user_designation = :0 WHERE user_id = :1";
+    $ok = $CONN->execute($updateSQL, array($userDesignation, $userId));
+
+    if (!$ok) {
+        return false;
+    }
+
+    return true;
 }

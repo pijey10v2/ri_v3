@@ -116,6 +116,10 @@
                         transform: scale(1.05);
                     }
 
+                    &.cancel{
+                        background-color: var(--cancel);
+                    }
+
                     i{
                         color: inherit;
                     }
@@ -211,6 +215,30 @@
                     &.admin{
                         padding: 0px 15px;
                         width: calc(100% - 40px);
+
+                        input.edit{
+                            padding: 5px;
+                            border-radius: 3px;
+                            border: none;
+                            color: var(--on-surface);
+                            font-family: inherit;
+                            outline: none;
+                            height: 30px;
+                            width: calc(100% - 5px);
+                            font-size: 12px;
+                            background: var(--top);
+
+                            &:hover{
+                                border: 1px solid var(--border-bottom);
+                            }
+
+                            &[disabled]{
+                                background: var(--background);
+                                &:hover{
+                                    border: none;
+                                }
+                            }
+                        }
                         
                         &.fiveColumn{
                             .columnMiddle{
@@ -235,6 +263,14 @@
                         background:var(--top);
                         box-shadow: 0 2px 10px 0px rgb(0 0 0 / 13%);
                         cursor: default;
+
+                        input.edit:not(:hover){
+                            border: 1px solid var(--border-bottom);
+                        }
+
+                        input.edit[disabled]:not(:hover){
+                            border: none;
+                        }
                     }
 
                     &.active{
@@ -2328,9 +2364,14 @@
                                 width: calc(100% - 40px);
                                 
                                 &.fourColumn{
+
+                                    > div{
+                                        margin: 0px;
+                                    }
+                                    
                                     .columnSmall{
                                         width: 30px;
-                                        padding-left: 4px;
+                                        padding-left: 7px;
                                     }
                                     .columnMiddle{
                                         width: calc(25% - 30px);
@@ -2396,7 +2437,6 @@
                                     font-family: inherit;
                                     outline: none;
                                     height: 30px;
-                                    margin: 0px 5px;
                                     width: calc(100% - 5px);
                                     font-size: 12px;
                                 }

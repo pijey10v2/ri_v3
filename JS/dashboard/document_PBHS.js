@@ -1,5 +1,11 @@
 var textMonthtoNum = {"Jan":"01","Feb":"02","Mar":"03","Apr":"04","May":"05","Jun":"06","Jul":"07","Aug":"08","Sep":"09","Oct":"10","Nov":"11","Dec":"12"};
 
+var inPackageUuid = initInPackageUuid()
+
+function initInPackageUuid(){
+	return localStorage.inPackageUuid ? localStorage.inPackageUuid : ''
+}
+
 function conOpLink(process, type){
 	if(localStorage.ui_pref != "ri_v3") return;
 
@@ -9,16 +15,17 @@ function conOpLink(process, type){
     var searchilter = getSearchFilterSabah();
 	var cardname;
 
+
     switch (process) {
         case 'Doc':
             linkWinTitle = 'Document'
             linkName = 'dash_doc_register_doc_card'
-            linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo])
+            linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, '', '', '', inPackageUuid])
             break;
 		case 'Corr':
 			linkWinTitle = 'Correspondence'
 			linkName = 'dash_doc_register_corr_card'
-			linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo])
+			linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, '', '', '', '', '', '', inPackageUuid])
 			cardname = ' - ' + type;
 			break;
 		case 'CorrInc':
@@ -26,7 +33,7 @@ function conOpLink(process, type){
 
 			if(localStorage.isParent && localStorage.isParent == 'isParent'){
 				linkName = 'dash_doc_register_corr_cardIncParent'
-				linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, 'Incoming'])
+				linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, 'Incoming', inPackageUuid])
 			}else{
 				linkName = 'dash_doc_register_corr_cardInc'
 				linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, 'Incoming'])
@@ -37,7 +44,7 @@ function conOpLink(process, type){
 			linkWinTitle = 'Correspondence'
 			if(localStorage.isParent && localStorage.isParent == 'isParent'){
 				linkName = 'dash_doc_register_corr_cardOutParent'
-				linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, 'Outgoing'])
+				linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, 'Outgoing', inPackageUuid])
 			}else{
 				linkName = 'dash_doc_register_corr_cardOut'
 				linkParamArr = processFilterParamArr([searchilter.dateFrom, searchilter.dateTo, 'Outgoing'])
@@ -136,7 +143,7 @@ function drawDocDrawingTypeChart(data, monthYear){
 					if(localStorage.ui_pref != "ri_v3") return;
 
                     var dateFilter = getSearchFilterSabah();
-                    var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, event.point.name]);
+                    var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, event.point.name, '', '', inPackageUuid]);
                     
                     window.parent.widgetConopOpen("Document", "dash_doc_register_doc_card", linkParamArr, "Document - " + event.point.name);
                 }
@@ -256,7 +263,7 @@ function drawSubTypeOfDocumentChart(data, monthYear){
 					if(localStorage.ui_pref != "ri_v3") return;
 
                     var dateFilter = getSearchFilterSabah();
-                    var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, '', event.point.name]);
+                    var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, '', event.point.name, '', inPackageUuid]);
                     
                     window.parent.widgetConopOpen("Document", "dash_doc_register_doc_card", linkParamArr, "Document - " + event.point.name);
                 }
@@ -387,7 +394,7 @@ function drawDrawingTypeChart(data, monthYear){
 				if(localStorage.ui_pref != "ri_v3") return;
 
 				var dateFilter = getSearchFilterSabah();
-				var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, 'Drawing', event.point.name]);
+				var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, 'Drawing', event.point.name, '', inPackageUuid]);
 				
 				window.parent.widgetConopOpen("Document", "dash_doc_register_doc_card", linkParamArr, "Drawing - "+ event.point.name);
 			}
@@ -506,7 +513,7 @@ function drawDrawingRevisionChart(data, monthYear){
 						revised = 'Yes';
 					}
 					var dateFilter = getSearchFilterSabah();
-					var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, 'Drawing', '', revised]);
+					var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, 'Drawing', '', revised, inPackageUuid]);
 					
 					window.parent.widgetConopOpen("Document", "dash_doc_register_doc_card", linkParamArr, event.point.name);
 				}
@@ -957,7 +964,7 @@ function drawCorrespondanceTypeChart(data, monthYear){
 					var corrType = (allDataArr.corr_type) ? allDataArr.corr_type : '';
 					
 					var dateFilter = getSearchFilterSabah();
-					var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, corrType])
+					var linkParamArr = processFilterParamArr([dateFilter.dateFrom, dateFilter.dateTo, corrType, inPackageUuid])
 					
 					window.parent.widgetConopOpen("Document", "dash_doc_register_corr_cardType", linkParamArr, "Correspondence Type - " + event.point.name);
 				}

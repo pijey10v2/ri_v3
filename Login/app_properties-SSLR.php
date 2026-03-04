@@ -5,7 +5,7 @@ global $JOGETADMINUSER, $JOGETADMINPWD, $JOGETASSETADMINUSER, $JOGETASSETADMINPW
 global $PHPCACERTPATH;
 global $DB_SERVERNAME, $DB_USERNAME, $DB_PASSWORD, $DB_DBNAME;
 global $PROJECTIDNOSBH, $PROJECTIDNOSRWK;
-global $SYSTEM, $IS_DOWNSTREAM;
+global $SYSTEM, $IS_DOWNSTREAM, $MAPBOX_TOKEN;
 
 $PRODUCTION_FLAG = true;
 $SYSTEM = 'KKR'; // OBYU or KKR
@@ -26,57 +26,6 @@ function dev_license_properties(){
 
 //check license module
 if ($PRODUCTION_FLAG) {
-	if (function_exists('ioncube_license_properties')) {
-		$LICENSEPROPERTIES = ioncube_license_properties();
-		$FILEINFO = ioncube_file_info();
-	}else{
-		die('Error! ioncube not properly configured.');
-	}
-
-	$RIHOST = "https://ri.maltimur.com.my/RIConstruct/";
-
-	// link
-	$JOGETDOMAIN = "https://doc.maltimur.com.my/"; //
-	$JOGETIP = "http://192.168.0.61:8080/";
-	// password
-	$JOGETADMINUSER = "admin";
-    $JOGETADMINPWD = "@dmin123+";
-
-    // link geoserver
-    $GEOSERVERDOMAIN = "";
-    $GEOSERVERIP = "";
-    //password geoserver
-    $GEOSERVERADMINUSER = "";
-    $GEOSERVERADMINPWD = "";
-    
-	// link asset
-	$JOGETASSETDOMAIN = "";
-	$JOGETASSETIP = "";
-	// password asset
-	$JOGETASSETADMINUSER = "";
-	$JOGETASSETADMINPWD = "";
-
-	// support joget link
-	$JOGETSUPPORTDOMAIN = "https://jogetk.reveronconsulting.com/";
-	$JOGETSUPPORTIP ="http://20.188.99.39/";
-	// password Support
-	$JOGETSUPPORTADMINUSER = "admin";
-	$JOGETSUPPORTADMINPWD = "@dmin0415";
-
-	// cacert path
-	$PHPCACERTPATH = "C:/PHP/cacert.pem";
-
-
-    // db connect
-    $DB_SERVERNAME = "";
-    $DB_USERNAME = "";
-    $DB_PASSWORD = "";
-    $DB_DBNAME = "";
-
-    $PROJECTIDNOSBH = "";
-    $PROJECTIDNOSRWK = "";
-
-
 }else{
 	$LICENSEPROPERTIES = dev_license_properties();
 	$FILEINFO = true;
@@ -87,32 +36,30 @@ if ($PRODUCTION_FLAG) {
 	// 	die('Error! ioncube not properly configured.');
 	// }
 
-    $RIHOST = "https://bimserver.reveronconsulting.com/ri_kkr_construct/";
-
     // construct jogetlink
-    $JOGETDOMAIN = "https://jogetk.reveronconsulting.com/";
-    $JOGETIP = "http://20.188.99.39/";
+    $JOGETDOMAIN = "https://jogetk.digile.com/";
+    $JOGETIP = "http://154.26.128.219/";
 	// password
 	$JOGETADMINUSER = "admin";
 	$JOGETADMINPWD = "@dmin0415";
 
 	// asset joget link
-	$JOGETASSETDOMAIN = "https://joget.reveronconsulting.com/";
-	$JOGETASSETIP = "http://52.163.242.240:8080/";
+	$JOGETASSETDOMAIN = "https://joget.digile.com/";
+	$JOGETASSETIP = "http://154.26.128.144:8080/";
 	// password
 	$JOGETASSETADMINUSER = "admin";
 	$JOGETASSETADMINPWD = "rev@dmin123+";
 
 	// support joget link
-	$JOGETSUPPORTDOMAIN = "https://jogetk.reveronconsulting.com/";
-	$JOGETSUPPORTIP ="http://20.188.99.39/";
+	$JOGETSUPPORTDOMAIN = "https://jogetk.digile.com/";
+	$JOGETSUPPORTIP ="http://154.26.128.219/";
 	// password Support
 	$JOGETSUPPORTADMINUSER = "admin";
 	$JOGETSUPPORTADMINPWD = "@dmin0415";
 
 	//geoserver
-    $GEOSERVERDOMAIN = "https://geo.reveronconsulting.com";
-    $GEOSERVERIP = "http://52.187.3.206:8080";
+    $GEOSERVERDOMAIN = "https://geo.digile.com";
+    $GEOSERVERIP = "http://154.26.129.52";
 	//password	
 	$GEOSERVERADMINUSER = "admin";
     $GEOSERVERADMINPWD = "insightGeo@23#";
@@ -128,6 +75,8 @@ if ($PRODUCTION_FLAG) {
 
 	$PROJECTIDNOSBH = "74";
 	$PROJECTIDNOSRWK = "84";
+
+	$MAPBOX_TOKEN = "pk.eyJ1IjoiZGV2LXR3aW5zaWdodHNtYXAiLCJhIjoiY21jdmN3YTB4MGFkMTJsczNmNzNtZm95MCJ9.88qL93JrS-chRNuaDNFGCA";
 }
 
 if ($LICENSEPROPERTIES === false && $FILEINFO === false)

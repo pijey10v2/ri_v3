@@ -1,4 +1,5 @@
 <?php
+//V3 file
 ?>
 <!DOCTYPE html>
 
@@ -76,10 +77,10 @@
                         while(j< mapping.length){
                             if(name == mapping[j].schName){
                                 let k=0;
-                                while(k< entitiesArray.length){
-                                    if(mapping[j].locName == entitiesArray[k].name){
-                                        viewer.camera.flyTo({
-                                            destination: Cesium.Cartesian3.fromDegrees(locations[k].longitude, locations[k].latitude, 2000.0),
+                                while(k< window.parent.entitiesArray.length){
+                                    if(mapping[j].locName == window.parent.entitiesArray[k].name){
+                                        window.parent.viewer.camera.flyTo({
+                                            destination: window.parent.Cesium.Cartesian3.fromDegrees(window.parent.locations[k].longitude, window.parent.locations[k].latitude, 2000.0),
                                             duration: 2,
                                             complete: function () {
                                                 $(".floatbox#floatbox").css("top", "60%")
@@ -88,7 +89,7 @@
                                             }
                                         });
                                         //close modal wizard gantt chart
-                                        wizardCancelPageGantt()
+                                        window.parent.wizardCancelPageGantt()
                                         break;
                                     };
                                     k++;

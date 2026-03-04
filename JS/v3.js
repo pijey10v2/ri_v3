@@ -22,7 +22,7 @@ var userData;
 var tableType = "";
 var newProjectFlag;
 var flagEdit = false;
-var themeJoget
+var themeJoget;
 
 //system admin
 var click_project_details;
@@ -40,8 +40,10 @@ var nLoad = true;
 var nEnd = Math.round((($(window).height()-214)/168) + 1)
 //var nEnd = 5;
 
+let ajaxRequests = [];
+
 getListofOrg();
-$( document ).ready(function() {
+$( document ).ready(function() { 
     setTimeout(function() {
         checkingJogetLoginOnLoad();
     }, 100); 
@@ -122,6 +124,14 @@ newScheduleGantt = () => {
     $("#scheduletype").val($("#scheduleType :selected").text())
     let scheduleStartDate = $(scheduleObj).attr("dataStart")
     let scheduleEndDate = $(scheduleObj).attr("data")
+
+    if (!isValidDate(scheduleStartDate)) {
+        scheduleStartDate = quarterConvertValidDate(scheduleStartDate);
+    }
+    if (!isValidDate(scheduleEndDate)) {
+        scheduleEndDate = quarterConvertValidDate(scheduleEndDate);
+    }
+
     let startDate = new Date(scheduleStartDate)
     offset = startDate.getTimezoneOffset();
     startDate = new Date(startDate.getTime() - (offset * 60 * 1000));
@@ -338,6 +348,11 @@ widgetConopOpen = (processType, linkName, linkParam, linkWinTitle, addtlParam=''
     $("#widgetConop").find(".title").html(linkWinTitle);
 
     $("iframe#widgetIframe").attr("src", linkUrl);
+	$("iframe#widgetIframe").on("load", function () {
+		$("iframe#widgetIframe").show();
+		$($("iframe#widgetIframe"))[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+        localStorage.themeJoget = themeJoget
+	});
 }
 
 detachWidgetToOpen = (listToOpen) =>{
@@ -560,7 +575,7 @@ onClickBulkConfig = (ele) =>{
                         processName = 'PBC';
                     }
                 }else if(processName == 'SD'){
-                    if(localStorage.project_owner == 'JKR_SABAH' || localStorage.project_owner == 'MRSB'){
+                    if(localStorage.project_owner == 'JKR_SABAH' || localStorage.project_owner == 'MRSB' || localStorage.project_owner == 'KACC'){
                         processName = 'SI';
                     }
                 }else if(processName == 'SDL'){
@@ -591,6 +606,10 @@ onClickBulkConfig = (ele) =>{
             bulkProcess.find(".modal-footer .downloadPage").css("display", "unset");
             $('.savePage').attr("data-process",processName);
             $('.downloadPage').attr("onclick","window.location.href="+urlDownload+"");
+            // hide save page for KACC
+            if(localStorage.project_owner == 'KACC'){
+                bulkProcess.find(".modal-footer .savePage").css("display", "none");
+            }
         }else if($(ele).hasClass("import")){
             bulkProcess.find(".buttonConfig .config").addClass("active");
             bulkProcess.find(".modal-footer .savePage").css("display", "none");
@@ -672,6 +691,9 @@ bulkImportJogetLink = (currentPage) =>{
             if(localStorage.project_owner == 'MRSB'){
                 var process = (selVal.charAt(0).toUpperCase()) + selVal.toLowerCase().slice(1);
                 url = JOGETHOST+'jw/web/embed/userview/conOp/'+localStorage.project_owner.toLowerCase()+'/_/bulkImport'+process;
+            }else if(localStorage.project_owner == 'KACC'){
+                var process = (selVal.charAt(0).toUpperCase()) + selVal.toLowerCase().slice(1);
+                url = JOGETHOST+'jw/web/embed/userview/conOp/'+localStorage.project_owner.toLowerCase()+'/_/bulkImport'+process+JOGETLINK.kacc_form_bulk;
             }else{
                 url = JOGETHOST+'jw/web/embed/userview/ri_construct/'+selVal.toLowerCase()+'/_/bulkImport'+selVal+JOGETLINK.cons_form_bulk;
             }
@@ -711,6 +733,10 @@ const config = {
         }
     },
 };
+
+if(SYSTEM == "OBYU"){
+    config.load = { sort: 'time:desc' }; // Sort descending by default (earliest to latest)
+}
 
 //Function for insight tool
 openDrawTool = (e) =>{
@@ -841,7 +867,7 @@ openCameraFeedItem = (e) =>{
     if(pageToOpen == 'cameraItem'){
         pageContainer.children(".header").html("Camera Feed")
     }else if(pageToOpen == 'earthViewItem'){
-        pageContainer.children(".header").html("Earth View")
+        pageContainer.children(".header").html("360 Image View")
     }
 
     pageContainer.children("."+pageToOpen).addClass("ungroup")
@@ -1025,10 +1051,15 @@ dataTask = (type='') =>{
         dateTo = $('input[name="dto"]').val();
         divId = 'myTask';
     }
-    $('.tableBody.'+divId).html('');
 
     //for multiple table to use mixitup
-    var itemContainersMyTask = Array.from(document.querySelectorAll('.tableBody.datepickerList'));
+    var itemContainersMyTask;
+    if(SYSTEM == 'OBYU'){
+        itemContainersMyTask = Array.from(document.querySelectorAll('.tableBody'));
+    }
+    else{
+        itemContainersMyTask = Array.from(document.querySelectorAll('.tableBody.datepickerList'));
+    }
     itemContainersMyTask.map(container => mixitup(container, config).destroy());
 
     $.ajax({
@@ -1039,13 +1070,19 @@ dataTask = (type='') =>{
             dateFrom: dateFrom,
             dateTo: dateTo
         },
-        beforeSend: function() {
+        beforeSend: function(jqXHR) {
+            ajaxRequests.push(jqXHR); 
             $('.loadingRowContainer').show()
         },
-        complete: function() {
+        complete: function(jqXHR) {
             $('.loadingRowContainer').hide()
+            //load swiper based on toggle view
+            ajaxRequests = ajaxRequests.filter(req => req !== jqXHR); 
+            breakpointChecker(localStorage.view_pref)
         },
         success : function(res){
+            $('.tableBody.'+divId).html('');
+
             res = JSON.parse(res);
             var total = 0;
             for (const [key, val] of Object.entries(res)) {
@@ -1082,8 +1119,10 @@ dataTask = (type='') =>{
                             var project_owner = val2.project_owner;
                             var section = val2.section;
                             var work_discipline = val2.work_discipline;
+                            var createdByName = val2.createdByName;
+                            var createdBy = val2.createdBy;
 
-                            var addTask = new AddTask(project, referenceNo, process, date, time, label, activityId, 'constructInbox', '', '', divId, project_owner, section, work_discipline)
+                            var addTask = new AddTask(project, referenceNo, process, date, time, label, activityId, 'constructInbox', '', '', divId, project_owner, section, work_discipline, createdByName, createdBy)
                             addTask.drawTask()
 
                             total++;
@@ -1163,6 +1202,28 @@ dataTask = (type='') =>{
                             total++;
                         }
                     }
+                    else if(key == "noti_rfi"){
+                        for (const [key2, val2] of Object.entries(val)) {
+                            var project = val2.package_id;
+                            var dateTime = val2.dateModified.split(" ");
+                            var date = dateTime[0];
+                            var time = dateTime[1];
+                            var referenceNo = val2.Ref;
+                            var process = val2.processName;
+                            var label = val2.label;
+                            var activityId = val2.activityId;
+                            var project_owner = val2.project_owner;
+                            var section = val2.section;
+                            var work_discipline = val2.work_discipline;
+                            var createdByName = val2.createdByName;
+                            var createdBy = val2.createdBy;
+
+                            var addTask = new AddTask(project, referenceNo, process, date, time, label, activityId, 'constructInbox', 'rfiEdit', '', divId, project_owner, section, work_discipline, createdByName, createdBy)
+                            addTask.drawTask()
+
+                            total++;
+                        }
+                    }
                     else{
                         for (const [key2, val2] of Object.entries(val)) {
                             var project = val2.package_id;
@@ -1173,6 +1234,9 @@ dataTask = (type='') =>{
                             var process = 'Correspondence';
                             var label = val2.doc_subtype + " " + process;
                             var project_owner = val2.project_owner;
+                            var section = val2.section;
+                            var createdByName = val2.createdByName;
+                            var createdBy = val2.createdBy;
                             if(!val2["acknowledge_flag"] || val2["acknowledge_flag"] == "0" || val2["acknowledge_flag"] == ''){
                                 var activityId = val2["user_id"];
                                 var process = 'Acknowledge';
@@ -1183,7 +1247,7 @@ dataTask = (type='') =>{
                                 var extraParam = '&package_id='+val2["package_id"]+'&prevact='+val2["action"]+'&actuserid='+val2["user_id"]+'&package_uuid='+val2["package_uuid"]+'&project_id='+val2["project_id"];
                             }
 
-                            var addTask = new AddTask(project, referenceNo, label, date, time, process, activityId, 'documentInbox', process, extraParam, divId, project_owner, section, '')
+                            var addTask = new AddTask(project, referenceNo, label, date, time, process, activityId, 'documentInbox', process, extraParam, divId, project_owner, section, '', createdByName, createdBy)
                             addTask.drawTask()
 
                             total++;
@@ -1201,7 +1265,7 @@ dataTask = (type='') =>{
             if((localStorage.noti_construct != 'true') && (localStorage.noti_doc != 'true') && (localStorage.noti_finance != 'true') && (localStorage.noti_asset != 'true') && (localStorage.noti_finance_asset != 'true') && (localStorage.noti_markup != 'true')){
                 $('.tableBody.'+divId).html(`
                     <div class="row noTaskDesc" rel="myTask" data-color="#ad5e2a">
-                        <div class="columnFirst textContainer" style="justify-content: center"><span>No pending task...</span><span class="fontSmall"></span></div>
+                        <div class="textContainer" style="justify-content: center"><span>No pending task...</span><span class="fontSmall"></span></div>
                         <div class="columnSecond textContainer"><span></span><span class="fontSmall"></span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight"></span></div>
                     </div>
@@ -1274,6 +1338,8 @@ dataForMyTask = () =>{
         },
         complete: function() {
             $('.loadingRowContainer').hide()
+            //load swiper based on toggle view
+            breakpointChecker(localStorage.view_pref, 'myTask')
         },
         success : function(res){
             itemContainers.map(container => mixitup(container, config).destroy());
@@ -1310,8 +1376,10 @@ dataForMyTask = () =>{
                                 var project_owner = val2.project_owner;
                                 var section = val2.section;
                                 var work_discipline = val2.work_discipline;
+                                var createdByName = val2.createdByName;
+                                var createdBy = val2.createdBy;
 
-                                var addTask = new AddTaskApp(referenceNo, process, date, time, label, activityId, 'constructInbox', '', '', project_owner, section, work_discipline)
+                                var addTask = new AddTaskApp(referenceNo, process, date, time, label, activityId, 'constructInbox', '', '', project_owner, section, work_discipline, createdByName, createdBy)
                                 addTask.drawTaskApp()
                             }
                         }
@@ -1378,6 +1446,25 @@ dataForMyTask = () =>{
                                 addTask.drawTaskApp()
                             }
                         }
+                        else if(key == "noti_rfi"){
+                            for (const [key2, val2] of Object.entries(val.data)) {
+                                var dateTime = val2.dateModified.split(" ");
+                                var date = dateTime[0];
+                                var time = dateTime[1];
+                                var referenceNo = val2.Ref;
+                                var process = val2.processName;
+                                var label = val2.label;
+                                var activityId = val2.activityId;
+                                var project_owner = val2.project_owner;
+                                var section = val2.section;
+                                var work_discipline = val2.work_discipline;
+                                var createdByName = val2.createdByName;
+                                var createdBy = val2.createdBy;
+                        
+                                var addTask = new AddTaskApp(referenceNo, process, date, time, label, activityId, 'constructInbox', 'rfiEdit', '', project_owner, section, work_discipline, createdByName, createdBy)
+                                addTask.drawTaskApp()
+                            }
+                        }
                         else{
                             for (const [key2, val2] of Object.entries(val.data)) {
                                 var dateTime = val2.dateModified.split(" ");
@@ -1387,16 +1474,21 @@ dataForMyTask = () =>{
                                 var process = 'Correspondence';
                                 var label = val2.doc_subtype + ' ' + process;
                                 var project_owner = val2.project_owner;
+                                var section = val2.section;
+                                var createdByName = val2.createdByName;
+                                var createdBy = val2.createdBy;
                                 if(!val2["corr_act_user.acknowledge_flag"] || val2["corr_act_user.acknowledge_flag"] == "0" || val2["corr_act_user.acknowledge_flag"] == ''){
-                                    var activityId = val2["corr_act_user.id"];
+                                    var activityId = !IS_DOWNSTREAM ? val2["corr_act_user.id"] : val2.corr_act_id; //to handle if downstream
                                     var process = 'Acknowledge';
-                                    var extraParam = '&package_id='+val2["package_id"]+'&prevact='+val2["corr_act_user.action"]+'&corr_id='+val2.id+'&package_uuid='+val2["package_uuid"];
+                                    var prevact = val2["corr_act_user.action"] ? val2["corr_act_user.action"] : val2.action;
+                                    var extraParam = '&package_id='+val2["package_id"]+'&prevact='+prevact+'&corr_id='+val2.id+'&package_uuid='+val2["package_uuid"];
                                 }else{
                                     var activityId = val2.id;
                                     var process = 'Respond/View';
-                                    var extraParam = '&package_id='+val2["package_id"]+'&prevact='+val2["corr_act_user.action"]+'&actuserid='+val2["corr_act_user.id"]+'&package_uuid='+val2["package_uuid"]+'&project_id='+val2["project_id"];
+                                    var prevact = val2["corr_act_user.action"] ? val2["corr_act_user.action"] : val2.action;
+                                    var extraParam = '&package_id='+val2["package_id"]+'&prevact='+prevact+'&actuserid='+val2["corr_act_user.id"]+'&package_uuid='+val2["package_uuid"]+'&project_id='+val2["project_id"];
                                 }
-                                var addTask = new AddTaskApp(referenceNo, label, date, time, process, activityId, 'documentInbox', process, extraParam, project_owner, section)
+                                var addTask = new AddTaskApp(referenceNo, label, date, time, process, activityId, 'documentInbox', process, extraParam, project_owner, section, '', createdByName, createdBy)
                                 addTask.drawTaskApp()
                             }
                         }
@@ -1982,20 +2074,24 @@ processListOnchange = (e) =>{
     }
     else if(arrProcessSpecial.includes(value)){
         //FETCH LAYER DATA
-        $.ajax({
-            type: "POST",
-            dataType: "JSON",
-            url: "../BackEnd/fetchDatav3.php",
-            data:{ 
-                functionName: 'fetchAllDataPool',
-                package_id: localStorage.p_id,
-            },
-            success: ((resp)=>{
-                if(resp){
-                    loadLayersNewProcess(resp);
-                }
+
+        // Check if not outside
+        if (title != "Process Project") {
+            $.ajax({
+                type: "POST",
+                dataType: "JSON",
+                url: "../BackEnd/fetchDatav3.php",
+                data:{ 
+                    functionName: 'fetchAllDataPool',
+                    package_id: localStorage.p_id,
+                },
+                success: ((resp)=>{
+                    if(resp){
+                        loadLayersNewProcess(resp);
+                    }
+                })
             })
-        })
+        }
 
         if(value == 'LR' || value == 'LI' || value == 'LE'){
             cesiumObjProcess = loadRiCesiumProcess(homeLocation);
@@ -2132,8 +2228,8 @@ wizardCancelPage = (e) =>{
                     $(`.modal .modal-content`).removeClass("active");
                     $(`#wizardMaximize`).removeClass("active");
                     $(`#wizardMaximize`).children().attr("src", "../Images/icons/form/maximize.png");
-                    $("#processSearch").val("");
-                    $("#manageSearch").val("");
+                    $(".processSearch").val("");
+                    $(".manageSearch").val("");
                     $('.processProjSearch').show();
 
                     defaultStateWizard(title)
@@ -2167,6 +2263,8 @@ wizardCancelPage = (e) =>{
         $("#folderRoot").css('display', 'none');
         $("#videoframe").removeClass("active");
         $("#videoframe").css('display', 'none');
+        $(".modal-container.insight .pwCredentials").css('display', 'none');
+        $(".modal-container.insight .metadataEdit").css('display', 'none');
         
         var videoContainer = document.getElementById("videoContainer");
         var myVideo = $(videoContainer).find("video")[0];
@@ -2193,10 +2291,11 @@ wizardCancelPage = (e) =>{
     
         if (planePrimitive) {
             viewer.scene.primitives.remove(planePrimitive);
-        }
-    
-        $("#processSearch").val("");
-        $("#manageSearch").val("");
+        } 
+
+        $(".processSearch").val(""); 
+        $(".projectSearchInput").val(""); 
+        $(".manageSearch").val("");
         $('.processProjSearch').show();
     
     
@@ -2209,6 +2308,14 @@ wizardCancelPage = (e) =>{
         $(likeBtn).clone().appendTo($(cardToAppend).find(".footer"))
         $(`.newsCard#newsCard${id}`).find('button:not(.liked) i').css('color', `${iColor}`)
         $(`.newsCard#newsCard${id}`).find('button:not(.liked) span').css('color', `${iColor}`)
+
+        // for sslr2 bim linking
+        var bimLayer_id = $('#wizardClose').attr('data-layer-id');
+        if(bimLayer_id){
+            var bimLayer_name = $('#wizardClose').attr('data-layer-name');
+            checkBimLayerLinking(bimLayer_id, bimLayer_name);
+            $('#wizardClose').removeAttr('data-layer-id');
+        }
     }
 }
 
@@ -2258,7 +2365,7 @@ function checkingJogetLogin(){
                 var loginCallbackAsset = {
                     success : function(response){
                         async function logoutLogin(){
-                            AssignmentManager.login(jogetHost, currUsername, currUserPwd, loginCallback);
+                            AssignmentManager.loginWithHash(jogetHost, currUsername, currUserPwd, loginCallback);
                         }
                         logoutLogin();
                     }
@@ -2277,20 +2384,20 @@ function checkingJogetLogin(){
                     // skip joget asset login
                     if(IS_DOWNSTREAM){
                         async function logoutLogin(){
-                            AssignmentManager.login(jogetHost, currUsername, currUserPwd, loginCallback);
+                            AssignmentManager.loginWithHash(jogetHost, currUsername, currUserPwd, loginCallback);
                         }
                         logoutLogin();
                     }else{
                         var jogetAssetHost = JOGETASSETHOST+'jw';
                         async function logoutLoginAsset(){
-                            AssignmentManager.login(jogetAssetHost, currUsername, currUserPwd, loginCallbackAsset);
+                            AssignmentManager.loginWithHash(jogetAssetHost, currUsername, currUserPwd, loginCallbackAsset);
                         }
                         logoutLoginAsset()
                     }
                     
                 }else{
                     async function logoutLogin(){
-                        AssignmentManager.login(jogetHost, currUsername, currUserPwd, loginCallback);
+                        AssignmentManager.loginWithHash(jogetHost, currUsername, currUserPwd, loginCallback);
                     }
                     logoutLogin();
                 }	
@@ -2372,8 +2479,8 @@ wizardOpenPage = (e) =>{
         projectClick = (e) =>{
             mode = 'process'
             let projectPackage = $(e).find(".text").html();
-            $("#processSearch").val("");
-            $("#manageSearch").val("");
+            $(".processSearch").val("");
+            $(".manageSearch").val("");
             $('.processProjSearch').show();
             $('.projectPackageName').html(projectPackage);
             $(`.modal-container.${title}`).find("[data-page=1]").removeClass("active");
@@ -2446,6 +2553,7 @@ wizardOpenPage = (e) =>{
 
         $(".modal-container.myTaskList").hide()
 
+        $(".modal-header a").html("My Task")
         openPage1.addClass("active")
         openJogetForm('myTask', idProcess, appProcess, setProcess, extraParam, projOwner)
         openWizardModalContainer(title, modalInsight, modalWidth, modalHeight)
@@ -2504,13 +2612,43 @@ wizardOpenPage = (e) =>{
 
                 $("#aicProjectName").text(projectName)
                 $("#aicPackageName").text(packageName)
+                
+                // Get the two checked AIC checkboxes dynamically
+                const selectedAICIds = $("[id^='dataChk_ecw_']:checked").map(function() {
+                    return this.id.split("_").pop(); // extract numeric part
+                }).get();
+                
+                // Fetch the capture dates for both IDs
+                if (selectedAICIds.length === 2) {
 
-                openWizardModalContainer(title, modalInsight, modalWidth, modalHeight)
+                    // Open modal first
+                    openWizardModalContainer(title, modalInsight, modalWidth, modalHeight);
 
-                setTimeout(function(){
-                    initiateAIC()
-                    AICViewer()
-                },500)
+                    $.when(
+                        fetchAICDetailsPromise(selectedAICIds[0]),
+                        fetchAICDetailsPromise(selectedAICIds[1])
+                    ).done(function(data1, data2) {
+                        const res1 = data1[0];
+                        const res2 = data2[0];
+                        console.log(res1);
+                        console.log(res2);
+
+                        const record1 = Array.isArray(res1.data) ? res1.data[0] : res1.data;
+                        const record2 = Array.isArray(res2.data) ? res2.data[0] : res2.data;
+                        
+                        const projectImageCaptureDate = new Date((record1 && record1.Image_Captured_Date ? record1.Image_Captured_Date : null)).toDateString();
+                        $("#projectImageCaptureDate").text(projectImageCaptureDate || "Not found");
+                        const packageImageCaptureDate = new Date((record2 && record2.Image_Captured_Date ? record2.Image_Captured_Date : null)).toDateString();
+                        $("#packageImageCaptureDate").text(packageImageCaptureDate || "Not found");
+                    });
+
+                    // Delay for initializing the modal content
+                    setTimeout(function() {
+                        initiateAIC();
+                        AICViewer();
+                    }, 500);
+
+                }
 
             }else{
                 $.alert({
@@ -2617,6 +2755,7 @@ wizardOpenPage = (e) =>{
             openWizardModalContainer(title, modalInsight, modalWidth, modalHeight)
             projectLabelName(title)
         }else if(modalInsight == "metadataEdit"){
+            $(".modal-container.insight .metadataEdit").css('display', 'block')
             openWizardModalContainer(title, modalInsight, modalWidth, modalHeight)
         }else if(modalInsight == "iotGraph"){
             var iotAsset = $(e).data('id');
@@ -2766,9 +2905,6 @@ wizardOpenPage = (e) =>{
         $(".modal-header a").html(wizardTitle)
 
         openWizardModalContainer(title, modalInsight, modalWidth, modalHeight)
-    }else if(title == "uploadAssetData"){
-        $(".modal-header a").html("Upload Asset Data")
-        openWizardModalContainer("uploadAssetData", "assetDataContainerPage", modalWidth, modalHeight)
     }
 
     wizardButtonVisibility(pageNumber, mode, pageLength)
@@ -3004,6 +3140,7 @@ wizardEditPage=(e)=>{
     }else if (modal == 'addNewProject'){
         $(`.modal-container .upper-container.addNewProject`).show()
         $('#newProjectDetails').css("height", "")
+        $("#projectPhase").prop("disabled", true)
 
         wizardButtonVisibility(nextPage, mode, pageLength)
         wizardPageIndicator(nextPage, modal, pageLength)
@@ -4428,7 +4565,11 @@ function refreshContractOrgList(setValContractor = '') {
     if(SYSTEM == 'OBYU'){
         ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
     }else{
-        ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        if(IS_DOWNSTREAM){
+            ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
+        }else{
+            ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        }
     }
 
     $.ajax({
@@ -4459,7 +4600,11 @@ function refreshConsultantOrgList(setValConsultant = '') {
     if(SYSTEM == 'OBYU'){
         ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
     }else{
-        ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        if(IS_DOWNSTREAM){
+            ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
+        }else{
+            ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        }
     }
 
     $.ajax({
@@ -4597,7 +4742,11 @@ getProfileDetail = () =>{
     if(SYSTEM == 'OBYU'){
         ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
     }else{
-        ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        if(IS_DOWNSTREAM){
+            ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
+        }else{
+            ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        }
     }
     $.ajax({
         type: "POST",
@@ -4618,27 +4767,49 @@ getProfileDetail = () =>{
                 $("#img_mobileno").text(obj.data.user_phone)
                 $("#img_org").text(obj.data.orgName)
                 $("#img_country").text(obj.data.user_country)
-
-                 function imageUrlExists(imageUrl){
-                    var http = new XMLHttpRequest();
-                    http.open('HEAD', imageUrl, false);
-                    http.send();
-                    return http.status != 404;
+                if(IS_DOWNSTREAM){
+                    $("#img_designation").text(obj.data.user_designation)
                 }
+                //hidden for the time being until fully utilized for sarawak
+                var designation = (obj.data.user_designation !== null) ? obj.data.user_designation : '';
+                $("#designationprofile").val(designation)
+
+                function imageUrlExists(url, callback) {
+                    var img = new Image();
+
+                    img.onload = function () {
+                        callback(true);
+                    };
+
+                    img.onerror = function () {
+                        callback(false);
+                    };
+
+                    img.src = url + "?cache_bust=" + Date.now(); // avoid caching
+                }
+
+                var profileImg = `../../Data/users/`+obj.data.user_email+`/`+obj.data.profile_img;
+                var profileImgHeader = `../../Data/users/`+obj.data.user_email+`/`+obj.data.profile_header;
 
                 //Profile Pic
-                if (imageUrlExists(`../../Data/users/${obj.data.user_email}/${obj.data.profile_img}`)){
-                    $('#profilePic').attr('src', `../../Data/users/${obj.data.user_email}/${obj.data.profile_img}`);
-                }else{
-                    $('#profilePic').attr('src', '../Images/defaultProfile.png');
-                }
+                imageUrlExists(profileImg, function(exists) {
+                    if (exists) {
+                        console.log("Image exists!");
+                        $('#profilePic').attr('src', profileImg);
+                    } else {
+                        $('#profilePic').attr('src', '../Images/defaultProfile.png');
+                    }
+                });
 
                 //Profile Header
-                if (imageUrlExists(`../../Data/users/${obj.data.user_email}/${obj.data.profile_header}`)){
-                    $('#wallpaperPic').css('background-image', `url("../../Data/users/${obj.data.user_email}/${obj.data.profile_header}")`);
-                }else{
-                    $('#wallpaperPic').css('background-image', `url("../Images/icons/ri_v3/wallpaper/default.jpg")`);
-                }
+                imageUrlExists(profileImgHeader, function(exists) {
+                    if (exists) {
+                        console.log("Image exists!");
+                        $('#wallpaperPic').attr('src', profileImgHeader);
+                    } else {
+                        $('#wallpaperPic').css('background-image', `url("../Images/icons/ri_v3/wallpaper/default.jpg")`);
+                    }
+                });
              
                 $('.profileUserView').show();
             } else {
@@ -4727,11 +4898,13 @@ copyuserinfoinputvalue = () =>{
     let $fname = $('#firstnameprofile').val()
     let $lname = $('#lastnameprofile').val()
     let $phone = $('#phonenumberprofile').val()
+    let $designation = $('#designationprofile').val()
 
     $('#img_country').html($country)
     $('#img_fullname').html($fname + ' ' + $lname)
     $('#h3_fullname_profileuser').html($fname + ' ' + $lname)
     $('#img_mobileno').html($phone)
+    $('#img_designation').html($designation)
 }
 
 //edit state function on user profile
@@ -5213,7 +5386,7 @@ const changeLayerNameHandler = (e) => {
 
 // To ceate task in MyTask List
 class AddTask {
-    constructor(_project, _refno, _processname, _date, _time, _action, _activityId, _appInbox, _setAppInbox, _extraParam, _divId, _projectowner, _section, _workdiscipline){
+    constructor(_project, _refno, _processname, _date, _time, _action, _activityId, _appInbox, _setAppInbox, _extraParam, _divId, _projectowner, _section, _workdiscipline, _createdByName, _createdBy){
         this.project = _project
         this.refno = _refno
         this.processname = _processname
@@ -5228,6 +5401,8 @@ class AddTask {
         this.project_owner = _projectowner
         this.section = _section
         this.work_discipline = _workdiscipline
+        this.createdByName = _createdByName
+        this.createdBy = _createdBy
     }
     drawTask(){
         if((this.refno) == undefined) return true
@@ -5261,14 +5436,19 @@ class AddTask {
 
         var lowercasedivId = this.divId.toLowerCase();
 
+        var dateReverse = this.date.split('-').reverse().join('-');
+
         $('.tableBody.'+this.divId).append(`
-            <div class="row mix homeTaskSearch" id="`+this.activityid+`" rel="myTask" data-projectOwner="`+this.project_owner+`" data-appTask="`+this.appInbox+`" data-appSetTask="`+this.setAppInbox+`"  data-extraParam="`+this.extraParam+`" data-`+lowercasedivId+`-refno="`+refnoTask+`" data-`+lowercasedivId+`-project="`+projectTask+`" data-`+lowercasedivId+`-modifieddate="`+this.date+`" data-`+lowercasedivId+`-pending="`+this.action+`" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+            <div class="row mix homeTaskSearch" id="`+this.activityid+`" rel="myTask" data-time="`+this.time+`" data-projectOwner="`+this.project_owner+`" data-appTask="`+this.appInbox+`" data-appSetTask="`+this.setAppInbox+`"  data-extraParam="`+this.extraParam+`" data-`+lowercasedivId+`-refno="`+refnoTask+`" data-`+lowercasedivId+`-project="`+projectTask+`" data-`+lowercasedivId+`-modifieddate="`+this.date+`" data-`+lowercasedivId+`-pending="`+this.action+`" data-`+lowercasedivId+`-section="`+this.section+`" data-`+lowercasedivId+`-workdiscipline="`+this.work_discipline+`" data-`+lowercasedivId+`-createdbyname="`+this.createdByName+`"  data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                 <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                 <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.refno+`</span><span class="fontSmall marginAuto lineClamp one">`+processNameLabel+`</span></div>
                 <div class="columnFirst textContainer"><span>`+this.project+`</span></div>
-                <div class="columnSecond textContainer"><span>`+this.date+`</span><span class="fontSmall">`+this.time+`</span></div>
+                <div class="columnSecond textContainer"><span>`+dateReverse+`</span><span class="fontSmall">`+this.time+`</span></div>
                 <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">`+this.action+`</span></div>
-                <div class="columnFilter">`+this.section+`;`+this.work_discipline+`</div>
+                <div class="columnSecond columnHidden textContainer"><span>`+this.section+`</span></div>
+                <div class="columnFirst columnHidden textContainer"><span>`+this.work_discipline+`</span></div>
+                <div class="columnFirst columnHidden textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.createdByName+`</span><span class="fontSmall marginAuto lineClamp one">`+this.createdBy+`</span></div>
+                <div class="columnFilter">`+this.section+`;`+this.work_discipline+`;`+this.createdByName+`;`+this.createdBy+`</div>
             </div>
         `);
     }
@@ -5276,7 +5456,7 @@ class AddTask {
 
 // To ceate task in MyTask App List
 class AddTaskApp {
-    constructor(_refno, _processname, _date, _time, _action, _activityId, _appInbox, _setAppInbox, _extraParam, _projectowner, _section, _workdiscipline){
+    constructor(_refno, _processname, _date, _time, _action, _activityId, _appInbox, _setAppInbox, _extraParam, _projectowner, _section, _workdiscipline, _createdByName, _createdBy){
         this.refno = _refno
         this.processname = _processname
         this.date = _date
@@ -5289,6 +5469,8 @@ class AddTaskApp {
         this.project_owner = _projectowner
         this.section = _section
         this.work_discipline = _workdiscipline
+        this.createdByName = _createdByName
+        this.createdBy = _createdBy
     }
     drawTaskApp(){
         if((this.refno) == undefined) return true;
@@ -5302,15 +5484,20 @@ class AddTaskApp {
             refnoTask = this.refno;
         }
 
+        var dateReverse = this.date.split('-').reverse().join('-');
+
         if(localStorage.noti_construct == 'true'){
             if(this.appInbox == "constructInbox"){
                 $('.tableBody.taskConstruct').append(`
-                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-projectOwner=`+this.project_owner+` data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-construct-refno="${refnoTask}" data-construct-modifieddate="${this.date}" data-construct-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-time="`+this.time+`" data-projectOwner=`+this.project_owner+` data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-construct-refno="${refnoTask}" data-construct-modifieddate="${this.date}" data-construct-pending="${this.action}" data-construct-section="`+this.section+`" data-construct-workdiscipline="`+this.work_discipline+`" data-construct-createdbyname="`+this.createdByName+`" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                         <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                         <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">${this.refno}</span><span class="fontSmall marginAuto lineClamp one">${this.processname}</span></div>
-                        <div class="columnSecond textContainer"><span>${this.date}</span><span class="fontSmall">${this.time}</span></div>
+                        <div class="columnSecond textContainer"><span>${dateReverse}</span><span class="fontSmall">${this.time}</span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">${this.action}</span></div>
-                        <div class="columnFilter">`+this.section+`;`+this.work_discipline+`</div>
+                        <div class="columnSecond columnHidden textContainer"><span>`+this.section+`</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span>`+this.work_discipline+`</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.createdByName+`</span><span class="fontSmall marginAuto lineClamp one">`+this.createdBy+`</span></div>
+                        <div class="columnFilter">`+this.section+`;`+this.work_discipline+`;`+this.createdByName+`;`+this.createdBy+`</div>
                     </div>
                 `)
                 $("#constTask").css("display", "block")
@@ -5321,12 +5508,14 @@ class AddTaskApp {
         if(localStorage.noti_doc == 'true'){
             if(this.appInbox == "documentInbox"){
                 $('.tableBody.taskDocument').append(`
-                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-projectOwner=`+this.project_owner+` data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-extraParam="${this.extraParam}" data-document-refno="${refnoTask}" data-document-modifieddate="${this.date}" data-document-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-time="`+this.time+`" data-projectOwner=`+this.project_owner+` data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-extraParam="${this.extraParam}" data-document-refno="${refnoTask}" data-document-modifieddate="${this.date}" data-document-pending="${this.action}" data-document-section="`+this.section+`" data-document-createdbyname="`+this.createdByName+`" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                     <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                         <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">${this.refno}</span><span class="fontSmall marginAuto lineClamp one">${this.processname}</span></div>
-                        <div class="columnSecond textContainer"><span>${this.date}</span><span class="fontSmall">${this.time}</span></div>
+                        <div class="columnSecond textContainer"><span>${dateReverse}</span><span class="fontSmall">${this.time}</span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">${this.action}</span></div>
-                        <div class="columnFilter">`+this.section+`</div>
+                        <div class="columnSecond columnHidden textContainer"><span>`+this.section+`</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.createdByName+`</span><span class="fontSmall marginAuto lineClamp one">`+this.createdBy+`</span></div>
+                        <div class="columnFilter">`+this.section+`;`+this.createdByName+`;`+this.createdBy+`</div>
                     </div>
                 `)
 
@@ -5343,11 +5532,13 @@ class AddTaskApp {
                     processNameLabel = 'Contract Amend'
                 }
                 $('.tableBody.taskFinance').append(`
-                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-finance-refno="${refnoTask}" data-finance-modifieddate="${this.date}" data-finance-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-time="`+this.time+`" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-extraParam="`+this.extraParam+`" data-finance-refno="${refnoTask}" data-finance-modifieddate="${this.date}" data-finance-pending="${this.action}" data-finance-section="`+this.section+`" data-finance-createdbyname="`+this.createdByName+`" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                         <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                         <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">${this.refno}</span><span class="fontSmall marginAuto lineClamp one">${processNameLabel}</span></div>
-                        <div class="columnSecond textContainer"><span>${this.date}</span><span class="fontSmall">${this.time}</span></div>
+                        <div class="columnSecond textContainer"><span>${dateReverse}</span><span class="fontSmall">${this.time}</span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">${this.action}</span></div>
+                        <div class="columnSecond columnHidden textContainer"><span>`+this.section+`</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.createdByName+`</span><span class="fontSmall marginAuto lineClamp one">`+this.createdBy+`</span></div>
                         <div class="columnFilter">`+this.section+`</div>
                     </div>
                 `)
@@ -5359,11 +5550,13 @@ class AddTaskApp {
         if(localStorage.noti_asset == 'true'){
             if(this.appInbox == "assetInbox"){
                 $('.tableBody.taskAsset').append(`
-                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-asset-refno="${refnoTask}" data-asset-modifieddate="${this.date}" data-asset-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-time="`+this.time+`" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-asset-refno="${refnoTask}" data-asset-modifieddate="${this.date}" data-asset-pending="${this.action}" data-asset-workdiscipline="`+this.work_discipline+`" data-asset-createdbyname="`+this.createdByName+`" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                         <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                         <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">${this.refno}</span><span class="fontSmall marginAuto lineClamp one">${this.processname}</span></div>
-                        <div class="columnSecond textContainer"><span>${this.date}</span><span class="fontSmall">${this.time}</span></div>
+                        <div class="columnSecond textContainer"><span>${dateReverse}</span><span class="fontSmall">${this.time}</span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">${this.action}</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span>`+this.work_discipline+`</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.createdByName+`</span><span class="fontSmall marginAuto lineClamp one">`+this.createdBy+`</span></div>
                     </div>
                 `)
                 $("#assetTask").css("display", "block")
@@ -5380,11 +5573,13 @@ class AddTaskApp {
                     processNameLabel = this.extraParam
                 }
                 $('.tableBody.taskFinance').append(`
-                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-finance-refno="${refnoTask}" data-finance-modifieddate="${this.date}" data-finance-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-time="`+this.time+`" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-extraParam="`+this.extraParam+`" data-finance-refno="${refnoTask}" data-finance-modifieddate="${this.date}" data-finance-pending="${this.action}" data-finance-section="`+this.section+`" data-finance-createdbyname="`+this.createdByName+`" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                         <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                         <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">${this.refno}</span><span class="fontSmall marginAuto lineClamp one">${processNameLabel}</span></div>
-                        <div class="columnSecond textContainer"><span>${this.date}</span><span class="fontSmall">${this.time}</span></div>
+                        <div class="columnSecond textContainer"><span>${dateReverse}</span><span class="fontSmall">${this.time}</span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">${this.action}</span></div>
+                        <div class="columnSecond columnHidden textContainer"><span>`+this.section+`</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.createdByName+`</span><span class="fontSmall marginAuto lineClamp one">`+this.createdBy+`</span></div>
                     </div>
                 `)
 
@@ -5395,10 +5590,10 @@ class AddTaskApp {
         if(localStorage.noti_fm == 'true'){
             if(this.appInbox == "fmInbox"){
                 $('.tableBody.taskServiceRequest').append(`
-                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-asset-refno="${refnoTask}" data-asset-modifieddate="${this.date}" data-asset-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-time="`+this.time+`" data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-asset-refno="${refnoTask}" data-asset-modifieddate="${this.date}" data-asset-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                         <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                         <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">${this.refno}</span><span class="fontSmall marginAuto lineClamp one">${this.processname}</span></div>
-                        <div class="columnSecond textContainer"><span>${this.date}</span><span class="fontSmall">${this.time}</span></div>
+                        <div class="columnSecond textContainer"><span>${dateReverse}</span><span class="fontSmall">${this.time}</span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">${this.action}</span></div>
                     </div>
                 `)
@@ -5409,11 +5604,13 @@ class AddTaskApp {
         if(localStorage.noti_markup == 'true'){
             if(this.appInbox == "documentInbox"){
                 $('.tableBody.taskDocument').append(`
-                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-projectOwner=`+this.project_owner+` data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-extraParam="${this.extraParam}" data-document-refno="${refnoTask}" data-document-modifieddate="${this.date}" data-document-pending="${this.action}" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
+                    <div class="row homeTaskSearch mix" id="${this.activityid}" rel="myTask" data-time="`+this.time+`" data-projectOwner=`+this.project_owner+` data-appTask="${this.appInbox}" data-appSetTask="${this.setAppInbox}" data-extraParam="${this.extraParam}" data-document-refno="${refnoTask}" data-document-modifieddate="${this.date}" data-document-pending="${this.action}" data-document-section="`+this.section+`" data-document-createdbyname="`+this.createdByName+`" data-color="#ad5e2a" data-width="55" data-height="80" onclick="wizardOpenPage(this)">
                     <div class="columnIndex"><img src="../Images/icons/appsbar/document.png"></div>
                         <div class="columnFirst textContainer"><span class="lineHeight marginAuto lineClamp two">${this.refno}</span><span class="fontSmall marginAuto lineClamp one">${this.processname}</span></div>
-                        <div class="columnSecond textContainer"><span>${this.date}</span><span class="fontSmall">${this.time}</span></div>
+                        <div class="columnSecond textContainer"><span>${dateReverse}</span><span class="fontSmall">${this.time}</span></div>
                         <div class="columnSecond textContainer"><span class="lineHeight lineClamp three">${this.action}</span></div>
+                        <div class="columnSecond columnHidden textContainer"><span>`+this.section+`</span></div>
+                        <div class="columnFirst columnHidden textContainer"><span class="lineHeight marginAuto lineClamp two">`+this.createdByName+`</span><span class="fontSmall marginAuto lineClamp one">`+this.createdBy+`</span></div>
                     </div>
                 `)
 
@@ -5512,13 +5709,13 @@ function _enterApp (pageToOpen, appAccess){
                 </div>\
                 <div class = 'financeListContainer' id='"+i+"' style='display: none'>\
                     <div class='doublefield tableList'>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-puzzle-piece'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-puzzle-piece'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>Contract ID</span>\
                                 <span class='textEllipsis contractID'>"+contractID+"</span>\
                             </div>\
                         </div>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-dice-d6'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-dice-d6'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>Completion Date</span>\
                                 <span class='textEllipsis completionDate'>"+completionDate+"</span>\
@@ -5526,13 +5723,13 @@ function _enterApp (pageToOpen, appAccess){
                         </div>\
                     </div>\
                     <div class='doublefield tableList'>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-coins'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-coins'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>Variation Amount</span>\
                                 <span class='textEllipsis variationAmount'>RM "+formatCurrency(variationAmt)+"</span>\
                             </div>\
                         </div>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-coins'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-coins'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>New Amount</span>\
                                 <span class='textEllipsis newAmount'>RM "+formatCurrency(newAmt)+"</span>\
@@ -5540,13 +5737,13 @@ function _enterApp (pageToOpen, appAccess){
                         </div>\
                     </div>\
                     <div class='doublefield tableList'>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-file-invoice'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-file-invoice'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>LOA Ref No.</span>\
                                 <span class='textEllipsis loaRef'>"+loaRefNo+"</span>\
                             </div>\
                         </div>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-file-invoice'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-file-invoice'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>LOA Date</span>\
                                 <span class='textEllipsis loaDate'>"+loaDate+"</span>\
@@ -5554,13 +5751,13 @@ function _enterApp (pageToOpen, appAccess){
                         </div>\
                     </div>\
                     <div class='doublefield tableList'>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-calendar-days'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-calendar-days'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>Original Duration</span>\
                                 <span class='textEllipsis originalDuration'>"+oriDuration+"</span>\
                             </div>\
                         </div>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-file-invoice'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-file-invoice'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>New Duration</span>\
                                 <span class='textEllipsis newDuration'>"+newDuration+"</span>\
@@ -5568,7 +5765,7 @@ function _enterApp (pageToOpen, appAccess){
                         </div>\
                     </div>\
                     <div class='doublefield tableList'>\
-                        <div class='readOnlyContainer flex margin-center'><i class='fa-duotone fa-calendar-days'></i>\
+                        <div class='readOnlyContainer flex margin-center'><i class='fa-solid fa-calendar-days'></i>\
                             <div class='twoLabel'>\
                                 <span class='textEllipsis headerTitle'>Extension of Time</span>\
                                 <span class='textEllipsis extensionTime'>"+extOfTime+"</span>\
@@ -5677,15 +5874,25 @@ function _enterApp (pageToOpen, appAccess){
             }
 
             $('.myFinance.claimsPer').hide();
+            $('.myFinance.claimsInventory').hide();
             $('.myFinanceDownstream.acsSSLR').hide();
             $('.myFinanceDownstream.eotSSLR').hide();
+            $('.myFinance.eotSabah').hide();
+
             if(pageToOpen == 'myDocument' || pageToOpen == 'myFinance'){
                 title = pageToOpen.replace('my','')
                 $(`.mainPage.${pageToOpen} .contentContainer .head h2`).html(`${title} - ${localStorage.p_name}`)
                 
                 if(localStorage.Project_type == 'ASSET' && pageToOpen == 'myFinance'){
                     $('.myFinance.claimsPer').show();
-                }    
+                    if(localStorage.project_owner == 'JKR_SARAWAK' && (localStorage.usr_role == "Contract Assistance" || localStorage.usr_role == "Head of Contract")){
+                        $('.myFinance.claimsInventory').show();
+                    }
+                } 
+                
+                if(pageToOpen == 'myFinance' && localStorage.project_phase == '1B'){ 
+                    $('.myFinance.eotSabah').show();
+                }
             }
         }
 
@@ -5761,18 +5968,847 @@ function _enterApp (pageToOpen, appAccess){
     $(".subMenuButtonContainer").css('opacity', '1')
 }
 
-//Function to print dashboard
-function printContent(){
-    var tabsActive = $('#dashboardSideMenu .subButton.active').attr("id")
+/*
+* Original printCntent function w/o modifcations
+* commented this out first for reference
+*/
+// function printContent(){
+//     var tabsActive = $('#dashboardSideMenu .subButton.active').attr("id")
+//     if(tabsActive == "heavyMaintenanceDash"){
+//         $('#myDashboard')[0].contentWindow.$('.columnToRow').css({'height': '500px', 'overflow': 'visible'})
+//     }else if(tabsActive == "pcaStripmapDash" || tabsActive == "nodDash"){
+//         $('#myDashboard')[0].contentWindow.$('.tableFullWidth').attr('style', 'width: 290mm !important')
+//     }
+//     $('#myDashboard')[0].contentWindow.postMessage({functionName:'print'})
+//     $('#myDashboard')[0].contentWindow.$('body').css("height", "700px")
+//     $('#myDashboard').css("height", "700px")
+//     $('#myDashboard').css("width", "1020px")
+// }
+
+
+let currentRenderedCharts = {};
+/**
+ * modified printContent() with land and hset
+ * land and hset modifications tailored for project_owner = JKR_SABAH
+ * and project_phase != 1b only
+ * @author Kimberly Umali
+ */
+function printContent(buttonElement) {
+    const iframe = $('#myDashboard')[0];
+    const iframeWindow = iframe.contentWindow;
+    const iframe$ = iframeWindow.$;
+    const tabsActive = $('#dashboardSideMenu .subButton.active').attr("id");
+
+    var isGeneralPrint = buttonElement.dataset.generalPrint;
+
+    // original sizesss
+    const originalIframeWidth = $('#myDashboard').css('width');
+    const originalIframeHeight = $('#myDashboard').css('height');
+    const originalIframeBodyHeight = iframeWindow.$('body').css('height');
+
+    // Safety check for DOM
+    if (!iframe || !iframeWindow || !iframeWindow.document) {
+        console.error("content not be accessed for printing.");
+        $('#myDashboard').css({ width: '', height: '' }); // Revert sizing (original safe state)
+        return;
+    }
+    
+    const cleanupPrint = () => {
+        // Restore iframe size
+        $('#myDashboard').css({ 
+            width: originalIframeWidth, 
+            height: originalIframeHeight 
+        });
+
+        // Restore iframe body
+        iframeWindow.$('body').css('height', originalIframeBodyHeight);
+        
+        // Restore body overflow inside the iframe if it was modified for printing
+        iframeWindow.$('body').css('overflow', ''); 
+        
+        // Remove the listener to prevent it from firing multiple times unnecessarily
+        iframeWindow.removeEventListener('afterprint', cleanupPrint);
+    };
+
+    /**
+     * retain original code before the land and hset modif
+     */ 
     if(tabsActive == "heavyMaintenanceDash"){
         $('#myDashboard')[0].contentWindow.$('.columnToRow').css({'height': '500px', 'overflow': 'visible'})
-    }else if(tabsActive == "pcaStripmapDash" || tabsActive == "nodDash"){
+    } else if(tabsActive == "pcaStripmapDash" || tabsActive == "nodDash"){
         $('#myDashboard')[0].contentWindow.$('.tableFullWidth').attr('style', 'width: 290mm !important')
+    } else if(['hsetDash', 'landDash'].includes(tabsActive) && isGeneralPrint == "true"
+                && localStorage.project_owner == 'JKR_SABAH' && localStorage.project_phase != '1b') {
+
+        const chartIds = ['offerIssuedChart', 'paymentChart', 'demolisedChart']; 
+
+        document.getElementById('from-date-js').value = '';
+        document.getElementById('to-date-js').value = '';
+        
+        // Destroy Highcharts Instances
+        for (const id of chartIds) {
+            const chart = currentRenderedCharts[id];
+            if (chart && chart.destroy) {
+                try {
+                    chart.destroy();
+                } catch (e) {
+                    console.warn(`Error destroying chart`, e);
+                }
+            }
+            const chartElement = document.getElementById(id);
+
+            const printChartContentDiv = document.getElementById('print-chart-content');
+            printChartContentDiv.style.visibility = "hidden";
+
+            // const landSummaryCard = document.getElementById('land-summary-container');
+            if (chartElement) {
+                chartElement.innerHTML = '';
+                // landSummaryCard.innerHTML = '';
+            }
+        }
+
+        // card ids (Land, Structures)
+        const cardDisplayIds = [
+            'offerLand', 
+            'offerStructure', 
+            'paymentLand', 
+            'paymentStructure', 
+            'demolishedStructure' 
+        ];
+
+        cardDisplayIds.forEach(id => {
+            const cardElement = document.getElementById(id);
+            if (cardElement) {
+                cardElement.textContent = '0/0'; 
+            }
+        });
+
+        currentRenderedCharts = {};
+
+        /**
+         * temp only. will change this latur
+         * after UI settled
+         */
+        const modal = document.getElementById('print-modal-overlay');
+
+        const hsetDashContent = document.getElementById('hset-chart-content');
+        const landDashContent = document.getElementById('land-chart-content');
+
+        hsetDashContent.style.display = "none";
+        landDashContent.style.visibility = "hidden";
+
+
+        if (modal) {
+            const modalDashContent = tabsActive === 'landDash' ? landDashContent : hsetDashContent;
+            const fromDate = document.getElementById('from-date-js');
+            const toDate = document.getElementById('to-date-js');
+            const printNote = document.querySelector('#print-note small');
+
+            printNote.innerHTML = tabsActive === 'hsetDash' ? '* This filter applies only to the Total Man Hours without LTI (HRS) and HSET Walkabout and Induction bar charts to improve data readability' : '* This filter applies only to vertical bar charts to improve data readability';
+            printNote.style.fontSize = tabsActive === 'hsetDash' ? '7px' : '10px';
+
+            fromDate.value = '';
+            toDate.value = '';
+            modal.style.display = "flex";
+
+            modalDashContent.style.display = tabsActive === 'hsetDash' ? "grid" : "flex";
+
+            iframeWindow.postMessage(
+                { command: 'filterCharts' },
+                '*'
+            );
+        }
+
+    } else {
+        /**
+         * parts of original code
+         */
+        // resize iframe for printing
+        $('#myDashboard')[0].contentWindow.$('body').css("height", "700px")
+        $('#myDashboard').css("height", "700px")
+        $('#myDashboard').css("width", "1020px")
+        
+        // Attach the cleanup function to the 'afterprint' event of the IFRAME window
+        iframeWindow.addEventListener('afterprint', cleanupPrint);
+        
+        // postMessage from the original code
+        $('#myDashboard')[0].contentWindow.postMessage({functionName:'print'})
     }
-    $('#myDashboard')[0].contentWindow.postMessage({functionName:'print'})
-    $('#myDashboard')[0].contentWindow.$('body').css("height", "700px")
-    $('#myDashboard').css("height", "700px")
-    $('#myDashboard').css("width", "1020px")
+}
+
+
+
+var legendColorArr = [
+                        '#183e65' ,'#1374a7','#64c9de','#188cbb', '#d5eaee',
+                        '#ffd19e', '#dc793f', '#896a43', '#552710', '#811701',
+                        '#fcc688', '#f1ebcb', '#f3e1ef', '#d9acc9', '#ae75a0',
+                        '#633158', '#1a040e', '#456c35', '#778f51', '#acc38b',
+                        '#c9c8b4', '#fbfdfc', '#f1d780', '#edcb5f', '#f5b901',
+                        '#dc5d01', '#f59201'
+                    ]
+
+// Function to close the modal
+function closeModal() {
+    const modal = document.getElementById('print-modal-overlay');
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+const CHART_CONTAINER_ID = 'print-chart-container'; 
+const LOADING_OVERLAY_ID = 'chart-loading-overlay';
+
+function manageChartLoading(show) {
+    const container = document.getElementById(CHART_CONTAINER_ID);
+    const button = document.getElementById('apply-filter'); 
+    
+    if (!container) {
+        console.error(`Chart container with ID '${CHART_CONTAINER_ID}' not found.`);
+        return;
+    }
+
+    if (show) {
+        // Check if overlay already exists (to prevent duplicating it)
+        let overlay = document.getElementById(LOADING_OVERLAY_ID);
+
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = LOADING_OVERLAY_ID;
+            overlay.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading Charts... Please wait.';
+            
+            container.appendChild(overlay); 
+        }
+
+        // Disable the button
+        if (button) {
+            button.disabled = true;
+        }
+
+    } else {
+        // HIDE LOADING STATE
+
+        // Get the existing overlay element
+        const overlay = document.getElementById(LOADING_OVERLAY_ID);
+        
+        // ⭐ REMOVE THE DIV FROM THE CONTAINER
+        if (overlay) {
+            container.removeChild(overlay); 
+        }
+        
+        // Re-enable the button
+        if (button) {
+            button.disabled = false;
+        }
+    }
+}
+
+function setPrintFilterError(errorMessage) {
+    const errorEl = document.getElementById('print-chart-error');
+
+    errorEl.textContent = errorMessage;
+    setTimeout(() => {
+        errorEl.textContent = '';
+    }, 1000);
+}
+
+// Function to handle the date selection and initiate printing
+function applyDateRangeAndPrint(event) { 
+    // Add this line at the very beginning to stop the form submission
+    if (event) {
+        event.preventDefault(); 
+    }
+
+    manageChartLoading(true);
+
+    const chartConfigs = [
+        { id: 'offerIssuedChart', dataKey: 'offerIssued', title: 'Offer Issued'},
+        { id: 'paymentChart', dataKey: 'paymentMade', title: 'Payment Made'}, 
+        { id: 'demolisedChart', dataKey: 'demolished', title: 'Demolished'}
+    ];
+
+    const fromDate = document.getElementById('from-date-js').value;
+    const toDate = document.getElementById('to-date-js').value;
+
+    if (!fromDate || !toDate) {
+        setPrintFilterError("Please select both From and To dates.");
+        manageChartLoading(false);
+        return;
+    }
+
+    const renderedCharts = {};
+    const dateKeys = getMonthsInRange(fromDate, toDate); 
+
+    if (dateKeys.length === 0) {
+        setPrintFilterError("No valid month range selected.");
+        manageChartLoading(false);
+        return;
+    } else if(dateKeys.length > 12) {
+        setPrintFilterError("Months limited to 12 Datapoints only");
+        manageChartLoading(false);
+        return;
+    }
+
+    setPrintFilterError("");
+
+    const tabsActive = $('#dashboardSideMenu .subButton.active').attr("id");
+    const landChartContent = document.getElementById('land-chart-content');
+    const hsetDashContent = document.getElementById('hset-chart-content');
+
+    const chartContent = document.getElementById('print-chart-content');
+    const loader = document.getElementById('chart-loading-overlay');
+    const chartContainer = document.getElementById(CHART_CONTAINER_ID);
+    
+    if (loader) {   
+
+        chartContent.style.visibility = 'visible';
+        hsetDashContent.style.display = 'none';
+        landChartContent.style.visibility = 'visible';
+        chartContainer.style.height = '55px';
+        chartContainer.style.width = '700px';
+
+        if(tabsActive === "hsetDash"){
+            console.log("hset hereeeeee");
+            manageChartLoading(false);
+            hsetDashContent.style.display = 'grid' 
+            landChartContent.style.visibility = 'hidden'
+            chartContainer.style.height = '90%';
+            chartContainer.style.width = '1020px';
+
+            updateFilterCharts();
+            return;
+        } 
+    }
+
+    fetchChartData()
+        .then(chartData => {
+            const baseChartData = chartData.data.summary.overall.allDistrict.chart;
+
+            const baseDataCard = (chartData.data.summary && chartData.data.summary['overall'] && chartData.data.summary['overall']['allDistrict']) ? chartData.data.summary['overall']['allDistrict'] : [];
+
+            const renderChart = (divId, plotData, chartName) => {
+                var catArr = []; //xAxis "month-year"
+                var districtIdxArr = []; // ele == districtnames e.g "Tawau" and "Kota Kinabalu"
+                var dataArr = [];
+                
+                if (plotData && Object.keys(plotData).length > 0) {
+                    for (const [mthYr, districtDataObject] of Object.entries(plotData)) {
+
+                        catArr.push(mthYr); 
+
+                        const innerDistrictData = districtDataObject[mthYr];
+
+                        if (innerDistrictData) {
+                            for (const districtName in innerDistrictData) {
+                                if(!districtIdxArr.includes(districtName)){
+                                    districtIdxArr.push(districtName);
+                                }
+                            }
+                        }
+                    }
+
+                    var t = 0;
+                    districtIdxArr.forEach(ele => {
+                        var tempMthYrLand = [];
+                        var tempMthYrStruct = [];
+
+                        const masterId = 'master-' + ele.replace(/\s/g, '');
+                        const districtColor = legendColorArr[t];
+                        
+                        catArr.forEach(mthYr => {
+                            // Get the specific district data block for this month/year
+                            const districtData = plotData[mthYr] && plotData[mthYr][mthYr] ? plotData[mthYr][mthYr][ele] : (plotData[mthYr] ? plotData[mthYr][ele] : null);
+
+                            // Safely extract 'land' and 'structure' for the current district and month
+                            const landValue = (districtData && districtData.land) ? parseInt(districtData.land) : 0;
+                            const structValue = (districtData && districtData.structure) ? parseInt(districtData.structure) : 0;
+                            
+                            // This is where you populate the arrays based on the existence of the data keys
+                            tempMthYrLand.push(landValue);
+                            tempMthYrStruct.push(structValue);
+
+                        });
+
+                        dataArr.push({ 
+                            id: masterId,
+                            name: ele, 
+                            color: districtColor,
+                            type: 'column',
+                            data: [0], 
+                            showInLegend: true, 
+                            visible: true,
+                            custom: { district: ele } 
+                        });
+
+                        if (tempMthYrLand.some(val => val > 0)) {
+                            dataArr.push({ 
+                                name: ele + ' - Land', 
+                                data: tempMthYrLand, 
+                                stack: 'Land', 
+                                color: districtColor, 
+                                linkedTo: masterId,
+                                showInLegend : false,
+                                visible: true,
+                            });
+                        }
+
+                        // 3. STRUCTURE SERIES: (Conditional visibility fix)
+                        if (tempMthYrStruct.some(val => val > 0)) {
+                            dataArr.push({ 
+                                name: ele + ' - Structure',
+                                data: tempMthYrStruct, 
+                                stack: 'Structure',
+                                color: districtColor,
+                                linkedTo: masterId,
+                                showInLegend : false,
+                                visible: true,
+                            });
+                        }
+                        
+                        t++;
+                    });
+                }
+
+                if (window.Highcharts) {
+
+                    const chartInstance = Highcharts.chart(divId, {
+                            chart: {
+                                type: 'column',
+                                height: 242, 
+                                width: 800, 
+                                borderWidth: 0,
+                            },
+                            title: { 
+                                text: chartName,
+                                style: {
+                                    fontSize: '9px',
+                                    color: 'black'
+                                }
+                            },
+                            xAxis: { 
+                                categories: catArr,
+                                lineWidth: 0,
+                                labels: {
+                                    rotation: -60,
+                                    style: {
+                                        fontSize: '10px'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                allowDecimals: false,
+                                tickInterval: 5,
+                                min: 0,
+                                title: {
+                                    text: ''
+                                },
+                                lineWidth: 0,
+                                tickLength: 0,          
+                                stackLabels: {
+                                    enabled: true,
+                                    allowOverlap: true,
+                                    rotation: -90,
+                                    y: -50,
+                                    verticalAlign: 'middle',
+                                    style: {
+                                        color: 'black',  
+                                        fontSize: '8px',
+                                        textOutline: 'none'
+                                    },
+                                    formatter: function () {
+                                        return this.stack;     
+                                    }
+                                }
+                            },
+                            legend: {
+                                align: 'right',         
+                                verticalAlign: 'top',   
+                                layout: 'vertical',     
+                                x: 30,                 
+                                y: 20,                  
+                                width: 150,
+                                symbolHeight: 7,        
+                                symbolWidth: 7,         
+                                itemStyle: {
+                                    fontSize: '9px',
+                                },
+                            },
+                            plotOptions: {
+                                column: {
+                                    stacking: 'normal',
+                                    grouping: true,
+                                    pointPadding: 0.05,
+                                    pointWidth: 12,
+                                    groupPadding: 0.2,
+                                    borderWidth: 0,
+                                    allowPointSelect: true,
+                                    cursor: 'pointer'
+                                }
+                            },
+                            series: dataArr,
+                            credits: false,
+                    });
+                        
+                    return chartInstance;
+                } else {
+                    document.getElementById(divId).innerHTML = `No ${chartName} 
+                        data available for this range.`;
+                    return;
+                }
+            };
+
+            chartConfigs.forEach(config => {
+                const { id, dataKey, title } = config;
+                
+                const filteredPlotData = {};
+
+                let processTotalsFINAL = {}; 
+
+                dateKeys.forEach(({ year, month }) => {
+
+                    if (baseChartData[year]) {
+                        const monthData = baseChartData[year][month];
+                        
+                        if (monthData && monthData[dataKey]) {
+                            var chartKey = month + '-' + year; 
+                            filteredPlotData[chartKey] = monthData[dataKey];
+                        }
+                    }
+
+                    if (baseDataCard) {
+                        /**
+                         * as per request data for cards 
+                         * must not follow the filter range
+                         * Keeping this commented for reference
+                         */
+                        // let monthAllNoData = baseDataCard.card 
+                        //                 && baseDataCard.card[year] 
+                        //                 && baseDataCard.card[year][month] 
+                        //                 && baseDataCard.card[year][month].allNo;
+
+                        /**
+                         * defaulted to All
+                         */
+                        let monthAllNoData = baseDataCard.card 
+                                            && baseDataCard.card.all 
+                                            && baseDataCard.card.all.all 
+                                            && baseDataCard.card.all.all.allNo;
+
+                        if (monthAllNoData) {
+                            processTotalsFINAL = monthAllNoData; 
+                        }
+                    }
+                });
+
+                updateCardDisplays(processTotalsFINAL);
+
+                const chartInstance = renderChart(id, filteredPlotData, title);
+
+                if (chartInstance) {
+                    renderedCharts[id] = chartInstance;
+                }
+
+            });
+
+            setTimeout(() => {
+                closeModal(renderedCharts, chartConfigs.map(c => c.id));
+                manageChartLoading(false);
+                printDiv('print-chart-container');
+            }, 500); 
+        })
+        .catch(error => {
+            alert("Failed to load chart data. Please check your date range and connection.");
+            manageChartLoading(false);
+            console.error("Chart drawing failed:", error);
+        });
+}
+
+/**
+ * On print preview
+ */
+function updateCardDisplays(totals) {
+    const keys = ['demolishedStructure', 'offerLand', 'offerStructure', 'paymentLand', 'paymentStructure'];
+
+    keys.forEach(key => {
+        const cardElement = document.getElementById(key); 
+
+        const valueToDisplay = totals[key]; 
+
+        if (cardElement) {
+            // Check if the value exists
+            if (valueToDisplay !== undefined && valueToDisplay !== null) {
+                 cardElement.textContent = valueToDisplay;
+            } else {
+                 cardElement.textContent = "0/0";
+            }
+        }
+    });
+}
+
+
+/**
+ * from sir JP HSET Modifications related
+ * modified by Ms Rayleen
+ */
+function updateFilterCharts() {
+    const iframeWindow = $('#myDashboard')[0].contentWindow;
+    var selWPC = $('.packFilter.myDashboard').val();
+    var selYear = $('.yrFilter.myDashboard').val();
+ 
+    var selMonth = $('.mthFilter.myDashboard').val();
+    selWPC = (selWPC) ? selWPC : 'overall';
+ 
+    iframeWindow.postMessage(
+        { command: 'updateFilterCharts', wpc : selWPC, year : selYear,  month: selMonth},
+        '*'
+    )
+}
+
+function printDiv(divId) {
+    const printChartFilter = document.getElementById('print-chart-filter');
+
+    printChartFilter.style.display = 'none';
+
+    const tabsActive = $('#dashboardSideMenu .subButton.active').attr("id");
+
+    let content = document.getElementById(divId).innerHTML;
+
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+
+    document.body.appendChild(iframe);
+
+    const iframeDoc = iframe.contentWindow.document;
+
+    iframeDoc.open();
+    const bodyTag = document.getElementsByTagName('body')[0];
+    const headerColors = {
+        digile: '#2f3e5a',
+        laser: '#301d78',
+        darling: '#861a22',
+        matcha: '#789048',
+        dark: '#135ea0',
+        light: '#1e88e5',
+        default: '#1e88e5'
+    }
+    let headerColor = '';
+
+    for (const cls of bodyTag.classList) {
+        if (Object.hasOwn(headerColors, cls)) {
+            headerColor = headerColors[cls];
+            content = content.replace(/#2f3e5a/gi, headerColor);
+            break;
+        }
+    }
+
+    if(tabsActive === "hsetDash"){
+        iframeDoc.write(
+            '<html>' +
+            '<head>' +
+                '<title>HSET Dashboard Print Preview</title>' +
+                '<style>' +
+                    '* { box-sizing: border-box; }' +
+                    
+                    '@media print {' +
+                        '@page {' +
+                            'size: A4 landscape !important;' +
+                            'margin: 0 !important;' + 
+                        '}' +
+
+                        'html, body {' +
+                            'margin: 0 !important;' +
+                            'padding: 0 !important;' +
+                            'width: 100% !important;' +
+                            'height: 100% !important;' +
+                            'overflow: visible !important;' + 
+                        '}' +
+
+                        'body {' +
+                            'position: relative !important;' +
+                            'display: block !important;' +
+                            'top: 0 !important;' +
+                        '}' +
+
+                        '#hset-chart-content {' +
+                            'width: 100% !important;' +
+                            'height: 100% !important;' +
+                            'position: absolute !important;' +
+                            'top: 0 !important;' +
+                            'left: 0 !important;' +
+                            'margin: 0 !important;' +
+                            'padding: 10mm !important;' + /* Added safe padding */
+                            'page-break-inside: avoid !important;' +
+                        '}' +
+
+                        /* Force images and charts to stay within 1 page */
+                        'svg, img, .chart-container {' +
+                            'max-height: 85vh !important;' + /* Leaves room for titles/headers */
+                            'width: auto !important;' +
+                            'display: block !important;' +
+                            'margin: 0 auto !important;' +
+                        '}' +
+                        
+                        /* Adjust scaling if content is still too big */
+                        '.print-content-wrapper {' +
+                            'zoom: 95% !important;' +
+                        '}' +
+                    '}' +
+
+                    /* Header colors - Keeping your existing logic */
+                    '[id^="hset-summ-"] > div:first-child,' +
+                    '[id^="land-summ-"] > div:first-child {' +
+                        'background-color: ' + headerColor + ' !important;' +
+                        'color: white !important;' +
+                    '}' +
+                '</style>' +
+            '</head>' +
+            '<body>' +
+                '<div class="print-content-wrapper">' + content + '</div>' +
+            '</body>' +
+            '</html>'
+        );
+    } else {
+        iframeDoc.write(
+            '<html>' +
+                '<head>' +
+                    '<title>Land Dashboard Print Preview</title>'+
+                    '<style>' +
+                    '[id^="land-summ-"] > div:first-child, ' +
+                    '.structureHeader {' +
+                    '    background-color: '+ headerColor +' !important;' +
+                    '    color: white !important;' +
+                    '}' +
+                    '@media print {' +
+                        '@page {' +
+                            'size: A4 landscape !important;' +
+                            'margin: 0mm;' +  /* this affects the margin in the printer settings */
+                        '}' +
+ 
+                        'body {' +
+                            'margin: 0 !important;' +
+                            'padding: 0 !important;' +
+                        '}' +
+ 
+                        '#land-chart-content {' +
+                            'height: 100vh !important;' + /* Force it to fill the printed page exactly */
+                            'padding: 5mm;' +             /* Control your own spacing here */
+                            'page-break-after: avoid;' +
+                            'page-break-before: avoid;' +
+                        '}' +
+ 
+                        /* Hide scrollbars just in case */
+                        '* {' +
+                            'overflow: hidden !important;'+
+                        '}' +
+ 
+                        '.charts,' +
+                        '#charts-container {' +
+                            'width: 100% !important;' +
+                            'min-width: 800 !important;' +
+                        '}' +
+    
+                        '.highcharts-stack-labels {' +
+                            'opacity: 1 !important;' + /* Ensure visibility */
+                        '}' + 
+                    '}' +
+                    '</style>' +
+                '</head>' +
+                '<body>' + content + '</body>' +
+            '</html>'
+        );
+    }
+
+   
+    iframeDoc.close();
+
+    iframe.contentWindow.focus();
+    
+
+    iframe.contentWindow.onafterprint = () => {
+        printChartFilter.style.display = 'flex';
+        const tabsActive = $('#dashboardSideMenu .subButton.active').attr("id");
+
+        if(tabsActive === "hsetDash"){
+            const hsetDashContent = document.getElementById('hset-chart-content');
+            const chartContent = document.getElementById('print-chart-content');
+            const chartContainer = document.getElementById(CHART_CONTAINER_ID);
+        
+            chartContent.style.visibility = 'hidden';
+            hsetDashContent.style.display = 'none';
+            chartContainer.style.height = '55px';
+            chartContainer.style.width = '700px';
+        }
+    };
+    iframe.contentWindow.print();
+
+    setTimeout(() => document.body.removeChild(iframe), 1000);
+}
+
+function getMonthsInRange(start, end) {
+    const [startMonth, startYear] = start.split('-').map(Number);
+    const [endMonth, endYear] = end.split('-').map(Number);
+    
+    const startDate = new Date(startYear, startMonth - 1, 1);
+    const endDate = new Date(endYear, endMonth - 1, 1); 
+
+    /**
+     * Check for parsing failure
+     */ 
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        return [];
+    }
+    
+    const dateArray = [];
+    let currentDate = startDate;
+
+    // Loop till currentDate moves past the endMonth and endYear
+    // We compare Year, then Month, to ensure we include the final month's data.
+    while (
+        currentDate.getFullYear() < endDate.getFullYear() ||
+        (currentDate.getFullYear() === endDate.getFullYear() && currentDate.getMonth() <= endDate.getMonth())
+    ) {
+        const year = currentDate.getFullYear().toString();
+        // Month is 0-indexed, so we add 1, then use padStart to get "03" format
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        
+        dateArray.push({ 
+            year: year, 
+            month: month 
+        });
+        
+        // Move to the next month (setMonth handles year rollover automatically)
+        currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+
+    return dateArray;
+}
+
+function fetchChartData() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '../Dashboard/chartData.json.php',
+            type: 'POST', 
+            dataType: 'json', 
+            data: { page: "land" },
+            success: function(data) {
+                if (data && typeof data === 'object') {
+                    resolve(data);
+                } else {
+                    reject(new Error("Server returned success but data format is invalid."));
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error during data fetch:", status, error);
+                reject(error);
+            }
+        });
+
+    });
+
 }
 
 //function to handle show loader (called in sysadminv3.js)
@@ -5785,6 +6821,127 @@ hideLoaderHandler = () =>{
     $('.loader').fadeOut()
 }
 
+const breakpointChecker = function(viewPref, pageOpen) {
+    const screenSizeWidth = $(window).width();
+    if(screenSizeWidth <= 1024){
+        return enableSwiperTablet('', pageOpen);
+    }else{
+        var elem = $("#toggleView input[type=checkbox]");
+
+        if(viewPref == 'on'){
+            elem.prop( "checked", false);
+        }
+
+        enableSwiper(viewPref, pageOpen);
+    }
+};
+
+enableSwiperTablet = (condition = '', pageOpen) =>{
+    $(".columnHidden").removeClass("show");
+    $(".columnHidden").siblings().removeClass("toggle-on");
+
+    setTimeout(function(){
+        if(pageOpen == "myTask"){
+            var swiper2 = new Swiper(".mainPage.myTask", {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                slidesPerGroup: 1,
+                grabCursor: true,
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                breakpoints:{
+                    1024:{
+                        slidesPerView: 2,
+                    },
+                }
+            });
+            swiper2.slideTo(0);
+        }else{
+            var swiper = new Swiper(".mainPage.myProject", {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                slidesPerGroup: 1,
+                grabCursor: true,
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                breakpoints:{
+                    1024:{
+                        slidesPerView: 2,
+                    },
+                }
+            });
+            swiper.slideTo(0);
+        }
+    })
+
+    $("#toggleView").hide()
+}
+
+enableSwiper = (condition = 'off', pageOpen) =>{
+    var slideView;
+
+    if(condition == 'on'){
+        slideView = 1;
+
+        $(".columnHidden").addClass("show");
+        $(".columnHidden").siblings().addClass("toggle-on");
+
+        $(".mainPage.myTask .column").not("#noTask").css('flex', 'none');
+    }else{
+        slideView = 2;
+
+        $(".columnHidden").removeClass("show");
+        $(".columnHidden").siblings().removeClass("toggle-on");
+
+        $(".mainPage.myTask .column").not("#noTask").css('flex', '');
+    }
+
+    setTimeout(function(){
+        if(pageOpen == "myTask"){
+            var swiper2 = new Swiper(".mainPage.myTask", {
+                slidesPerView: slideView,
+                spaceBetween: 30,
+                slidesPerGroup: 1,
+                grabCursor: false,
+                allowTouchMove: false,
+                grabCursor: false,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+            });            
+            swiper2.slideTo(0);
+        }else{
+            var swiper = new Swiper(".mainPage.myProject", {
+                slidesPerView: slideView,
+                spaceBetween: 30,
+                slidesPerGroup: 1,
+                grabCursor: false,
+                allowTouchMove: false,
+                grabCursor: false,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+            });
+            swiper.slideTo(0);
+        }
+
+    }, 100)
+
+    $("#toggleView").show()
+}
+
+jQuery(window).on("orientationchange resize", function(){
+    breakpointChecker(localStorage.view_pref, localStorage.page_pageOpen)
+})
+
 $(function () {
     //.ico based on theme
     var themeIco = ($('.sysMode:checked').val()) ? $('.sysMode:checked').val() : 'default';
@@ -5796,6 +6953,9 @@ $(function () {
         $('#titleIcon').attr('href', '../revicons.ico');
         $('#titleDesc').html('Reveron Insights');
     }
+
+    //for myProject break pages
+    breakpointChecker(localStorage.view_pref, localStorage.page_pageOpen)
 
     //selectize for new project in system admin
     contractorSelect = $('#contractorSelector').selectize({
@@ -5872,21 +7032,42 @@ $(function () {
     })
 
     //toggle filter for icon only
-    $('.sortHandler span button.control').click(function(event){
-        if($(this).hasClass("asc")){
-            $(this).css("display", "none")
-            $(this).next(".control:first").css("display", "inline-block")
-        }else if($(this).hasClass("desc")){
-            $(this).css("display", "none")
-            $(this).prev(".control:first").css("display", "inline-block")
-        }else if($(this).hasClass("unset")){
-            $(this).css("display", "none")
-            $(this).siblings(".desc").css("display", "inline-block")
+    $('.sortHandler span button.control').click(function(event){ 
+        event.stopPropagation(); // Prevent parent handlers from triggering
+
+        // Reset all other sort icons to "unset"
+        $('.sortHandler span button.control').not(this).each(function() {
+            $(this).css("display", "none"); 
+            if ($(this).hasClass("unset")) {
+                $(this).css("display", "inline-block"); 
+            }
+        });
+
+        
+        // Handle the clicked button
+        const $currentButton = $(this);
+        const $currentGroup = $currentButton.parent(); 
+
+        
+        $currentGroup.find('button.control').css("display", "none"); 
+
+        if ($currentButton.hasClass("asc")) {
+            $currentGroup.find('button.control.desc').css("display", "inline-block");
+        } else if ($currentButton.hasClass("desc")) {
+            $currentGroup.find('button.control.asc').css("display", "inline-block"); 
+        } else if ($currentButton.hasClass("unset")) {
+            $currentGroup.find('button.control.desc').css("display", "inline-block"); 
         }
     })
 
     //toggle filter for whole button
     $('.sortHandler span.sort').click(function(){
+        
+        $('.sortHandler span.sort').not(this).each(function() {
+            $(this).find('.control').css("display", "none");  
+            $(this).find('.control.unset').css("display", "inline-block"); 
+        });
+ 
         var classesName = '.'+$(this).find('div:visible').attr('class').split(' ').join('.')
 
         if($(this).find('div:visible').hasClass("asc")){
@@ -5904,6 +7085,14 @@ $(function () {
     //default width when print & dashboard loader
     window.addEventListener("message", (event) => {
         if(event.origin != location.origin) return;
+
+        if (event.data && event.data.command && event.data.command === 'overallPrintChartUpdated') {
+            setTimeout(() => {
+                printDiv('print-chart-container');
+            }, 980);
+            return;
+        }
+
         if(event.data && event.data.functionName && event.data.functionName == 'defaultWidth'){
             $('#myDashboard').css("width", "")
             $('#myDashboard').css("height", "")
@@ -5919,24 +7108,6 @@ $(function () {
             $('.loader').fadeOut();
         }
     })
-
-    //load swiper function (Swipe Project page left right)
-    var swiper = new Swiper(".mainPage.myProject", {
-        slidesPerView: 1,
-        spaceBetween: 30,
-        slidesPerGroup: 1,
-        grabCursor: true,
-        slidesPerView: "auto",
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
-        breakpoints:{
-            1024:{
-                slidesPerView: 2,
-            },
-        },
-    });
     
     //from email url
 	var url_string = window.location.href
@@ -5944,26 +7115,38 @@ $(function () {
 
     //DOCUMENT EMAIL
     var action = url.searchParams.get("action");
-    if(action == 'openCorrNoti'){
-        // add acknowlege flag, add package uuid
-        if(SYSTEM == 'KKR'){
-
-            var corrId = url.searchParams.get("id");
-            var packId = url.searchParams.get("pidName");
-            var prevact = url.searchParams.get("prevact");
-            var packUuid = url.searchParams.get("package_uuid");
-            var actuserid = url.searchParams.get("actuserid");
-            var extraParam = '&package_id='+packId+'&prevact='+prevact+'&corr_id='+corrId+'&package_uuid='+packUuid;
-            openFromEmail(actuserid, 'documentInbox', 'acknowledge', extraParam);
-        }else{
-            var corrId = url.searchParams.get("id");
-            var packId = url.searchParams.get("pidName");
-            var prevact = url.searchParams.get("prevact");
-            var packUuid = url.searchParams.get("package_uuid");
-            var actuserid = url.searchParams.get("actuserid");
-            var extraParam = '&package_id='+packId+'&prevact='+prevact+'&corr_id='+corrId+'&package_uuid='+packUuid+'&actuserid='+actuserid;;
-            openFromEmail(corrId, 'documentInbox', 'Respond/View', extraParam);
+    if (action == 'openCorrNoti') {
+        // Add acknowledge flag, add package uuid
+        var corrId = url.searchParams.get("id");
+        var packId; 
+        if (SYSTEM == "OBYU" && localStorage.user_org == 'MRSB') {
+            packId = url.searchParams.get("package");
+        } 
+        else {
+            packId = url.searchParams.get("pidName");
         }
+        var prevact = url.searchParams.get("prevact");
+        var packUuid = url.searchParams.get("package_uuid");
+        var actuserid = url.searchParams.get("actuserid");
+        var package = url.searchParams.get("package");
+        var project_owner = url.searchParams.get("project_owner") || '';
+
+        if(packUuid == null){
+            packUuid = package
+        }
+
+        var extraParam = '&package_id=' + packId + '&prevact=' + prevact + '&corr_id=' + corrId + '&package_uuid=' + packUuid;
+
+        checkingJogetLogin();
+        
+        setTimeout(function() {
+            if (SYSTEM == 'KKR') {
+                openFromEmail(actuserid, 'documentInbox', 'acknowledge', extraParam, project_owner);
+            } else {
+                extraParam += '&actuserid=' + actuserid;
+                openFromEmail(corrId, 'documentInbox', 'Respond/View', extraParam);
+            }
+        }, 1000);
     }
 
     //FINANCE EMAIL
@@ -5994,6 +7177,15 @@ $(function () {
         }
 	}
 
+    //MARKUP EMAIL
+	var markupId = url.searchParams.get("id");
+    var markupView = url.searchParams.get("view");
+    
+	//to open form for next activity
+	if (markupId && markupView) {
+        openFromEmail(markupId, 'documentInbox', 'markupView');
+	}
+
 	//to open last form either complete/reject/closed
 	var iniateConopBrowser = url.searchParams.get("initConop");
 	var eleConopBrowser = url.searchParams.get("data");
@@ -6002,10 +7194,30 @@ $(function () {
 		openCloseFormV3(iniateConopBrowser, eleConopBrowser);
 	}
 
+    //to open notified email without action on mytask
+    var recId = url.searchParams.get("id");
+    var recProcess = url.searchParams.get("process");
+    var recView = url.searchParams.get("view");
+    var recPhase = url.searchParams.get("phase");
+    
+    if (recId && recProcess && recView) {
+        openFromEmail(recId, 'constructInbox', 'emailView', recProcess);
+	}
+
+    if (recId && recProcess && recView && recPhase) {
+        setTimeout(function() {
+            if(recPhase == '1B'){
+                openFromEmail(recId, 'constructInbox', 'emailView1B', recProcess);
+            }else{
+                openFromEmail(recId, 'constructInbox', 'emailView1A', recProcess);
+            }
+        }, 1000);
+	}
+
     //for signout when not active
     inactivityTime();
     
-    if(localStorage.page_pageOpen != "myDashboard"){
+    if(localStorage.page_pageOpen != "myDashboard" && localStorage.page_pageOpen != "myReporting"){
         dataTask();
     }
 
@@ -6121,11 +7333,38 @@ $(function () {
     //wUpdate Floatbox XY on RIContainer resize
     new ResizeObserver(updateFloatBoxV3).observe(RIContainer)
 
+    // This function must live in the PARENT WINDOW's JavaScript environment.
+    function reflowAllCharts() {
+        const iframe = document.getElementById('myDashboard'); 
+        
+        if (!iframe || !iframe.contentWindow || !iframe.contentWindow.Highcharts) {
+            console.warn("Highcharts not found in iframe or iframe not ready.");
+            return;
+        }
+
+        const iframeWindow = iframe.contentWindow;
+
+        console.log(`Executing reflow on charts in iframe: ${iframe.id}`);
+
+        if (iframeWindow.Highcharts.charts && iframeWindow.Highcharts.charts.length > 0) {
+            iframeWindow.Highcharts.charts.forEach(chart => {
+                if (chart) {
+                    chart.reflow();
+                    console.log(`Reflowed chart: ${chart.renderTo.id}`);
+                }
+            });
+        } else {
+            console.warn("No Highcharts instances found in the iframe to reflow.");
+        }
+    }
+
     //when clicking close sub menu button 
     $(".closeSubMenu").on('click', function(){
         $(".subMenuButtonContainer").removeClass('active')
         $(".mainAppButton.active").addClass('subMenuOpened')
         $(".mainContainer").removeClass('subMenuOpened')
+
+        setTimeout(reflowAllCharts, 100);
     })
 
     $(document).on('change', 'input:radio[name="aerialEditCat"]', function() {
@@ -6161,6 +7400,34 @@ $(function () {
 
     $(".row").on('mouseleave',function(){
         $(this).find(".buttonContainer").fadeOut(50)
+    })
+
+    //toggle button for display view by page myProject and myTask container
+    $('#toggleView input[type=checkbox]').click(function(){
+        var viewVal = '';
+
+        if(this.checked == false){
+            viewVal = 'on';
+            localStorage.view_pref = 'on';
+            enableSwiper('on')
+        }else{
+            viewVal = 'off';
+            localStorage.view_pref = 'off';
+            enableSwiper()
+        }
+
+        $.ajax({
+            type: "POST",
+            dataType: "JSON",
+            url: '../Login/postlogin_processingv3.php',
+            data: {
+                functionName: 'saveViewPref',
+                viewVal: viewVal,
+            },
+            success: function(){
+                console.log()
+            }
+        });
     })
 
     //toggle button for display project container
@@ -6313,7 +7580,7 @@ $(function () {
                 $('#'+localStorage.page_pageOpen)[0].contentWindow.$('body').removeClass().addClass(themeJoget)
             }
             catch(e){
-                $(`iframe#${localStorage.jogetIfame}`)[0].contentWindow.postMessage(themeJoget, '*');
+                $(`iframe#${localStorage.jogetIfame}`)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
             }
 
             try {
@@ -6333,7 +7600,7 @@ $(function () {
             }
 
             try {
-                $(`iframe#myAdmin`)[0].contentWindow.$('iframe#myAdminInnerFrame')[0].contentWindow.postMessage(themeJoget, '*');
+                $(`iframe#myAdmin`)[0].contentWindow.$('iframe#myAdminInnerFrame')[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
             }
             catch(e){
                 console.log('joget iframe inside adminPage.php is not set')
@@ -6345,7 +7612,7 @@ $(function () {
                 $('#widgetIframe')[0].contentWindow.$('body').removeClass().addClass(themeJoget)
             }
             catch(e){
-                $(`iframe#widgetIframe`)[0].contentWindow.postMessage(themeJoget, '*');
+                $(`iframe#widgetIframe`)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
             }
         }
 
@@ -6388,7 +7655,9 @@ $(function () {
         var fname = $('#firstnameprofile').val();
         var lname = $('#lastnameprofile').val();
         var country = $('#countryprofile').val();
-        var phone = $('#phonenumberprofile').val()
+        var phone = $('#phonenumberprofile').val();
+        //the designation will be hidden until available across sarawak
+        var designation = $('#designationprofile').val();
 
         if(!fname.match(/^[ a-zA-z'.]*$/) || !lname.match(/^[ a-zA-z'.]*$/)) {
             $.alert({
@@ -6440,8 +7709,9 @@ $(function () {
         var formdata = new FormData();
         formdata.append('fname', fname);
         formdata.append('lname', lname);
-        formdata.append('country', country);
+        formdata.append('country', country); 
         formdata.append('phone', phone);
+        formdata.append('designation', designation);
     
         if ($('#checkresetlabelprofile').prop('checked')) {
             var upassword = $('#userPasswordprofile').val();
@@ -6463,7 +7733,11 @@ $(function () {
         if(SYSTEM == 'OBYU'){
             ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
         }else{
-            ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+            if(IS_DOWNSTREAM){
+                ajaxUrl = '../BackEnd/UserFunctionsSSLR_DS.php';
+            }else{
+                ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+            }
         }
 
         $.ajax({
@@ -6917,17 +8191,7 @@ $(function () {
             }
             else if(pageDatalist == 'assetListInventory'){
                 $(`.jogetList.assetList`).css('display', 'block')
-                // openAssetTable();
-                openAssetTableFM();
-                $('#spaceAssetTab').trigger('click');
-            }
-            else if(pageDatalist == 'assetListInventoryTemp'){
-                $(`.jogetList.assetList`).css('display', 'block')
-                openAssetTableTemp();
-            }
-            else if(pageDatalist == 'assetListInventoryTemp'){
-                $(`.jogetList.assetList`).css('display', 'block')
-                openAssetTableTemp();
+                openAssetTable();
             }
             else if(pageDatalist == 'maintenanceBrowser'){
                 $('.buttonTab.parentTab').children().removeClass('active')
@@ -6980,13 +8244,9 @@ $(function () {
             $(`.navBox.${thingToOpen}`).css('display', 'flex')
             openCameraFeedItem(thingToPass)
         }
-        else if(thingToOpen == 'myTasks'){
-            $(`.navBox.${thingToOpen}`).css('display', 'flex')
-        }
         else if(thingToOpen == 'uploadTool'){
             if (localStorage.project_owner == "UEM_EDGENTA" && localStorage.Project_type == "FM") {
                 $("#xmldiv").css("display", "block");
-                $("#exceldiv").css("display", "block");
             }else{
                 $("#xmldiv").css("display", "none");
             }
@@ -7032,11 +8292,17 @@ $(function () {
             OnClickIoTReset();
             
         }
-        else if(thingToOpen == 'uploadAssetData'){
-            wizardOpenPage(thingToPass)
+        else if(thingToOpen == 'trackAnimation'){
+            console.log("track")
+            $(`.navBox.${thingToOpen}`).css('display', 'flex')
+
+            OnClickAnimationFeed()
         }
         else {
             $(`.navBox.${thingToOpen}`).css('display', 'flex')
+            if(thingToOpen == "measureTool" && $(this).attr('title') == "Point"){
+                $(`.navBox.${thingToOpen}`).css('min-width', '300px')
+            }
         }
 
         //close detach widget list when click insights tool button
@@ -7213,9 +8479,6 @@ navBoxTabClick = (p) =>{
         else if(pageToOpen === "xmldiv"){
 			OnClickXML()
 		}
-        else if(pageToOpen === "exceldiv"){
-			OnClickExcel()
-		}
         else if(pageToOpen === "finance"){
             $('.infoContainerMainBody.projectView').addClass("finance");
             $('.infoContainerMainBody.projectView').find(".projectView.finance.active").css("height", "100%");
@@ -7287,7 +8550,9 @@ openMeasureTool =(e)=>{
     };
     distanceEntity = 0;
     distance = 0;
+    distEntities = [];
     flagPosEntities = false;
+    positionCounter = 0;
 
     //change cursor
     $('#RIContainer').css('cursor', "url('../Images/ccrosshair.cur'),auto")
@@ -7560,6 +8825,7 @@ function openProcessOutside(e) {
     let parentProjectId = $(e).data('parentprojectidnumber');
     let packageId = $(e).data('projectidnumber');
     let projectOwner = $(e).data('projectowner');
+    let projectPhase = $(e).data('projectphase');
 
     if(projectOwner == 'SSLR2'){
         $('#progressUploadtemplateFileProj').find('a').attr('href', '../Templates/Progress_Summary_-_Template_sslr.xlsx');
@@ -7581,7 +8847,8 @@ function openProcessOutside(e) {
             functionName: "getAppLink",
             project_id_number: parentProjectId,
             package_id: packageId,
-            projectOwner : projectOwner
+            projectOwner : projectOwner,
+            projectPhase : projectPhase
         },
         success: function (obj, textstatus) {
             if(obj.error) {
@@ -7598,6 +8865,7 @@ function openProcessOutside(e) {
                 homeLocation = obj['getHomeLoc'];
                 localStorage.user_org = obj['otherDetails'].currUserOrg;
                 localStorage.project_owner = obj['otherDetails'].currProjectOwner;
+                localStorage.project_phase = projectPhase;
 
                 getProcessDownload(obj['project_data'], obj['getPreloadAccess']['compareArr'], obj['getPreloadAccess']['updateArr'],obj['otherDetails'].project_type);
                 loadLayersNewProcess(obj['fetchGeoData']);
@@ -8069,11 +9337,7 @@ openMobileAppBtn = (event) =>{
 
 window.addEventListener("message", (event) => {
 
-    if(event.data.close){
-        wizardCancelPage();
-    }
-
-    // showAlert
+        // showAlert
     if (event.data.alert) {
         var alertObj = event.data.alert;
         $.alert({
@@ -8259,16 +9523,20 @@ window.addEventListener("message", (event) => {
     }
 
     if(event.data.close){
+        wizardCancelPage();
+    }
+
+    if(event.data.close){
         resetJogetConOpDraw(); 
     }
 
     if(event.data.process == "Bumi"){
-        flyToEntity(event.data.kmlName, event.data.coord)
+        flyToEntity(event.data.kmlName, event.data.coord, event.data)
     }
 
     let currPageOpen = localStorage.page_pageOpen ?  localStorage.page_pageOpen : '';
 
-    if(currPageOpen != 'myDashboard' && currPageOpen != 'myFinance' && currPageOpen != 'myDocument'){
+    if(currPageOpen != 'myDashboard' && currPageOpen != 'myFinance' && currPageOpen != 'myDocument' && localStorage.page_pageOpen != "myReporting"){
         resetTaskList()
     }
     
@@ -8339,6 +9607,8 @@ myTaskReloadPage = (title='') =>{
         if(url.searchParams.has("actid") || url.searchParams.has("corr_id")){
             window.open("../Login/homePage.php", '_self');
         }
+    }else{
+        resetTaskList();
     }
 }
 
@@ -8766,7 +10036,11 @@ function OnClickExportUsers() {
     if(SYSTEM == 'OBYU'){
         ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
     }else{
-        ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        if(IS_DOWNSTREAM){
+            ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
+        }else{
+            ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        }
     }
     $.ajax({
         type: "POST",
@@ -8817,6 +10091,7 @@ copyinputvalue = () => {
     let $fname = $("#userFirstName").val();
     let $lname = $("#userLastName").val();
     let $phone = $("#userPhoneNumber").val();
+    let $designation = $("#userDesignation").val();
     let $org
 
     if ($('#addNewOrg').is(':checked')) {
@@ -8839,7 +10114,8 @@ copyinputvalue = () => {
         org: $org,
         country: $country,
         lastUpdate: today,
-        phoneNumber: $phone
+        phoneNumber: $phone,
+        designation: $designation
     };
 
     Object.keys(userData).forEach(key => {
@@ -8868,6 +10144,7 @@ fillUserForm = (userData) => {
     $(`#userOrg`).val(userData.org).prop('selected', true)
     $(`#userCountry`).val(userData.country).prop('selected', true)
     $(`#userType`).val(userData.userType).prop('selected', true)
+    $(`#userDesignation`).val(userData.designation)
     if(userData.supportUser == '1'){
         $(`#supportUser`).val(userData.supportUser).prop('checked',true)
     }else{
@@ -8882,6 +10159,7 @@ resetAddUserForm = () => {
     $("#userPhoneNumber").val("");
     $("#userFirstName").val("");
     $("#userLastName").val("");
+    $("#userDesignation").val("");
     $("#supportUser").val(0).prop("checked",false);
     $("#userOrg").val("");
     $("#userCountry").val("");
@@ -8950,7 +10228,11 @@ userDetail = (ele) => {
     if(SYSTEM == 'OBYU'){
         ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
     }else{
-        ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        if(IS_DOWNSTREAM){
+            ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
+        }else{
+            ajaxUrl = '../BackEnd/UserFunctionsV3.php';
+        }
     }
     $.ajax({
         type: "POST",
@@ -8997,7 +10279,10 @@ userDetail = (ele) => {
                     lastLogin: last_logintime,
                     profilePic: obj.data.profile_img,
                     profileHeader: obj.data.profile_header,
+                    designation: obj.data.user_designation
                 };
+
+                console.log(userData)
 
                 // Loop user data and insert into Read-only view in wizard
                 Object.keys(userData).forEach(key => {
@@ -9066,6 +10351,7 @@ onclickUserSaveButton = () => {
         var utype = $("#userType").val();
         var userid = $("#userId").val();
         var userphone = $("#userPhoneNumber").val();
+        var udesignation = $("#userDesignation").val();
 
         var formdata = new FormData();
         formdata.append("userid", userid);
@@ -9074,6 +10360,7 @@ onclickUserSaveButton = () => {
         formdata.append("country", ucountry);
         formdata.append("usertype", utype);
         formdata.append("phone", userphone);
+        formdata.append("designation", udesignation);
 
         if ($("#resetPassCheck").prop("checked")) {
             var upassword = $("#userPasswordSysAdmin").val();
@@ -9097,6 +10384,7 @@ onclickUserSaveButton = () => {
         var ucountry = $("#userCountry").val();
         var userphone = $("#userPhoneNumber").val();
         var upassword = $("#userPasswordSysAdmin").val();
+        var udesignation = $("#userDesignation").val();
 
         var supuser = $('#supportUser').is(':checked') ? true : false ;
         formdata.append("supuser", supuser);
@@ -9111,6 +10399,7 @@ onclickUserSaveButton = () => {
         formdata.append("usertype", utype);
         formdata.append("password", upassword);
         formdata.append("phone", userphone);
+        formdata.append("designation", udesignation);
 
         if ($('#addNewOrg').is(':checked')) {
             let orgid = $('#userNewOrgId').val();
@@ -9225,6 +10514,11 @@ archiveOrDeleteUser = (e) => {
                 var constructProcessObj = parsedObj.construct;
                 var pfsProcess = parsedObj.pfs;
                 var documentProcess = parsedObj.document;
+                var loadComplete = parsedObj.loadcomplete;
+                if (loadComplete === "busy" || loadComplete === false) {
+                    alert('Server Busy, Please try again later.');
+                    return;
+                }
 
                 if (constructProcessObj) {
                     message += "Construct Process still active as below: <br>";
@@ -9251,7 +10545,12 @@ archiveOrDeleteUser = (e) => {
                 if(SYSTEM == 'OBYU'){
                     ajaxUrl = '../BackEnd/UserFunctionsOBYU.php';
                 }else{
-                    ajaxUrl = '../BackEnd/UserFunctions.php';
+                    if(IS_DOWNSTREAM){
+                        ajaxUrl = '../BackEnd/UserFunctionsSSLR_DS.php';
+                    }
+                    else {
+                        ajaxUrl = '../BackEnd/UserFunctions.php';
+                    }
                 }
                 $.confirm({
                     boxWidth: "40%",
@@ -9363,7 +10662,12 @@ restoreUser = () => {
     if(SYSTEM == 'OBYU'){
         ajaxUrl = '../BackEnd/userFunctionsOBYU.php';
     }else{
-        ajaxUrl = '../BackEnd/userFunctions.php';
+        if(IS_DOWNSTREAM){
+            ajaxUrl = '../BackEnd/UserFunctionsSSLR_DS.php';
+        }
+        else {
+            ajaxUrl = '../BackEnd/UserFunctions.php';
+        }
     }
     $.confirm({
         boxWidth: "30%",
@@ -9516,6 +10820,8 @@ projectDetail = (ele) =>{
                         projectIcon: obj.data.icon_url,
                         projectTimezoneValue: obj.data.time_zone_value,
                         projectTimezoneText: obj.data.time_zone_text,
+                        projectPhase: obj.data.project_phase,
+                        projectWpcAbbr: obj.data.wpc_abbr,
                         projectLocation: obj.data.location,
                         createdBy: obj.data.created_by,
                         projectCreateTime: created_datetime,
@@ -9532,7 +10838,7 @@ projectDetail = (ele) =>{
                         endDate: enddate,
                         duration: obj.data.duration,
                         users: obj.project_users,
-                        applist: obj.app_list
+                        applist: obj.app_list,
                     }
                     if(obj.data.parent_region){
                         click_project_details.parent_region = obj.data.parent_region;
@@ -10217,6 +11523,8 @@ function copyprojectinputvalue() {
     let projectowner = $('#projectOwner').val();
     let projectwpcid = $('#projectWpcId').val();
     let projectindustry = $("#projectIndustry").val();
+    let projectphase = $("#projectPhase").val();
+    let projectwpcabbr = $("#projectWpcAbbr").val();
     let projecttimezone = $("#projectTimezone option:selected").text();
     var projecttype = "";
     if($('#constructProject').is(" :checked")){
@@ -10227,8 +11535,9 @@ function copyprojectinputvalue() {
         projecttype = 'FM';
     }
     let projectregion;
+    let projectPackage = $('#overallprojectCheck').is(":checked");
 
-    if($('#overallprojectCheck').is(":checked")){
+    if(projectPackage){
         projectregion = $('#projectRegion').val();
     }else{
         projectregion = $('#packageRegion').val();
@@ -10245,6 +11554,13 @@ function copyprojectinputvalue() {
     $("#projectlocationdisplay").html(projectlocation);
     $('#projecttypedisplay').html(projecttype);
     $('#projectregiondisplay').html(projectregion);
+    if($('#projectPhase').is(':checked') && projectowner == 'JKR_SABAH'){
+        $('#projectphasedisplay').html(projectphase);
+        $('#projectwpcabbrdisplay').html(projectwpcabbr);
+    }else{
+        $('#projectphasedisplay').html('');
+        $('#projectwpcabbrdisplay').html('');
+    }
     if (projectimage !== "") {
         $('.infoProfilePic.projectIcon').children(`img`).attr(`src`, `${projectimage}`)
     }else{
@@ -10275,7 +11591,8 @@ function OnChangeContractorSelection(selectVal) {
     let selectedOrgName = $('#contractorSelector option:selected').text();
     var kkrContractorOwnerRoles = ["Contractor DC", "Site Supervisor", "HSET Officer", "Contractor CM", "QAQC Officer", "Contractor QS"];
     if(IS_DOWNSTREAM){
-        var kkrContractorOwnerRoles = ["Contractor DC", "Site Supervisor", "HSET Officer", "Contractor CM", "QAQC Officer", "Contractor QS", "Contractor FR"];
+        var kkrContractorOwnerRoles = ["Contractor DC", "Site Supervisor", "HSET Officer", "Contractor CM", "QAQC Officer", "Contractor QS", "Contractor FR",
+                                        "Site Engineer", "Land Officer", "Bumi Officer", "Risk Engineer", "Planning Engineer", "QAQC Manager", "Project Engineer", "Project Director", "Assistant Construction Manager", "Head of Department"];
     }
 
     if (selectVal) {
@@ -10482,6 +11799,7 @@ fillProjectForm = (data) => {
         $("#fmProject").prop("disabled", true);
         //$('#inv').hide();
         toggleProjectType()
+        visibilityProjectPhase(data.projectOwner, data.parentId);
     }else if(data.projectType && data.projectType == "ASSET"){
         $("#constructProject").prop("checked", false);
         $("#assetProject").prop("checked", true);
@@ -10515,6 +11833,13 @@ fillProjectForm = (data) => {
     }
     $('#projectIndustry').val(data.projectIndustry).prop('selected', true)
     $('#projectTimezone').val(data.projectTimezoneValue).prop('selected', true)
+
+    if(data.projectPhase == '1B'){
+        $('#projectPhase').prop('checked', true)
+        $('#projectPhase').prop('disabled', true)
+        wpcAbbrState('visible', data.projectWpcAbbr)
+    }
+
     $('#projectLocation').val(data.projectLocation).prop('selected', true)
     if(data.projectIcon != "favicon.ico"){ // show only if icon is selected
         $('#projectimage').parent().show();
@@ -10574,7 +11899,7 @@ fillProjectForm = (data) => {
         $("#longit1").html(data.long1);
         $("#longit2").html(data.long2);
 
-        ReadEntity = viewerAdmin.entities.add({
+        ReadEntity = viewer4.entities.add({
             selectable: false,
             show: true,
             rectangle: {
@@ -10582,11 +11907,11 @@ fillProjectForm = (data) => {
                 material: Cesium.Color.YELLOW.withAlpha(0.7),
             },
         });
-        viewerAdmin.camera.setView({
+        viewer4.camera.setView({
             destination: readRectangle,
         });
     } else {
-        viewerAdmin.camera.setView({
+        viewer4.camera.setView({
             destination: defaultview,
         });
     }
@@ -10760,6 +12085,8 @@ resetprojectinputvalue = () => {
     $("#projectIndustry").val("")
     $("#projectTimezone").prop("disabled", false);
     $("#projectTimezone").val("")
+    $("#projectPhase").prop("disabled", false);
+    $("#projectPhase").prop("checked", false);
     $('#projectRegion').val("")
     $('#parentId').val("");
     $('#parentId').prop('selectedIndex', 0);
@@ -10808,6 +12135,8 @@ resetprojectinputvalue = () => {
     $("#projectimage").attr("src", "");
     $("#projectindustrydisplay").html("");
     $("#projecttimezonedisplay").html("");
+    $("#projectphasedisplay").html("");
+    $("#projectwpcabbrdisplay").html("");
     $(".hideoncreate").css("display", "flex");
     $("#lat1").html(" ");
     $("#lat2").html(" ");
@@ -10929,9 +12258,14 @@ function updateIndustryTimezone() {
         $('#fmProject').attr("disabled", true);
         $("#label-projectwpcid").show() //hide wpcid for overall
         $("#projectWpcId").show() //hide wpcid for overall
+        $('#projectPhase').prop('checked', false)
+        $('#projectWpcAbbr').val('')
         $(".assetProject").hide()
         $('.packageRegionCont').hide();
         $('.regionCont').hide();
+
+        // project phase Sabah visibility
+        visibilityProjectPhase(projectowner, id);
     }else if(projecttype == 'FM'){
         $('#constructProject').prop("checked", false);
         $('#assetProject').prop("checked", false);
@@ -10941,6 +12275,8 @@ function updateIndustryTimezone() {
         $("#label-projectwpcid").show() //hide wpcid for overall
         $("#projectWpcId").show() //hide wpcid for overall
         $(".assetProject").hide()
+        $('#projectPhase').prop('checked', false)
+        $('#projectWpcAbbr').val('')
         $('.packageRegionCont').hide();
         $('.regionCont').hide();
     }
@@ -11002,7 +12338,7 @@ newProjTypeCheckbox = (e) =>{
 
 //used on project owner to disabled/hide visibility
 OnchangeProjectOwner = (e) => {
-    disableProjectType(e); //for Nafisah and Rayleen to check after merge
+    disableProjectType(e);
     var projOwner = $("option:selected", e).val();
 
     refreshUserListProjectCreation('', '', '', projOwner);
@@ -11134,6 +12470,8 @@ overallprojectState = () => {
     $("select#projectTimezone").removeClass("readonly")
     $("select#projectTimezone").attr("disabled", false)
 
+    visibilityProjectPhase()
+
     $('input#projectId').val("")
     $('input#projectName').val("")
     $('input#projectRegion').val("")
@@ -11226,6 +12564,11 @@ packagespecificState = () => {
         $('#projectimage').parent().hide();
     }
 
+    $(".phaseType").css('display', 'flex')
+    $("#projectPhase").prop('checked', false)
+    $("#projectPhase").prop('disabled', false)
+    wpcAbbrState('hidden')
+
     $(`.upper-container.addNewProject [data-pageButton="2"]`).addClass("disabled")
     $(`.upper-container.addNewProject [data-pagedivider="1"]`).addClass("disabled")
 
@@ -11238,6 +12581,23 @@ packagespecificState = () => {
     $('#appAssignContainerID').hide();
     $('#appAssignContainerID').parent().find('i').removeClass("opened")
     $('#appAssignContainerID').parent().find('i').addClass("disabled")
+}
+
+//used to switch to project phase for new & edit project
+wpcAbbrState = (visibility = 'hidden', abbr) => {
+    $('.wpcAbbr').css('visibility', visibility)
+
+    if(abbr !== ''){
+        $('#projectWpcAbbr').val(abbr)
+    }
+}
+
+onclickProjectPhase = (e) => {
+    if($(e).is(':checked')){
+        wpcAbbrState('visible')
+    }else{
+        wpcAbbrState('hidden')
+    }
 }
 
 //Used in new/edit project wizard Save Button
@@ -11394,12 +12754,23 @@ onclickProjectSaveButton = () =>{
 
         var pid = $("#projectId").val();
         var pname = $("#projectName").val();
-        // var powner = $("#projectOwner").val(); // not allowed to change
         // var pwpcid = $("#projectWpcId").val(); // not allowed to change
+        var powner = $("#projectOwner").val();
         var pind = $("#projectIndustry").val();
         var ptz = $("#projectTimezone option:selected").text();
         var ptzvalue = $("#projectTimezone").val();
         var ploc = $("#projectLocation").val();
+        var projectphase = $("#projectPhase").val();
+        var wpcabbr = $("#projectWpcAbbr").val();
+
+        var ptype = "";
+        if($('#constructProject').is(" :checked")){
+            ptype = 'CONSTRUCT';
+        }else if($('#assetProject').is(" :checked")){
+            ptype = 'ASSET';
+        }else if($('#fmProject').is(" :checked")){
+            ptype = 'FM';
+        }
     
         var file = document.getElementById("imgInp").files[0];
         var startdate = $("#projectstartdate").val();
@@ -11505,6 +12876,14 @@ onclickProjectSaveButton = () =>{
         } else {
             formdata.append("parentid", click_project_details.parentId);
             pregion = $('#packageRegion').val();
+
+            //project phase Sabah
+            if($('#projectPhase').is(':checked')){
+                if(ptype == "CONSTRUCT" && powner == "JKR_SABAH"){
+                    formdata.append("projectphase", projectphase);
+                    formdata.append("wpcabbr", wpcabbr);
+                }
+            }
         }
 
         if(click_project_details.projectType){
@@ -11545,6 +12924,8 @@ onclickProjectSaveButton = () =>{
         var enddate = $("#projectenddate").val();
         var duration = $("#projectduration").val();
         var cutoffday = $("#projectcutoff").val();
+        var projectphase = $("#projectPhase").val();
+        var wpcabbr = $("#projectWpcAbbr").val();
         var contractorOrg = contractorSelectizeOrg;
         var consultantOrg = consultantSelectizeOrg.join(";");
         
@@ -11634,6 +13015,14 @@ onclickProjectSaveButton = () =>{
             let parentId = $('#parentId :selected').val();
             formdata.append("parentid", parentId);
             pregion = $('#packageRegion option:selected').val();
+
+            //project phase Sabah
+            if($('#projectPhase').is(':checked')){
+                if(ptype == "CONSTRUCT" && powner == "JKR_SABAH"){
+                    formdata.append("projectphase", projectphase);
+                    formdata.append("wpcabbr", wpcabbr);
+                }
+            }
         }
 
         if(SYSTEM == 'KKR') {
@@ -11652,7 +13041,7 @@ onclickProjectSaveButton = () =>{
     if(SYSTEM == 'OBYU'){
         ajaxUrl = '../BackEnd/ProjectFunctionsOBYU.php';
     }else{
-        ajaxUrl = '../BackEnd/ProjectFunctionsV3.php';
+        ajaxUrl = '../BackEnd/ProjectFunctionsV3.php'
     }
 
     if(mode == 'edit' && projectUsersUpdate.length> 0){
@@ -12103,4 +13492,149 @@ checkPSUTableLabel = (projOwner, index, element) =>{
                 //do nothing
         }
     }
+}
+
+visibilityProjectPhase = (projOwner, parentid) =>{
+    if(projOwner == "JKR_SABAH" && parentid !== null){
+        $(".projectPhase").css('display', 'flex');
+        $("#projectphasedisplaycont").css('display', 'flex');
+        $("#projectwpcabbrdisplaycont").css('display', 'flex');
+    }else{
+        $(".projectPhase").hide();
+        $("#projectphasedisplaycont").hide();
+        $("#projectwpcabbrdisplaycont").hide();
+    }
+}
+ 
+$('#signOut').on('click', function (e) {
+    e.preventDefault();
+    var loading = $('#loaderHome');
+    loading.fadeIn();
+
+    // // Abort all ongoing requests
+    // ajaxRequests.forEach(req => req.abort());
+ 
+
+    console.log(ajaxRequests);
+    if (ajaxRequests.length === 0) { 
+        window.location.href = "include/logout.php?signOut=signOut";
+    } else {
+        console.log('API requests are running. Waiting for them to finish...');
+        
+        // Use ajaxStop to handle what happens after all requests finish
+        $(document).ajaxStop(function() {
+            console.log('All requests finished. Proceeding with logout.');
+            window.location.href = "include/logout.php?signOut=signOut";
+        });
+        
+    }
+
+    
+});
+
+
+// Modified: function now returns a Promise
+function checkingJogetLogin_promise() {
+    return new Promise((resolve, reject) => { // Added Promise wrapper
+        const jogetHost = JOGETHOST + 'jw';
+        const currUsername = localStorage.userLoginName || '';
+        const enc_pwd = localStorage.encPassword || '';
+
+        const temp_dec_pwd = atob(enc_pwd);
+        const rev_pwd = temp_dec_pwd.split('').reverse().join('');
+        const currUserPwd = atob(rev_pwd);
+
+        // Modified: login callback now resolves or rejects the Promise
+        const loginCallback = {
+            success: function (response) {
+                if (response.username === currUsername) {
+                    console.log("joget login successful");
+                    resolve(true); // resolve if login is successful
+                } else {
+                    console.log("login failed after attempting");
+                    resolve(false); // resolve as false if login fails
+                }
+            },
+            error: function () {
+                console.log("error during login");
+                reject(new Error("Joget login failed")); // reject on error
+            }
+        };
+
+        // Modified: Asset login callback triggers login and flows to main loginCallback
+        const loginCallbackAsset = {
+            success: function () {
+                AssignmentManager.loginWithHash(jogetHost, currUsername, currUserPwd, loginCallback);
+            },
+            error: function () {
+                reject(new Error("Joget asset login failed")); // reject on error
+            }
+        };
+
+        // Modified: success callback of getCurrentUsername resolves or triggers login
+        const callback = {
+            success: function (response) {
+                if (response.username !== "roleAnonymous" && response.username === currUsername) {
+                    console.log("joget already logged in");
+                    resolve(true); // resolve if already logged in
+                } else {
+                    // These branches trigger further login attempts, final result handled in loginCallback
+                    if (SYSTEM === 'KKR') {
+                        if (IS_DOWNSTREAM) {
+                            AssignmentManager.loginWithHash(jogetHost, currUsername, currUserPwd, loginCallback);
+                        } else {
+                            const jogetAssetHost = JOGETASSETHOST + 'jw';
+                            AssignmentManager.loginWithHash(jogetAssetHost, currUsername, currUserPwd, loginCallbackAsset);
+                        }
+                    } else {
+                        AssignmentManager.loginWithHash(jogetHost, currUsername, currUserPwd, loginCallback);
+                    }
+                }
+            },
+            error: function () {
+                reject(new Error("Failed to get current Joget username")); // reject on error
+            }
+        };
+
+        AssignmentManager.getCurrentUsername(jogetHost, callback); // first async call that starts the chain
+    });
+}
+
+function fetchAICDetailsPromise(aicId) {
+    return $.ajax({
+        url: "../BackEnd/fetchDatav3.php", // replace with your PHP endpoint
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            function_name: 'getAICDetailsById',
+            AIC_Id: aicId
+        }
+    });
+}
+
+function isValidDate(d) {
+  return d instanceof Date && !isNaN(d);
+}
+
+function quarterConvertValidDate(date)
+{
+    const parts = date.trim().split(" ");
+
+    if (parts.length === 2) {
+        const [monthStr, yearStr] = parts;
+
+        const monthMap = {
+            Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+            Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+        };
+
+        if (monthMap.hasOwnProperty(monthStr) && !isNaN(yearStr)) {
+            const tempDate = new Date(Number(yearStr), monthMap[monthStr], 1);
+
+            if (!isNaN(tempDate.getTime())) {
+                date = tempDate;
+            }
+        }
+    }
+    return date;
 }

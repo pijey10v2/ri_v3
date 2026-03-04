@@ -10,12 +10,20 @@ $html = "";
 $owner = "";
 $proj_owner = $_SESSION['project_owner'];
 $process_name = $_GET['processName'];
+$hidelist = "";
 if($proj_owner == 'MRSB'){
     $config_directory = dirname(__FILE__).'/../../../Templates/'.$proj_owner.'/Config/';    
     $directory = dirname(__FILE__).'/../../../Templates/'; 
 
     $fileSuffix = "_config.xlsx";
     $filePrefix = "construct_";
+}else if($proj_owner == "KACC"){
+    $config_directory = dirname(__FILE__).'/../../../Templates/'.$proj_owner.'/Config/';    
+    $directory = dirname(__FILE__).'/../../../Templates/'; 
+
+    $fileSuffix = "_config.xlsx";
+    $filePrefix = "construct_";
+    $hidelist = "display:none";
 }else{
     $config_directory = dirname(__FILE__).'/../../../Templates/bulkImport/Config/';    
     $directory = dirname(__FILE__).'/../../../Templates/bulkImport/'; 
@@ -131,7 +139,7 @@ $html = '
     <script src = "../../../JS/scrollBarCollapse.js"></script> 
 </head>
 <body class="defaultBody '.$themeClass.'">
-    <div class="bulkDownloadBody">
+    <div class="bulkDownloadBody" style="'.$hidelist.'">
         <div class="title">List Items :</div>
         <div class="gridListContainer" style="overflow:auto">
             '.$process_name_dropdown_html.'

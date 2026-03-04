@@ -26,7 +26,7 @@ function conOpLink(process, status, workDiscipline, current, title){
           cardName = 'Cumulative'
           break;
       case 'MA':
-          linkWinTitle = 'Method Approval'
+          linkWinTitle = 'Material Approval'
           linkName = 'dash_cons_MT_card'
           
           linkParamArr = processFilterParamArr([searchfilter.dateFrom, searchfilter.dateTo, searchfilter.section])
@@ -36,7 +36,7 @@ function conOpLink(process, status, workDiscipline, current, title){
           cardName = status
           break;
       case 'MACard':
-          linkWinTitle = 'Method Approval'
+          linkWinTitle = 'Material Approval'
           linkName = 'dash_cons_MT_card'
             
           linkParamArr = processFilterParamArr(['', searchfilter.dateTo, searchfilter.section])
@@ -68,7 +68,7 @@ function conOpLink(process, status, workDiscipline, current, title){
                     current = "";
                 }
             }
-          }else if(status == 'True'){
+          }else if(status == 'Approved'){
             cardName = "Replied";
             dateFromRFI = '';
           }else if(status == 'Remaining'){
@@ -592,28 +592,178 @@ function updateMSCard(cumul = 0){
   $("#cumulMethodStatementCard").html(cumulMethodStatementCard);
 }
 
-// MSStatusCharts
-function drawMMStatusChart (data, monthYear){
-  var dataArr = [];
-  var clr;
+function formatMSMAData(data) {
+  var dataArr = [
+    {name: 'Approved', y: 0, color : ''},
+    {name: 'Not Approved', y: 0, color : ''},
+    {name: 'R', y: 0, color : ''}
+  ];
 
   if (data) {
     for (const [idx, ele] of Object.entries(data)) {
-      if(idx == 'Code 1' || idx == 'Closed'){
-        clr='#6EE660'
-      }else if (idx == 'Code 2' || idx == 'Closed'){
-        clr='#EFFA50'
-      }else if (idx == 'Code 3' || idx == 'Rejected'){
-        clr='#DC5356'
-      }else if (idx == 'R' || idx =='Pending'){
-        clr='#7f8287'
+      var tempArr = {name: idx, y: (ele) ? parseInt(ele) : 0, color : ''};
+      var orderName = ['Approved', 'Not Approved', 'R'];
+      var highestIndex = Math.max(...Object.keys(dataArr).map(Number));
+
+      switch (idx) {
+        case 'Code 1':
+        case 'Closed':
+        case 'Approved':
+          tempArr.color='#6EE660';
+          dataArr[0] = tempArr;
+          break;
+        case 'Code 2':
+        case 'Closed':
+          tempArr.color='#EFFA50';
+          highestIndex < (orderName.length - 1) ?
+            dataArr.splice(orderName.length, 0, tempArr) : dataArr.splice((highestIndex + 1), 0, tempArr);
+          break;
+        case 'Code 3':
+        case 'Rejected':
+        case 'Not Approved':
+          tempArr.color='#DC5356';
+          dataArr[1] = tempArr;
+          break;
+        case 'R':
+        case 'Pending':
+          tempArr.color='#7f8287';
+          dataArr[2] = tempArr;
+          break;
+        default:
+          highestIndex < (orderName.length - 1) ?
+            dataArr.splice(orderName.length, 0, tempArr) : dataArr.splice((highestIndex + 1), 0, tempArr);
+          break;
       }
-      var tempArr = {name: idx, y: (ele) ? parseInt(ele) : 0, color : clr};
-      dataArr.push(tempArr);
     }
   }
 
+  return dataArr;
+}
+
+function printChart(chart, type = '', data) {
+  // Save legend + size
+  chart.oldLegend = Highcharts.merge(chart.legend.options);
+
+  // Legend override
+  chart.legend.update({
+    align: 'right',
+    verticalAlign: 'bottom',
+    layout: 'vertical',
+    floating: true
+  });
+
+  // Check if aging chart to update title
+  if (type == 'aging') {
+    chart.title.update({
+        align: 'center',
+        verticalAlign: 'top',
+        y: 30,
+        style: {
+            fontWeight: 'normal',
+        },
+        text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA ('+data.monthYear+')</span>'
+    });
+  }
+
+  // Get the SVG of the chart
+  const svg = chart.getSVG({
+    plotOptions: {
+      pie: {
+        dataLabels: {
+          distance: 60,
+          connectorPadding: 30,
+          style: {
+            fontWeight: 'bold',
+            fontSize: '16px',
+            color: 'black'
+          }
+        },
+      }
+    }
+  });
+
+  // Open a new blank tab
+  const printWindow = window.open('', '_blank');
+
+  // Write chart HTML into it
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Chart Preview</title>
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+          }
+          .chart-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="chart-container">
+          ${svg}
+        </div>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  printWindow.onload = function () {
+    printWindow.focus();
+
+    // Listen for print cancel/finish
+    printWindow.onafterprint = function () {
+      printWindow.close();
+    };
+
+    // Open print dialog
+    printWindow.print();
+
+    // Restore old legend
+    chart.setSize(null, null, false);
+    chart.legend.update(chart.oldLegend);
+  };
+}
+
+// MSStatusCharts
+function drawMMStatusChart (data, monthYear) {
+  var dataArr = formatMSMAData(data);
+
   var chart = Highcharts.chart('MSStatusCharts', {
+    legend: {
+      enabled: true,
+      useHTML: true,
+      align: 'left',
+      verticalAlign: 'left',
+      layout: 'vertical',
+      paddingBottom: 12,
+      marginBottom: 20,
+      itemStyle: {
+        fontSize: '12px',
+        color: '#333'
+      },
+      itemHoverStyle: {
+        color: '#000'
+      }
+    },
+    responsive: {
+      rules: [{
+        condition: {
+          maxWidth: 250
+        },
+        chartOptions: {
+          legend: {
+            enabled: false
+          }
+        }
+      }]
+    },
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: null,
@@ -626,17 +776,47 @@ function drawMMStatusChart (data, monthYear){
           if(localStorage.ui_pref == 'ri_v3'){
             if (document.fullscreenElement && chart.updateFlag) {
               chart.updateFlag = false;
+
               chart.update({
-                chart:{
-                  marginTop: 90,
+                legend: {
+                  align: 'right',
+                  verticalAlign: 'bottom',
+                  layout: 'vertical',
+                  floating: true,
+                  itemStyle: {
+                    fontSize: '16px'
+                  }
                 },
                 title: {
-                  text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS STATUS ('+monthYear+')</span>'
+                    useHTML: true,
+                    enabled: true,
+                    text: '<span class="showLabel" style="display:flex; font-size: 15px; text-align: center; font-color: black;">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS STATUS ('+monthYear+')</span>',
+                    align: 'center',
+                    verticalAlign: 'top',
+                    y: 30,
+                    style: {
+                        fontWeight: 'normal',
+                        fontSize: '15px'
+                    },
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            distance: 60,
+                            connectorPadding: 30,
+                            style: {
+                                fontWeight: 'bold',
+                                fontSize: '16px',
+                                color: 'black'
+                            }
+                        }
+                    }
                 }
-              })
-  
+              });
+
               chart.updateFlag = true;
-            } else if (chart.updateFlag) {
+            }
+             else if (chart.updateFlag) {
               chart.updateFlag = false;
   
               chart.update({
@@ -647,14 +827,31 @@ function drawMMStatusChart (data, monthYear){
               chart.updateFlag = true;
             }
           }
-
+        },
+      }
+    },
+    exporting: {
+      enabled: true,
+      chartOptions: {
+        chart: {
+          width: null,
+          height: null,
+          backgroundColor: 'white'
+        }
+      },
+      menuItemDefinitions: {
+        printChart: {
+          text: 'Print chart',
+          onclick: function () {
+            printChart(this);
+          }
         }
       }
     },
     title: {
-      useHTML: true,
-      enabled: true,
-      text: '<span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS STATUS ('+monthYear+')</span>'
+        useHTML: true,
+        enabled: true,
+        text: '<span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS STATUS ('+monthYear+')</span>',
     },
     tooltip: {
       pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -666,13 +863,30 @@ function drawMMStatusChart (data, monthYear){
     },
     plotOptions: {
       pie: {
+        center: ['50%', '65%'],
         allowPointSelect: true,
         cursor: 'pointer',
         dataLabels: {
-          enabled: false,
-          format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+          enabled: true,
+          // allowedOverlap: true,
+          distance: 7,
+          formatter: function () {
+            if (window.innerWidth >= 1280 && this.point.percentage > 0) {              
+              return '<span style="color: black; -webkit-text-stroke: 1px white; text-stroke: 1px white; font-weight: bold;">' + 
+                (this.point.percentage).toFixed(1) + '%' 
+                + '</span>'; 
+            }
+
+            return null;
+          },
+          connectorColor: 'black',
+          style: {
+            fontWeight: 'bold',
+            fontSize: '12px',
+            color: 'black'
+          }
         },
-        size:'80%'
+        size:'55%'
       }
     },
     credits: false, 
@@ -681,6 +895,7 @@ function drawMMStatusChart (data, monthYear){
       cursor: 'pointer',
       colorByPoint: true,
       data: dataArr,
+      showInLegend: true,
       events: {
         click: function (event) {
           if(localStorage.ui_pref){
@@ -697,6 +912,7 @@ function drawMMStatusChart (data, monthYear){
     }]
   });
   chart.updateFlag = true;
+
 }
 
 function drawNewMASubmissionChart(data, monthYear) {
@@ -726,7 +942,7 @@ function drawNewMASubmissionChart(data, monthYear) {
                       marginTop: 90,
                     },
                     title: {
-                      text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>NEW MT SUBMISSION ('+monthYear+')</span>'
+                      text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>NEW MA SUBMISSION ('+monthYear+')</span>'
                     }
                   })
       
@@ -736,7 +952,7 @@ function drawNewMASubmissionChart(data, monthYear) {
       
                   chart.update({
                     title: {
-                      text: '<span class="showLabel" style="text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>NEW MT SUBMISSION ('+monthYear+')</span>'
+                      text: '<span class="showLabel" style="text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>NEW MA SUBMISSION ('+monthYear+')</span>'
                     }
                   })
                   chart.updateFlag = true;
@@ -749,7 +965,7 @@ function drawNewMASubmissionChart(data, monthYear) {
       title: {
         useHTML: true,
         enabled: true,
-        text: '<span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>NEW MT SUBMISSION ('+monthYear+')</span>'
+        text: '<span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>NEW MA SUBMISSION ('+monthYear+')</span>'
       },
       xAxis: {
           categories: catArr,
@@ -795,7 +1011,7 @@ function drawNewMASubmissionChart(data, monthYear) {
                 if(localStorage.ui_pref == 'ri_v3'){
                   var year = new Date().getFullYear()
                   var searchfilter = getFilterDocumentSarawak();
-                  linkWinTitle = 'Method Approval'
+                  linkWinTitle = 'Material Approval'
                   linkName = 'dash_cons_MT_card'
       
                   var yearUsed;
@@ -929,7 +1145,7 @@ function drawNewMSSubmissionChart(data, monthYear) {
               enabled: true,
               useHTML: true,
             }
-          }
+          },
       },
       colors: ['#8EC3A7'],
       series: [{
@@ -998,6 +1214,35 @@ function drawMSAgingChart(data, monthYear){
   var lessThreeHundred =  (data.less300) ? parseInt(data.less300) : 0;
   var moreThreeHundred = (data.more300) ? parseInt(data.more300) : 0; 
   let chart = Highcharts.chart('methodStatementChart', {
+    legend: {
+      enabled: true,
+      useHTML: true,
+      align: 'left',
+      verticalAlign: 'left',
+      layout: 'vertical',
+      floating: true, 
+      backgroundColor: '#fff',
+      padding: 6,
+      itemStyle: {
+        fontSize: '12px',
+        color: '#333'
+      },
+      itemHoverStyle: {
+        color: '#000'
+      }
+    },
+    responsive: {
+      rules: [{
+        condition: {
+          maxWidth: 250
+        },
+        chartOptions: {
+          legend: {
+            enabled: false
+          }
+        }
+      }]
+    },
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: 0,
@@ -1010,10 +1255,36 @@ function drawMSAgingChart(data, monthYear){
               if (document.fullscreenElement && chart.updateFlag) {
                 chart.updateFlag = false;
                 chart.update({
-                  chart:{
-                  },
                   title: {
-                    text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS ('+monthYear+')</span>'
+                        align: 'center',
+                        verticalAlign: 'top',
+                        y: 30,
+                        style: {
+                            fontWeight: 'normal',
+                        },                    
+                        text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS ('+monthYear+')</span>'
+                 },
+                  legend: {
+                    align: 'right',
+                    verticalAlign: 'bottom',
+                    layout: 'vertical',
+                    floating: true,
+                    itemStyle: {
+                        fontSize: '16px'
+                    }
+                  },
+                  plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            distance: 60,
+                            connectorPadding: 30,
+                            style: {
+                                fontWeight: 'bold',
+                                fontSize: '16px',
+                                color: 'black'
+                            }
+                        }
+                    }
                   }
                 })
     
@@ -1033,13 +1304,31 @@ function drawMSAgingChart(data, monthYear){
           }
         }
     },
+    exporting: {
+      enabled: true,
+      chartOptions: {
+        chart: {
+          width: null,
+          height: null,
+          backgroundColor: 'white'
+        }
+      },
+      menuItemDefinitions: {
+        printChart: {
+          text: 'Print chart',
+          onclick: function () {
+            printChart(this, 'aging', {'monthYear' : monthYear});
+          }
+        }
+      }
+    },
     title: {
       enabled: true,
       useHTML: true,
-      text: '<span class="hiddenLabel">MS</span><span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS ('+monthYear+')</span>',
+      text: '<span class="hiddenLabel">MS Ageing</span><span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MS ('+monthYear+')</span>',
       align: 'center',
       verticalAlign: 'middle',
-      // y: 65,
+      y: 45,
       style:{
         fontSize: '1em',
         fontWeight: 'bold'
@@ -1055,26 +1344,36 @@ function drawMSAgingChart(data, monthYear){
     },
     plotOptions: {
         pie: {
+        center: ['50%', '65%'],
         dataLabels: {
-            enabled: false,
-            distance: -50,
+            enabled: true,
+            distance: 5,
+            formatter: function () {
+              if (window.innerWidth >= 1280 && this.point.percentage > 0) {              
+                return '<span style="color: black; -webkit-text-stroke: 1px white; text-stroke: 1px white; font-weight: bold;">' + (this.point.percentage).toFixed(1) + '</span>'; 
+              }
+
+              return null;
+            },
+            connectorColor: 'black',
             style: {
-            fontWeight: 'bold',
-            color: 'white'
+              fontWeight: 'bold',
+              fontSize: '12px',
+              color: 'black'
             }
         },
         startAngle: 0,
         endAngle: 360,
-        center: ['50%', '55%'],
         size: '110%'
         }
     },
     credits: false, 
     series: [{
       type: 'pie',
-      size: '90%',
+      size: '55%',
       name: 'Aging',
       innerSize: '65%',
+      showInLegend: true,
       data: [{
         name: '<100 Days',
         y: lessHundred,
@@ -1104,25 +1403,38 @@ function updateMACard(cumul = 0){
 }
 
 function drawMAStatusChart (data, monthYear){
-  var dataArr = [];
-  if (data) {
-    for (const [idx, ele] of Object.entries(data)) {
-        var clr = ''
-      if(idx == 'Code 1' || idx == 'Closed'){
-        clr='#6EE660'
-      }else if (idx == 'Code 2' || idx == 'Closed'){
-        clr='#EFFA50'
-      }else if (idx == 'Code 3' || idx == 'Rejected'){
-        clr='#DC5356'
-      }else if (idx == 'R' || idx =='Pending'){
-        clr='#7f8287'
-      }
-      var tempArr = {name: idx, y: (ele) ? parseInt(ele) : 0, color : clr};
-      dataArr.push(tempArr);
-    }
-  }
+  var dataArr = formatMSMAData(data);
 
   var chart = Highcharts.chart('MAStatusCharts', {
+    legend: {
+      enabled: true,
+      useHTML: true,
+      align: 'left',
+      verticalAlign: 'left',
+      layout: 'vertical',
+      backgroundColor: '#fff',
+      paddingBottom: 12,
+      marginBottom: 20,
+      itemStyle: {
+        fontSize: '12px',
+        color: '#333'
+      },
+      itemHoverStyle: {
+        color: '#000'
+      }
+    },
+    responsive: {
+      rules: [{
+        condition: {
+          maxWidth: 250
+        },
+        chartOptions: {
+          legend: {
+            enabled: false
+          }
+        }
+      }]
+    },
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: null,
@@ -1136,12 +1448,37 @@ function drawMAStatusChart (data, monthYear){
             if (document.fullscreenElement && chart.updateFlag) {
               chart.updateFlag = false;
               chart.update({
-                chart:{
-                  marginTop: 90,
+                legend: {
+                  align: 'right',
+                  verticalAlign: 'bottom',
+                  layout: 'vertical',
+                  floating: true,
+                  itemStyle: {
+                    fontSize: '16px'
+                  }
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            distance: 60,
+                            connectorPadding: 30,
+                            style: {
+                                fontWeight: 'bold',
+                                fontSize: '16px',
+                                color: 'black'
+                            }
+                        },
+                    },                    
                 },
                 title: {
-                  text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MT STATUS ('+monthYear+')</span>'
-                }
+                    align: 'center',
+                    verticalAlign: 'top',
+                    y: 30,
+                    style: {
+                        fontWeight: 'normal',
+                    },
+                    text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center;">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA STATUS ('+monthYear+')</span>'
+                },
               })
   
               chart.updateFlag = true;
@@ -1150,7 +1487,7 @@ function drawMAStatusChart (data, monthYear){
   
               chart.update({
                 title: {
-                  text: '<span class="showLabel" style="text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MT STATUS ('+monthYear+')</span>'
+                  text: '<span class="showLabel" style="text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA STATUS ('+monthYear+')</span>'
                 }
               })
               chart.updateFlag = true;
@@ -1160,10 +1497,28 @@ function drawMAStatusChart (data, monthYear){
         }
       }
     },
+    exporting: {
+      enabled: true,
+      chartOptions: {
+        chart: {
+          width: null,
+          height: null,
+          backgroundColor: 'white'
+        }
+      },
+      menuItemDefinitions: {
+        printChart: {
+          text: 'Print chart',
+          onclick: function () {
+            printChart(this);
+          }
+        }
+      }
+    },
     title: {
       useHTML: true,
       enabled: true,
-      text: '<span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MT STATUS ('+monthYear+')</span>'
+      text: '<span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA STATUS ('+monthYear+')</span>'
     },
     tooltip: {
       pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -1175,13 +1530,28 @@ function drawMAStatusChart (data, monthYear){
     },
     plotOptions: {
       pie: {
+        center: ['50%', '65%'],
         allowPointSelect: true,
         cursor: 'pointer',
         dataLabels: {
-          enabled: false,
-          format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+          enabled: true,
+          // allowedOverlap: true,
+          distance: 5,
+          formatter: function () {
+            if (window.innerWidth >= 1280 && this.point.percentage > 0) {              
+              return '<span style="color: black; -webkit-text-stroke: 1px white; text-stroke: 1px white; font-weight: bold;">' + (this.point.percentage).toFixed(1) + '%' + '</span>'; 
+            }
+
+            return null;
+          },
+          connectorColor: 'black',
+          style: {
+            fontWeight: 'bold',
+            fontSize: '12px',
+            color: 'black'
+          }
         },
-        size:'80%'
+        size:'55%'
       }
     },
     credits: false, 
@@ -1190,11 +1560,12 @@ function drawMAStatusChart (data, monthYear){
       cursor: 'pointer',
       colorByPoint: true,
       data: dataArr,
+      showInLegend: true,
       events: {
         click: function (event) {
             if(localStorage.ui_pref == 'ri_v3'){
               var searchfilter = getFilterDocumentSarawak();
-              linkWinTitle = 'Method Approval'
+              linkWinTitle = 'Material Approval'
               linkName = 'dash_cons_MT_card'
   
               linkParamArr = processFilterParamArr([searchfilter.dateFrom, searchfilter.dateTo, searchfilter.section, event.point.name])
@@ -1212,6 +1583,49 @@ function drawMAAgingChart(data, monthYear){
   var lessThreeHundred =  (data.less300) ? parseInt(data.less300) : 0;
   var moreThreeHundred = (data.more300) ? parseInt(data.more300) : 0; 
   let chart = Highcharts.chart('matApprovalChart', {
+    legend: {
+      enabled: true,
+      useHTML: true,
+      labelFormatter: function () {
+
+        if (typeof this.name === 'undefined' || typeof this.percentage === 'undefined') {
+          setTimeout(() => chartRef.redraw(), 0);
+          
+          return 'Loading...';
+        }
+
+        if (window.innerWidth >= 1280) {              
+          return 'Aging: ' + this.name;
+        }
+
+        return '';
+      },
+      align: 'left',
+      verticalAlign: 'left',
+      layout: 'vertical',
+      floating: true, 
+      backgroundColor: '#fff',
+      padding: 6,
+      itemStyle: {
+        fontSize: '12px',
+        color: '#333'
+      },
+      itemHoverStyle: {
+        color: '#000'
+      }
+    },
+    responsive: {
+      rules: [{
+        condition: {
+          maxWidth: 250
+        },
+        chartOptions: {
+          legend: {
+            enabled: false
+          }
+        }
+      }]
+    },
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: 0,
@@ -1225,10 +1639,50 @@ function drawMAAgingChart(data, monthYear){
                 chart.updateFlag = false;
                 chart.update({
                   chart:{
+                    title: {
+                        align: 'center',
+                        verticalAlign: 'top',
+                        y: 0,
+                        style: {
+                            fontSize: '15px',
+                            color: 'black',
+                            textAlign: 'center',
+                            marginTop: '40px !important'
+                        },
+                        text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA ('+monthYear+')</span>'
+                    },
                   },
                   title: {
-                    text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MT ('+monthYear+')</span>'
-                  }
+                    align: 'center',
+                    verticalAlign: 'top',
+                    y: 30,
+                    style: {
+                        fontWeight: 'normal',
+                    },
+                    text: '<span class="showLabel" style="display: flex; font-size: 15px; text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA ('+monthYear+')</span>'
+                  },
+                  legend: {
+                        align: 'right',
+                        verticalAlign: 'bottom',
+                        layout: 'vertical',
+                        floating: true,
+                        itemStyle: {
+                            fontSize: '16px'
+                        }
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            distance: 60,
+                            connectorPadding: 30,
+                            style: {
+                                fontWeight: 'bold',
+                                fontSize: '16px',
+                                color: 'black'
+                            }
+                        }
+                    }
+                }
                 })
     
                 chart.updateFlag = true;
@@ -1237,7 +1691,7 @@ function drawMAAgingChart(data, monthYear){
     
                 chart.update({
                   title: {
-                    text: '<span class="hiddenLabel">MT</span><span class="showLabel" style="text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MT ('+monthYear+')</span>'
+                    text: '<span class="hiddenLabel">MA</span><span class="showLabel" style="text-align: center">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA ('+monthYear+')</span>'
                   }
                 })
                 chart.updateFlag = true;
@@ -1247,13 +1701,31 @@ function drawMAAgingChart(data, monthYear){
           }
         }
     },
+    exporting: {
+      enabled: true,
+      chartOptions: {
+        chart: {
+          width: null,
+          height: null,
+          backgroundColor: 'white'
+        }
+      },
+      menuItemDefinitions: {
+        printChart: {
+          text: 'Print chart',
+          onclick: function () {
+            printChart(this, 'aging', {'monthYear' : monthYear});
+          }
+        }
+      }
+    },
     title: {
       useHTML: true,
       enabled: true,
-      text: '<span class="hiddenLabel">MT</span><span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MT ('+monthYear+')</span>',
+      text: '<span class="hiddenLabel">MA Ageing</span><span class="showLabel">Quality Management Dashboard<br>'+localStorage.p_name+'<br>MA ('+monthYear+')</span>',
         align: 'center',
         verticalAlign: 'middle',
-        // y: 40,
+        y: 45,
         style:{
           fontSize: '1em',
           fontWeight: 'bold'
@@ -1269,26 +1741,36 @@ function drawMAAgingChart(data, monthYear){
     },
     plotOptions: {
         pie: {
+        center: ['50%', '65%'],
         dataLabels: {
-            enabled: false,
-            distance: -50,
+            enabled: true,
+            allowedOverlap: true,
+            distance: 5,
+            formatter: function () {
+              if (window.innerWidth >= 1280 && this.point.percentage > 0) {              
+                return '<span style="color: black; -webkit-text-stroke: 1px white; text-stroke: 1px white; font-weight: bold;">' + (this.point.percentage).toFixed(1) + '</span>'; 
+              }
+
+              return null;
+            },
+            connectorColor: 'black',
             style: {
-            fontWeight: 'bold',
-            color: 'white'
+              fontWeight: 'bold',
+              fontSize: '12px'
             }
         },
         startAngle: 0,
         endAngle: 360,
-        center: ['50%', '55%'],
         size: '110%'
         }
     },
     credits: false, 
     series: [{
       type: 'pie',
-      size: '90%',
+      size: '55%',
       name: 'Aging',
       innerSize: '65%',
+      showInLegend: true,
       data: [{
         name: '<100 Days',
         y: lessHundred,
@@ -1322,7 +1804,7 @@ function updateRFICard(data){
     }
 
     if(repliedCard > 0){
-        repliedCard = `<span class="clickableCard" onclick="conOpLink('RFI','True','','')">`+(repliedCard)+`</span>`;
+        repliedCard = `<span class="clickableCard" onclick="conOpLink('RFI','Approved','','')">`+(repliedCard)+`</span>`;
     }
 
     if(cummulativeSubmittedCard > 0){
@@ -2306,8 +2788,14 @@ function refreshInformation(packId = 'overall', sectionId = 'overall', year = 'a
 
     // ms
     var msData = (qualityData.ms && qualityData.ms[packId] && qualityData.ms[packId][sectionId]) ? qualityData.ms[packId][sectionId] : [];
-    var msCumulCard = (msData.card && msData.card.cumul && msData.card.cumul[year] && msData.card.cumul[year][month]) ? msData.card.cumul[year][month] : 0;
+    var msCumulCard = '';
+    if(year != 'all'){
+      msCumulCard = (msData.card && msData.card.cumulative && msData.card.cumulative[year] && msData.card.cumulative[year][month]) ? msData.card.cumulative[year][month] : 0;
+    } else {
+      msCumulCard = (msData.card && msData.card.cumul && msData.card.cumul[year] && msData.card.cumul[year][month]) ? msData.card.cumul[year][month] : 0;
+    }
     updateMSCard(msCumulCard);
+
     var msStatusData = (msData.byStatus && msData.byStatus[year] && msData.byStatus[year][month]) ? msData.byStatus[year][month] : [];
     drawMMStatusChart(msStatusData, dataYearMonth);
     var msAgingData = (msData.byAging && msData.byAging[year] && msData.byAging[year][month]) ? msData.byAging[year][month] : [];
@@ -2331,9 +2819,17 @@ function refreshInformation(packId = 'overall', sectionId = 'overall', year = 'a
     drawNewMSSubmissionChart(tempMsReceived, dataYearMonth);
 
     // ma
+    var maCumulCard = '';
     var maData = (qualityData.ma && qualityData.ma[packId] && qualityData.ma[packId][sectionId]) ? qualityData.ma[packId][sectionId] : [];
-    var maCumulCard = (maData.card && maData.card.cumul && maData.card.cumul[year] && maData.card.cumul[year][month]) ? maData.card.cumul[year][month] : 0;
+
+    if(year != 'all'){
+      maCumulCard = (maData.card && maData.card.cumulative && maData.card.cumulative[year] && maData.card.cumulative[year][month]) ? maData.card.cumulative[year][month] : 0;
+    } else {
+      maCumulCard = (maData.card && maData.card.cumul && maData.card.cumul[year] && maData.card.cumul[year][month]) ? maData.card.cumul[year][month] : 0;
+    }
+    
     updateMACard(maCumulCard);
+
     var maStatusData = (maData.byStatus && maData.byStatus[year] && maData.byStatus[year][month]) ? maData.byStatus[year][month] : [];
     drawMAStatusChart(maStatusData, dataYearMonth);
     var maAgingData = (maData.byAging && maData.byAging[year] && maData.byAging[year][month]) ? maData.byAging[year][month] : [];

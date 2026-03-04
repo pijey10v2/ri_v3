@@ -1,7 +1,8 @@
 //Cesium for defining area extent
 Cesium.BingMapsApi.defaultKey = 'AgWzRGyO26urfR6O6qFMkOAvSW8TZxds6jR_yPiTvbO_Dx9t-s5sheKO0m9vL_SJ';
-Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4YTU2OTcxMC0wNzdmLTQyZDItOWVkNy0xZjU4NTgzYTVjNTUiLCJpZCI6NzI3Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0ODg2ODEwM30.Lc-IQBDSPyhqgPR2v-Ejcb34ksKJLr23mXsOhszBcHI';
-var mapBoxAccessToken = "pk.eyJ1IjoiZGV2LXR3aW5zaWdodHNtYXAiLCJhIjoiY21jdmN3YTB4MGFkMTJsczNmNzNtZm95MCJ9.88qL93JrS-chRNuaDNFGCA";
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzOTg5ZWFlMS1jZGZiLTQ5OGUtYjY3Ni1mMDJmNGNmNWIwY2UiLCJpZCI6MzA1MjAzLCJpYXQiOjE3NDc5MDMzMzF9._AllgIQ2JG23BGarvbIRTv-ZNpkoDj-W0VMRlN1pTuQ';
+var mapBoxAccessToken = MAPBOX_TOKEN;
+var mapTilerAccessToken = MAPTILER_TOKEN;
 
 var $jogetHost = JOGETHOST;
 
@@ -180,6 +181,21 @@ var landThematic = [];
 var measureDataArr = [];
 var layerProcessArr = [];
 var ecwFileName = [];
+var trackData = []; //array to hold all the data for track animation
+
+//------------Track Animation Variables---------------//
+var positionProperty;
+var arrayOfPositions = null;
+var arrayHeadings = [];
+var pointEntity = null;
+var lastCurrentTime = null;
+var polyEntity = null;
+
+var animationStart;
+var animationStop;
+var entityAnimate;
+var animationDuration;
+var flagAnimate = false;
 
 //---------------Asset Layer ----------------//
 var jogetAssetEntities = { R01: [], R02: [], R04: [], R05Bridge: [], R05Culvert: [],R06: [], R07: [] };
@@ -189,12 +205,12 @@ var jogetAssetDefectEntities = { Pavement: [] };
 function loadRiCesium (){
 	viewer = new Cesium.Viewer('RIContainer', {
 		baseLayerPicker: false,
-		timeline: false,
+		timeline: true,
 		contextOptions: {
 			webgl: { preserveDrawingBuffer: true }
 		},
-		animation: false,
-		geocoder: true,
+		animation: true,
+		geocoder: new MapboxGeocoderService(mapBoxAccessToken),
 		homeButton: true,
 		sceneModePicker: false,
 		imageryProvider: new Cesium.MapboxStyleImageryProvider({
@@ -211,6 +227,26 @@ function loadRiCesium (){
 	});
 	viewer.extend(Cesium.viewerCesiumNavigationMixin, {});
 
+	if(terrainEnabled){
+		viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+			url: "https://api.maptiler.com/tiles/terrain-quantized-mesh-v2/?key="+mapTilerAccessToken,
+			credit: new Cesium.Credit(
+				'<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> ' +
+				'<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+			),
+			requestVertexNormals: true
+		});
+        viewer.scene.globe.depthTestAgainstTerrain  = true;
+	}
+
+	viewer.scene.screenSpaceCameraController.enableCollisionDetection = false;
+	viewer.scene.globe.translucency.frontFaceAlphaByDistance = new Cesium.NearFarScalar(
+		400.0,
+		0.0,
+		800.0,
+		1.0
+	);
+
 	silhouetteBlue = Cesium.PostProcessStageLibrary.createEdgeDetectionStage();
 	silhouetteBlue.uniforms.color = Cesium.Color.BLUE;
 	silhouetteBlue.uniforms.length = 0.01;
@@ -221,21 +257,12 @@ function loadRiCesium (){
 		])
 	);
 
+	//disable timeline & animation for track animation
+	viewer.animation.container.style.display = 'none';
+	viewer.timeline.container.style.display = 'none';
+
 	viewer._cesiumWidget._creditContainer.style.display = "none";
-
-	try {
-		var tileset = new Cesium.Cesium3DTileset({
-			"url" : "../../Data/3DTiles/A_FLOOR.i/A_FLOOR.i/Model_1d/Model_1d.json"
-		});
-		viewer.scene.primitives.add(tileset);
-		console.log('added tileset');
-	} catch (error) {
-		console.log(`Error loading tileset: ${error}`);
-	  }
-
 	setLeftRightClickFunction(viewer); //set the left & right click
-
-
 
 	// if(tilesetlist.length > 0){
 	// 	for (var i = 0; i < tilesetlist.length; i++) {
@@ -253,6 +280,7 @@ function loadRiCesium (){
 
 	//moved loadLayers from Load insight data function as the default b3dm are not able to load in cesium
 	loadLayers(function (p_layers) {
+		sortLayers(p_layers, "name", "asc", "asc");
 		var parentClassName = {};
 		tilesetlist = [];
 		var modelOptions = document.getElementById('modelLayerName');
@@ -261,7 +289,7 @@ function loadRiCesium (){
 		$("#layer").html("");
 		for (var j = 0; j < p_layers.length; j++) {
 			
-			if ((p_layers[j].layerGroup || p_layers[j].layerGroup == 0 ) && ( p_layers[j].flagROS == null || p_layers[j].flagROS == false)) {
+			if ((p_layers[j].layerGroup || p_layers[j].layerGroup == 0 ) && ( p_layers[j].flagROS == null || p_layers[j].flagROS == 0 )) {
 				// scene 2 - to load normal layer group
 				if (!document.getElementById('layerUL_' + p_layers[j].layerGroup)) {
 					var groupUl = document.createElement('div');
@@ -319,9 +347,9 @@ function loadRiCesium (){
 					groupDiv.appendChild(groupCaret);
 					groupDiv.appendChild(groupCheck);
 					groupDiv.appendChild(groupLabel);
-					groupHead.appendChild(groupDiv)
-					groupHead.appendChild(groupUl)
-					groupList.appendChild(groupHead)
+					groupHead.appendChild(groupDiv);
+					groupHead.appendChild(groupUl);
+					groupList.appendChild(groupHead);
 
 				}
 				layerDiv = groupUl
@@ -385,9 +413,9 @@ function loadRiCesium (){
 					groupDiv.appendChild(groupCaret);
 					groupDiv.appendChild(groupCheck);
 					groupDiv.appendChild(groupLabel);
-					groupHead.appendChild(groupDiv)
-					groupHead.appendChild(groupUl)
-					groupList.appendChild(groupHead)
+					groupHead.appendChild(groupDiv);
+					groupHead.appendChild(groupUl);
+					groupList.appendChild(groupHead);
 
 				}
 				layerDiv = groupUl
@@ -453,9 +481,9 @@ function loadRiCesium (){
 						groupDiv.appendChild(groupLabel);
 						
 						
-						groupHead.appendChild(groupDiv)
-						groupHead.appendChild(groupUl)
-						groupList.appendChild(groupHead)
+						groupHead.appendChild(groupDiv);
+						groupHead.appendChild(groupUl);
+						groupList.appendChild(groupHead);
 					}
 					
 					if (!document.getElementById('layerUL_' + p_layers[j].subGroupID)) {
@@ -499,18 +527,20 @@ function loadRiCesium (){
 						groupSubLabel.appendChild(document.createTextNode(p_layers[j].subLayerTitle));
 		
 						groupSubHead.setAttribute('class', 'group hiddenGroup');
+
+						groupSubDiv.setAttribute('onclick', 'togglelist(this)');
 		
 						var groupSubAsset = document.createElement('i'); // CREATE FLYTO.
 						groupSubAsset.setAttribute('for', 'layerGroup_' + p_layers[j].subGroupID);
-						groupSubAsset.setAttribute('class', 'fa-solid fa-binoculars float');
+						groupSubAsset.setAttribute('class', 'fa-solid fa-binoculars float fa-caret-right');
 						groupSubAsset.setAttribute('onclick', 'flyToGroup(this)');
 						
 						groupSubDiv.appendChild(groupSubChk);
 						groupSubDiv.appendChild(groupSubIcon);
 						groupSubDiv.appendChild(groupSubLabel);
 						groupSubDiv.appendChild(groupSubAsset);
-						groupSubHead.appendChild(groupSubDiv)
-						groupSubHead.appendChild(groupSubUl)
+						groupSubHead.appendChild(groupSubDiv);
+						groupSubHead.appendChild(groupSubUl);
 						var groupHeadStr = groupSubHead.outerHTML;
 		
 						$('#layerUL_'+p_layers[j].groupID).append(groupHeadStr)
@@ -520,8 +550,6 @@ function loadRiCesium (){
 			else {
 				layerDiv = document.getElementById('layer');
 			}
-
-			sortLayers(p_layers, "UNSET", "all");
 
 			if(p_layers[j].subGroupID == null){
 				// scene 1 - to create normal layer without subgroupID
@@ -579,7 +607,7 @@ function loadRiCesium (){
 				lbl.appendChild(document.createTextNode(p_layers[j].Layer_Name));
 				// //CREATE
 				// // APPEND THE NEWLY CREATED CHECKBOX AND LABEL TO THE <p> ELEMENT
-				ul_li.appendChild(outerDiv)
+				ul_li.appendChild(outerDiv);
 				outerDiv.appendChild(chk);
 				outerDiv.appendChild(lyr_icon);
 				outerDiv.appendChild(lbl);
@@ -616,7 +644,8 @@ function loadRiCesium (){
 						offset: p_layers[j].Offset,
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: v3URL,
-						groupID: p_layers[j].layerGroup
+						groupID: p_layers[j].layerGroup,
+						subGroupID: p_layers[j].subGroupID
 					});
 		
 				} else if (p_layers[j].Data_Type == "SHP") {
@@ -636,7 +665,8 @@ function loadRiCesium (){
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: p_layers[j].Data_URL,
 						groupID: p_layers[j].layerGroup,
-						ownerLayerID: p_layers[j].project_id
+						ownerLayerID: p_layers[j].project_id,
+						subGroupID: p_layers[j].subGroupID
 					});
 				} else {
 					var mytileset;
@@ -771,7 +801,8 @@ function loadRiCesium (){
 						offset: p_layers[j].Offset,
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: v3URL,
-						groupID: p_layers[j].layerGroup
+						groupID: p_layers[j].layerGroup,
+						subGroupID: p_layers[j].subGroupID
 					});
 		
 				} else if (p_layers[j].Data_Type == "SHP") {
@@ -791,7 +822,8 @@ function loadRiCesium (){
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: p_layers[j].Data_URL,
 						groupID: p_layers[j].layerGroup,
-						ownerLayerID: p_layers[j].project_id
+						ownerLayerID: p_layers[j].project_id,
+						subGroupID: p_layers[j].subGroupID
 					});
 				} else {
 					var mytileset;
@@ -849,128 +881,109 @@ function loadRiCesium (){
 
 }
 
-function sortLayers(p_layers, sortOrder, sortType){
-	p_layers.sort(function(a, b) {
-
-		var dateA = new Date(a.Attached_Date);
-		var dateB = new Date(b.Attached_Date);
-		var datePartA = new Date(dateA.getFullYear(), dateA.getMonth(), dateA.getDate());
-		var datePartB = new Date(dateB.getFullYear(), dateB.getMonth(), dateB.getDate());
-		var groupNameA = a.groupName ? a.groupName.toLowerCase() : null;
-		var groupNameB = b.groupName ? b.groupName.toLowerCase() : null;
-
-		if (a.groupName === null && b.groupName === null) {	
-			if (a.Data_Type < b.Data_Type) {
-				return -1;
-			} else if (a.Data_Type > b.Data_Type) {
-				return 1;
-			}				
-
-			if(sortType === "date" || sortType === "all"){	
-				if(sortOrder === "UNSET" || sortOrder === "DESC"){
-					if (datePartA < datePartB) {
-						return -1;
-					} else if (datePartA > datePartB) {
-						return 1;
-					}
-				}else if(sortOrder === "ASC"){
-					if (datePartA < datePartB) {
-						return 1;
-					} else if (datePartA > datePartB) {
-						return -1;
-					}
-				}
-			}
-			
-			if(sortType === "name" || sortType === "all"){
-				if(sortOrder === "UNSET" || sortOrder === "ASC"){
-					if (a.Layer_Name < b.Layer_Name) {
-						return 1;
-					} else if (a.Layer_Name > b.Layer_Name) {
-						return -1;
-					}
-				}else if(sortOrder === "DESC"){
-					if (a.Layer_Name < b.Layer_Name) {
-						return -1;
-					} else if (a.Layer_Name > b.Layer_Name) {
-						return 1;
-					}
-				}
-			}
-
-			return 0;
-		}
-
-		if (a.groupName !== null && b.groupName !== null) {
-			if(sortType === "date" || sortType === "all"){
-				if(sortOrder === "UNSET" ){
-					if (groupNameA > groupNameB) {
-						return 1;
-					} else if (groupNameA < groupNameB) {
-						return -1;
-					}
-				}else if(sortOrder === "DESC"){
-					if (datePartA < datePartB) {
-						return -1;
-					} else if (datePartA > datePartB) {
-						return 1;
-					}
-				}else if(sortOrder === "ASC"){
-					if (datePartA < datePartB) {
-						return 1;
-					} else if (datePartA > datePartB) {
-						return -1;
-					}
-				}
-			}
-			
-			if(sortType === "name" || sortType === "all"){
-				if(sortOrder === "UNSET" || sortOrder === "ASC"){
-					if (groupNameA > groupNameB) {
-						return 1;
-					} else if (groupNameA < groupNameB) {
-						return -1;
-					}
-
-					if (a.Layer_Name < b.Layer_Name) {
-						return 1;
-					} else if (a.Layer_Name > b.Layer_Name) {
-						return -1;
-					}
-				}else if(sortOrder === "DESC"){
-					if (groupNameA > groupNameB) {
-						return -1;
-					} else if (groupNameA < groupNameB) {
-						return 1;
-					}
-
-					if (a.Layer_Name < b.Layer_Name) {
-						return -1;
-					} else if (a.Layer_Name > b.Layer_Name) {
-						return 1;
-					}
-				}	
-			}
-
-			return 0;
-		}
-	});
+function normalizeString(str) {
+    return str.replace(/\s+/g, ' ')
+              .replace(/(\s*-\s*)/g, ' - ')
+              .trim();
 }
 
-$('.sortHandler span.sort').click(function(){
-	var dataSortValue = $(this).find('div:visible').attr('date-sort');
-	var sortType = dataSortValue.replace('insightslayer-', '').replace(':desc', '').replace(':asc', '');
-	var sortOrder = '';
+function sortLayers(p_layers, sortType, sortInfoName, sortInfoDate) {
+    p_layers.forEach(layer => {
+        if (layer.Layer_Name) {
+            layer.Layer_Name = normalizeString(layer.Layer_Name);
+        }
+        if (layer.groupName) {
+            layer.groupName = normalizeString(layer.groupName);
+        }	
+    });
+	
+	p_layers.sort((a, b) => {
+		const groupNameA = a.groupName ? a.groupName.toLowerCase() : null;
+		const groupNameB = b.groupName ? b.groupName.toLowerCase() : null;
+		const dateA = new Date(a.Attached_Date);
+		const dateB = new Date(b.Attached_Date);
 
-	if($(this).find('div:visible').hasClass("asc")){
-		sortOrder = "DESC";
-	}else if($(this).find('div:visible').hasClass("desc")){
-		sortOrder = "ASC";
-	}else{
-		sortOrder = "DESC";
-	}
+		const compare = (valA, valB, order = "asc") => {
+			const multiplier = order === "desc" ? -1 : 1;
+			if (valA < valB) return 1 * multiplier;
+			if (valA > valB) return -1 * multiplier;
+			return 0;
+		};
+
+		const compareGroupNames = (groupNameA, groupNameB, order) => {
+			return groupNameA.localeCompare(groupNameB, 'en', { numeric: true }) * (order === "asc" ? 1 : -1);
+		};
+
+		if (sortType == "name") {
+			var sortName = sortInfoName;
+	
+			if (!groupNameA && !groupNameB) {
+				let result = compare(b.Data_Type, a.Data_Type);
+				if (result !== 0) return result;
+	
+				return compare(a.Layer_Name, b.Layer_Name, sortName === "desc" ? "desc" : "asc");
+			}
+	
+			if (groupNameA && groupNameB) {
+				let result = compareGroupNames(groupNameA, groupNameB, sortName);
+				if (result !== 0) return result;
+	
+				return compare(a.Layer_Name, b.Layer_Name, sortName === "desc" ? "desc" : "asc");
+	
+			}
+
+			if (sortInfoDate) {
+				if (groupNameA == groupNameB) {
+					return compare(dateA, dateB, sortInfoDate === "desc" ? "desc" : "asc");
+				} 
+			}
+
+			return groupNameA ? 1 : -1;
+		}
+
+		if (sortType == "date") {
+			var sortName = sortInfoName;
+	
+			if (!groupNameA && !groupNameB) {
+				let result = compare(b.Data_Type, a.Data_Type);
+				if (result !== 0) return result;
+			}
+	
+			if (groupNameA && groupNameB) {
+				let result = compareGroupNames(groupNameA, groupNameB, sortName);
+				if (result !== 0) return result;
+			}
+
+			if (sortInfoDate) {
+				if (groupNameA == groupNameB) {
+					return compare(dateA, dateB, sortInfoDate === "desc" ? "desc" : "asc");
+				} 
+			}
+		}
+	});  
+}
+
+var sortInfo = {
+    name: 'asc', 
+    date: 'asc'
+};
+
+$('.sortHandler span.sort').click(function() {
+    // Get the visible div to extract the sort value
+    var visibleDiv = $(this).find('div:visible');
+    var dataSortValue = visibleDiv.attr('date-sort');
+    
+    if (dataSortValue) {
+        var [sortType, sortOrder] = dataSortValue.replace('insightslayer-', '').split(':');
+        sortInfo[sortType] = sortOrder;
+    }
+
+    var sortType = $(this).find('div:visible').attr('date-sort').split(':')[0].replace('insightslayer-', ''); 
 
 	loadLayers(function (p_layers) {
+
+		sortLayers(p_layers, sortType, sortInfo.name, sortInfo.date);
+		
 		var parentClassName = {};
 		tilesetlist = [];
 		var modelOptions = document.getElementById('modelLayerName');
@@ -979,7 +992,7 @@ $('.sortHandler span.sort').click(function(){
 		$("#layer").html("");
 		for (var j = 0; j < p_layers.length; j++) {
 			
-			if ((p_layers[j].layerGroup || p_layers[j].layerGroup == 0 ) && ( p_layers[j].flagROS == null)) {
+			if ((p_layers[j].layerGroup || p_layers[j].layerGroup == 0 ) && ( p_layers[j].flagROS == null || p_layers[j].flagROS == 0 )) {
 				// scene 2 - to load normal layer group
 				if (!document.getElementById('layerUL_' + p_layers[j].layerGroup)) {
 					var groupUl = document.createElement('div');
@@ -1037,9 +1050,9 @@ $('.sortHandler span.sort').click(function(){
 					groupDiv.appendChild(groupCaret);
 					groupDiv.appendChild(groupCheck);
 					groupDiv.appendChild(groupLabel);
-					groupHead.appendChild(groupDiv)
-					groupHead.appendChild(groupUl)
-					groupList.appendChild(groupHead)
+					groupHead.appendChild(groupDiv);
+					groupHead.appendChild(groupUl);
+					groupList.appendChild(groupHead);
 
 				}
 				layerDiv = groupUl
@@ -1103,9 +1116,9 @@ $('.sortHandler span.sort').click(function(){
 					groupDiv.appendChild(groupCaret);
 					groupDiv.appendChild(groupCheck);
 					groupDiv.appendChild(groupLabel);
-					groupHead.appendChild(groupDiv)
-					groupHead.appendChild(groupUl)
-					groupList.appendChild(groupHead)
+					groupHead.appendChild(groupDiv);
+					groupHead.appendChild(groupUl);
+					groupList.appendChild(groupHead);
 
 				}
 				layerDiv = groupUl
@@ -1171,9 +1184,9 @@ $('.sortHandler span.sort').click(function(){
 						groupDiv.appendChild(groupLabel);
 						
 						
-						groupHead.appendChild(groupDiv)
-						groupHead.appendChild(groupUl)
-						groupList.appendChild(groupHead)
+						groupHead.appendChild(groupDiv);
+						groupHead.appendChild(groupUl);
+						groupList.appendChild(groupHead);
 					}
 					
 					if (!document.getElementById('layerUL_' + p_layers[j].subGroupID)) {
@@ -1217,18 +1230,20 @@ $('.sortHandler span.sort').click(function(){
 						groupSubLabel.appendChild(document.createTextNode(p_layers[j].subLayerTitle));
 		
 						groupSubHead.setAttribute('class', 'group hiddenGroup');
+
+						groupSubDiv.setAttribute('onclick', 'togglelist(this)');
 		
 						var groupSubAsset = document.createElement('i'); // CREATE FLYTO.
 						groupSubAsset.setAttribute('for', 'layerGroup_' + p_layers[j].subGroupID);
-						groupSubAsset.setAttribute('class', 'fa-solid fa-binoculars float');
+						groupSubAsset.setAttribute('class', 'fa-solid fa-binoculars float fa-caret-right');
 						groupSubAsset.setAttribute('onclick', 'flyToGroup(this)');
 						
 						groupSubDiv.appendChild(groupSubChk);
 						groupSubDiv.appendChild(groupSubIcon);
 						groupSubDiv.appendChild(groupSubLabel);
 						groupSubDiv.appendChild(groupSubAsset);
-						groupSubHead.appendChild(groupSubDiv)
-						groupSubHead.appendChild(groupSubUl)
+						groupSubHead.appendChild(groupSubDiv);
+						groupSubHead.appendChild(groupSubUl);
 						var groupHeadStr = groupSubHead.outerHTML;
 		
 						$('#layerUL_'+p_layers[j].groupID).append(groupHeadStr)
@@ -1237,12 +1252,6 @@ $('.sortHandler span.sort').click(function(){
 			}
 			else {
 				layerDiv = document.getElementById('layer');
-			}
-
-			if(sortOrder == "ASC"){
-				sortLayers(p_layers, "ASC", sortType);
-			}else if (sortOrder == "DESC"){
-				sortLayers(p_layers, "DESC", sortType);
 			}
 			
 			if(p_layers[j].subGroupID == null){
@@ -1338,7 +1347,8 @@ $('.sortHandler span.sort').click(function(){
 						offset: p_layers[j].Offset,
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: v3URL,
-						groupID: p_layers[j].layerGroup
+						groupID: p_layers[j].layerGroup,
+						subGroupID: p_layers[j].subGroupID
 					});
 		
 				} else if (p_layers[j].Data_Type == "SHP") {
@@ -1358,7 +1368,8 @@ $('.sortHandler span.sort').click(function(){
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: p_layers[j].Data_URL,
 						groupID: p_layers[j].layerGroup,
-						ownerLayerID: p_layers[j].project_id
+						ownerLayerID: p_layers[j].project_id,
+						subGroupID: p_layers[j].subGroupID
 					});
 				} else {
 					var mytileset;
@@ -1455,7 +1466,7 @@ $('.sortHandler span.sort').click(function(){
 				lbl.appendChild(document.createTextNode(p_layers[j].Layer_Name));
 				// //CREATE
 				// // APPEND THE NEWLY CREATED CHECKBOX AND LABEL TO THE <p> ELEMENT
-				ul_li.appendChild(outerDiv)
+				ul_li.appendChild(outerDiv);
 				outerDiv.appendChild(chk);
 				outerDiv.appendChild(lyr_icon);
 				outerDiv.appendChild(lbl);
@@ -1493,7 +1504,8 @@ $('.sortHandler span.sort').click(function(){
 						offset: p_layers[j].Offset,
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: v3URL,
-						groupID: p_layers[j].layerGroup
+						groupID: p_layers[j].layerGroup,
+						subGroupID: p_layers[j].subGroupID
 					});
 		
 				} else if (p_layers[j].Data_Type == "SHP") {
@@ -1513,7 +1525,8 @@ $('.sortHandler span.sort').click(function(){
 						defaultView: p_layers[j].groupView || p_layers[j].Default_View,
 						url: p_layers[j].Data_URL,
 						groupID: p_layers[j].layerGroup,
-						ownerLayerID: p_layers[j].project_id
+						ownerLayerID: p_layers[j].project_id,
+						subGroupID: p_layers[j].subGroupID
 					});
 				} else {
 					var mytileset;
@@ -1585,7 +1598,7 @@ function loadRiCesiumProcess (homeLocation){
 			webgl: { preserveDrawingBuffer: true }
 		},
 		animation: false,
-		geocoder: true,
+		geocoder: new MapboxGeocoderService(mapBoxAccessToken),
 		homeButton: true,
 		sceneModePicker: false,
 		imageryProvider: new Cesium.MapboxStyleImageryProvider({
@@ -1633,7 +1646,7 @@ function loadRiCesiumProcessProj (homeLocation){
 			webgl: { preserveDrawingBuffer: true }
 		},
 		animation: false,
-		geocoder: true,
+		geocoder: new MapboxGeocoderService(mapBoxAccessToken),
 		homeButton: true,
 		sceneModePicker: false,
 		imageryProvider: new Cesium.MapboxStyleImageryProvider({
@@ -1681,12 +1694,12 @@ function loadRiCesiumManageProj (homeLocation, id){
 			webgl: { preserveDrawingBuffer: true }
 		},
 		animation: false,
-		geocoder: true,
+		geocoder: new MapboxGeocoderService(mapBoxAccessToken),
 		homeButton: true,
 		sceneModePicker: false,
-		imageryProvider: new Cesium.BingMapsImageryProvider({
-			url: 'https://dev.virtualearth.net',
-			mapStyle: Cesium.BingMapsStyle.AERIAL
+		imageryProvider: new Cesium.MapboxStyleImageryProvider({
+			styleId: 'satellite-v9', 
+        	accessToken: mapBoxAccessToken
 		}),
 		navigationHelpButton: false,
 		infoBox: false,
@@ -2573,6 +2586,7 @@ function drawTempLine(cartesian, type){
 
 function setLeftRightClickFunction(viewer){
 	floatboxV3TurnOFF()
+
 	// Information about the currently selected feature
 	selected = {
 		feature: undefined,
@@ -2621,7 +2635,6 @@ function setLeftRightClickFunction(viewer){
 	};
 
 	var scene = viewer.scene; clickHandler = viewer.screenSpaceEventHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
 
 	viewer.screenSpaceEventHandler.setInputAction(function (movement) {
 		var pickedObject = scene.pick(movement.endPosition);
@@ -2716,11 +2729,10 @@ function setLeftRightClickFunction(viewer){
 	viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(movement) {
 		silhouetteBlue.selected = [];
 		floatboxV3TurnOFF()
-		console.log(movement);
+
 		if (flagDraw) {
 
 			var cartesian = viewer.scene.pickPosition(movement.position);
-			
 			pickedFeature = viewer.scene.pick(movement.position);
 
 			if (Cesium.defined(cartesian)) {
@@ -2875,11 +2887,18 @@ function setLeftRightClickFunction(viewer){
 					};
 
 					addmeasureBillboard(lon, lat, hei);
-					var terrainProvider = Cesium.createWorldTerrain();
+					var terrainProvider = new Cesium.CesiumTerrainProvider({
+						url: "https://api.maptiler.com/tiles/terrain-quantized-mesh-v2/?key=Qof37tl3Ljtd3tH2VgbV",
+						credit: new Cesium.Credit(
+							'<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> ' +
+							'<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+						),
+						requestVertexNormals: true
+					});
+
 					var positions = [
 						Cesium.Cartographic.fromDegrees(lon, lat)
 					];
-
 					var promise = Cesium.sampleTerrain(terrainProvider, 11, positions);
 					Cesium.when(promise, function (updatedPositions) {
 						pickedFeature = viewer.scene.pick(movement.position);
@@ -2915,6 +2934,7 @@ function setLeftRightClickFunction(viewer){
 								tag: 'Point',
 								Lon: lon + '\u00B0',
 								Lat: lat + '\u00B0',
+								Height: '-',
 								Terrain: + positions[0].height.toFixed(3) + ' m'
 							});
 						};
@@ -3050,7 +3070,6 @@ function setLeftRightClickFunction(viewer){
 		} else {
 
 			pickedFeature = viewer.scene.pick(movement.position);
-			console.log(pickedFeature);
 
 			if (pickedFeature instanceof Cesium.Cesium3DTileFeature && pickedFeature._content._batchIdAttributeName == 'a_batchId') {
 				silhouetteBlue.selected = [pickedFeature];
@@ -3094,7 +3113,6 @@ function setLeftRightClickFunction(viewer){
 			};
 
 			try {
-
 				if (pickedFeature.id._name) {
 					if(!pickedFeature.id._billboard._image._value.includes("Images/" )){
 						getRequestBimAttr(pickedFeature.id._name, "road")
@@ -3105,9 +3123,6 @@ function setLeftRightClickFunction(viewer){
 				console.log("not centreline")
 			}
 
-
-
-
 			if (!pickedFeature.id) {
 				//temp attribute retrieving for BIM (demo)
 				movePosition = movement.position;
@@ -3117,17 +3132,14 @@ function setLeftRightClickFunction(viewer){
 
 				$('#rootNode').jstree('deselect_all');
 				$('#infoRootNode').jstree('deselect_all');
-				modFlag = true;
+
 				if (modFlag) {
 					if (!Cesium.defined(pickedFeature)) {
 						clickHandler(movement);
 						return;
 					}
-					console.log(selectedPrimitiveId);
-
 					if (Cesium.defined(selectedPrimitiveId)) {
 						attributes = selectedPrimitive.getGeometryInstanceAttributes(selectedPrimitiveId);
-						console.log(attributes);
 						attributes.color = selectedPrimitveColor;
 						attributes.show = selectedPrimitiveShow;
 						selectedPrimitiveId = undefined;
@@ -3636,7 +3648,7 @@ function setLeftRightClickFunction(viewer){
 			$(`.modal-content`).css("width", "30vw").css("height", "80vh")
 			$(".modal-header a").text("New Location")
 		} else if (flagMeasure && MeasureTool == "Area") {
-			var cartesian = viewer.scene.pickPosition(click.position);
+			var cartesian = viewer.camera.pickEllipsoid(click.position, viewer.scene.globe.ellipsoid);
 
 			if (distanceEntity < 3) {
 				return;
@@ -3680,7 +3692,6 @@ function setLeftRightClickFunction(viewer){
 			square = square.sup();
 			labelEntity[0].position = cartesian;
 			labelEntity[0].label.show = true;
-			labelEntity[0].label.backgroundColor = Cesium.Color.BLACK;
 			labelEntity[0].label.text =
 				'Area : ' + myarea.toFixed(3) + ' km2' +
 				'\nPerimeter : ' + perimeter.toFixed(3) + ' km';
@@ -4125,6 +4136,69 @@ function setLeftRightClickFunctionNewProcess(viewer){
 							}
 							
 						}
+						else if(jogetProcessApp == 'BP'){
+							if (pickedFeature.id._parent){
+								jogetConOpDraw.fileName = "";
+								jogetConOpDraw.WPCId = "";
+	
+								let cartesian = viewer.camera.pickEllipsoid(movement.position);
+								let cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesian);
+								let currentLong = Cesium.Math.toDegrees(cartographic.longitude).toFixed(8);
+								let currentLati = Cesium.Math.toDegrees(cartographic.latitude).toFixed(8);
+	
+								jogetConOpDraw.coordsArray.splice(0, jogetConOpDraw.coordsArray.length);
+								jogetConOpDraw.coordsArray.push(currentLong);
+								jogetConOpDraw.coordsArray.push(currentLati);
+	
+								var kmlFileName = pickedFeature.id._parent.entityCollection._owner._name
+								const extendedData = pickedFeature.id._kml.extendedData;
+
+								let WPCValue;
+								if (extendedData) {
+									if ('WPC_NO' in extendedData) {
+										WPCValue = extendedData.WPC_NO.value;
+									} else if ('WPC_No' in extendedData) {
+										WPCValue = extendedData.WPC_No.value;
+									} else {
+										WPCValue = null; // Default if neither key exists
+									}
+								} else {
+									WPCValue = null; // Handle case where extendedData is undefined
+								}
+
+								var desiredEntityId = WPCValue;
+	
+								jogetConOpDraw.fileName = kmlFileName;
+								jogetConOpDraw.WPCId = desiredEntityId;
+	
+								msgBumi = "";
+	
+								if(!kmlFileName || !desiredEntityId){
+									msgBumi = "Please use correct data to initiate Bumi Process."
+								}
+	
+								if(msgBumi){
+									$.confirm({
+										boxWidth: "30%",
+										useBootstrap: false,
+										title: "Bumi Function",
+										content: msgLand,
+										buttons: {
+											Ok: function () {
+												$(".nextPage").css('display', 'none')
+												clearAllFlag();
+												return;
+											}
+										},
+									});
+								}
+								else{
+									$('.nextPage').css('display', 'unset')
+									jogetConOpDraw.flag = true;
+									updateLongLat();
+								}
+							}
+						}
 						else {
 							var desiredLot = (pickedFeature.id._kml.extendedData.LOT) ? pickedFeature.id._kml.extendedData.LOT.value : false;
 							lot = desiredLot;
@@ -4170,7 +4244,22 @@ function setLeftRightClickFunctionNewProcess(viewer){
 							jogetConOpDraw.coordsArray.push(currentLati);
 
 							var kmlFileName = pickedFeature.id._parent.entityCollection._owner._name
-							var desiredEntityId = pickedFeature.id._kml.extendedData.WPC_NO.value;
+							const extendedData = pickedFeature.id._kml.extendedData;
+
+							let WPCValue;
+							if (extendedData) {
+								if ('WPC_NO' in extendedData) {
+									WPCValue = extendedData.WPC_NO.value;
+								} else if ('WPC_No' in extendedData) {
+									WPCValue = extendedData.WPC_No.value;
+								} else {
+									WPCValue = null; // Default if neither key exists
+								}
+							} else {
+								WPCValue = null; // Handle case where extendedData is undefined
+							}
+
+							var desiredEntityId = WPCValue;
 
 							jogetConOpDraw.fileName = kmlFileName;
 							jogetConOpDraw.WPCId = desiredEntityId;
@@ -4351,8 +4440,12 @@ function addEarthPin(name, long, lat, height, show) {
 		position: Cesium.Cartesian3.fromDegrees(long, lat, height),
 		billboard: {
 			image: '../Images/camera_360.png',
+			eyeOffset: Cesium.Cartesian3(0.0, 0.0, -10.0),
+			heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
 			verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
 			horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+			disableDepthTestDistance: Number.POSITIVE_INFINITY,
+			width: 50,
 			width: 50,
 			height: 50
 		},
@@ -4362,8 +4455,12 @@ function addEarthPin(name, long, lat, height, show) {
 			font: '14pt monospace',
 			style: Cesium.LabelStyle.FILL_AND_OUTLINE,
 			outlineWidth: 2,
-			verticalOrigin: Cesium.VerticalOrigin.TOP,
-			pixelOffset: new Cesium.Cartesian2(0, -9)
+			eyeOffset: Cesium.Cartesian3(0.0, 0.0, -10.0),
+			heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+			verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+			horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+			pixelOffset: new Cesium.Cartesian2(0, 5)
 		}
 	});
 	return (myEarthPin);
@@ -4711,8 +4808,14 @@ function submitReviewCanvas() {
 					url = JOGETLINK.form['markup_review_form'] + urlParam;
 				}
 			}else{
-				if(JOGETLINK['cons_issue_markupv3']){
-					url = JOGETLINK['cons_issue_markupv3'] + urlParam;
+				if(localStorage.project_owner == 'JKR_SABAH'){
+					if(JOGETLINK['cons_issue_markupv3_sbh']){
+						url = JOGETLINK['cons_issue_markupv3_sbh'] + urlParam;
+					}
+				}else{
+					if(JOGETLINK['cons_issue_markupv3']){
+						url = JOGETLINK['cons_issue_markupv3'] + urlParam;
+					}
 				}
 			}
 
@@ -4803,8 +4906,14 @@ function openReviewToolList() {
 			url = JOGETLINK.dataList['markup_review_list']
 		}
 	}else{
-		if(JOGETLINK['cons_datalist_markup']){
-			url = JOGETLINK['cons_datalist_markup']
+		if(localStorage.project_owner == 'JKR_SABAH'){
+			if(JOGETLINK['cons_datalist_markup_sabah']){
+				url = JOGETLINK['cons_datalist_markup_sabah']
+			}
+		}else{
+			if(JOGETLINK['cons_datalist_markup']){
+				url = JOGETLINK['cons_datalist_markup']
+			}
 		}
 	}
 
@@ -4848,12 +4957,80 @@ function setCameraPosOrientv3(coordinate,orientation,image_link) {
 }
 
 function LoadVideoPinData(callback) {
+
+    $.ajax({
+        type: "POST",
+        url: '../BackEnd/fetchDatav3.php',
+        dataType: 'JSON',
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+    	processData: true,
+        cache: false, // prevent caching
+        data: {
+            functionName: "getVideoCam",
+            project_id: localStorage.p_id, // send project id
+            t: Date.now() // extra cache buster
+        },
+
+        success: function (obj) {
+
+            console.log("Camera Feed Response:", obj);
+
+            if (obj.data) {
+                callback(obj.data);
+            } else {
+                callback([]);
+                console.log(obj.msg);
+            }
+        },
+
+        error: function (xhr) {
+            console.log("AJAX Error:", xhr);
+        }
+    });
+}
+
+
+function addVideoPin(name, long, lat, height, show) {
+	var myVideoPin = viewer.entities.add({
+		name: name,
+		position: Cesium.Cartesian3.fromDegrees(long, lat, height),
+		billboard: {
+			image: '../Images/security-camera.png',
+			eyeOffset: Cesium.Cartesian3(0.0, 0.0, -10.0),
+			heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+			verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+			horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+			disableDepthTestDistance: Number.POSITIVE_INFINITY,
+			width: 50,
+			height: 50
+		},
+		show: show,
+		label: {
+			text: name,
+			font: '14pt monospace',
+			style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+			outlineWidth: 2,
+			eyeOffset: Cesium.Cartesian3(0.0, 0.0, -10.0),
+			heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+			verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+			horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+			pixelOffset: new Cesium.Cartesian2(0, 5)
+		}
+	});
+	return (myVideoPin);
+}
+
+// START TRACK ANIMATION //
+
+// Function to load track data
+function LoadTrackData(callback) {
 	$.ajax({
 		type: "POST",
 		url: '../BackEnd/fetchDatav3.php',
 		dataType: 'JSON',
 		data: {
-			functionName: "getVideoCam"
+			functionName: "getTrackAnimation"
 		},
 		success: function (obj) {
 			if (obj.data)
@@ -4866,28 +5043,192 @@ function LoadVideoPinData(callback) {
 	});
 }
 
-function addVideoPin(name, long, lat, height, show) {
-	var myVideoPin = viewer.entities.add({
-		name: name,
-		position: Cesium.Cartesian3.fromDegrees(long, lat, height),
-		billboard: {
-			image: '../Images/security-camera.png',
-			verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-			horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-			width: 50,
-			height: 50
-		},
-		show: show,
-		label: {
-			text: name,
-			font: '14pt monospace',
-			style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-			outlineWidth: 2,
-			verticalOrigin: Cesium.VerticalOrigin.TOP,
-			pixelOffset: new Cesium.Cartesian2(0, -9)
+async function addTrackData(URL) {
+	var mykml = new Cesium.KmlDataSource();
+	await mykml.load(URL, {
+		clampToGround: false
+	}).then( function (dataSource){
+			var geoJsonObject;
+			var entities = dataSource.entities.values;
+			geoJsonObject = kmlToGeoJson(dataSource);
+			mykml.geoJSON = geoJsonObject;
+
+			for (let entity of entities) {
+				entity.filePathOriginal = URL;
+
+				if(entity.polyline && entity.polyline.material){
+					entity.polyline.material.color = Cesium.Color.BLUE;
+					entity.polyline.width = 2;
+				}
+			}
+			console.log("loaded")
+		}
+	);
+
+	viewer.dataSources.add(mykml);
+
+	return mykml
+}
+
+// Function to add point indicator based on current track entity
+function addPointEntity(arrayPos, animationDuration, animationDate){
+	var animateionDateArr = animationDate.split('-');
+	positionProperty = new Cesium.SampledPositionProperty();
+
+	if(arrayPos !== undefined){
+		//this feature require date to run. dummy date is sufficient as it wasnt used for animation purpose
+		animationStart = Cesium.JulianDate.fromDate(new Date(2024, 10, 25, 23));
+		animationStop = Cesium.JulianDate.addSeconds(
+			animationStart,
+			animationDuration,
+			new Cesium.JulianDate()
+		);
+			
+		var lastTime = null;
+		var lastPos = null;
+		var arrayPositionsNew = arrayPos.features[0]
+
+		var lastPos2 = null;
+		var totalDistance = 0;
+
+		for (var j=0; j < arrayPositionsNew.length; j++){
+			if (lastPos2){
+				var d = Cesium.Cartesian3.distance(lastPos2, arrayPositionsNew[j]);
+
+				totalDistance += d;
+			}
+			lastPos2 = arrayPositionsNew[j];
+		}
+
+		for (var i=0;i<arrayPositionsNew.length;i++){
+			if (i === 0) {
+				lastTime = animationStart;
+				lastPos = arrayPositionsNew[0];
+			}
+			else {
+				var d = Cesium.Cartesian3.distance(lastPos, arrayPositionsNew[i]);
+				var stepTime = (d*animationDuration) / totalDistance;
+
+				lastTime = Cesium.JulianDate.addSeconds(
+					lastTime,
+					stepTime,
+					new Cesium.JulianDate()
+				);
+
+				lastPos = arrayPositionsNew[i];
+			}
+
+			positionProperty.addSample(lastTime, lastPos);
+		}
+
+		pointEntity = viewer.entities.add({
+			name: 'indicator',
+			availability: new Cesium.TimeIntervalCollection([
+				new Cesium.TimeInterval({
+					start: animationStart,
+					stop: animationStop,
+				}),
+			]),          
+			position: positionProperty,
+			orientation : new Cesium.VelocityOrientationProperty(positionProperty),
+			point: {
+				pixelSize : 10,
+				color : Cesium.Color.RED.withAlpha(0),
+				heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
+			}
+		});
+
+		pointEntity.position.setInterpolationOptions({
+			interpolationDegree: 2,
+			interpolationAlgorithm: Cesium.HermitePolynomialApproximation,
+		});
+	}
+}
+
+// Function to convert KML data to GeoJSON format
+function kmlToGeoJson(dataSource) {
+	var kmlArr = []
+	const geoJson = {
+		type: "FeatureCollection",
+		features: []
+	};
+
+	// Iterate over each entity in the KML DataSource
+	dataSource.entities.values.forEach(entity => {
+		
+		// Convert KML geometries to GeoJSON geometries
+		if (entity.polyline) {
+			kmlArr = kmlArr.concat(entity.polyline.positions.getValue());
 		}
 	});
-	return (myVideoPin);
+
+	geoJson.features.push(kmlArr);
+
+	return geoJson;
+}
+
+// Function to set camera angle on ground level
+function setCameraAngle(){
+	var secs = Cesium.JulianDate.secondsDifference(viewer.clock.currentTime, viewer.clock.startTime);
+	var slightlyBefore = Cesium.JulianDate.addSeconds(animationStart, secs-0.2, new Cesium.JulianDate());
+	var now = Cesium.JulianDate.addSeconds(animationStart, secs, new Cesium.JulianDate());
+
+	var prevPos=new Cesium.Cartesian3();
+	var currPos=new Cesium.Cartesian3();
+
+
+	prevPos = positionProperty.getValue(slightlyBefore);
+	currPos = positionProperty.getValue(now);
+
+	if(currPos==undefined||prevPos==undefined){console.log("a position is missing");return;}
+	
+	//vectors have to have magnitude, so these can't be equal  
+	if(currPos.x===prevPos.x && currPos.y===prevPos.y && currPos.z===prevPos.z)
+	{console.log("equal, can't get heading");return;}
+
+	//make a rot mat
+	var CC3=Cesium.Cartesian3;
+	var mydir = new CC3();
+	mydir = CC3.subtract(currPos,prevPos,new CC3());
+	CC3.normalize(mydir,mydir);
+	var GC_UP = new CC3();
+	CC3.normalize(viewer.scene.camera.position,GC_UP); //GC_UP
+	var myrig = new CC3();
+	var myup = new CC3();
+	myrig = CC3.cross(mydir,GC_UP,new CC3());
+	myup = CC3.cross(myrig,mydir,new CC3()); 
+	
+	//set camera level
+	var cameraLevel = Number($('#trackLevel').val());
+	cameraLevel = (cameraLevel == 0) ? 5 : cameraLevel;
+
+	//raise camera up 333 meters, put back 333 meters
+	CC3.multiplyByScalar(GC_UP, cameraLevel, GC_UP);
+	CC3.add(GC_UP,currPos,currPos);
+	CC3.subtract(currPos,CC3.multiplyByScalar(mydir, cameraLevel,new CC3()),currPos);
+	viewer.scene.camera.position=currPos;
+	
+	mydir = rotateVector(mydir,myrig,-10*Math.PI/180);
+	myup = rotateVector(myup,myrig,-10*Math.PI/180);
+
+	//orient camera using rot mat
+	viewer.scene.camera.direction=mydir;
+	viewer.scene.camera.right=myrig;
+	viewer.scene.camera.up=myup;
+}
+
+function rotateVector(rotatee,rotater,angleRad){
+	var CC3 = Cesium.Cartesian3;var rotated=new CC3();
+	var dotS = CC3.dot(rotatee,rotater);
+	var base = CC3.multiplyByScalar(rotater,dotS,new CC3());
+	var vpa = CC3.subtract(rotatee,base,new CC3());
+	var cx = CC3.multiplyByScalar(vpa,Math.cos(angleRad),new CC3());
+	var vppa = CC3.cross(rotater,vpa,new CC3());
+	var cy = CC3.multiplyByScalar(vppa,Math.sin(angleRad),new CC3());
+	var temp = CC3.add(base,cx,new CC3());
+	var rotated = CC3.add(temp,cy,new CC3());
+
+	return rotated;
 }
 
 function OnClickPowerBi() {
@@ -4936,51 +5277,89 @@ function OnClickPowerBi() {
 }
 
 function OnClickCameraFeedv3() {
-    if (videoPinData.length == 0) {
-        LoadVideoPinData(function (data) {
-            if (!data) {
-                return
-            }
-            videoPinData = data
-            if (!data) {
-                return
-            }
-			
-			let myhtml = '';
-			if(data.length > 0){
-				for (var i = 0; i < data.length; i++) {
-					myhtml += 
-							'<div class="item justifyBetween" id="videoID_'+ data[i].videoPinID +'">'+
-							'<div id="video_name">'+ data[i].videoPinName +'</div>'+
-							'<div>'+
-								'<a onclick="flyToVideoPin('+ data[i].videoPinID +')" id="flyTo" title="Fly To"><i class="fa-solid fa-binoculars"></i></a>'+
-								'<a onclick="wizardOpenPage(this)" value="'+ data[i].videoPinID +'" rel="insight" data-page="viPage" data-width="70" data-height="75" class="toolButton videoPlay" title="Play Video"><i class="fa-solid fa-play"></i></a>';
-	
-								if(localStorage.usr_role == 'Project Manager' || localStorage.usr_role == 'Senior Civil Engineer (Road Asset)'){
-	
-					myhtml +=	'<a onclick="editVideoPinDetails('+ data[i].videoPinID +')" title="Edit"><i class="fa-solid fa-pencil"></i></a>'+
-								'<a onclick="deleteVideoPin('+ data[i].videoPinID +')" title="Remove"><i class="fa-solid fa-trash"></i></a>';
-								}
-					
-	
-					myhtml  +=	'</div>'+
-								'</div>';
 
-					var myvideoPin = addVideoPin(data[i].videoPinName, data[i].longitude, data[i].latitude, data[i].height, true);
-					videoPinsArray.push(myvideoPin);
-				}
+    // clear old data + pins
+    videoPinData = [];
 
-			}else{
-				myhtml += '<div class="item justifyBetween videoNoDetails">There are no details stored for Video</div>';
-			}
-			$('#cameraPinList').html(myhtml);
+    if (videoPinsArray.length > 0) {
+        videoPinsArray.forEach(function (pin) {
+            if (pin) viewer.entities.remove(pin); // remove from cesium
         });
-    }else {
-        videoPinsArray.forEach(function (videoPin) {
-            videoPin.show = true
-        })
     }
+
+    videoPinsArray = [];
+    $('#cameraPinList').empty();
+
+    // always load from backend
+    LoadVideoPinData(function (data) {
+
+        if (!data || data.length === 0) {
+
+            $('#cameraPinList').html(
+                '<div class="item justifyBetween videoNoDetails">There are no details stored for Video</div>'
+            );
+            return;
+        }
+
+        videoPinData = data;
+
+        let myhtml = '';
+
+        for (var i = 0; i < data.length; i++) {
+
+            myhtml +=
+                '<div class="item justifyBetween" id="videoID_' + data[i].videoPinID + '">' +
+                    '<div id="video_name">' + data[i].videoPinName + '</div>' +
+                    '<div>' +
+
+                        '<a onclick="flyToVideoPin(' + data[i].videoPinID + ')" title="Fly To">' +
+                            '<i class="fa-solid fa-binoculars"></i>' +
+                        '</a>' +
+
+                        '<a onclick="wizardOpenPage(this)" ' +
+                            'value="' + data[i].videoPinID + '" ' +
+                            'rel="insight" ' +
+                            'data-page="viPage" ' +
+                            'data-width="70" ' +
+                            'data-height="75" ' +
+                            'class="toolButton videoPlay" ' +
+                            'title="Play Video">' +
+                            '<i class="fa-solid fa-play"></i>' +
+                        '</a>';
+
+            if (
+                localStorage.usr_role == 'Project Manager' ||
+                localStorage.usr_role == 'Senior Civil Engineer (Road Asset)'
+            ) {
+                myhtml +=
+                    '<a onclick="editVideoPinDetails(' + data[i].videoPinID + ')" title="Edit">' +
+                        '<i class="fa-solid fa-pencil"></i>' +
+                    '</a>' +
+
+                    '<a onclick="deleteVideoPin(' + data[i].videoPinID + ')" title="Remove">' +
+                        '<i class="fa-solid fa-trash"></i>' +
+                    '</a>';
+            }
+
+            myhtml += '</div></div>';
+
+
+            // Add Cesium pin
+            var myvideoPin = addVideoPin(
+                data[i].videoPinName,
+                data[i].longitude,
+                data[i].latitude,
+                data[i].height,
+                true
+            );
+
+            videoPinsArray.push(myvideoPin);
+        }
+
+        $('#cameraPinList').html(myhtml);
+    });
 }
+
 
 function OnClickAssetDataTable(e, event) {
     floatboxV3TurnOFF()
@@ -5017,6 +5396,41 @@ function OnClickAssetDataTable(e, event) {
 
 	event.stopPropagation()
 	event.preventDefault()
+}
+
+function OnClickAnimationFeed() {
+    if (trackData.length == 0) {
+        LoadTrackData(function (data) {
+            if (!data) {
+                return
+            }
+            trackData = data
+            if (!data) {
+                return
+            }
+			
+			let myhtml = '';
+			if(data.length > 0){
+				for (var i = 0; i < data.length; i++) {
+					myhtml += 
+							'<div class="item justifyBetween" id="trackID_'+ data[i].Data_ID +'">'+
+							'<div class="ellipsis">'+ data[i].Layer_name +'</div>'+
+							'<div>'+
+								'<a class="fly" onclick="flyToTrackAnimation(this)" title="Fly To"><i class="fa-solid fa-binoculars"></i></a>'+
+								'<a class="play" onclick="playTrackAnimation(this)" title="Play Track"><i class="fa-solid fa-play"></i></a>'+
+								'<a class="pause" onclick="pauseTrackAnimation(this)" title="Pause Track" style="display: none"><i class="fa-solid fa-pause"></i></a>'+
+								'<a class="stop" onclick="stopTrackAnimation()" title="Stop Track"><i class="fa-solid fa-rotate-right"></i></a>';
+					myhtml  +=	'</div>'+
+								'</div>';
+				}
+
+			}else{
+				myhtml += '<div class="item justifyBetween">There are no details stored for Track Animation.</div>';
+			}
+
+			$('#trackList').html(myhtml);
+        });
+    }
 }
 
 function groupOnCheck(ele) {
@@ -5471,6 +5885,7 @@ function layerOnCheck(ele) {
 function layerOnChangeNewProcess(ele) {
     var selectLayer = $(ele).val();
 	flagLayerProcess = true;
+	flagLandBoth = true;
 
 	if(selectLayer == 'default'){
 		resetJogetConOpDraw();
@@ -5614,6 +6029,48 @@ function toggleTab(pageShow) {
 }
 
 async function LoadKMLData(URL) {
+    var mykml = new Cesium.KmlDataSource();
+    await mykml.load(URL, {
+        clampToGround: true
+    });
+   
+    var entities = mykml.entities.values;
+   
+	for (let entity of entities) {
+		entity.filePathOriginal = URL;
+
+		if (entity.polygon) {
+			entity.polygon.outline = false;
+
+			var hierarchy = entity.polygon.hierarchy.getValue(Cesium.JulianDate.now());
+			if (hierarchy && hierarchy.positions) {
+				var positions = [...hierarchy.positions];
+				positions.push(positions[0]);
+
+				// draw polyline that cannnn handle terrain
+				mykml.entities.add({
+					parent: entity,
+					polyline: {
+						positions: positions,
+						clampToGround: true, // clamped the line on the terrain
+						classificationType: Cesium.ClassificationType.TERRAIN
+					}
+				});
+			}
+		}
+	}
+
+	if (flagLayerProcess) {
+		viewerNewProcess.dataSources.add(mykml);
+	} else {
+		viewer.dataSources.add(mykml);
+		thematicProps.landEntities = mykml.entities.values;
+	}
+
+	return mykml;
+}
+
+async function LoadKMLDataTerrain(URL) {
 	var mykml = new Cesium.KmlDataSource();
 	await mykml.load(URL, {
 		clampToGround: true
@@ -5626,13 +6083,8 @@ async function LoadKMLData(URL) {
 		}
 	);
 
-	if(flagLayerProcess){
-		viewerNewProcess.dataSources.add(mykml);
-	}
-	else{
-		viewer.dataSources.add(mykml);
-		thematicProps.landEntities = mykml.entities.values;
-	}
+	viewer.dataSources.add(mykml);
+	thematicProps.landEntities = mykml.entities.values;
 
 	return mykml
 }
@@ -5704,6 +6156,13 @@ function LoadB3DMTileset(url, height, xoffset, yoffset, defaultview, longlat) {
 	var mytileset;
 	url = "../" + url;
 	if (defaultview == true) {
+		// for OBYU optimization
+		var skipLevelOfDetail = false;
+		var preferLeaves = false;
+		if(SYSTEM == "OBYU"){
+			skipLevelOfDetail = true;
+			preferLeaves = true;
+		}
 		mytileset = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
 			url: url,
 			dynamicScreenSpaceError: true,
@@ -5713,7 +6172,9 @@ function LoadB3DMTileset(url, height, xoffset, yoffset, defaultview, longlat) {
 			baseScreenSpaceError: 1024,
 			progressiveResolutionHeightFraction: 0.5,
 			maximumScreenSpaceError: 4,
-			cullRequestsWhileMovingMultiplier: 200
+			cullRequestsWhileMovingMultiplier: 200,
+			skipLevelOfDetail: skipLevelOfDetail,
+			preferLeaves: preferLeaves
 		}));
 
 		if (longlat == 1) {
@@ -5795,7 +6256,7 @@ function GetNextChildText(tagToFind, valueToFind) {
 }
 
 function manageLayer() {
-	$("#manageLayerDetail").html("");
+
 	var manageLayerListHTML = '';
 
 	$.ajax({
@@ -5806,15 +6267,21 @@ function manageLayer() {
 		success: function (obj) {
 			obj.data.forEach((row) => {
 				let def_view;
+				let animate;
 				if (row.Default_View == 0) {
 					def_view = "OFF"
 				} else {
 					def_view = "ON"
 				}
+				if(row.Animation == 0 || row.Animation == null || row.Animation == ''){
+					animate = "Disable"
+				}else{
+					animate = "Enable"
+				}
 				upload_date = new Date(row.Added_Date);
 				upload_date = upload_date.toDateString();
 				
-				manageLayerListHTML += `<div class="list" onclick="getLayerDetail(this)" data-name="`+row.Layer_Name+`" data-id="`+row.Data_ID+`" data-type="`+row.Data_Type+`" data-view="`+def_view+`" data-date="`+upload_date+`" data-owner="`+row.Data_Owner+`"  data-offset="`+ row.Offset +`" data-x-offset="`+ row.X_Offset +`" data-y-offset="`+ row.Y_Offset +`">
+				manageLayerListHTML += `<div class="list" onclick="getLayerDetail(this)" data-name="`+row.Layer_Name+`" data-id="`+row.Data_ID+`" data-type="`+row.Data_Type+`" data-view="`+def_view+`" data-date="`+upload_date+`" data-owner="`+row.Data_Owner+`"  data-offset="`+ row.Offset +`" data-x-offset="`+ row.X_Offset +`" data-y-offset="`+ row.Y_Offset +`" data-animate="`+ animate +`">
 											<div class="column1" rel="id-layer_`+row.Data_ID+`"><a class="label lineClamp">`+row.Layer_Name+`</a></div>
 											<div class="column2 width"><a class="label">`+row.Data_Type+`</a></div>
 											<div class="column2 width"><a class="label lineClamp">Default: `+def_view+`</a></div>
@@ -6516,6 +6983,34 @@ function resetJogetConOpDraw() {
 	}
 }
 
+const viewModelTerrain = {
+	translucencyEnabled: true,
+	fadeByDistance: true,
+	alpha: 1,
+};
+
+function updateTerrainTransparency() {
+	viewer.scene.globe.translucency.enabled = viewModelTerrain.translucencyEnabled;
+  
+	let alpha = Number(viewModelTerrain.alpha);
+	alpha = !isNaN(alpha) ? alpha : 1.0;
+	alpha = Cesium.Math.clamp(alpha, 0.0, 1.0);
+  
+	viewer.scene.globe.translucency.frontFaceAlphaByDistance.nearValue = alpha;
+	viewer.scene.globe.translucency.frontFaceAlphaByDistance.farValue = viewModelTerrain.fadeByDistance? 1.0: alpha;
+}
+
+function controlTerrainTransparency(){
+	Cesium.knockout.track(viewModelTerrain);
+	const toolbar = document.getElementById("toolbarTransparency");
+	Cesium.knockout.applyBindings(viewModelTerrain, toolbar);
+	for (const name in viewModelTerrain) {
+		if (viewModelTerrain.hasOwnProperty(name)) {
+			Cesium.knockout.getObservable(viewModelTerrain, name).subscribe(updateTerrainTransparency);
+		}
+	}
+}
+
 function controlBrightness(){
 	var viewermap = new Cesium.Camera(viewer.scene);
 	var viewModel = {
@@ -6736,8 +7231,6 @@ function drawConOpTempEntity(obj) {
 	let coordArray = obj.coord.split(",");
 	var drawnEntity;
 
-
-
 	if(obj.coord_to){
 		//line for NCR & NOI
 		let coordToArray = obj.coord_to.split(",");
@@ -6780,55 +7273,7 @@ function drawConOpTempEntity(obj) {
 		  height: 30,
 		},
 	  });
-	} else if (coordArray.length == 3) {
-		//point
-		console.log('POINT: '+coordArray);
-		let floatBoxTitle = ""
-		if (localStorage.Project_type == "ASSET"){
-		  floatBoxTitle = obj['ASSET_NAME'] ?  obj['ASSET_NAME'] : ""
-		} else{
-		  floatBoxTitle = "Point"
-		}
-		var cartesian3Pos ={
-			x : coordArray[1],
-			y : coordArray[0],
-			z : coordArray[2]
-		};
-		// let pos = Cesium.Cartesian3(coordArray[1], coordArray[0], coordArray[2]);
-		// console.log(pos);
-		// var lat = pos.longitude / Math.PI;
-		// var lon = pos.latitude / Math.PI * 180;
-		// console.log(lat);
-		// console.log(lon);
-		// viewer.camera.flyTo({
-		// 	destination: {
-		// 	  x: parseFloat(coordArray[1]),
-		// 	  y: parseFloat(coordArray[0]),
-		// 	  z: parseFloat(coordArray[2]),
-		// 	}
-		// });
-		viewer.camera.flyTo({
-			destination: {
-			  x: parseFloat(coordArray[1]),
-			  y: parseFloat(coordArray[0]),
-			  z: parseFloat(coordArray[2]),
-			}
-		});
-
-
-		// drawnEntity = viewerUse.entities.add({
-		//   name: floatBoxTitle,
-		//   position: Cesium.Cartesian3.fromElements(coordArray[0], coordArray[1], coordArray[2]),
-		//   billboard: {
-		// 	image: "../Images/redPlaceholder.png",
-		// 	horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-		// 	verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-		// 	width: 30,
-		// 	height: 30,
-		//   },
-		// });
-		return '';
-	  } else if (coordArray.length >= 6) {
+	} else if (coordArray.length >= 6) {
 	  //polygon
 	  let hierarchyArray = Cesium.Cartesian3.fromDegreesArray(coordArray);
 	  drawnEntity = viewerUse.entities.add({
@@ -6922,7 +7367,7 @@ function zoomToGetData() {
 				viewerUse = viewer;
 				break;
 		}
-		
+
 		if (e.data.close){
 		  return;
 		}
@@ -6972,6 +7417,8 @@ $(document).ready(function () {
 	});
 
 	getWMSCap()
+
+	controlTerrainTransparency();
 
 	$(pavementView).on('click', function () {
 		$.ajax({
@@ -7488,8 +7935,6 @@ function assetViewDefectList(ele) {
 }
 
 function getRequestBimAttr(ElementId,url){
-	console.log(ElementId);
-
 	if(url != 'road'){
 		var urlSplit = url.split("..");
 		url = '..' + urlSplit[3];
@@ -7514,260 +7959,242 @@ function getRequestBimAttr(ElementId,url){
 				assetDataAPI.splice(0, assetDataAPI.length, data)
 				if(data && data.data != null){
 					var ele = data.data
-
 					if (ele && ele[0]){
-						if(localStorage.Project_type != "FM"){
-							Object.keys(ele[0]).forEach(function(key) {
-								switch(key){
-									case "dpa_id":
-										dpa =  ele[0][key];
-										break;
-									case "dak_id":
-										dak = ele[0][key];
-										break;
-									case "asset_name":
-										name = ele[0][key]
-										break;
-									case "asset_id":
-										id = ele[0][key]
-										break;
-									case "asset_status":
-										status = ele[0][key];
-										break;
-									case "culvert_type":
-										culverttype = ele[0][key];
-										break;
-									case "latitude":
-										lat = ele[0][key]
-										break;
-									case "longitude":
-										lon = ele[0][key];
-										break;
-									case "element_id":
-										break;
-									case "pavement_type":
-										pavementtype = ele[0][key];
-										break;
-									case "asset_category":
-										category = ele[0][key];
-										break;
-									case "notes":
-										notes = ele[0][key];
-										break;
-									case "chainage_start":
-										cStart = ele[0][key];
-										break;
-									case "chainage_end":
-										cEnd = ele[0][key];
-										break;
-									case "drainage_type":
-										drainagetype = ele[0][key];
-										break;
-									case "bridge_type":
-										bridgetype = ele[0][key];
-										break;
-									case "asset_position":
-										position = ele[0][key];
-										break;
-									case "road_furniture_type" :
-										furnituretype = ele[0][key];
-										break;
-									case "guardrail_type":
-										guardrailtype = ele[0][key];
-										break;
-									case "slope_type" :
-										slopetype = ele[0][key];
-										break;
-										
+						Object.keys(ele[0]).forEach(function(key) {
+							switch(key){
+								case "dpa_id":
+									dpa =  ele[0][key];
+									break;
+								case "dak_id":
+									dak = ele[0][key];
+									break;
+								case "asset_name":
+									name = ele[0][key]
+									break;
+								case "asset_id":
+									id = ele[0][key]
+									break;
+								case "asset_status":
+									status = ele[0][key];
+									break;
+								case "culvert_type":
+									culverttype = ele[0][key];
+									break;
+								case "latitude":
+									lat = ele[0][key]
+									break;
+								case "longitude":
+									lon = ele[0][key];
+									break;
+								case "element_id":
+									break;
+								case "pavement_type":
+									pavementtype = ele[0][key];
+									break;
+								case "asset_category":
+									category = ele[0][key];
+									break;
+								case "notes":
+									notes = ele[0][key];
+									break;
+								case "chainage_start":
+									cStart = ele[0][key];
+									break;
+								case "chainage_end":
+									cEnd = ele[0][key];
+									break;
+								case "drainage_type":
+									drainagetype = ele[0][key];
+									break;
+								case "bridge_type":
+									bridgetype = ele[0][key];
+									break;
+								case "asset_position":
+									position = ele[0][key];
+									break;
+								case "road_furniture_type" :
+									furnituretype = ele[0][key];
+									break;
+								case "guardrail_type":
+									guardrailtype = ele[0][key];
+									break;
+								case "slope_type" :
+									slopetype = ele[0][key];
+									break;
 									
-									case "item_name" :
-										itemName = ele[0][key];
-										break;
-									case "category" :
-										eleCategory = ele[0][key];
-										break;
-									case "elevation_bottom" :
-										elevationBottom = ele[0][key];
-										break;
-									case "elevation_top" :
-										elevationTop = ele[0][key];
-										break;
-									case "length_pile_cap" :
-										lengthPileCap = ele[0][key];
-										break;
-									case "ele_thickness" :
-										eleThickness = ele[0][key];
-										break;
-									case "ele_volume" :
-										eleVolume = ele[0][key];
-										break;
-									case "ele_width" :
-										eleWidth = ele[0][key];
-										break;
-									case "guid" :
-										guid = ele[0][key];
-										break;
-									case "item_material" :
-										material = ele[0][key];
-										break; 
-									case "inv_bridge.asset_name" :
-										bridgeName = ele[0][key];
-										break;
-									case "inv_bridge.dak_id" :
-										brDAK = ele[0][key];
-										break;
-									case "inv_bridge.dpa_id" :
-										brDPA = ele[0][key];
-										break;
+								
+								case "item_name" :
+									itemName = ele[0][key];
+									break;
+								case "category" :
+									eleCategory = ele[0][key];
+									break;
+								case "elevation_bottom" :
+									elevationBottom = ele[0][key];
+									break;
+								case "elevation_top" :
+									elevationTop = ele[0][key];
+									break;
+								case "length_pile_cap" :
+									lengthPileCap = ele[0][key];
+									break;
+								case "ele_thickness" :
+									eleThickness = ele[0][key];
+									break;
+								case "ele_volume" :
+									eleVolume = ele[0][key];
+									break;
+								case "ele_width" :
+									eleWidth = ele[0][key];
+									break;
+								case "guid" :
+									guid = ele[0][key];
+									break;
+								case "item_material" :
+									material = ele[0][key];
+									break; 
+								case "inv_bridge.asset_name" :
+									bridgeName = ele[0][key];
+									break;
+								case "inv_bridge.dak_id" :
+									brDAK = ele[0][key];
+									break;
+								case "inv_bridge.dpa_id" :
+									brDPA = ele[0][key];
+									break;
 
-								
-									case "type" :
-										brType = ele[0][key];
-										break;
-									case "height_offset_from_level" :
-										heightOffset = ele[0][key];
-										break;
-									case "thickness" :
-										thickness = ele[0][key];
-										break;
-									case "volume" :
-										volume = ele[0][key];
-										break;
-									case "structure_no" :
-										structureNo = ele[0][key];
-										break;
-									case "material" :
-										material = ele[0][key];
-										break; 
-									case "length" :
-										length = ele[0][key];
-										break; 
+							
+								case "type" :
+									brType = ele[0][key];
+									break;
+								case "height_offset_from_level" :
+									heightOffset = ele[0][key];
+									break;
+								case "thickness" :
+									thickness = ele[0][key];
+									break;
+								case "volume" :
+									volume = ele[0][key];
+									break;
+								case "structure_no" :
+									structureNo = ele[0][key];
+									break;
+								case "material" :
+									material = ele[0][key];
+									break; 
+								case "length" :
+									length = ele[0][key];
+									break; 
 
-									case "depth" :
-										depth = ele[0][key];
-										break; 
-									case "width" :
-										width = ele[0][key];
-										break; 
-
-								}
-							});	
-							myDesc = '<table ><tbody >'
-							if(category == "BRPC"){
-								myTitle = bridgeName
-
-								if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
-								if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
-								if(eleCategory) myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
-								if(material) myDesc += '<tr><th>MATERIAL</th><td>' + material  + '</td></tr>' ;
-								if(elevationBottom) myDesc += '<tr><th>ELEVATION BOTTOM</th><td>' + elevationBottom  + '</td></tr>' ;
-								if(elevationTop) myDesc += '<tr><th>ELEVATION TOP</th><td>' + elevationTop  + '</td></tr>' ;
-								if(lengthPileCap) myDesc += '<tr><th>LENGTH PILE CAP</th><td>' + lengthPileCap  + '</td></tr>' ;
-								if(eleThickness) myDesc += '<tr><th>ELEMENT THICKNESS</th><td>' + eleThickness  + '</td></tr>' ;
-								if(eleVolume) myDesc += '<tr><th>ELEMENT VOLUME</th><td>' + eleVolume  + '</td></tr>' ;
-								if(eleWidth) myDesc += '<tr><th>ELEMENT WIDTH</th><td>' + eleWidth  + '</td></tr>' ;
-								if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
-								myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
-								myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
-								myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
-							}else if(category == "BRDS"){
-								myTitle = bridgeName
-								
-								if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
-								if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
-								myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
-								if(brType) myDesc += '<tr><th>Type</th><td>' + brType  + '</td></tr>' ;
-								if(elevationBottom) myDesc += '<tr><th>ELEVATION BOTTOM</th><td>' + elevationBottom  + '</td></tr>' ;
-								if(elevationTop) myDesc += '<tr><th>ELEVATION TOP</th><td>' + elevationTop  + '</td></tr>' ;
-								if(heightOffset) myDesc += '<tr><th>HEIGHT OFFSET FROM LEVEL</th><td>' + heightOffset  + '</td></tr>' ;
-								if(thickness) myDesc += '<tr><th>THICKNESS</th><td>' + thickness  + '</td></tr>' ;
-								if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
-								if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
-								myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
-								myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
-								myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
-							}else if(category == "BRA" || category == "BRParapet"){
-								myTitle = bridgeName
-								
-								if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
-								if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
-								myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
-								if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
-								if(length) myDesc += '<tr><th>LENGTH</th><td>' + length  + '</td></tr>' ;
-								if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
-								myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
-								myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
-								myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
-							}else if(category == "BRB"){
-								myTitle = bridgeName
-								
-								if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
-								myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
-								if(brType) myDesc += '<tr><th>Type</th><td>' + brType  + '</td></tr>' ;
-								if(elevationBottom) myDesc += '<tr><th>ELEVATION BOTTOM</th><td>' + elevationBottom  + '</td></tr>' ;
-								if(elevationTop) myDesc += '<tr><th>ELEVATION TOP</th><td>' + elevationTop  + '</td></tr>' ;
-								if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
-								if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
-								myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
-								myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
-								if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
-								myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
-							}else if(category == "BRBG" || category == "BRPier"){
-								myTitle = bridgeName
-								
-								if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
-								if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
-								myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
-								if(brType) myDesc += '<tr><th>Type</th><td>' + brType  + '</td></tr>' ;
-								if(material) myDesc += '<tr><th>Structural Material Name</th><td>' + material  + '</td></tr>' ;
-								if(length) myDesc += '<tr><th>LENGTH</th><td>' + length  + '</td></tr>' ;
-								if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
-								if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
-								if(depth) myDesc += '<tr><th>DEPTH</th><td>' + depth  + '</td></tr>' ;
-								if(width) myDesc += '<tr><th>WIDTH</th><td>' + width  + '</td></tr>' ;
-								myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
-								myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
-								myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
-							}else{
-								myTitle = "Attribute"
-								myDesc += '<tr><th>DPA</th><td>' + dpa+ '</td></tr>' ;
-								myDesc += '<tr><th>DAK</th><td>' + dak + '</td></tr>' ;
-								myDesc += '<tr><th>ASSET ID</th><td>' + id + '</td></tr>' ;
-								if(name)myDesc += '<tr><th>ASSET NAME</th><td>' +name  + '</td></tr>' ;
-								if(culverttype)	myDesc += '<tr><th>CULVERT TYPE</th><td>' + culverttype + '</td></tr>' ;
-								if(pavementtype)	myDesc += '<tr><th>PAVEMENT TYPE</th><td>' + pavementtype + '</td></tr>' ;
-								if(drainagetype)  myDesc += '<tr><th>DRAINAGE TYPE</th><td>' + drainagetype + '</td></tr>' ;
-								if(furnituretype) myDesc += '<tr><th>ROAD FURNITURE TYPE</th><td>' + furnituretype + '</td></tr>' ;
-								if(guardrailtype) myDesc += '<tr><th>GUARDRAIL TYPE</th><td>' + guardrailtype + '</td></tr>' ;
-								if(slopetype) myDesc += '<tr><th>SLOPE TYPE</th><td>' + slopetype + '</td></tr>' ;
-								if(bridgetype) myDesc += '<tr><th>BRIDGE TYPE</th><td>' + bridgetype + '</td></tr>' ;
-								myDesc += '<tr><th>ASSET STATUS</th><td>' +  status+ '</td></tr>' ;
-								if(position) myDesc += '<tr><th>ASSET POSITION</th><td>' +  position + '</td></tr>' ;
-								if(category) myDesc += '<tr><th>ASSET CATEGORY</th><td>' +  category+ '</td></tr>' ;
-								if(notes) myDesc += '<tr><th>NOTE</th><td>'+ notes + '</td></tr>';
-								if(lat) myDesc += '<tr><th>LATITUDE</th><td>' + lat  + '</td></tr>' ;
-								if(lon) myDesc += '<tr><th>LONGITUDE</th><td>' + lon + '</td></tr>'; 
-								if(cStart ) myDesc += '<tr><th>CHAINAGE START</th><td>' + cStart  + '</td></tr>' ;
-								if(cEnd) myDesc += '<tr><th>CHAINAGE END</th><td>' + cEnd  + '</td></tr>' ;
+								case "depth" :
+									depth = ele[0][key];
+									break; 
+								case "width" :
+									width = ele[0][key];
+									break; 
 
 							}
-							myDesc += '</tbody></table>'
+						});	
+						myDesc = '<table ><tbody >'
+						if(category == "BRPC"){
+							myTitle = bridgeName
+
+							if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
+							if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
+							if(eleCategory) myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
+							if(material) myDesc += '<tr><th>MATERIAL</th><td>' + material  + '</td></tr>' ;
+							if(elevationBottom) myDesc += '<tr><th>ELEVATION BOTTOM</th><td>' + elevationBottom  + '</td></tr>' ;
+							if(elevationTop) myDesc += '<tr><th>ELEVATION TOP</th><td>' + elevationTop  + '</td></tr>' ;
+							if(lengthPileCap) myDesc += '<tr><th>LENGTH PILE CAP</th><td>' + lengthPileCap  + '</td></tr>' ;
+							if(eleThickness) myDesc += '<tr><th>ELEMENT THICKNESS</th><td>' + eleThickness  + '</td></tr>' ;
+							if(eleVolume) myDesc += '<tr><th>ELEMENT VOLUME</th><td>' + eleVolume  + '</td></tr>' ;
+							if(eleWidth) myDesc += '<tr><th>ELEMENT WIDTH</th><td>' + eleWidth  + '</td></tr>' ;
+							if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
+							myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
+							myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
+							myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
+						}else if(category == "BRDS"){
+							myTitle = bridgeName
+							
+							if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
+							if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
+							myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
+							if(brType) myDesc += '<tr><th>Type</th><td>' + brType  + '</td></tr>' ;
+							if(elevationBottom) myDesc += '<tr><th>ELEVATION BOTTOM</th><td>' + elevationBottom  + '</td></tr>' ;
+							if(elevationTop) myDesc += '<tr><th>ELEVATION TOP</th><td>' + elevationTop  + '</td></tr>' ;
+							if(heightOffset) myDesc += '<tr><th>HEIGHT OFFSET FROM LEVEL</th><td>' + heightOffset  + '</td></tr>' ;
+							if(thickness) myDesc += '<tr><th>THICKNESS</th><td>' + thickness  + '</td></tr>' ;
+							if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
+							if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
+							myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
+							myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
+							myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
+						}else if(category == "BRA" || category == "BRParapet"){
+							myTitle = bridgeName
+							
+							if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
+							if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
+							myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
+							if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
+							if(length) myDesc += '<tr><th>LENGTH</th><td>' + length  + '</td></tr>' ;
+							if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
+							myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
+							myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
+							myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
+						}else if(category == "BRB"){
+							myTitle = bridgeName
+							
+							if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
+							myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
+							if(brType) myDesc += '<tr><th>Type</th><td>' + brType  + '</td></tr>' ;
+							if(elevationBottom) myDesc += '<tr><th>ELEVATION BOTTOM</th><td>' + elevationBottom  + '</td></tr>' ;
+							if(elevationTop) myDesc += '<tr><th>ELEVATION TOP</th><td>' + elevationTop  + '</td></tr>' ;
+							if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
+							if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
+							myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
+							myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
+							if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
+							myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
+						}else if(category == "BRBG" || category == "BRPier"){
+							myTitle = bridgeName
+							
+							if(structureNo) myDesc += '<tr><th>STRUCTURE ID</th><td>' + structureNo  + '</td></tr>' ;
+							if(itemName) myDesc += '<tr><th>NAME</th><td>' + itemName  + '</td></tr>' ;
+							myDesc += '<tr><th>CATEGORY</th><td>' + eleCategory  + '</td></tr>' ;
+							if(brType) myDesc += '<tr><th>Type</th><td>' + brType  + '</td></tr>' ;
+							if(material) myDesc += '<tr><th>Structural Material Name</th><td>' + material  + '</td></tr>' ;
+							if(length) myDesc += '<tr><th>LENGTH</th><td>' + length  + '</td></tr>' ;
+							if(volume) myDesc += '<tr><th>VOLUME</th><td>' + volume  + '</td></tr>' ;
+							if(guid) myDesc += '<tr><th>GUID</th><td>' + guid  + '</td></tr>' ;
+							if(depth) myDesc += '<tr><th>DEPTH</th><td>' + depth  + '</td></tr>' ;
+							if(width) myDesc += '<tr><th>WIDTH</th><td>' + width  + '</td></tr>' ;
+							myDesc += '<tr><th>DPA</th><td>' + brDPA+ '</td></tr>' ;
+							myDesc += '<tr><th>DAK</th><td>' + brDAK + '</td></tr>' ;
+							myDesc += '<tr><th>ASSET CATEGORY</th><td>' + category + '</td></tr>' ;
 						}else{
-							Object.keys(ele[0]).forEach(function(key) {
-								myDesc = '<table ><tbody >'
-								myDesc += '<tr><th>ITEM</th><td>' + ele[0]['item']  + '</td></tr>' ;
-								myDesc += '<tr><th>SPACE LABEL</th><td>' + ele[0]['label']  + '</td></tr>' ;
-								myDesc += '<tr><th>SPACE NUMBER</th><td>' + ele[0]['space_number']  + '</td></tr>' ;
-								myDesc += '<tr><th>CEILING HEIGHT</th><td>' + ele[0]['ceiling_height']  + '</td></tr>' ;
-								myDesc += '<tr><th>AREA</th><td>' + ele[0]['area']  + '</td></tr>' ;
-								myDesc += '<tr><th>PERIMETER</th><td>' + ele[0]['perimeter']  + '</td></tr>' ;
-								myDesc += '<tr><th>X</th><td>' + ele[0]['x']  + '</td></tr>' ;
-								myDesc += '<tr><th>Y</th><td>' + ele[0]['y']  + '</td></tr>' ;
-								myDesc += '<tr><th>Z</th><td>' + ele[0]['z']  + '</td></tr>' ;
-								myDesc += '<tr><th>GUID</th><td>' + ele[0]['guid']  + '</td></tr>' ;
-								myDesc += '</tbody></table>'
-							});
+							myTitle = "Attribute"
+							myDesc += '<tr><th>DPA</th><td>' + dpa+ '</td></tr>' ;
+							myDesc += '<tr><th>DAK</th><td>' + dak + '</td></tr>' ;
+							myDesc += '<tr><th>ASSET ID</th><td>' + id + '</td></tr>' ;
+							if(name)myDesc += '<tr><th>ASSET NAME</th><td>' +name  + '</td></tr>' ;
+							if(culverttype)	myDesc += '<tr><th>CULVERT TYPE</th><td>' + culverttype + '</td></tr>' ;
+							if(pavementtype)	myDesc += '<tr><th>PAVEMENT TYPE</th><td>' + pavementtype + '</td></tr>' ;
+							if(drainagetype)  myDesc += '<tr><th>DRAINAGE TYPE</th><td>' + drainagetype + '</td></tr>' ;
+							if(furnituretype) myDesc += '<tr><th>ROAD FURNITURE TYPE</th><td>' + furnituretype + '</td></tr>' ;
+							if(guardrailtype) myDesc += '<tr><th>GUARDRAIL TYPE</th><td>' + guardrailtype + '</td></tr>' ;
+							if(slopetype) myDesc += '<tr><th>SLOPE TYPE</th><td>' + slopetype + '</td></tr>' ;
+							if(bridgetype) myDesc += '<tr><th>BRIDGE TYPE</th><td>' + bridgetype + '</td></tr>' ;
+							myDesc += '<tr><th>ASSET STATUS</th><td>' +  status+ '</td></tr>' ;
+							if(position) myDesc += '<tr><th>ASSET POSITION</th><td>' +  position + '</td></tr>' ;
+							if(category) myDesc += '<tr><th>ASSET CATEGORY</th><td>' +  category+ '</td></tr>' ;
+							if(notes) myDesc += '<tr><th>NOTE</th><td>'+ notes + '</td></tr>';
+							if(lat) myDesc += '<tr><th>LATITUDE</th><td>' + lat  + '</td></tr>' ;
+							if(lon) myDesc += '<tr><th>LONGITUDE</th><td>' + lon + '</td></tr>'; 
+							if(cStart ) myDesc += '<tr><th>CHAINAGE START</th><td>' + cStart  + '</td></tr>' ;
+							if(cEnd) myDesc += '<tr><th>CHAINAGE END</th><td>' + cEnd  + '</td></tr>' ;
+
 						}
+						myDesc += '</tbody></table>'
 					}else{
 						myTitle = "Asset"
 						myDesc = '<table ><tbody >'
@@ -7790,7 +8217,21 @@ function getRequestBimAttr(ElementId,url){
 			}
 		})
 	).then( function(){
-		if( dataCheck == true ) floatboxV3TurnON(myTitle, myDesc);
+		if( dataCheck == true ){
+			// check permission
+			var bimLinkPermission = true;
+			var allowed_roles = ["Contract Executive", "Finance Representative", "Head of Department"];
+			if(!allowed_roles.includes(localStorage.usr_role)){
+				bimLinkPermission = false;
+			}
+			if(url != "" && bimLinkPermission == true && !IS_DOWNSTREAM){
+				$(".floatBoxActionLink").css("display", "inherit");
+				$(".floatBoxActionLink").text("Link Claim");
+				floatBoxLinkOpen(url);
+			}else{
+				floatboxV3TurnON(myTitle, myDesc);
+			}
+		}
 	});		
 }
 
@@ -8498,7 +8939,7 @@ function UpdateIoTData(){
 							value = (data[i].value)? data[i].value+" &degC" :"No data";
 							colorOrder =(data[i].sensorColour == "red")? 0: (data[i].sensorColour == "grey")? 1: (data[i].sensorColour =="yellow")? 2 :(data[i].sensorColour =="green")? 3: 4;
 							$('#'+id).data('color', colorOrder);
-							// $('#'+id1).textContent(value);
+							$('#'+id1).textContent(value);
 							$('#'+id2).css("background", data[i].sensorColour);
 							$('#'+id3).removeClass("fa-dash fa-arrow-trend-up fa-arrow-trend-down")
 						break;
@@ -8507,7 +8948,7 @@ function UpdateIoTData(){
 							value = (data[i].value)? data[i].value+" bar" :"No data";
 							colorOrder =(data[i].sensorColour == "red")? 0: (data[i].sensorColour == "grey")? 1: (data[i].sensorColour =="yellow")? 2 :(data[i].sensorColour =="green")? 3: 4;
 							$('#'+id).data('color', colorOrder);
-							// $('#'+id1).textContent(value);
+							$('#'+id1).textContent(value);
 							$('#'+id2).css("background", data[i].sensorColour);
 							$('#'+id3).removeClass("fa-dash fa-arrow-trend-up fa-arrow-trend-down")
 						break;
@@ -8516,7 +8957,7 @@ function UpdateIoTData(){
 							value = (data[i].value)? data[i].value+" %" :"No data";
 							colorOrder =(data[i].sensorColour == "red")? 0: (data[i].sensorColour == "grey")? 1: (data[i].sensorColour =="yellow")? 2 :(data[i].sensorColour =="green")? 3: 4;
 							$('#'+id).data('color', colorOrder);
-							// $('#'+id1).textContent(value);
+							$('#'+id1).textContent(value);
 							$('#'+id2).css("background", data[i].sensorColour);
 							$('#'+id3).removeClass("fa-dash fa-arrow-trend-up fa-arrow-trend-down")
 						break;
@@ -8632,10 +9073,9 @@ function getAssetIoTData(asset_id, asset_type){
 				var datetime = obj.data.datetime;
 				var value = obj.data.value
 				var seriesData = value.map(function(datavl, index){
-					let result = [new Date(datetime[index]).getTime(), datavl].map(i => Number(i));
-					return result;
+					return [new Date(datetime[index]).getTime(), datavl];
 				});
-				var serData = seriesData;
+				var serData = parseFloat(seriesData)
 				var yaxisText = (asset_type == "temperature")? "Temperature (Celcius)":(asset_type == "pressure")? "Pressure (Bar)": "Humidity (%)";
 				var seriesName = (asset_type == "temperature")? "Temperature":(asset_type == "pressure")? "Pressure": "Humidity";
 				var htmlText = (asset_type == "temperature")? " &degC":(asset_type == "pressure")? " Bar": " %";
@@ -8904,4 +9344,28 @@ function getIotNotiHistory(asset_id, asset_type){
 			
 		}
 	})
+}
+
+class MapboxGeocoderService {
+	constructor(accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	geocode(input) {
+		const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(input)}.json?access_token=${this.accessToken}`;
+
+		return fetch(url)
+			.then(response => response.json())
+			.then(data => {
+				if (!data.features) return [];
+
+				return data.features.map(feature => {
+					const [lon, lat] = feature.center;
+					return {
+						displayName: feature.place_name,
+						destination: Cesium.Cartesian3.fromDegrees(lon, lat)
+					};
+				});
+			});
+	}
 }

@@ -116,7 +116,7 @@ if($showFilter){
                         <div class="tableContainer scrollbar-inner roundB" id = "dashboarditem">
                             <table id ="progressSummarytb"> 
                                 <thead class="roundT">
-                                    <th style="border-top-left-radius: 8px">Contractor</th>
+                                    <th style="border-top-left-radius: 8px">Package</th>
                                     <th>Value (RM)</th>
                                     <th>Project Start Date</th>
                                     <th>Project End Date</th>

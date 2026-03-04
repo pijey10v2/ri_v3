@@ -293,8 +293,10 @@ function changeSchedule() {
                     for (var i = 0; i < response.data.length; i++) {
                         let obj = response.data[i]
                         let row = new Date(obj.Sch_Date.date)
-                        let weekISO = row.toISOString()
-                        res = weekISO.split(":")
+                        if(isValidDate(row)){
+                            let weekISO = row.toISOString()
+                            res = weekISO.split(":")
+                        }
                         let weekID = obj.Name //res[0]
                         $("#" + weekID).attr("value", obj.Sch_ID)
                         $("#" + weekID + " div:first-child").removeClass("nofile")
@@ -478,7 +480,6 @@ function changeSchedule() {
                             latestSchedule = $(this)
                         }
                     })
-
                    if(latestSchedule){
                         $(latestSchedule).trigger("click")
                         $(latestSchedule).addClass("active")
@@ -1255,7 +1256,11 @@ function showNewlyAddedSchedule(schedName) {
 
 function fetchActualInfo(z){
     let scheduleStartDate = $(z).attr("dataStart")
+    if (!isValidDate(scheduleStartDate)) {
+        scheduleStartDate = quarterConvertValidDate(scheduleStartDate);
+    }
     let startDate = new Date(scheduleStartDate)
+    
     offset = startDate.getTimezoneOffset();
     startDate = new Date(startDate.getTime() - (offset * 60 * 1000));
     startDate = startDate.toISOString().slice(0, 10)
@@ -1932,3 +1937,5 @@ function onClickDeleteScheduleMapping() {
     })
 
 }
+
+

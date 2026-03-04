@@ -1394,6 +1394,12 @@
         }
     },
     "Planning Engineer": {
+        "PFS": {
+            "EOT": {
+                "newEOT": true,
+                "approvedEOT": true 
+            }
+        },
         "Construct": {
             "NCR": {
                 "create": false,
@@ -1511,7 +1517,9 @@
                 "update": false,
                 "verify": false,
                 "approve": false,
-                "delete": false
+                "delete": false,
+                "readRestricted": false,
+                "readConfidential": false
             },
             "Correspondence":{
                 "create": false,

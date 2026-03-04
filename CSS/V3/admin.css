@@ -277,6 +277,22 @@
   cursor: pointer;
   transform: scale(1.05);
 }
+.admin-page #main-user .searchTable button.circle.cancel,
+.admin-page #main-project .searchTable button.circle.cancel,
+.admin-page #main-layerdata .searchTable button.circle.cancel,
+.admin-page #main-powerbi .searchTable button.circle.cancel,
+.admin-page #main-projectwise .searchTable button.circle.cancel,
+.admin-page #main-projectwise365 .searchTable button.circle.cancel,
+.admin-page #main-aerial .searchTable button.circle.cancel,
+.admin-page #main-shareAerial .searchTable button.circle.cancel,
+.admin-page #main-schedule .searchTable button.circle.cancel,
+.admin-page #main-schedulemap .searchTable button.circle.cancel,
+.admin-page #main-eot .searchTable button.circle.cancel,
+.admin-page #main-uploaddata .searchTable button.circle.cancel,
+.admin-page #main-project-dashboard .searchTable button.circle.cancel,
+.admin-page #invitenewuserForm .searchTable button.circle.cancel {
+  background-color: var(--cancel);
+}
 .admin-page #main-user .searchTable button.circle i,
 .admin-page #main-project .searchTable button.circle i,
 .admin-page #main-layerdata .searchTable button.circle i,
@@ -575,6 +591,79 @@
   padding: 0px 15px;
   width: calc(100% - 40px);
 }
+.admin-page #main-user .container-table .tableBody .row.admin input.edit,
+.admin-page #main-project .container-table .tableBody .row.admin input.edit,
+.admin-page #main-layerdata .container-table .tableBody .row.admin input.edit,
+.admin-page #main-powerbi .container-table .tableBody .row.admin input.edit,
+.admin-page #main-projectwise .container-table .tableBody .row.admin input.edit,
+.admin-page #main-projectwise365 .container-table .tableBody .row.admin input.edit,
+.admin-page #main-aerial .container-table .tableBody .row.admin input.edit,
+.admin-page #main-shareAerial .container-table .tableBody .row.admin input.edit,
+.admin-page #main-schedule .container-table .tableBody .row.admin input.edit,
+.admin-page #main-schedulemap .container-table .tableBody .row.admin input.edit,
+.admin-page #main-eot .container-table .tableBody .row.admin input.edit,
+.admin-page #main-uploaddata .container-table .tableBody .row.admin input.edit,
+.admin-page #main-project-dashboard .container-table .tableBody .row.admin input.edit,
+.admin-page #invitenewuserForm .container-table .tableBody .row.admin input.edit {
+  padding: 5px;
+  border-radius: 3px;
+  border: none;
+  color: var(--on-surface);
+  font-family: inherit;
+  outline: none;
+  height: 30px;
+  width: calc(100% - 5px);
+  font-size: 12px;
+  background: var(--top);
+}
+.admin-page #main-user .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-project .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-layerdata .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-powerbi .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-projectwise .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-projectwise365 .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-aerial .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-shareAerial .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-schedule .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-schedulemap .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-eot .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-uploaddata .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #main-project-dashboard .container-table .tableBody .row.admin input.edit:hover,
+.admin-page #invitenewuserForm .container-table .tableBody .row.admin input.edit:hover {
+  border: 1px solid var(--border-bottom);
+}
+.admin-page #main-user .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-project .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-layerdata .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-powerbi .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-projectwise .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-projectwise365 .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-aerial .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-shareAerial .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-schedule .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-schedulemap .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-eot .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-uploaddata .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #main-project-dashboard .container-table .tableBody .row.admin input.edit[disabled],
+.admin-page #invitenewuserForm .container-table .tableBody .row.admin input.edit[disabled] {
+  background: var(--background);
+}
+.admin-page #main-user .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-project .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-layerdata .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-powerbi .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-projectwise .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-projectwise365 .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-aerial .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-shareAerial .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-schedule .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-schedulemap .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-eot .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-uploaddata .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #main-project-dashboard .container-table .tableBody .row.admin input.edit[disabled]:hover,
+.admin-page #invitenewuserForm .container-table .tableBody .row.admin input.edit[disabled]:hover {
+  border: none;
+}
 .admin-page #main-user .container-table .tableBody .row.admin.fiveColumn .columnMiddle,
 .admin-page #main-project .container-table .tableBody .row.admin.fiveColumn .columnMiddle,
 .admin-page #main-layerdata .container-table .tableBody .row.admin.fiveColumn .columnMiddle,
@@ -656,6 +745,38 @@
   background: var(--top);
   box-shadow: 0 2px 10px 0px rgba(0, 0, 0, 0.13);
   cursor: default;
+}
+.admin-page #main-user .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-project .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-layerdata .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-powerbi .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-projectwise .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-projectwise365 .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-aerial .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-shareAerial .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-schedule .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-schedulemap .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-eot .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-uploaddata .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #main-project-dashboard .container-table .tableBody .row:hover input.edit:not(:hover),
+.admin-page #invitenewuserForm .container-table .tableBody .row:hover input.edit:not(:hover) {
+  border: 1px solid var(--border-bottom);
+}
+.admin-page #main-user .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-project .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-layerdata .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-powerbi .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-projectwise .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-projectwise365 .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-aerial .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-shareAerial .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-schedule .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-schedulemap .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-eot .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-uploaddata .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #main-project-dashboard .container-table .tableBody .row:hover input.edit[disabled]:not(:hover),
+.admin-page #invitenewuserForm .container-table .tableBody .row:hover input.edit[disabled]:not(:hover) {
+  border: none;
 }
 .admin-page #main-user .container-table .tableBody .row.active,
 .admin-page #main-project .container-table .tableBody .row.active,
@@ -6582,6 +6703,22 @@
   padding: 0px 15px;
   width: calc(100% - 40px);
 }
+.admin-page #main-user .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-project .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-layerdata .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-powerbi .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-projectwise .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-projectwise365 .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-aerial .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-shareAerial .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-schedule .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-schedulemap .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-eot .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-uploaddata .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #main-project-dashboard .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div,
+.admin-page #invitenewuserForm .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn > div {
+  margin: 0px;
+}
 .admin-page #main-user .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn .columnSmall,
 .admin-page #main-project .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn .columnSmall,
 .admin-page #main-layerdata .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn .columnSmall,
@@ -6597,7 +6734,7 @@
 .admin-page #main-project-dashboard .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn .columnSmall,
 .admin-page #invitenewuserForm .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn .columnSmall {
   width: 30px;
-  padding-left: 4px;
+  padding-left: 7px;
 }
 .admin-page #main-user .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn .columnMiddle,
 .admin-page #main-project .user-container .container-tableRight .tablecontainer .tableBody .row.admin.fourColumn .columnMiddle,
@@ -6784,7 +6921,6 @@
   font-family: inherit;
   outline: none;
   height: 30px;
-  margin: 0px 5px;
   width: calc(100% - 5px);
   font-size: 12px;
 }

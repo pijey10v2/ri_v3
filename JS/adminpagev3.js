@@ -1,4 +1,5 @@
 var projectUsers = [];
+var currUserList = [];
 var dataDetails;
 var aicDetails;
 var col_ajs = "blue";
@@ -18,11 +19,10 @@ var flagCheckStyle = false;
 var item;
 var themeJoget;
 var terrainEnabled = false;
-
-var main_id = $('select[name="main_id"]');
+var mapTilerAccessToken = MAPTILER_TOKEN;
 
 var constructOwnerRoles_KKR = ["Bumi Officer","Construction Engineer", "Contract Executive", "Corporate Comm Officer","Director","Doc Controller","Finance Head","Finance Officer","Head of Department", "Land Officer","Planning Engineer","Project Director","Project Manager","Project Monitor","QAQC Engineer","Risk Engineer","Safety Officer","Zone Manager"];
-var constructOwnerRoles_OBYU = ["Construction Engineer","Corporate Comm Officer","Director","Doc Controller","Finance Head","Finance Officer","Planning Engineer","Project Manager","QAQC Engineer","Risk Engineer","Safety Officer"];
+var constructOwnerRoles_OBYU = ["Construction Engineer","Corporate Comm Officer","Director","Doc Controller","Finance Head","Finance Officer","Land Officer","Planning Engineer","Project Manager","QAQC Engineer","Risk Engineer","Safety Officer"];
 var constructOwnerRoles_SSLR = ["Construction Manager", "Finance Representative", "HOD (Contract and Finance)", "HOD (QSHET)", "HSET Officer", "Land Management Representative", "PMO Representative", "Project Engineer", "QAQC Manager", "Representative", "Site Engineer", "SMO Representative", "Technical Engineer"];
 var assetOwnerRoles = ["Assistant Director (Road Asset)","Assistant Engineer (Division)","Assistant Engineer (District)","Asset Engineer Section","Civil Engineer (Division)","Civil Engineer (District)","Civil Engineer (Road Asset)","Contract Assistance","Divisional Engineer","District Engineer",
                        "Facility Management Department","Head of Contract","Head of Finance","Head of Section", "KKR", "Quantity Surveyor","Senior Civil Engineer (Division)","Senior Civil Engineer (District)","Senior Civil Engineer (Road Asset)","Senior Quantity Surveyor","Technical Inspector Section"];
@@ -103,8 +103,6 @@ function closeAllMain() {
 function openDivAdmin(openThis){
     $("#"+openThis).css("display", "block");
 }
-
-
 
 function editProject() {
     $(".project-container .formcontainerMainBody .project-view#readonly").hide();
@@ -196,9 +194,9 @@ function editProject() {
     
     if(readRectangle !== undefined){
         if(ReadEntity){
-            viewer.entities.remove(ReadEntity)
+            viewer4.entities.remove(ReadEntity)
         }
-        ReadEntity = viewer.entities.add({
+        ReadEntity = viewer4.entities.add({
             selectable: false,
             show: true,
             rectangle: {
@@ -206,11 +204,11 @@ function editProject() {
                 material: Cesium.Color.YELLOW.withAlpha(0.1),
             },
         });
-        viewer.camera.setView({
+        viewer4.camera.setView({
             destination: readRectangle,
         });
     }else{
-        ReadEntity = viewer.entities.add({
+        ReadEntity = viewer4.entities.add({
             selectable: true,
             show: false,
         });
@@ -230,6 +228,21 @@ hideLoader = () =>{
 $(function () {
 
     hideLoader()
+
+    //disable dev tool
+	var prodFlag = localStorage.inspectFlag;
+
+    if(prodFlag == 'true'){
+        document.addEventListener("contextmenu", function(event) {
+            event.preventDefault();
+        });
+    
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "C") || (event.ctrlKey && event.shiftKey && event.key === "J")) {
+                event.preventDefault();
+            }
+        });
+    }
 
     //show project details at first load
     $("#main-project").css("display", "block");
@@ -1252,6 +1265,10 @@ function OnClickAdminAddUser() {
             <div class="columnLarge textContainer proRoleSelection"></div>
             <div style = "display:none">`+data[i].orgType+`</div>`;
 
+        if(localStorage.isParent == 'isParent' && localStorage.usr_role == 'Project Monitor' && localStorage.user_org == 'JKR'){
+            tableForAddUserHTML += `
+            <div class="textContainer"><span class="textClamp"><input type ="checkbox"></span></div>`;
+        }
         cell.append(tableForAddUserHTML);
         $('.proRoleSelection').html(selectList);
     }
@@ -1446,7 +1463,7 @@ function OnClickAdminRemoveUser() {
         .find("div")
         .each(function () {
             var row = $(this);
-            if (row.find('input[type="checkbox"]').is(":checked")) {
+            if (row.find("div").eq(0).find("input").is(':checked')) {
                 if((row.find("div").eq(1).html()) == undefined) return true;
                 data.push({
                     id: row.find("div").eq(1).html(),
@@ -1541,7 +1558,8 @@ function OnClickInviteUserSave() {
                 id: row.find("div").eq(1).html(),
                 projectRole: row.find("select").val(),
                 email: row.find("div").eq(2).text(),
-                orgsubtype : row.find('select option:selected').data('orgsubtype')
+                orgsubtype : row.find('select option:selected').data('orgsubtype'),
+                reporting: row.find("div").eq(7).find("input").is(':checked')
             });
             if (localStorage.signed_in_email == row.find("div").eq(2).text()) {
                 if (localStorage.usr_role != row.find("select").val()) {
@@ -1549,6 +1567,7 @@ function OnClickInviteUserSave() {
                 }
             }
         });
+    var usersReportingAccess = [];
     var projectUsersUpdate = [];
     var projectGroupUsersUpdate = [];
     var projectGrpRole1 = ['Consultant RE','QAQC Engineer', 'Safety Officer'];
@@ -1595,7 +1614,16 @@ function OnClickInviteUserSave() {
                             });
                         }
                     }
-                    
+
+                }
+                //assigning digital reporting access
+                if(projectUsers[i].reporting != data[j].reporting){
+                    usersReportingAccess.push({
+                        user_id: data[j].id,
+                        user_email: data[j].email,
+                        user_reporting: (data[j].reporting) ? data[j].reporting : 0
+                    });
+                    msg +=  data[j].email + " - change user access (Digital Reporting)<br>";
                 }
                 data.splice(j, 1);
                 idflag = true;
@@ -1633,11 +1661,18 @@ function OnClickInviteUserSave() {
             }else{
                 projectUsersUpdate.push({
                     user_id: projectUsers[i].id,
-                    user_role: "non_Member",
+                    user_role: projectUsers[i].projectRole,
                     user_email: projectUsers[i].email,
                     user_orgSubType : projectUsers[i].orgsubtype
                 });
             }
+
+            //assigning digital reporting access
+            usersReportingAccess.push({
+                user_id: projectUsers[i].id,
+                user_email: projectUsers[i].email,
+                user_reporting: 0
+            });
         }
     }
     for (var i = 0; i < data.length; i++) {
@@ -1658,6 +1693,13 @@ function OnClickInviteUserSave() {
                 user_orgSubType : data[i].orgsubtype
             });
         }
+
+        //assigning digital reporting access
+        usersReportingAccess.push({
+            user_id: data[i].id,
+            user_email: data[i].email,
+            user_reporting: (data[i].reporting) ? data[i].reporting : 0
+        });
     };
 
     var formdata = new FormData();
@@ -1667,6 +1709,9 @@ function OnClickInviteUserSave() {
             formdata.append("userGroup", JSON.stringify(projectGroupUsersUpdate));
         }
     }
+    if(usersReportingAccess.length > 0){
+        formdata.append("usersReporting", JSON.stringify(usersReportingAccess));
+    }
     formdata.append("functionName", "projectAdminUpdateUsers");
 
     if(SYSTEM == 'OBYU'){
@@ -1675,7 +1720,7 @@ function OnClickInviteUserSave() {
         ajaxUrl = 'BackEnd/ProjectFunctionsV3.php';
     }
 
-    if(projectUsersUpdate.length> 0){
+    if(projectUsersUpdate.length > 0 || usersReportingAccess.length > 0){
         $.confirm({
             boxWidth: '30%',
             useBootstrap: false,
@@ -1890,7 +1935,16 @@ function refreshAdminUserTable() {
                         phtml += "</select></div>";
                         phtml += '<div style ="display:none">DBC</div>';
                         break;
+                }
+                if(localStorage.isParent == 'isParent' && localStorage.usr_role == 'Project Monitor' && localStorage.user_org == 'JKR'){
+                    if(pusers[i].show_reporting == '1'){
+                        phtml +=
+                        '<div class="textContainer"><span class="textClamp"><input type ="checkbox" checked></span></div>';
+                    }else{
+                        phtml +=
+                        '<div class="textContainer"><span class="textClamp"><input type ="checkbox"></span></div>';
                     }
+                }
 
                 phtml += '</div>';
             };
@@ -1904,7 +1958,8 @@ function refreshAdminUserTable() {
                         id: row.find("div").eq(1).html(),
                         projectRole: row.find("select").val(),
                         email: row.find("div").eq(2).text(),
-                        orgsubtype: row.find("select option:selected").data("orgsubtype")
+                        orgsubtype: row.find("select option:selected").data("orgsubtype"),
+                        reporting: row.find("div").eq(7).find("input").is(':checked') //reporting access is captured in this column
                     });
                 });
         },
@@ -2106,7 +2161,7 @@ function editLayer(ele) {
         } else {
             $("#btn_dataPermission").html("Unshare");
         }
-        if (data_owner.trim() !== project_name.trim()) {
+        if (decodeHtml(data_owner).trim() !== decodeHtml(project_name).trim()) {
             $("#btn_dataStyling").attr("disabled", "")
             $("#btn_dataRename, #btn_dataPermission, #btn_dataDelete").attr("disabled", "")
             if (data_access == "Not Shared" && data_attach == "Not_Attached") {
@@ -2206,12 +2261,20 @@ function editLayer(ele) {
                     var newLongitude = cartographic.longitude + Cesium.Math.toRadians(Cesium.Math.toRadians(Cesium.Math.toRadians(xInRadians)));
                     var newLatitude = cartographic.latitude + Cesium.Math.toRadians(Cesium.Math.toRadians(Cesium.Math.toRadians(yInRadians)));
                     var newHeight = heightOffset;
-                
-                    var newPosition = Cesium.Cartesian3.fromRadians(
-                        newLongitude, 
-                        newLatitude, 
-                        newHeight
-                    );
+
+                    if(Number.isNaN(newLongitude) || Number.isNaN(newLatitude)){
+                        var newPosition = Cesium.Cartesian3.fromRadians(
+                            cartographic.longitude, 
+                            cartographic.latitude, 
+                            heightOffset
+                        );
+                    }else{
+                        var newPosition = Cesium.Cartesian3.fromRadians(
+                            newLongitude, 
+                            newLatitude, 
+                            newHeight
+                        );
+                    }
                 
                     var translation = Cesium.Cartesian3.subtract(
                         newPosition,
@@ -2269,6 +2332,12 @@ function editLayer(ele) {
             break;
         }
     }
+}
+
+function decodeHtml(str) {
+  return new DOMParser()
+    .parseFromString(str, "text/html")
+    .documentElement.textContent;
 }
 
 function permissionToggle() {
@@ -2693,10 +2762,13 @@ function loadProjectUsers() {
         },
         dataType: "json",
         success: function (response) {
+            currUserList = [];
             var myhtml = "";
             mixitup ('#adminProjectUsers', config).destroy();
             for (var i = 0; i < response.project_users.length; i++) {
                 let UserType;
+                var visibility = (localStorage.project_owner == 'JKR_SABAH') ? 'block' : 'none';
+                var userDesignation = (response.project_users[i].user_designation !== null && response.project_users[i].user_designation !== '') ? response.project_users[i].user_designation : 'N/A';
                 switch (response.project_users[i].Pro_Role) {
                     case "Project Manager":
                         UserType = "Project Manager";
@@ -2705,7 +2777,7 @@ function loadProjectUsers() {
                         UserType = "Project Monitor";
                         break;
                     case "Finance Officer":
-                        UserType = (SYSTEM == 'KKR') ? "Finance Officer" : "Contract & Cost Control";
+                        UserType = "Finance Officer";
                         break;
                     case "QAQC Engineer":
                         UserType = "QAQC Engineer";
@@ -2785,6 +2857,7 @@ function loadProjectUsers() {
                     default:
                         UserType = response.project_users[i].Pro_Role
                 }
+
                 myhtml += 
                     '<div class="row admin fiveColumn searchv3 mix" rel="" data-user-email="' + response.project_users[i].user_email + '" data-user-name="' + response.project_users[i].user_firstname + ' ' + response.project_users[i].user_lastname + '" data-user-organisation="' + response.project_users[i].user_org + '" data-user-country="' + response.project_users[i].user_country + '" data-user-role="' + UserType + '">'+
                         '<div class="columnMiddle textContainer" style="display:none"><span class="text textClamp">' + response.project_users[i].Usr_ID + '</span></div>'+
@@ -2793,7 +2866,15 @@ function loadProjectUsers() {
                         '<div class="columnMiddle textContainer"><span class="text textClamp">' + response.project_users[i].user_org + '</span></div>'+
                         '<div class="columnMiddle textContainer"><span class="text textClamp">' + response.project_users[i].user_country + '</span></div>'+
                         '<div class="columnMiddle textContainer"><span class="text textClamp">' + UserType + ' </span></div>'+
+                        '<div class="columnMiddle textContainer" style="display:'+ visibility +'"><input class="edit designation" type="text" value="'+ userDesignation +'" disabled></div>'+
                     '</div>';
+                
+                //append current user list into array. it will be used for user list edit designation.
+                currUserList.push({
+                    id: response.project_users[i].Usr_ID,
+                    email: response.project_users[i].user_email,
+                    designation: (response.project_users[i].user_designation !== null && response.project_users[i].user_designation !== '') ? response.project_users[i].user_designation : ''
+                });
             };
 
             $('#adminProjectUsers').html(myhtml);
@@ -2847,7 +2928,8 @@ for (i = 0; i < projectlistOther.length; i++) {
 Cesium.BingMapsApi.defaultKey =
     "AgWzRGyO26urfR6O6qFMkOAvSW8TZxds6jR_yPiTvbO_Dx9t-s5sheKO0m9vL_SJ"; // For use with this application only
 Cesium.Ion.defaultAccessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4YTU2OTcxMC0wNzdmLTQyZDItOWVkNy0xZjU4NTgzYTVjNTUiLCJpZCI6NzI3Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0ODg2ODEwM30.Lc-IQBDSPyhqgPR2v-Ejcb34ksKJLr23mXsOhszBcHI";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzOTg5ZWFlMS1jZGZiLTQ5OGUtYjY3Ni1mMDJmNGNmNWIwY2UiLCJpZCI6MzA1MjAzLCJpYXQiOjE3NDc5MDMzMzF9._AllgIQ2JG23BGarvbIRTv-ZNpkoDj-W0VMRlN1pTuQ";
+var mapBoxAccessToken = MAPBOX_TOKEN;
 
 var viewer3 = new Cesium.Viewer("datapreview", {
     baseLayerPicker: false,
@@ -2859,6 +2941,10 @@ var viewer3 = new Cesium.Viewer("datapreview", {
     sceneModePicker: false,
     navigationHelpButton: false,
     infoBox: false,
+    imageryProvider: new Cesium.MapboxStyleImageryProvider({
+        styleId: 'satellite-v9', 
+        accessToken: mapBoxAccessToken
+    })
 });
 
 viewer3._cesiumWidget._creditContainer.style.display = "none";
@@ -3240,24 +3326,18 @@ $("#adjustBrightness").click(function () {
 });
 
 $("#switchTerrainMode").on("click", function () {
-    if ($(this).hasClass("activate")) {
-        $(this).removeClass("activate");
-        $(this).children().removeClass("fa-regular");
-        $(this).children().addClass("fa-solid");
-    }
-    else{
-        $(this).addClass("activate");
-        $(this).children().removeClass("fa-solid");
-        $(this).children().addClass("fa-regular");
-    }
-
     if (terrainEnabled) {
         viewer3.terrainProvider = new Cesium.EllipsoidTerrainProvider();
         terrainEnabled = false;
     } else {
-        viewer3.terrainProvider = Cesium.createWorldTerrain({
-            requestVertexNormals : true
-        });
+        viewer3.terrainProvider = new Cesium.CesiumTerrainProvider({
+			url: "https://api.maptiler.com/tiles/terrain-quantized-mesh-v2/?key="+mapTilerAccessToken,
+			credit: new Cesium.Credit(
+				'<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> ' +
+				'<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+			),
+			requestVertexNormals: true
+		});
         terrainEnabled = true;
     }
 })
@@ -3376,7 +3456,7 @@ $("#groupLayerName").on('change', function () {
 
 function OnClickRemoveLayerGroup(ele) {
     var prevtdLayer = $(ele).parent().parent().parent().prev();
-    var layerId = $(prevtdLayer).find("td:eq(12)").text();
+    var layerId = $(prevtdLayer).find('div:eq(12) span').text();
 
     var message = "Are you sure you want to remove group layer? ";
     $.confirm({
@@ -5066,7 +5146,7 @@ function getAicRoutineInfo(ele) {
                         <div class="columnMiddle textContainer" style="display:none"><span class="text">' + row.Package_Id + '</span></div>\
                         <div class="columnMiddle textContainer" '+(SYSTEM=='OBYU'?'style="display:none"':'')+'><span class="text">'+ row.Image_URL + '</span></div>\
                         <div class="columnMiddle textContainer"><span class="text">' + row.Owner_Project_Name + '</span></div>\
-                        <div class="columnMiddle textContainer" style="margin:unset"><img class="aerial" title="" src="'+ imgURL + '">\
+                        <div class="columnMiddle textContainer" style="margin:unset"><img class="aerial" title="" src="'+ (localStorage.themeJoget == "digile" ? 'Images/theme_icon/Twinsights_brand_digile.png' : imgURL) + '">\
                             <div class="buttoncontainer">\
                                 <div class="buttonsubcontainer">\
                                     <button title = "View the Image" class="aicViewImgBtn" onclick="aicViewImage(\''+ row.Image_URL + '\',\'' + row.project_id + '\', this)">View</button>\
@@ -5082,6 +5162,11 @@ function getAicRoutineInfo(ele) {
                 })
 
             }
+        });
+
+        window.addEventListener("storage", (event) => {
+            const aicImg = event.key === "themeJoget" && event.newValue === 'digile' ? 'Images/theme_icon/Twinsights_brand_digile.png' : 'revicons.ico';
+            $("#aicRecordTable img.aerial").attr("src", aicImg);
         });
     }
 }
@@ -6017,7 +6102,7 @@ function OnClickSaveAerialGroup(){
 }
 
 function openJogetFromProjAdmin(url, form = false, parentTagNameText = ''){
-    var url1 = url;
+
     $("#main-project-dashboard h3").text(parentTagNameText);
     
     if(SYSTEM == 'OBYU'){
@@ -6033,119 +6118,12 @@ function openJogetFromProjAdmin(url, form = false, parentTagNameText = ''){
     }
 
     if(url) {
-        if(url1 == "fm_omni_class"){
-            $("#digitalReportingInfo iframe").attr("src", url).hide();
-            $("#digitalReportingInfo #omniClassContainer").show();
-            $("#omniClassContainer iframe").attr("src", url).show();
-            OnLoadOmniClass();
-        }
-        else{
-            $("#digitalReportingInfo iframe").attr("src", url).show();
-            $("#digitalReportingInfo #omniClassContainer").hide();
-            $("#omniClassContainer iframe").attr("src", url).hide();
-        }
+        $("#digitalReportingInfo iframe").attr("src", url).show();
  
     } else {
         $("#digitalReportingInfo iframe").attr("src", url).hide();
-        $("#digitalReportingInfo #omniClassContainer").hide();
-        $("#omniClassContainer iframe").attr("src", url).hide();
  
     }
-}
-
-    
-    
-main_id.on('change', function(){
-    codeVisibility();
-});
-
-    
-function codeVisibility() {
-    if(main_id.val() == "-"){
-        $("#code").parent().hide();
-        $("#code").val("-");
-    }
-    else {
-        $("#code").parent().show();
-        $("#code").val("");
-    }
-}
-
-function OnLoadOmniClass() {
-    var list = '';
-    $("#myUL").html("");
-
-    $.ajax({
-        type: "POST",
-        url: "BackEnd/fetchOmniClassDatav3.php",
-        dataType: 'json',
-        data: {
-            functionName: "getListOfOmniClass",
-        },
-        success: function (obj, textStatus) {
-            console.log("OMNI RESULT: "+ obj.data);
-            var result = obj.data;
-        
-        
-            //Sort Object
-            result.sort((a, b) => {
-                    return a.auto_id - b.auto_id;
-            });
-            
-            //Append Main Parent
-            for (const [key, value] of Object.entries(result)) {
-                if(value.main_id == '-'){
-                    list = `<li class="item">
-                            <input type="checkbox" name="item1">
-                            <label for="item1" class="strong"> <b>${value.title}</b></label>
-                            <button type="button" class="btnAdd1 btn-link-transparent" id="${value.id}"><i class="fa fa-plus-circle"></i></button>
-                            <ul class="item-list" id="id_${value.id}"></ul>
-                            </li>`;
-                            
-                    $("#myUL").append(list);
-                } 
-                else {
-                    list = `<li class="item">
-                                <input type="checkbox" name="item1">
-                                <label for="item1">${value.code} ${value.title} <button type="button" class="btnAdd1  btn-link-transparent" id="${value.id}"><i class="fa fa-plus-circle"></i></button></label>
-                                <ul class="item-list" id="id_${value.id}"></ul>
-                                </li>`;
-                    $("#id_"+ value.main_id).append(list);
-                 }
-            }
-            
-            const btns = document.querySelectorAll('.btnAdd1');
-            
-            btns.forEach(btn=> {
-              btn.addEventListener('click', () => {
-                $("#addOmniClass").fadeIn();
-                $(".loader").fadeIn();
-                $("#addOmniClass").find(".modal-header a").html("Add New");
-                
-                var url = JOGETLINK['fm_omni_class_form'];
-                console.log("OMNI FORM: ", url+ "?omniClassId=545e74b2-7cfc-4a47-8aff-f200ea87932b");
-                $("#omniClassContainer1 #myAdminInnerFrame2").attr("src", url + "?omniClassId=" + btn.id).show();
-              });
-            });
-        
-            },
-        error: function (xhr, textStatus, errorThrown) {
-            var str = textStatus + ": " + errorThrown;
-            console.log("TEST RESULT: ", str);
-            /*$.alert({
-                boxWidth: '30%',
-                useBootstrap: false,
-                title: 'Message',
-                content: str
-            });*/
-        }
-    });
-}
-
-
-wizardCancelPageGantt = () =>{
-    $("#addOmniClass").fadeOut(100);
-    $('#gdiv').html('')
 }
 
 function stickyScroll(){
@@ -6208,3 +6186,104 @@ eventer(
     },
     false
 );
+
+OnClickSaveUserList = () =>{
+    var data = [];
+    $("#adminProjectUsers")
+        .find("div")
+        .each(function () {
+            var row = $(this);
+            if((row.find("div").eq(1).html()) == undefined) return true;
+            data.push({
+                id: parseInt(row.find("div").eq(0).text()),
+                email: row.find("div").eq(1).text(),
+                designation: (row.find("div").eq(6).find('input').val() !== 'N/A') ? row.find("div").eq(6).find('input').val() : ''
+            });
+        });
+    var userListUpdate = [];
+    var msg =" Are you sure you want to update the designation for these users? <br>";
+
+    for (var i = 0; i < currUserList.length; i++) {
+        var j = 0;
+        while (j < data.length) {
+            if (currUserList[i].id == data[j].id) {
+                //assigning designation
+                if(currUserList[i].designation != data[j].designation){
+                    userListUpdate.push({
+                        user_id: data[j].id,
+                        user_email: data[j].email,
+                        user_designation: data[j].designation
+                    });
+                    msg +=  data[j].email + " <br>";
+                }
+                data.splice(j, 1);
+                break;
+            }
+            j++;
+        }
+    }
+
+    if(userListUpdate.length > 0){
+        formdata = new FormData();
+        ajaxUrl = 'BackEnd/userFunctionsV3.php';
+        formdata.append("userListProjAdmin", JSON.stringify(userListUpdate));
+        formdata.append("functionName", "updateUserList");
+
+        $("#main-user .loadingcontainer-mainadmin").show();
+
+        $.confirm({
+            boxWidth: '30%',
+            useBootstrap: false,
+            title: 'Confirm!',
+            content: msg,
+            buttons: {
+                confirm: function () {
+                    $.ajax({
+                        url: ajaxUrl,
+                        data: formdata,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                        success: function (res) {
+                            var data = JSON.parse(res)
+                            if(data.bool && data.bool == true){
+                                $.alert({
+                                    boxWidth: '30%',
+                                    useBootstrap: false,
+                                    title: "Success!",
+                                    content: data.msg
+                                });
+                            }else{
+                                $.alert({
+                                    boxWidth: '30%',
+                                    useBootstrap: false,
+                                    title: "Error!",
+                                    content: data.msg
+                                });
+                            }
+                            loadProjectUsers();
+                            $("#main-user .loadingcontainer-mainadmin").hide();
+                        }
+                    });
+                },
+                cancel: function () {
+                    return;
+                },
+            },
+        });
+    }else{
+        $.alert({
+            boxWidth: '30%',
+            useBootstrap: false,
+            title: "Message!",
+            content: "No user update."
+        });
+
+        loadProjectUsers();
+        $("#main-user .loadingcontainer-mainadmin").hide();
+    }
+}
+
+OnClickEditUserList = () =>{
+    $("#adminProjectUsers").find(".edit").removeAttr("disabled");
+}

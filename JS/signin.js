@@ -64,3 +64,13 @@ $(function(){
 $(".btn.btn-primary").on('click', function(){
 	$(".project-panel").css('display','block');
 })
+
+
+// When the form is submitted
+$('#loginForm').on('submit', function(event) {
+	var password = $('#password').val();
+
+	var encryptedPassword = btoa(password);
+
+	$('#password').val(encryptedPassword);
+});

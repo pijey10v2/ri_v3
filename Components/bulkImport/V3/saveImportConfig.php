@@ -14,6 +14,11 @@ if($proj_owner == 'MRSB'){
     $filePrefix = "construct_";
     $config_directory = dirname(__FILE__)."/../../../Templates/MRSB/Config/";
     $directory = dirname(__FILE__).'/../../../Templates/'.$proj_owner.'/';    
+}else if($proj_owner == 'KACC'){
+    $fileSuffix = "_config.xlsx";
+    $filePrefix = "construct_";
+    $config_directory = dirname(__FILE__)."/../../../Templates/KACC/Config/";
+    $directory = dirname(__FILE__).'/../../../Templates/'.$proj_owner.'/';    
 }else{
 
     if($proj_owner == 'JKR_SARAWAK'){

@@ -112,7 +112,10 @@
                 mkdir("../../Data/Projects/".$pid, 0777, true);
             }
 
-            if(move_uploaded_file($file_tmp,"../../Data/Projects/".$pid."/".$file_name)){
+            $file_dir = "../../Data/Projects/".$pid."/".$file_name;
+            if(move_uploaded_file($file_tmp,$file_dir)){  
+                exec("icacls \"$file_dir\" /grant Everyone:F");
+
                 $XML_url = "Data/Projects/".$pid."/".$file_name;
                 if($rvNumber ==""){ //new project schedule with no revision 
                     $sql = "INSERT INTO Project_Schedule ([Name],[Sch_Ver],[URL],[Pro_ID],[Upload_Date],[Uploaded_By],[Sch_Date],[scheduleType],[Revision],[ReasoningID]) 

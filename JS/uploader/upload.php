@@ -59,32 +59,6 @@ if ($dataType == 'KML') {
     if (true === $resumable->isUploadComplete()) {
         echo "Done";
     }
-}
-else if ($dataType == 'EXCEL') {
-    $request  = new SimpleRequest();
-    $response = new SimpleResponse();
-
-    $dir      = "../../../Data/Others/AssetData/";
-    if (!file_exists($dir)) {
-        mkdir($dir, 0777, true);
-    }
-    $resumable    = new Resumable($request, $response);
-    $extension    = $resumable->getExtension();
-    $originalName = $resumable->getOriginalFilename();
-
-    if ($extension == "" || $extension == "xls" || $extension == "xlsx") {
-        $resumable->tempFolder   = 'tmps';
-        $resumable->uploadFolder = $dir;
-        $resumable->process();
-    } else {
-        echo "Illegal file format found!";
-        exit;
-    }
-
-    if (true === $resumable->isUploadComplete()) {
-        echo "Done";
-    }
-
 } else if ($dataType == 'SHP') {
     $request      = new SimpleRequest();
     $response     = new SimpleResponse();

@@ -2845,7 +2845,7 @@ for (i = 0; i < projectlistOther.length; i++) {
 // }
 
 Cesium.BingMapsApi.defaultKey =
-    "AgWzRGyO26urfR6O6qFMkOAvSW8TZxds6jR_yPiTvbO_Dx9t-s5sheKO0m9vL_SJ"; // For use with this application only
+    "Ap0nMgqVt8bPjZvIrd_3wrG9bhMs3ZZMRvCvDSj5lDBTQzm7nD_MxHzZwLhCw7bI"; // For use with this application only
 Cesium.Ion.defaultAccessToken =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4YTU2OTcxMC0wNzdmLTQyZDItOWVkNy0xZjU4NTgzYTVjNTUiLCJpZCI6NzI3Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0ODg2ODEwM30.Lc-IQBDSPyhqgPR2v-Ejcb34ksKJLr23mXsOhszBcHI";
 

@@ -824,6 +824,9 @@ function updateAndRefreshData(selWPC, selSection, yr, mth, selYr, selMonth){
                 timeData.info = MergeRecursive(timeData.info, obj.data.info)
                 refreshInformation(selWPC, selSection, selYr, selMonth);
             }
+        },
+        complete: function (){
+            window.parent.postMessage({functionName: 'loaderajaxEnd'})
         }
     });
 }
@@ -851,7 +854,32 @@ function refreshFromv3 (filterArr){
     var month = filterArr.month;
     var section = filterArr.section;
 
-    refreshInformation(wpc, section, year, textMonthtoNum[month]);
+    if(textMonthtoNum[month]){
+        month = textMonthtoNum[month];
+    }
+
+    // refreshInformation(wpc, section, year, textMonthtoNum[month]);
+
+    // check if data has been fetch, if not refetch
+    if (year != 'all' && month != 'all' && timeData.sd && timeData.sd.sys && timeData.sd.sys.data) {
+
+        var fetchedDateArr = timeData.sd.sys.data;
+        if (month < 7) {
+            minusMth = 12-(6-month);
+            minusYr = year-1;
+        }else{
+            minusMth = month-6;
+            minusYr = year;
+        }
+
+        if (fetchedDateArr[minusYr+"-"+String(minusMth).padStart(2, '0')] === undefined || fetchedDateArr[year+"-"+String(month).padStart(2, '0')] === undefined) {
+            updateAndRefreshData(wpc, section, year, month, year, month);
+        }else{
+            refreshInformation(wpc, section, year, month);
+        }
+    }else{
+        refreshInformation(wpc, section, year, month);
+    }
 }
 
 $(function () {

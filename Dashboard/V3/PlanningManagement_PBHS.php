@@ -16,28 +16,40 @@ $html = '
     <body class='.$themeClass.'>
         <div class = "dashboardBody">
             <div class="layout oneRow round" id="lOne">
-                <div class="rowOne twoRow">
-                    <div class="rowOne XS round infoContainerDiv">
-                        <div class="infoContainer round" style="margin:0 2.5px;">
-                            <div class="head" style="font-weight: bold;">TOTAL REPORT</div>
-                            <div class="body centerMiddle">
-                                <span id = "totalReport">0</span>
+                <div class="rowOne twoColumn">
+                    <div class="columnOne S round twoRow">
+                        <div class="rowOne SM infoContainerDiv round column">
+                            <div class="infoContainer full round" style="margin:0 2.5px;">
+                                <div class="head" style="font-weight: bold;">TOTAL REPORT</div>
+                                <div class="body centerMiddle">
+                                    <span id = "totalReport">0</span>
+                                </div>
+                            </div>
+                            <div class="infoContainer full round" style="margin:0 2.5px;">
+                                <div class="head" style="font-weight: bold;">CLOSED</div>
+                                <div class="body centerMiddle">
+                                    <span id = "totalReportclose">0</span>
+                                </div>
+                            </div>
+                            <div class="infoContainer full round" style="margin:0 0 0 2.5px;">
+                                <div class="head" style="font-weight: bold;">PENDING</div>
+                                <div class="body centerMiddle">
+                                    <span id = "totalReportopen">0</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="infoContainer round" style="margin:0 2.5px;">
-                            <div class="head" style="font-weight: bold;">CLOSED</div>
-                            <div class="body centerMiddle">
-                                <span id = "totalReportclose">0</span>
-                            </div>
-                        </div>
-                        <div class="infoContainer round" style="margin:0 0 0 2.5px;">
-                            <div class="head" style="font-weight: bold;">PENDING</div>
-                            <div class="body centerMiddle">
-                                <span id = "totalReportopen">0</span>
+                        <div class="rowTwo ML">
+                            <div class="tableContainer round background">
+                                <table>
+                                    <thead id="tblHeader">
+                                    </thead>
+                                    <tbody id="rsInfoMonthly">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="rowTwo XL twoRow round">
+                    <div class="columnTwo L twoRow round">
                         <div class="rowOne-T roundT">Report Category</div>
                         <div class="rowTwo-T roundB dash-charts risk-charts" id="categoryReport">
 
@@ -85,5 +97,11 @@ echo $html;
     }
     .clickableCard {
         cursor:pointer;
+    }
+    .tableContainer{
+        width: 100%;
+    }
+    .infoContainerDiv{
+        justify-content: space-evenly !important;
     }
 </style>

@@ -30,7 +30,7 @@ class dbconnect extends PDO
       }
    }
 
-   public function query_old($query){
+   public function query($query){
       $result = parent::query($query);
       return($result);
    }

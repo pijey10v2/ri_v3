@@ -160,6 +160,22 @@ function printDashboard(){
 }
 
 $(function () {
+
+    //disable dev tool
+	var prodFlag = localStorage.inspectFlag;
+
+    if(prodFlag == 'true'){
+        document.addEventListener("contextmenu", function(event) {
+            event.preventDefault();
+        });
+    
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "C") || (event.ctrlKey && event.shiftKey && event.key === "J")) {
+                event.preventDefault();
+            }
+        });
+    }
+
     $("#minimizeButton").on("click", function () {
         if ($(this).hasClass("active")) {
             $(this).removeClass("active")
@@ -715,7 +731,7 @@ function getFilterDocumentSarawak(){
         year = selYr;
         if(selMth == 'all'){
           month = '';
-          lastdayMnth = new Date(selYr, 01, 0);
+          lastdayMnth = new Date(selYr, 1, 0);
           dateFrom = '01-01-'+selYr;
           dateTo = lastdayMnth.getDate()+'-12-'+selYr;
         }else{

@@ -41,7 +41,7 @@ $html = '
                             </div>
                             <div class="columnTwo M flex">
                                 <div class="infoContainer round shadow">
-                                    <div class="head roundT">CUMULATIVE TOTAL MAN-HOURS WITH LTI</div>
+                                    <div class="head roundT">TOTAL MAN-HOURS WITHOUT LTI</div>
                                     <span id="CumulTotalManHrsWithTI">0</span>
                                 </div>
                                 

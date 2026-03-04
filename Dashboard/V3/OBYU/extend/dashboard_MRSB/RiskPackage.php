@@ -24,11 +24,11 @@ $html = '
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script src="https://code.highcharts.com/highcharts-more.js"></script>
-        <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
-        <script src="https://code.highcharts.com/modules/exporting.js"></script>
-        <script src="https://code.highcharts.com/modules/export-data.js"></script>
-        <script src="https://code.highcharts.com/modules/accessibility.js"></script>';
+        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/highcharts-more.js"></script>
+        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/solid-gauge.js"></script>
+        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/exporting.js"></script>
+        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/export-data.js"></script>
+        <script src="../../'.$dashObj->pathRel.'JS/highchart/v11/accessibility.js"></script>';
 if($showFilter){
     $html .= '<link rel="stylesheet" href="../../'.$dashObj->pathRel.'CSS/'.$theme.'/menuAnimation.css">                <!--     CSS for main CSS-->';
 }else{

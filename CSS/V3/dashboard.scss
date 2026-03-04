@@ -544,6 +544,9 @@ html {
         .flex{
             display: flex;
             flex-direction: column;
+            &.row{
+                flex-direction: row;
+            }
             .infoContainer{
                 margin: auto 5px
             }
@@ -722,8 +725,15 @@ html {
         display: flex;
         justify-content: space-evenly;
         margin: auto 0;
+        &.column{
+            flex-direction: column;
+            justify-content: space-between;
+        }
         .infoContainer{
             width: 50%;
+            &.full{
+                width: unset;
+            }
         }
         .infoContainerBox{
             margin: auto 5px;

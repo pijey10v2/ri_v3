@@ -237,6 +237,9 @@ input:-webkit-autofill:active{
                         width: 25%;
 
                     }
+                    .columnFilter, .columnHidden{
+                        display: none !important;
+                    }
                     .textContainer{
                         margin: 10px 5px;
                         display: flex;
@@ -2336,10 +2339,13 @@ input:-webkit-autofill:active{
                     }
                 
                     .flexContainer{
+                        display: flex;
+                        flex-direction: column;
                         margin: 0;
                         width: 100%;
                         height: calc(100% - 10rem);
                         .title{
+                            flex: 0 0 auto;
                             font-weight: bold;
                             padding: 2.1rem 2rem .2rem 2rem;
                             color: #4b4b4b;
@@ -2350,6 +2356,7 @@ input:-webkit-autofill:active{
                             font-size: 2rem;
                         }
                         .desc{
+                            flex: 1 1 auto;
                             font-size: 1rem;
                             margin: .7rem 0;
                             padding: 0 2rem;
@@ -2369,7 +2376,8 @@ input:-webkit-autofill:active{
                 
                                 img{
                                     margin: 10px auto;
-                                    width: 100% !important;
+                                    width: auto !important;
+                                    max-width: 100%;
                                     height: auto;
                                     display: flex;
                                 }
@@ -2380,6 +2388,7 @@ input:-webkit-autofill:active{
                             }
                         }
                         .footer{
+                            flex: 0 0 auto;
                             padding: .5rem 2rem;
                             color: #6e6e6e;
                             font-size: .7rem;
@@ -2763,9 +2772,18 @@ input:-webkit-autofill:active{
                     &.flex{
                         display: flex;
                         align-items: end;
+                        &.center{
+                            align-items: center;
+                        }
                     }
-                    &.flexColumn{
-                        flex-direction: column;
+                    &.flexCenter{
+                        align-items: center;
+                    }
+                    &.S{
+                        width: calc(30% - 5px);
+                    }
+                    &.L{
+                        width: calc(70% - 10px);
                     }
                 }
 
@@ -2777,6 +2795,9 @@ input:-webkit-autofill:active{
                     }
                     &.nowrap{
                         white-space: nowrap;
+                    }
+                    &.marginRight{
+                        margin-right: 5px;
                     }
                 }
 
@@ -2924,7 +2945,7 @@ input:-webkit-autofill:active{
                     font-family: inherit;
                     outline: none;
                     height: 30px;
-                    &#userCountry, &#userOrg, &#projectOwner, &#projectIndustry, &#projectTimezone, #parentid{
+                    &#userCountry, &#userOrg, &#projectOwner, &#projectIndustry, &#projectTimezone, &#parentId, &#projectPhase{
                         width: calc(100% - 0px);
                     }
                     &:hover{

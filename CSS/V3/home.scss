@@ -102,7 +102,7 @@ body.digile {
     }
 
     .mainPage.myProject{
-        .fa-duotone{
+        .fa-solid{
             &.fa-gauge, &.fa-earth-americas, &.fa-clipboard-list{
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
@@ -376,13 +376,18 @@ svg, i{
     color: var(--on-primary);
 }
 
+//swiper bullet contrast
+.swiper-pagination-bullet{
+    border: 1px solid var(--button);
+}
+
 //font awesome custom spin speed
 .fa-spin {
     animation-duration: 0.75s !important;
 }
 
 //gradient color for fa-icon
-.fa, .fa-brands, .fa-duotone, .fa-light, .fa-regular, .fa-solid, .fa-thin, .fab, .fad, .fal, .far, .fas, .fat{
+.fa, .fa-brands, .fa-solid, .fa-light, .fa-regular, .fa-solid, .fa-thin, .fab, .fad, .fal, .far, .fas, .fat{
     line-height: 1.15 !important;
 }
 
@@ -673,6 +678,7 @@ svg, i{
         padding: 0 clamp(1rem, 2vw, 2rem);
         .title{
             display: flex;
+            justify-content: space-between;
             color: var(--on-surface);
             h3{
                 margin-top: clamp(1rem,3vw,2rem);
@@ -682,6 +688,128 @@ svg, i{
             }
         }
         &.myReporting, &.myHome, &.myProject, &.myDashboard, &.myInsights, &.myDocument, &.myCorrespondence, &.myFinance, &.myAdmin, &.myTask, &.mySysAdmin, &.eLibrary, &.projectInformation{
+            .switch {
+                position: relative;
+                width: 40px;
+                height: 20px;
+                margin-right: 10px;
+                top: 1px;
+                float: left;
+                &.view{
+                    border-radius: 25px;
+                    margin-top: clamp(1rem, 3vw, 2rem);
+                }
+
+                input { 
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+                .slider {
+                    position: absolute;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: var(--background);
+                    -webkit-transition: .4s;
+                    transition: .4s;
+                    border-radius: 4px;
+                }
+                  
+                .slider {
+                    &:before{
+                        position: absolute;
+                        content: "";
+                        height: 15px;
+                        width: 15px;
+                        left: 4px;
+                        bottom: 3px;
+                        background-color: var(--top);
+                        -webkit-transition: .4s;
+                        transition: .4s;
+                        border-radius: 2px;
+                        z-index: 1;
+                    }
+
+                    &.view{
+                        border-radius: 25px;
+                        background-color: var(--surface);
+                        &:before{
+                            border-radius: 50%;
+                        }
+                    }
+                }
+
+                .slider:after {
+                    position: absolute;
+                    content: "";
+                    height: 15px;
+                    width: 15px;
+                    left: 4px;
+                    bottom: 2px;
+                    -webkit-transition: .4s;
+                    transition: .4s;
+                }
+                  
+                input:checked + .slider:before {
+                    -webkit-transform: translateX(17px);
+                    -ms-transform: translateX(17px);
+                    transform: translateX(17px);
+                }
+
+                input + .slider.view:before{
+                    background-color: var(--top);
+                }
+
+                input:checked + .slider.view:before{
+                    background-color: var(--on-surface);
+                }
+
+                input + .slider:after {
+                    -webkit-transform: translateX(17px);
+                    -ms-transform: translateX(17px);
+                    transform: translateX(17px);
+                    background-image: url(../../Images/icons/ri_v3/menu.png);
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                }
+
+                input + .slider.view {
+                    background-color: var(--primary-dim);
+                }
+
+                input + .slider.view:after {
+                    content: "ON";
+                    color: var(--top);
+                    font-size: 9px;
+                    font-weight: 600;
+                    background-image: unset;
+                }
+
+                input:checked + .slider:after {
+                    -webkit-transform: translateX(0px);
+                    -ms-transform: translateX(0px);
+                    transform: translateX(0px);
+                    background-image: url(../../Images/icons/ri_v3/list.png);
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                }
+
+                input:checked + .slider.view {
+                    background-color: var(--top);
+                }
+
+                input:checked + .slider.view:after {
+                    content: "OFF";
+                    color: var(--on-surface);
+                    font-size: 9px;
+                    font-weight: 600;
+                    background-image: unset;
+                }
+            }
             
             .contentContainer{
                 display: flex;
@@ -866,8 +994,6 @@ svg, i{
                             }
                             button{
                                 display: flex;
-                                //width: 60px;
-                                //background: transparent;
                                 background: var(--surface);
                                 border: none;
                                 margin: 3px;
@@ -877,7 +1003,6 @@ svg, i{
                                 align-items: center;
                                 border: 1px solid var(--border-bottom);
                                 svg, i{
-                                    //background: var(--background);
                                     padding: 5px;
                                     border-radius: 3px;
                                     font-size: 15px;
@@ -892,7 +1017,6 @@ svg, i{
                                     white-space: pre;
                                 }
                                 &:hover{
-                                    //filter: contrast(80%);
                                     background-color: var(--top);
                                 }
                                 &.large{
@@ -936,8 +1060,9 @@ svg, i{
                                 right: 0px;
                                 bottom: 0px;
                                 width: auto;
-                                height: auto;
+                                height: 100%;
                                 align-items: end;
+                                justify-content: end;
                                 button{
                                     margin-right: 5px;
                                     padding: 6px 10px;
@@ -945,11 +1070,35 @@ svg, i{
                                     background: #303336;
                                     border: 1px solid #444;
                                     font-size: 10px;
+                                    &:first-child{
+                                        position: absolute;
+                                        top: 5px;
+                                        width: 130px;
+                                        height: 30px;
+                                        width: 130px !important;
+                                        height: 30px !important;
+                                        font-size: 14px;
+                                        align-items: center;
+                                        display: flex;
+                                        justify-content: center;
+                                    }
+                                    span{
+                                        color: var(--on-primary);
+                                        padding-left: 4px;
+                                    }
                                     &.icon{
                                         height: 35px;
                                         width: 35px;
                                         padding: 4px;
                                         margin-bottom: 5px;
+                                        &.activate{
+                                            border: 1px solid var(--primary-dim);
+                                            background: var(--primary);
+                                            color: white;
+                                            i{
+                                                color: inherit;
+                                            }
+                                        }
                                         img{
                                             display: none;
                                             width: 20px;
@@ -1191,6 +1340,32 @@ svg, i{
                                             cursor: pointer;
                                         }
                                     }
+                                }
+                            }
+                            #toolbarTransparency{
+                                position: absolute;
+                                z-index: 1;
+                                display: none;
+                                top: 5px;
+                                right: 140px;
+                                background: rgba(61, 61, 61, 0.63);
+                                color: white;
+                                padding: 10px;
+                                border-radius: 10px;
+                                font-size: 13px;
+                                &.active{
+                                    display: flex;
+                                }
+                                table{
+                                    color: inherit;
+                                    font-size: inherit;
+                                }
+                            }
+                            .alpha{
+                                display: flex;
+                                input[type="text"]{
+                                    width: 40px;
+                                    text-align: center;
                                 }
                             }
                         }
@@ -1538,6 +1713,14 @@ svg, i{
                                             &.margin-right{
                                                 margin-right: 5px;
                                             }
+                                        }
+                                        .ellipsis{
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
+                                        }
+                                        .nowrap{
+                                            white-space: nowrap;
+                                            min-width: fit-content;
                                         }
                                     }
                                     .list{
@@ -1965,7 +2148,7 @@ svg, i{
                                             }
                                         }
                                         label{
-                                            width: 75px;
+                                            width: 100px;
                                             word-break: break-word;
                                         }
                                     }
@@ -1974,7 +2157,7 @@ svg, i{
                                         padding: 5px;
                                         border-radius: 3px;
                                         font-weight: var(--text-weight);
-                                        width: calc(100% - 60px);
+                                        width: calc(100% - 100px);
                                         color: var(--on-surface);
                                         border: 1px solid var(--border-bottom);
                                         height: 22px;
@@ -2186,7 +2369,7 @@ svg, i{
                                     }
                                     .col1{
                                         flex: 0 0 auto;
-                                        width: 100px;
+                                        width: 110px;
                                         font-weight: var(--text-weight);
                                         div{
                                             margin: 3px 0;
@@ -2220,6 +2403,7 @@ svg, i{
                                             border: unset;
                                             width: calc(100% - 10px);
                                             outline: none;
+                                            color: var(--on-surface);
                                         }
                                         button{
                                             margin-top: 5px;
@@ -2240,7 +2424,7 @@ svg, i{
                                     }
                                     .col3{
                                         flex: 0 0 auto;
-                                        width:80px; 
+                                        width:110px; 
                                         div{
                                             margin: 5px 0 5px 10px;
                                             label{
@@ -2808,82 +2992,6 @@ svg, i{
                             font-size: 12px;
                             line-height: 16px;
                         }
-                        .switch {
-                            position: relative;
-                            width: 40px;
-                            height: 20px;
-                            margin-right: 10px;
-                            top: 1px;
-                            float: left;
-        
-                            input { 
-                                opacity: 0;
-                                width: 0;
-                                height: 0;
-                            }
-        
-                            .slider {
-                                position: absolute;
-                                cursor: pointer;
-                                top: 0;
-                                left: 0;
-                                right: 0;
-                                bottom: 0;
-                                background-color: var(--background);
-                                -webkit-transition: .4s;
-                                transition: .4s;
-                                border-radius: 4px;
-                            }
-                              
-                            .slider:before {
-                                position: absolute;
-                                content: "";
-                                height: 15px;
-                                width: 15px;
-                                left: 4px;
-                                bottom: 2px;
-                                background-color: var(--top);
-                                -webkit-transition: .4s;
-                                transition: .4s;
-                                border-radius: 2px;
-                                z-index: 1;
-                            }
-        
-                            .slider:after {
-                                position: absolute;
-                                content: "";
-                                height: 15px;
-                                width: 15px;
-                                left: 4px;
-                                bottom: 2px;
-                                -webkit-transition: .4s;
-                                transition: .4s;
-                            }
-                              
-                            input:checked + .slider:before {
-                                -webkit-transform: translateX(17px);
-                                -ms-transform: translateX(17px);
-                                transform: translateX(17px);
-                            }
-        
-                            input + .slider:after {
-                                -webkit-transform: translateX(17px);
-                                -ms-transform: translateX(17px);
-                                transform: translateX(17px);
-                                background-image: url(../../Images/icons/ri_v3/menu.png);
-                                background-repeat: no-repeat;
-                                background-size: 100% 100%;
-                            }
-        
-                            input:checked + .slider:after {
-                                -webkit-transform: translateX(0px);
-                                -ms-transform: translateX(0px);
-                                transform: translateX(0px);
-                                background-image: url(../../Images/icons/ri_v3/list.png);
-                                background-repeat: no-repeat;
-                                background-size: 100% 100%;
-                            }
-                        }
                     }
         
                     .filterContainer{
@@ -2964,6 +3072,9 @@ svg, i{
                                             margin: 20px 10px;
                                             display: inline-block;
                                             border-radius: 50%;
+                                            &[src=""]{
+                                                content: var(--icon-favicon);
+                                            }
                                         }
                     
                                     }
@@ -3085,10 +3196,26 @@ svg, i{
                         .columnFirst{
                             width: calc(50% - 50px);
                             margin: 0 5px;
+
+                            &.toggle-on{
+                                width: calc(17.5% - 12.5px);
+                                flex: 1 1 auto;
+                            }
                         }
+
                         .columnSecond{
                             width: 25%;
                             margin: 0 5px;
+                            &.toggle-on{
+                                width: 10%;
+                            }
+                        }
+
+                        .columnHidden{
+                            display: none !important;
+                            &.show{
+                                display: flex !important;
+                            }
                         }
                     }
         
@@ -3175,6 +3302,13 @@ svg, i{
                                     display: none;
                                     margin: auto .5rem;
                                     padding: 1.8rem 1rem;
+                                }
+
+                                .columnHidden{
+                                    display: none !important;
+                                    &.show{
+                                        display: flex !important;
+                                    }
                                 }
 
                                 .columnFilter{
@@ -3279,14 +3413,13 @@ svg, i{
                                     background-size: 25px 25px;
                                     background-position: center;
                                     position: relative;
-                                    top: -4px;
+                                    top: 0px;
 
                                     &.appButton{
-                                        //background-image: url(../../Images/icons/navbar/dark_red/logo-light.png);
                                         cursor: pointer;
                                         &.favBtn{
                                             position: relative;
-                                            top: 0.5px;
+                                            top: -14px;
                                         }
                                         a{
                                             margin-top: 5px;
@@ -3297,17 +3430,19 @@ svg, i{
                                         &.favBtn{
                                             &:hover{
                                                 i{
-                                                    --fa-secondary-color: #f7d61a !important;
+                                                    //--fa-secondary-color: #f7d61a !important;
+                                                    color: #f7d61a;
                                                 }
                                             }
                                             &.fav{
                                                 i{
-                                                    --fa-secondary-color: #f7d61a !important;
-                                                    
+                                                    //--fa-secondary-color: #f7d61a !important;
+                                                    color: #f7d61a;
                                                 }
                                                 &:hover{
                                                     i{
-                                                        --fa-secondary-color: #bda939 !important;
+                                                        //--fa-secondary-color: #bda939 !important;
+                                                        color: #bda939;
                                                     }
                                                 }
                                             }
@@ -3339,10 +3474,23 @@ svg, i{
 
                             .columnFirst{
                                 width: calc(50% - 50px);
+                                &.toggle-on{
+                                    width: calc(17.5% - 12.5px);
+                                    flex: 1 1 auto;
+                                }
                             }                           
                             .columnSecond{
                                 width: 25%;
+                                &.toggle-on{
+                                    width: 10%;
+                                }
 
+                            }
+                            .columnHidden{
+                                display: none !important;
+                                &.show{
+                                    display: flex !important;
+                                }
                             }
                             .columnFilter{
                                 display: none;
@@ -3513,6 +3661,9 @@ svg, i{
                     border-bottom: 1px solid var(--border-bottom);
                     color: var(--on-surface);
                     background-color: var(--surface);
+                    &.large{
+                        height: calc(100vh - 16rem);
+                    }
 
                     #viewImageJoget{
                         display: flex;
@@ -3561,6 +3712,17 @@ svg, i{
                             display: flex;
                             &:hover{
                                 cursor: pointer;
+                            }
+                            select{
+                                border: 1px solid var(--border-bottom);
+                                background-color: var(--top);
+                                white-space: nowrap;
+                                color: var(--on-surface);
+                                padding: 0.3rem 0.4rem;
+                                border-radius: 4px;
+                                font-size: 0.7rem;
+                                margin-left: 0.4rem;
+                                outline: unset;
                             }
                             .projImage{
                                 height: 4rem;
@@ -3708,6 +3870,7 @@ svg, i{
                                     font-size: 12px;
                                     padding: 5px 13px;
                                     color: white;
+                                    height: 30%;
                                     border-radius: 0 0 5px 5px;
                                     .indicator-container{
                                         display: flex;
@@ -3718,6 +3881,7 @@ svg, i{
                                             justify-content: flex-end;
                                             font-weight: 600;
                                             font-size: .8rem;
+                                            text-align: right;
                                         }
                                         .indicator-value-previous{
                                             display: flex;
@@ -3761,15 +3925,33 @@ svg, i{
                     align-items: center;
                     z-index: unset;
                     position: unset;
+                    &.desc{
+                        height: 4.5rem;
+                    }
 
                     .progressContainer{
                         color: var(--on-surface);
                         display: inline-flex;
                         align-items: center;
+                        &.desc{
+                            display: block;
+                            background-color: var(--top);
+                            border-radius: 4px;
+                            padding-right: 0.7rem;
+                            margin-left: 5px;
+                        }
+                        &.column{
+                            display: flex;
+                            flex-direction: column;
+                            align-items: start;
+                        }
 
                         .title{
-                            margin-left: 0.7rem;
+                            padding-left: 0.7rem;
                             font-size: .65rem;
+                            &.bold{
+                                font-weight: bold;
+                            }
                         }
 
                         .progressBar{
@@ -3969,6 +4151,13 @@ svg, i{
                             &:hover{
                                 cursor: pointer;
                             }
+                        }
+
+                        .progressDesc{
+                            display: flex;
+                            flex-direction: column;
+                            font-size: 0.8rem;
+                            padding-left: 0.7rem;
                         }
                     }
 
@@ -6450,4 +6639,12 @@ body.dark, body.laser{
         background: var(--primary);
         color: var(--on-primary);
     }
+}
+.container-table .tableBody .row .textContainer .textClamp{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-all;
+    width: 100%;
 }

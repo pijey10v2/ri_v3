@@ -1,6 +1,6 @@
 <?php
 require_once '../../Login/include/_include.php';
-global $CONN;
+global $CONN, $SYSTEM, $IS_DOWNSTREAM;
 
 function getNFFilePath($id){
     return '../../../Data/images/news/'.$id.'/';
@@ -11,6 +11,8 @@ function processDescHTML($html, $id){
 }
 
 function processFilesUpload($arr, $id){
+    global $SYSTEM, $IS_DOWNSTREAM;
+    
     $dir = getNFFilePath($id);
     if (!file_exists($dir)) {
         mkdir($dir, 0777, true);
@@ -18,14 +20,34 @@ function processFilesUpload($arr, $id){
 
     foreach ($arr as $f) {
         move_uploaded_file($f['tmp_name'], $dir.$f['name']);
+        if($SYSTEM == 'KKR' && $IS_DOWNSTREAM == true){
+            shell_exec('icacls "' . $dir.$f['name'] . '" /grant IIS_IUSRS:F');
+        }
     }
 }
 
 if(isset($_POST['addnewsfeed'])){
     // handle the files
     $str = '';
-    if(isset($_POST['nforg'])){
-        $str = implode(",", $_POST['nforg']);
+    if(isset($_POST['nfowner'])){
+        if (in_array("allOwner", $_POST['nfowner'])) {
+            if($SYSTEM == 'KKR'){
+                $sqlOrg = $CONN->fetchAll('select distinct project_owner as proj_owner from projects');
+            }else{
+                $sqlOrg = $CONN->fetchAll('select distinct owner_org_id as proj_owner from projects');
+            }
+
+            if($sqlOrg){
+                $values = array();
+                foreach ($sqlOrg as $row){
+                    $values[] = $row['proj_owner'];
+
+                }
+                $str = implode(",", $values);
+            }
+        }else{
+            $str = implode(",", $_POST['nfowner']);
+        }
     }
 
     $valArr = array(
@@ -35,32 +57,53 @@ if(isset($_POST['addnewsfeed'])){
         $_POST['deschtml'],
         (isset($_FILES['nffiles']['name'])) ? $_FILES['nffiles']['name'] : ''
     );
-    $CONN->execute("insert into news_feed (nf_card_img, nf_title, nf_org, nf_desc_html, nf_files) values (:0, :1, :2, :3, :4)", $valArr);
+    $CONN->execute("insert into news_feed (nf_card_img, nf_title, nf_owner, nf_desc_html, nf_files) values (:0, :1, :2, :3, :4)", $valArr);
     $nfid = $CONN->getLastInsertID();
     if($_FILES) processFilesUpload($_FILES, $nfid);
 }
 
 if(isset($_POST['editNewsFeed']) && $_POST['editNewsFeed'] == 'Update'){
-    $orgStr = implode(",", $_POST['nforg']);
+
+    $ownerStr = '';
+
+    if (in_array("allOwner", $_POST['nfowner'])) {
+        if($SYSTEM == 'KKR'){
+            $sqlOrg = $CONN->fetchAll('select distinct project_owner as proj_owner from projects');
+        }else{
+            $sqlOrg = $CONN->fetchAll('select distinct owner_org_id as proj_owner from projects');
+        }
+
+        if($sqlOrg){
+            $values = array();
+            foreach ($sqlOrg as $row){
+                $values[] = $row['proj_owner'];
+
+            }
+            $ownerStr = implode(",", $values);
+        }
+    }else{
+        $ownerStr = implode(",", $_POST['nfowner']);
+    }
+
     // if has attachment update else leave it - okay?
     if(isset($_FILES['nfbanner']['name']) && $_FILES['nfbanner']['name'] != ''){
         $valArr = array(
             $_POST['title'],
-            $orgStr,
             $_POST['deschtml'],
             $_FILES['nfbanner']['name'],
+            $ownerStr,
             $_POST['nf_id']
         );
-        $CONN->execute("update news_feed set nf_title =:0, nf_org =:1, nf_desc_html =:2, nf_card_img =:3 where nf_id =:4", $valArr);
+        $CONN->execute("update news_feed set nf_title =:0, nf_desc_html =:1, nf_card_img =:2, nf_owner =:3 where nf_id =:4", $valArr);
         if($_FILES) processFilesUpload($_FILES, $_POST['nf_id']);
     }else{
         $valArr = array(
             $_POST['title'],
-            $orgStr,
             $_POST['deschtml'],
+            $ownerStr,
             $_POST['nf_id']
         );
-        $CONN->execute("update news_feed set nf_title =:0, nf_org =:1, nf_desc_html =:2 where nf_id =:3", $valArr);
+        $CONN->execute("update news_feed set nf_title =:0, nf_desc_html =:1, nf_owner =:2 where nf_id =:3", $valArr);
     }
 }
 
@@ -72,17 +115,24 @@ if(isset($_POST['deleteRecordId']) && $_POST['deleteRecordId']){
     $CONN->execute("delete from news_feed where nf_id =:0", array($_POST['deleteRecordId']));
 }
 
-$allOrg = $CONN->fetchAll('select * from organization');
-$selectVal = '';
+//get project owner
+$allOwner = '';
+if($SYSTEM == 'KKR'){
+    $allOwner = $CONN->fetchAll('select distinct project_owner as proj_owner from projects order by project_owner asc');
+}else{
+    $allOwner = $CONN->fetchAll('select distinct owner_org_id as proj_owner from projects order by owner_org_id asc');
+
+}
+$selectOwner = '<option value="allOwner">All Owner</option>';
 
 if(isset($_GET['mode']) && $_GET['mode'] == 'edit' && isset($_GET['id'])){
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
     $editNewsArr = $CONN->fetchRow("select * from news_feed where nf_id = :0", array($id));
 
-    $selOrg = explode(",", $editNewsArr['nf_org']);
+    $selOwner = explode(",", $editNewsArr['nf_owner']);
 
-    foreach ($allOrg as $org){
-        $selectVal .=  '<option value="'.$org['orgID'].'" '.((in_array($org['orgID'], $selOrg)) ? ' selected ' : '').'>'.$org['orgName'].' - '.$org['orgID'].'</option>';
+    foreach ($allOwner as $owner){
+        $selectOwner .=  '<option value="'.$owner['proj_owner'].'" '.((in_array($owner['proj_owner'], $selOwner)) ? ' selected ' : '').'>'.$owner['proj_owner'].'</option>';
     }
     
     $newDesc = htmlentities($editNewsArr['nf_desc_html']);
@@ -93,9 +143,9 @@ if(isset($_GET['mode']) && $_GET['mode'] == 'edit' && isset($_GET['id'])){
         <input type="text" readonly name="nf_id" value="'.$editNewsArr['nf_id'].'">
         <label for="title">Title</label>
         <input type="text" id="title" name="title" value="'.$editNewsArr['nf_title'].'">
-        <label for="nforg">Organization</label><br><br>
-        <select class="selectpicker"  id="nforg" name="nforg[]" multiple data-live-search="true">
-            '.$selectVal .'
+        <label for="nfowner">Project Owner</label><br><br>
+         <select class="selectpicker"  id="nfowner" name="nfowner[]" multiple data-live-search="true">
+            '.$selectOwner .'
         </select><br><br>
         <label for="nfbanner">Banner</label>
         <input type="file" id="nfbanner" name="nfbanner">
@@ -106,8 +156,9 @@ if(isset($_GET['mode']) && $_GET['mode'] == 'edit' && isset($_GET['id'])){
     </form>';
 
 }else{
-    foreach ($allOrg as $org){
-        $selectVal .= '<option value="'.$org['orgID'].'">'.$org['orgName'].' - '.$org['orgID'].'</option>';
+
+    foreach ($allOwner as $owner){
+        $selectOwner .= '<option value="'.$owner['proj_owner'].'">'.$owner['proj_owner'].'</option>';
     }
     
     $formHTML = '        
@@ -115,9 +166,9 @@ if(isset($_GET['mode']) && $_GET['mode'] == 'edit' && isset($_GET['id'])){
     <form class="pure-form"method="post" enctype="multipart/form-data">
         <label for="title">Title</label>
         <input type="text" id="title" name="title" placeholder="Title..">
-        <label for="nforg">Organization</label><br><br>
-        <select class="selectpicker"  id="nforg" name="nforg[]" multiple data-live-search="true">
-            '.$selectVal .'
+        <label for="nfowner">Project Owner</label><br><br>
+        <select class="selectpicker"  id="nfowner" name="nfowner[]" multiple data-live-search="true">
+            '.$selectOwner .'
         </select><br><br>
         <label for="nfbanner">Banner</label>
         <input type="file" id="nfbanner" name="nfbanner">
@@ -156,7 +207,7 @@ echo '
         <th>ID</th>
         <th>Banner</th>
         <th>Title</th>
-        <th>Organization</th>
+        <th>Project Owner</th>
         <th>Description</th>
         <th>Created Date</th>
         <th></th>
@@ -166,18 +217,19 @@ $news = $CONN->fetchAll("select * from news_feed order by nf_id desc");
 foreach ($news as $nw) {
     $imgBannerSrc = getNFFilePath($nw['nf_id']).$nw['nf_card_img'];
 
-    $orgArr = explode(',', $nw['nf_org']);
-    $orgHtml = '<ul>';
-    foreach ($orgArr as $k) {
-        $orgHtml .= '<li>'.$k.'</li>';
+    $ownerArr = explode(',', $nw['nf_owner']);
+    $ownerHtml = '<ul>';
+    foreach ($ownerArr as $k) {
+        $ownerHtml .= '<li>'.$k.'</li>';
     }
-    $orgHtml .= '</ul>';
+    $ownerHtml .= '</ul>';
+
     echo '
         <tr>
             <td>'.$nw['nf_id'].'</td>
             <td><img style="width:300px" src="'.$imgBannerSrc.'"/></td>
             <td>'.$nw['nf_title'].'</td>
-            <td>'.$orgHtml.'</td>
+            <td>'.$ownerHtml.'</td>
             <td>'.processDescHTML($nw['nf_desc_html'], $nw['nf_id']).'</td>
             <td>'.$nw['nf_created_date'].'</td>
             <td>

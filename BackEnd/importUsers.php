@@ -172,9 +172,9 @@
 
                         $passwordHashed= password_hash($password,PASSWORD_DEFAULT);
         
-                        $sql = "INSERT INTO users ( [user_firstname], [user_lastname], [user_email], [user_org], [user_country], [user_password],[user_type], [created_by], [created_time], [support_user]) 
+                        $sql = "INSERT INTO users ( [user_firstname], [user_lastname], [user_email], [user_org], [user_country], [user_password],[user_type], [created_by], [created_time], [support_user], [ui_pref]) 
                         OUTPUT Inserted.user_id
-                        VALUES ('$fname','$lname','$email','$orgid','$country','$passwordHashed','$usertype', '$admin', GETDATE(),'$supportuser');";
+                        VALUES ('$fname','$lname','$email','$orgid','$country','$passwordHashed','$usertype', '$admin', GETDATE(),'$supportuser', 'ri_v3');";
                         
                         $result = sqlsrv_query($conn,$sql);
                         

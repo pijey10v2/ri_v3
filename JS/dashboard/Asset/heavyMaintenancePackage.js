@@ -425,7 +425,11 @@ function drawClaimChart(data, monthYear){
 			if(idx == "Draft"){
 				idxStatus = "Concessionaire"
 			}else if(idx == "Submitted"){
-				idxStatus = "Division/Region"
+				if(localStorage.project_owner == 'JKR_SABAH'){
+					idxStatus = "District/Region"
+				}else{
+					idxStatus = "Division/Region"
+				}
 			}else if(idx == "Received"){
 				idxStatus = "HQ"
 			}else if(idx == "Verified"){
@@ -445,6 +449,8 @@ function drawClaimChart(data, monthYear){
 						if(category == 'Concessionaire'){
 							category = 'Draft'
 						}else if (category == 'Division/Region'){
+							category = 'Submitted'
+						}else if (category == 'District/Region'){
 							category = 'Submitted'
 						}else if (category == 'HQ'){
 							category = 'Received'

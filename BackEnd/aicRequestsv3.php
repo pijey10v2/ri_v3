@@ -51,9 +51,6 @@ switch ($_POST['runFunction']) {
     case 'getRoutinesWithType':
         getRoutinesWithType();
     break;
-    case 'getECWList':
-        getECWList();
-    break;
     case 'saveSharedAicRoutine':
         saveSharedAicRoutine();
     break;
@@ -241,6 +238,8 @@ function getSpecificAicRoutine()
     } else {
         $i = 0;
         while ($row = sqlsrv_fetch_Array($stmt, SQLSRV_FETCH_ASSOC)) {
+            $row['Owner_Project_Name'] = utf8_encode($row['Owner_Project_Name']);
+            $row['project_name'] = utf8_encode($row['project_name']);
             $response['data'][$i] = $row;
             $i++;
         };
@@ -458,55 +457,6 @@ function getRoutinesWithType()
             $response['data'][$i] = $row;
             $i++;
         };
-    }
-}
-
-function getECWList()
-{
-    global $CONN;
-    global $response;
-    $pro_id = $_SESSION['project_id'];
-    //check parent or not
-    //if parent, get packageIds
-    if ($_SESSION['is_Parent'] == "isParent") {
-        $aicList  = $CONN->fetchAll("SELECT 
-        AerialImageCompare.AIC_Id, 
-        AerialImageCompare.Project_Id, 
-        AerialImageCompare.Package_Id, 
-        AerialImageCompare.Image_Type, 
-        AerialImageCompare.Image_Captured_Date,
-        AerialImageCompare.Registered_By, 
-        AerialImageCompare.Registered_Date, 
-        AerialImageCompare.Image_URL, 
-        AerialImageCompare.Routine_Id, 
-        AerialImageCompare.Routine_Type,
-        AerialImageCompare.Use_Name, 
-        AerialImageCompare.Image_Group, 
-        AerialImageCompare.Image_SubGroup, 
-        projects.project_id,
-        groupAerial.groupName,
-        subgroupAerial.subGroupName
-        FROM AerialImageCompare
-        LEFT JOIN projects ON AerialImageCompare.Package_Id = projects.project_id_number 
-        LEFT JOIN groupAerial ON AerialImageCompare.Image_Group = groupAerial.groupID
-        LEFT JOIN subgroupAerial ON AerialImageCompare.Image_SubGroup = subgroupAerial.subGroupID
-        WHERE Package_Id IN (SELECT project_id_number FROM projects WHERE parent_project_id_number =:0) 
-        ORDER BY AerialImageCompare.Routine_Type ASC, groupAerial.groupName DESC, subgroupAerial.subGroupName DESC, AerialImageCompare.Use_Name DESC;", array($pro_id));
-    }else{
-        $aicList  = $CONN->fetchAll("SELECT * FROM AerialImageCompare a 
-        LEFT JOIN groupAerial b ON a.Image_Group = b.groupID
-        LEFT JOIN subgroupAerial c ON a.Image_SubGroup = c.subGroupID 
-        WHERE Package_Id =:0 
-        ORDER BY a.Routine_Type ASC, b.groupName DESC, c.subGroupName DESC, a.Use_Name DESC;", array($pro_id));
-    }
-    
-    //query using In packageId
-    if($aicList){
-        $response['bool'] = true;
-        $response['data'] = $aicList;
-    }else{
-        $response['bool'] = false;
-        $response['msg'] = 'No AIC Image Records Found';
     }
 }
 

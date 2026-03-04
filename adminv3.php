@@ -67,70 +67,9 @@ echo '
             <link rel="stylesheet" href="JS/JsLibrary/jquery-ui.css"> 
             <link href="JS/RICore/Widgets/widgets.css" rel="stylesheet"> 
             <link rel="stylesheet" href="CSS/kbd.css">
-
+    
             <link rel ="stylesheet" href ="CSS/V3/tooltip.css" type ="text/css" />
             <link href="JS/RICore/Widgets/widgets.css" rel="stylesheet"> 
-            <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
-            <style>
-            
-            .btn-link-transparent{
-                background-color: transparent;
-                border-color: transparent;
-                box-shadow: none;
-                color: #008000;
-                padding: 0;
-                position: relative;
-                cursor: pointer;
-              }
-               
-              ul.tree-list li {
-                list-style: none;
-                padding: 0.2em 0;
-              }
-              ul.tree-list li label {
-                display: inline-block;
-                /*margin-left: 0.5em;*/
-                padding: 0.2em 1.3em;
-                border-radius: 0.2em;
-                font-size: 13px;
-                float: none !important;
-                width: auto;
-              }
-              ul.tree-list li > ul {
-                padding-left: 1.2em;
-                position: relative;
-              }
-              ul.tree-list li > ul > li {
-                display: none;
-              }
-              ul.tree-list li > ul:before {
-                content: "\f0da";
-                font-family: "FontAwesome";
-                visibility: visible;
-                font-size: 13px;
-                position: absolute;
-                left: 5px;
-                top: -17px;
-                transition: transform 0.3s;
-              }
-              ul.tree-list li input {
-                width: 80%;
-                position: absolute;
-                cursor: pointer;
-                margin-top: 0.5em;
-                opacity: 0;
-              }
-              ul.tree-list li input:hover + label {
-                background-color: #eee;
-              }
-              ul.tree-list li input:checked ~ ul:before {
-                transform: rotate(90deg);
-              }
-              ul.tree-list li input:checked ~ ul > li {
-                display: block;
-              }
-            </style>
-
             <script  src="JS/JsLibrary/jquery-3.5.1.js"></script>
             <script src="JS/RICore/Cesium.js"></script>
             <script src="JS/JsLibrary/jquery-ui.js"></script>
@@ -139,10 +78,15 @@ echo '
             <script src="JS/resizeable.js"></script>
             <script src="JS/ganttV3/gantt.js"></script>
             <script src="JS/JsLibrary/JSTree/jstree.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-            
+            <script src="JS/JsLibrary/openLayer/openLayer.js"></script>
             <title>Reveron Insights</title>
+            <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/all.min.css">
+            <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/fontawesome.min.css">
+            <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/solid.min.css">
+            <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/regular.min.css">
+            <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/brands.min.css">
 
+            <!-- <script src="JS/fontawesome.js"></script> -->
             <script src="JS/all.js"></script>
             <script src="JS/JsLibrary/mixitup.min.js"></script>
 
@@ -157,7 +101,16 @@ echo '
             <div id="main-user">
                 <div class="mainHeader">
                     <span class="titleLabel">Project Users</span>
-                    <div class="searchTable">
+                    <div class="searchTable">';
+                        if($SYSTEM == 'KKR'){
+                            if ($_SESSION['project_owner'] == "JKR_SABAH"){
+                                echo'
+                                    <button class="circle" title="Edit User" id="userListEdit" onclick="OnClickEditUserList()"><i class="fa-solid fa-pencil"></i></button>
+                                    <button class="circle" title="Saved User" id="userListSave" onclick="OnClickSaveUserList()"><i class="fa-solid fa-floppy-disk"></i></button>
+                                    <button class="circle cancel" title="Cancel User" id="userListCancel" onclick="loadProjectUsers()"><i class="fa-solid fa-ban"></i></button>';
+                            }
+                        }
+                        echo'
                         <input type="text" id="adminProjectUsersSearch" rel="adminProjectUsers" placeholder="Search..." onkeyup = "searching(this)"> 
                     </div>
                 </div>
@@ -165,31 +118,40 @@ echo '
                     <div class="tableHeader admin fiveColumn">
                         <span class="columnMiddle">Email
                             <button type="button" class="control unset" data-sort="user-email:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="user-email:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="user-email:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="user-email:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="user-email:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnMiddle">Name
                             <button type="button" class="control unset" data-sort="user-name:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="user-name:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="user-name:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="user-name:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="user-name:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnMiddle">Organisation
                             <button type="button" class="control unset" data-sort="user-organisation:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="user-organisation:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="user-organisation:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="user-organisation:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="user-organisation:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnMiddle">Country
                             <button type="button" class="control unset" data-sort="user-country:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="user-country:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="user-country:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="user-country:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="user-country:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnMiddle">Project Role
                             <button type="button" class="control unset" data-sort="user-role:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="user-role:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="user-role:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
-                        </span>
-                    </div>
+                            <button type="button" class="control asc" data-sort="user-role:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="user-role:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
+                        </span>';
+                        if($SYSTEM == 'KKR'){
+                            if ($_SESSION['project_owner'] == "JKR_SABAH"){
+                                echo'<span class="columnMiddle">Designation</span>';
+                            }
+                        }
+                    echo '</div>
                     <div class="tableBody" id="adminProjectUsers" rel="1"></div>
+                </div>
+                <div class="loadingcontainer-mainadmin">
+                    <div class="loader" style="display: block"></div>
+                    <div id="loadingText">Working...</div>
                 </div>
             </div>
 
@@ -206,23 +168,23 @@ echo '
                         <span class="columnSmall">Share</span>
                         <span class="columnLarge">Data Layer Name
                             <button type="button" class="control unset" data-sort="data-name:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-name:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-name:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-name:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-name:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnSmall no-wrap">Data Type
                             <button type="button" class="control unset" data-sort="data-type:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-type:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-type:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-type:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-type:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnLarge">Owner
                             <button type="button" class="control unset" data-sort="data-owner:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-owner:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-owner:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-owner:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-owner:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnLarge">File name
                             <button type="button" class="control unset" data-sort="data-file:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-file:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-file:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-file:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-file:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnMiddle">File Date</span>
                         <span class="columnMiddle">Projects Using Data</span>
@@ -346,6 +308,7 @@ echo '
                                                 <option value="http://maps.google.com/mapfiles/kml/paddle/8.png">Paddle Pin 8</option>
                                                 <option value="http://maps.google.com/mapfiles/kml/paddle/9.png">Paddle Pin 9</option>
                                                 <option value="http://maps.google.com/mapfiles/kml/paddle/10.png">Paddle Pin 10</option>
+                                                <option value="https://maps.gstatic.com/mapfiles/ms2/micons/rail.png">Station</option>
                                             </select>
                                         </div>
                                         <div class="rightContainer icon">
@@ -393,7 +356,7 @@ echo '
                         <div class="cesium-viewer-toolbar-admin">
                             <button title ="Adjust background brightness" id="adjustBrightness" class="cesium-button cesium-toolbar-button"><img src="Images/icons/admin_page/layer_preview/sun_max.png" style="height: 25px;"></button>
                             <button title ="Fly to data" id="flyToData" class="cesium-button cesium-toolbar-button"><img src="Images/icons/admin_page/layer_preview/binoculars.png" style="height: 25px;"></button>
-                            <button title ="Switch Terrain Mode" id="switchTerrainMode" class="cesium-button cesium-toolbar-button"><i class="onPrimary fa-solid fa-image-landscape fa-lg"></i></button>
+                            <button title ="Switch Terrain Mode" id="switchTerrainMode" class="cesium-button cesium-toolbar-button"><i class="onPrimary fa-solid fa-mountain fa-lg"></i></button>
                         </div>
                     </div>   
                 <br><br>
@@ -412,7 +375,7 @@ echo '
                 <div class="config-container">
                     <div class="projectwise365Page  readonly">
                         <div title="ProjectWise365 URL">
-                            <i class="fa-duotone fa-link"></i><p id="projectwise365url"></p>
+                            <i class="fa-solid fa-link"></i><p id="projectwise365url"></p>
                         </div>
                     </div>
                     <div class="projectwise365Page  edit">
@@ -435,10 +398,10 @@ echo '
                 <div class="config-container">
                     <div  class="pwfilesPage readonly">
                         <div title="Projectwise Username">
-                            <i class="fa-duotone fa-user-vneck-hair"></i><p id="pwusernamedisplay">Projectwise Username</p>
+                            <i class="fa-solid fa-user-tie"></i><p id="pwusernamedisplay">Projectwise Username</p>
                         </div>
                         <div  title="Projectwise URL">
-                            <i class="fa-duotone fa-link"></i><p id="pwurldisplay">Projectwise URL</p>
+                            <i class="fa-solid fa-link"></i><p id="pwurldisplay">Projectwise URL</p>
                         </div>
                     </div>
                     <div class="pwfilesPage edit">
@@ -485,10 +448,10 @@ echo '
                 <div class="config-container">
                     <div class="powerbiPage readonly">
                         <div title="PowerBi Username">
-                            <i class="fa-duotone fa-user-vneck-hair"></i><p id="powerbiusernamedisplay">PowerBi Username</p>
+                            <i class="fa-solid fa-user-tie"></i><p id="powerbiusernamedisplay">PowerBi Username</p>
                         </div>
                         <div title="PowerBI URL">
-                            <i class="fa-duotone fa-link"></i><p id="powerbiurl">PowerBI Embed</p>
+                            <i class="fa-solid fa-link"></i><p id="powerbiurl">PowerBI Embed</p>
                         </div>
                     </div>
                     <div class="powerbiPage edit">
@@ -516,31 +479,6 @@ echo '
                 </div>
                 <div class="projectDashboardContainer" id = "digitalReportingInfo">
                     <iframe id = "myAdminInnerFrame" src = "" style="width: 100%; height: 100%; border: unset;"></iframe>
-                    <div class="omniclass-container" id="omniClassContainer" style="width: 100%; height: 100%; border: unset; display: flex;">
-                        <div id="addOmniClass" class="modal" style="z-index: 50;">
-                            <div class="modal-content">
-                                <span id="wizardClose" class ="closebuttonWizard" rel ="" onclick="wizardCancelPageGantt()">&times;</span>
-                                <span id="wizardMaximize" class ="maximizebutton" rel =""><img src="./Images/icons/form/maximize.png"></span>
-                                <div class="modal-header"><a></a></div>
-                    
-                                <div class="modal-container" id="omniClassContainer1" style="display: block !important">
-                                    <iframe id = "myAdminInnerFrame2" src = "" style="width: 100%; height: 100%; border: unset;"></iframe>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="container-table1" style="overflow: auto; width: 40%; height: 100%; background-color: #FFFFFF; border: unset; margin-right: 5px;">
-                            <h4 style="margin-left: 10px;">Hierarchy</h4>
-                            <hr>
-                            <ul id="myUL" class="tree-list">
-                            </ul>
-                        </div>
-                        <div class="container-table1" style="overflow: auto; width: 60%; height: 100%; background-color: #FFFFFF; border: unset;">
-                            <h4 style="margin-left: 10px;">Data List</h4>
-                            <hr>
-                            <iframe id = "myAdminInnerFrame1" src = "" style="width: 100%; height: 100%; border: unset;"></iframe>
-                        </div>
-                    </div>
-                    
                 </div>
             </div>';
 
@@ -831,23 +769,23 @@ echo '
                         <span class="columnSmall">Share</span>
                         <span class="columnLarge">Image Filename
                             <button type="button" class="control unset" data-sort="data-name:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-name:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-name:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-name:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-name:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnSmall wrap">Image Type
                             <button type="button" class="control unset" data-sort="data-type:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-type:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-type:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-type:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-type:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnLarge">Image Captured Date
                             <button type="button" class="control unset" data-sort="data-owner:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-owner:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-owner:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-owner:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-owner:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnLarge">Routine Type
                             <button type="button" class="control unset" data-sort="data-file:desc"><i class="fa-solid fa-sort"></i></button>
-                            <button type="button" class="control asc" data-sort="data-file:desc" style="display:none"><i class="fa-duotone fa-sort-up"></i></button>
-                            <button type="button" class="control desc" data-sort="data-file:asc" style="display:none"><i class="fa-duotone fa-sort-down"></i></button>
+                            <button type="button" class="control asc" data-sort="data-file:desc" style="display:none"><i class="fa-solid fa-sort-up"></i></button>
+                            <button type="button" class="control desc" data-sort="data-file:asc" style="display:none"><i class="fa-solid fa-sort-down"></i></button>
                         </span>
                         <span class="columnMiddle">Start Date</span>
                         <span class="columnMiddle">Owner</span>
@@ -1143,8 +1081,11 @@ echo '
                                 <span class="columnLarge">Email</span>
                                 <span class="columnMiddle">Name</span>
                                 <span class="columnLarge">Organization</span>
-                                <span class="columnLarge">Project Role</span>
-                            </div>
+                                <span class="columnLarge">Project Role</span>';
+                                if($_SESSION['is_Parent'] == "isParent" && $_SESSION['user_org'] == "JKR" && $_SESSION['project_role'] == "Project Monitor"){
+                                    echo '<span class="columnSmall">Reporting</span>';
+                                }
+                            echo'</div>
                             <div class="tableBody" id="adminSelectUserTableBody" rel="2">';
                                 if ($SYSTEM == 'KKR'){
                                     $pid = $_SESSION['project_id'];
@@ -1196,6 +1137,11 @@ echo '
                                             break;
                                         }
                                         echo '<div style = "display:none">' . $row['orgType'] . '</div>';
+
+                                        if($_SESSION['is_Parent'] == "isParent"){
+                                            echo '<span class="textContainer"><input type ="checkbox"></span>';
+                                        }
+
                                         echo '</div>';
                                     }
                                 }
@@ -1645,10 +1591,11 @@ echo '
                             <br>
                             <button class="collapsible">Contact Project Admin</button>
                             <div class="contentAdmin">';
-                            /*foreach ($_SESSION['Project Manager'] as $admin) {
-                                echo "
-                                <a href=mailto:" . $admin . ">" . $admin . "</a><br>";
-                            }*/
+                            if (isset($_SESSION['Project Manager']) && is_array($_SESSION['Project Manager'])) {
+                                foreach ($_SESSION['Project Manager'] as $admin) {
+                                    echo '<a href="mailto:' . $admin . '">' . $admin . '</a><br>';
+                                }
+                            }
                             echo '
                             </div>
                         </div>    
@@ -1730,11 +1677,11 @@ echo '
                                     <div class="fieldcontainer">
                                         <div class="doublefield">
                                             <div class="column1 readonly" title = "Project ID">
-                                                <i class="fa-duotone fa-puzzle-piece"></i>
+                                                <i class="fa-solid fa-puzzle-piece"></i>
                                                 <a id="projectiddisplay" class="textClamp">' . $row['project_id'] . '</a>
                                             </div>
                                             <div class="column2 readonly" title = "Industry">
-                                                <i class="fa-duotone fa-industry-windows"></i>
+                                                <i class="fa-solid fa-industry"></i>
                                                 <a id="projectindustrydisplay" class="textClamp">';
                                                     if (is_null($row['industry'])) {
                                                         echo "";
@@ -1747,7 +1694,7 @@ echo '
                                         </div>
                                         <div class="doublefield">
                                             <div class="column1 readonly" title = "Location">
-                                                <i class="fa-duotone fa-location-dot"></i>
+                                                <i class="fa-solid fa-location-dot"></i>
                                                 <a id="projectlocationdisplay" class="textClamp">';
                                                     if (is_null($row['location'])) {
                                                         echo "";
@@ -1758,7 +1705,7 @@ echo '
                                                 </a>
                                             </div>                                
                                             <div class="column2 readonly" title = "Timezone">
-                                                <i class="fa-duotone fa-clock-two"></i>
+                                                <i class="fa-solid fa-clock"></i>
                                                 <a id="projecttimezonedisplay" class="textClamp">';
                                                     if (is_null($row['time_zone_text'])) {
                                                         echo "";
@@ -1771,7 +1718,7 @@ echo '
                                         </div>
                                         <div class="doublefield">
                                             <div class="column1 readonly" title = "Project Start Date">
-                                                <i class="fa-duotone fa-calendar-days"></i>
+                                                <i class="fa-solid fa-calendar-plus"></i>
                                                 <a id="projectstartdatedisplay" class="textClamp">';
                                                     if (is_null($row['start_date'])) {
                                                         echo "";
@@ -1782,7 +1729,7 @@ echo '
                                                 </a>
                                             </div>                                
                                             <div class="column2 readonly" title = "Project End Date">
-                                                <i class="fa-duotone fa-calendar-days"></i>
+                                                <i class="fa-solid fa-calendar-minus"></i>
                                                 <a id="projectenddatedisplay" class="textClamp">';
                                                     if (is_null($row['end_date'])) {
                                                         echo "";
@@ -1795,7 +1742,7 @@ echo '
                                         </div>
                                         <div class="doublefield">
                                             <div class="column1 readonly" title = "Project Duration">
-                                                <i class="fa-duotone fa-calendar-clock"></i>
+                                                <i class="fa-solid fa-hourglass-half"></i>
                                                 <a id="projectdurationdisplay" class="textClamp">';
                                                     if (is_null($row['duration'])) {
                                                         echo "";
@@ -1808,7 +1755,7 @@ echo '
                                             if ($SYSTEM == 'KKR'){
                                                 echo'
                                                 <div class="column2 readonly" title = "Warranty End Date">
-                                                    <i class="fa-duotone fa-calendar-days"></i>
+                                                    <i class="fa-solid fa-stamp"></i>
                                                     <a id="projectwarrantydatedisplay" class="textClamp">';
                                                         if (is_null($row['warranty_end_date'])) {
                                                             echo "";
@@ -1821,7 +1768,7 @@ echo '
                                             }else if ($SYSTEM == 'OBYU'){
                                                 echo '
                                                 <div class="column2 readonly" title ="Montly Cut Off (Days)">
-                                                    <i class="fa-duotone fa-calendar-clock"></i>
+                                                    <i class="fa-solid fa-calendar-day"></i>
                                                     <a id="projectcutoffdisplay" class="textClamp">'.$row['cut_off_day'].'</a>
                                                 </div>';
                                             }
@@ -1829,11 +1776,11 @@ echo '
                                         </div>
                                         <div class="doublefield">
                                             <div class="column1 readonly" title = "Project Created By">
-                                                <i class="fa-duotone fa-file-circle-plus"></i>
+                                                <i class="fa-solid fa-file-circle-plus"></i>
                                                 <a id="projectcreatedbydisplay" class="textClamp">' . $row['created_by'] . '</a>
                                             </div>
                                             <div class="column2 readonly" title = "Project Created Time">
-                                                <i class="fa-duotone fa-file-circle-plus"></i>
+                                                <i class="fa-solid fa-file-circle-plus"></i>
                                                 <a id="projectcreatetimedisplay" class="textClamp">' . date_format($row['created_time'], 'd/m/Y') . '</a>
                                             </div>
                                         </div>
@@ -1842,7 +1789,7 @@ echo '
                                         <div class="doublefield">
                                             <div class="column1 readonly" title = "Last Project Details Update">
                                                 <div class="container">
-                                                    <i class="fa-duotone fa-arrows-rotate"></i>
+                                                    <i class="fa-solid fa-arrows-rotate"></i>
                                                     <a id="projectlastupdatedisplay">';
                                                         if (!is_null($_SESSION['updated_by']) && !is_null($_SESSION['last_update'])) {
                                                             echo  $_SESSION['updated_by'] . ' ' . $_SESSION['last_update'];
@@ -1853,14 +1800,14 @@ echo '
                                                 <div class="container">';
                                                     if (isset($_SESSION['start_date']) && isset($_SESSION['end_date']) && isset($_SESSION['projectDuration'])) {
                                                         echo  '
-                                                        <i class="fa-duotone fa-calendar-time"></i>
+                                                        <i class="fa-solid fa-calendar-days"></i>
                                                         <a id="viewprojectstartdate">' . $_SESSION['start_date'] . ' - ' . $_SESSION['end_date'] . ' (' . $_SESSION['projectDuration'] . ' Days)</a>';
                                                     }
                                                     echo '
                                                 </div>
                                             </div>
                                             <div class="column2 readonly" title = "Project Extent Area">
-                                                <i class="fa-duotone fa-location-crosshairs"></i>
+                                                <i class="fa-solid fa-location-crosshairs"></i>
                                                 <span class="coordinateContainer" id="coordinateval1">
                                                     <span class="column1 text-ellipsis"><span>NW: </span><span id="lati1">' . $row['latitude_1'] . '</span><span>  </span><span id="longi1"> ' . $row['longitude_1'] . ' </span></span>
                                                     <span class="column2 text-ellipsis"><span>SE: </span><span id="lati2"> ' . $row['latitude_2'] . ' </span><span>  </span><span id="longi2">' . $row['longitude_2'] . ' </span></span>
@@ -1968,7 +1915,6 @@ echo '
                                                     <option value="44" gmtAdjustment="GMT+02:00" useDaylightTime="1" adjuatmentValue="2">(GMT+02:00) Windhoek</option>
                                                     <option value="45" gmtAdjustment="GMT+03:00" useDaylightTime="0" adjuatmentValue="3">(GMT+03:00) Kuwait, Riyadh, Baghdad</option>
                                                     <option value="46" gmtAdjustment="GMT+03:00" useDaylightTime="1" adjuatmentValue="3">(GMT+03:00) Moscow, St. Petersburg, Volgograd</option>
-                             
                                                     <option value="47" gmtAdjustment="GMT+03:00" useDaylightTime="0" adjuatmentValue="3">(GMT+03:00) Nairobi</option>
                                                     <option value="48" gmtAdjustment="GMT+03:00" useDaylightTime="0" adjuatmentValue="3">(GMT+03:00) Tbilisi</option>
                                                     <option value="49" gmtAdjustment="GMT+03:30" useDaylightTime="1" adjuatmentValue="3.5">(GMT+03:30) Tehran</option>

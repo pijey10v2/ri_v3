@@ -152,6 +152,9 @@ $imageView = array ('jpg', 'jpeg', 'png'); //filetype for image viewer
 $file_url = $website_url.$output_filename;
 $file_extension = strtolower($file_extension);
 
+ob_clean(); 
+flush();
+
 if (in_array ($file_extension, $PPdocx_Ext))
 {   
    if ( (filesize($output_filename)/1000000) < 10 ){
@@ -166,7 +169,7 @@ if (in_array ($file_extension, $PPdocx_Ext))
          // Check file is exists on given path.
          if(file_exists($output_filename))
          {
-            header('Content-Disposition: attachment; filename=' . $file_name.'.'.$file_extension);  
+            header('Content-Disposition: attachment; filename=' . $file_name );  
             readfile($output_filename); 
             exit;
          }else {
@@ -193,7 +196,7 @@ else if (in_array ($file_extension, $excel_Ext))
          // Check file is exists on given path.
          if(file_exists($output_filename))
          {
-            header('Content-Disposition: attachment; filename=' . $file_name.'.'.$file_extension);  
+            header('Content-Disposition: attachment; filename=' . $file_name );  
             readfile($output_filename); 
             exit;
          }else {
@@ -220,7 +223,7 @@ else if ($file_extension == 'pdf')
          // Check file is exists on given path.
          if(file_exists($output_filename))
          {
-            header('Content-Disposition: attachment; filename=' . $file_name.'.'.$file_extension);  
+            header('Content-Disposition: attachment; filename=' . $file_name );  
             readfile($output_filename); 
             exit;
          }else {
@@ -248,7 +251,7 @@ else if ($file_extension == 'dwg')
          // Check file is exists on given path.
          if(file_exists($output_filename))
          {
-            header('Content-Disposition: attachment; filename=' . $file_name.'.'.$file_extension);  
+            header('Content-Disposition: attachment; filename=' . $file_name );  
             readfile($output_filename); 
             exit;
          }else {
@@ -275,7 +278,7 @@ else if ($file_extension == 'txt')
          // Check file is exists on given path.
          if(file_exists($output_filename))
          {
-            header('Content-Disposition: attachment; filename=' . $file_name.'.'.$file_extension);  
+            header('Content-Disposition: attachment; filename=' . $file_name );  
             readfile($output_filename); 
             exit;
          }else {
@@ -302,7 +305,7 @@ else if (in_array ($file_extension, $imageView))
          // Check file is exists on given path.
          if(file_exists($output_filename))
          {
-            header('Content-Disposition: attachment; filename=' . $file_name.'.'.$file_extension);  
+            header('Content-Disposition: attachment; filename=' . $file_name );  
             readfile($output_filename); 
             exit;
          }else {
@@ -319,7 +322,7 @@ else{
       // Check file is exists on given path.
       if(file_exists($output_filename))
       {
-         header('Content-Disposition: attachment; filename=' . $file_name.'.'.$file_extension);  
+         header('Content-Disposition: attachment; filename=' . $file_name );  
          readfile($output_filename); 
          exit;
       }else {

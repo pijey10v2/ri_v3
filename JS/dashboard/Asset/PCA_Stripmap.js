@@ -414,7 +414,7 @@ function drawFwdChart(data, date){
       startOnTick: false,
       endOnTick: false,
       showLastLabel: true,
-      opposite: false,
+      opposite: true,
       categories: catArr,
       tickMarkPlacement: 'between',
     }
@@ -423,7 +423,8 @@ function drawFwdChart(data, date){
       enabled : false
     },
     yAxis: {
-      title: { text: ''}
+      title: { text: ''},
+      reversed: true
     },
     tooltip: {
       formatter: function() {return 'CH ' + this.x + ', ' + this.y + ' µm';}

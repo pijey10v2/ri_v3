@@ -25,6 +25,9 @@ var assetPfsBtnAccess = [];
 var themeJoget;
 var terrainEnabled = false;
 
+var mapBoxAccessToken = MAPBOX_TOKEN;
+var mapTilerAccessToken = MAPTILER_TOKEN;
+
 //vertical position 360 aspect ratio
 var aspectRatioVerticalLine;
 
@@ -34,7 +37,7 @@ var assetOwnerRoles = ["Assistant Director (Road Asset)","Assistant Engineer (Di
                        "Facility Management Department","Head of Contract","Head of Finance","Head of Section", "KKR", "Quantity Surveyor","Senior Civil Engineer (Division)","Senior Civil Engineer (District)","Senior Civil Engineer (Road Asset)","Senior Quantity Surveyor","Technical Inspector Section"];
 var fmOwnerRoles = ["Facilities User", "Facilities Management Team", "Facilities Service Provider", "Mechanical Team", "Senior Civil Engineer (Road Asset)", "Assistant Director (Road Asset)", "Civil Engineer (Road Asset)"];
 var adminInsightsRoles = ['Project Monitor', 'Project Manager', "Senior Civil Engineer (Road Asset)", "Assistant Director (Road Asset)", "KKR", "Civil Engineer (Road Asset)"];
-var sslr2OwnerRoles = ['Construction Manager', 'Finance Representative', 'HOD (Contract and Finance)', 'HOD (QSHET)', 'HSET Officer', 'Land Management Representative', 'PMO Representative', 'Project Engineer', 'QAQC Manager', 'Representative', 'Site Engineer', 'SMO Representative', 'Technical Engineer']
+var sslr2OwnerRoles = ['Construction Manager', 'Finance Representative', 'HOD (Contract and Finance)', 'HOD (QSHET)', 'HSET Officer', 'Land Management Representative', 'PMO Representative', 'Project Engineer', 'QAQC Manager', 'Representative', 'Site Engineer', 'SMO Representative', 'Technical Engineer', 'Engineering Design Management']
 
 var allOwnerRoles = constructOwnerRoles.concat(assetOwnerRoles)
 
@@ -46,10 +49,6 @@ if (paramsArray.length > 1 && paramsArray[1] !== '') {
 var fullNameAPJKPJ = "Anggaran/Kelulusan Penyelenggaraan Jalan";
 
 var flagCheckSysAdmin = false;
-
-var tableRowArray = [];
-var selectedRow = [];
-var isEventCreated = false;
 
 onClickSelMonth = (e, event) =>{
     let selId = $(e).attr('id')
@@ -397,7 +396,11 @@ function updateFrameSrc(data){
                     if(localStorage.Project_type == 'ASSET'){
                         letPageSrc = "../Dashboard/v3/statistic.php";
                     }else{
-                        letPageSrc = "../Dashboard/v3/projectSummary.php";
+                        if(IS_DOWNSTREAM){
+                            letPageSrc = "../Dashboard/v3/projectSummary.php";
+                        }else{
+                            letPageSrc = "../Dashboard/v3/procurement_SSLR2.php";
+                        }
                     }
                     iframeFlag = true
                     if(cesiumObj){
@@ -490,6 +493,8 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
     let rightPfsLUHTML = '';
     let rightPfsBudgetHTML = '';
     let rightPfsPerClaimHTML = '';
+    let rightPfsPerInventoryClaimHTML = '';
+    let rightPfsEOTHTML = '';
     var textVO = '';
     var flagIc = false
     var flagVo = false
@@ -579,116 +584,226 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                         `
     
     if(localStorage.project_owner == "JKR_SABAH"){
-        arrConstruct = {
-            "app_DCR" : {
-                data : "DCR",
-                title : "DCR",
-                name :"Design Change Request"
-            },
-            "app_IR" : {
-                data : "IR",
-                title : "INC",
-                name :"Incident"
-            },
-            "app_LR" : {
-                data : "LR",
-                title : "LA",
-                name :"Land Acquisition"
-            },
-            "app_LI" : {
-                data : "LI",
-                title : "LI",
-                name :"Land Issue"
-            },
-            "app_LE" : {
-                data : "LE",
-                title : "LE",
-                name :"Land Encumbrances"
-            },
-            "app_LS" : {
-                data : "LS",
-                title : "LS",
-                name :"Land Summary"
-            },
-            "app_MOS" : {
-                data : "MOS",
-                title : "MS",
-                name :"Method Statement"
-            },
-            "app_MS" : {
-                data : "MS",
-                title : "MA",
-                name :"Material Acceptance"
-            },
-            "app_NCR" : {
-                data : "NCR",
-                title : "NCR",
-                name :"Non Conformance Report"
-            },
-            "app_PSU" : {
-                data : "PSU",
-                title : "PSU",
-                name :"Progress Summary Upload"
-            },
-            "app_PBC" : {
-                data : "PBC",
-                title : "PBC",
-                name :"Public Complaint"
-            },
-            "app_RS" : {
-                data : "RS",
-                title : "RS",
-                name :"Report Submission"
-            },
-            "app_RR" : {
-                data : "RR",
-                title : "RR",
-                name :"Risk Register"
-            },
-            "app_WIR" : {
-                data : "WIR",
-                title : "RFI",
-                name :"Request For Inspection"
-            },
-            "app_RFI" : {
-                data : "RFI",
-                title : "RFIT",
-                name :"Request For Information Technical"
-            },
-            "app_SA" : {
-                data : "SA",
-                title : "SA",
-                name :"Safety Activity And Response"
-            },
-            "app_SDL" : {
-                data : "SDL",
-                title : "SDL",
-                name :"Site Diary Log"
-            },
-            "app_SD" : {
-                data : "SD",
-                title : "SI",
-                name :"Site Instruction"
-            },
-            "app_NOI" : {
-                data : "NOI",
-                title : "SM / NOI",
-                name :"Site Memo / Notice Of Improvement"
-            },
-            "app_SMH" : {
-                data : "SMH",
-                title : "SMH",
-                name :"Total Man-Hours"
-            },
-            "app_DA" : {
-                data : "DA",
-                title : "DA",
-                name :"URW - Approved Design Drawing"
-            },
-            "app_PU" : {
-                data : "PU",
-                title : "PU",
-                name :"URW - Progress Update"
+        if(localStorage.project_phase == '1B'){
+            arrConstruct = {
+                "app_DCR" : {
+                    data : "DCR",
+                    title : "DCR",
+                    name :"Design Change Request"
+                },
+                "app_IR" : {
+                    data : "IR",
+                    title : "INC",
+                    name :"Incident"
+                },
+                "app_LR" : {
+                    data : "LR",
+                    title : "LA",
+                    name :"Land Acquisition"
+                },
+                "app_LI" : {
+                    data : "LI",
+                    title : "LI",
+                    name :"Land Issue"
+                },
+                "app_LE" : {
+                    data : "LE",
+                    title : "LE",
+                    name :"Land Encumbrances"
+                },
+                "app_LS" : {
+                    data : "LS",
+                    title : "LS",
+                    name :"Land Summary"
+                },
+                "app_MOS" : {
+                    data : "MOS",
+                    title : "MS",
+                    name :"Method Statement"
+                },
+                "app_MS" : {
+                    data : "MS",
+                    title : "MA",
+                    name :"Material Acceptance"
+                },
+                "app_NCR" : {
+                    data : "NCR",
+                    title : "NCR",
+                    name :"Non Conformance Report"
+                },
+                "app_PSU" : {
+                    data : "PSU",
+                    title : "PSU",
+                    name :"Progress Summary Upload"
+                },
+                "app_PBC" : {
+                    data : "PBC",
+                    title : "PBC",
+                    name :"Public Complaint"
+                },
+                "app_RS" : {
+                    data : "RS",
+                    title : "RS",
+                    name :"Report Submission"
+                },
+                "app_RR" : {
+                    data : "RR",
+                    title : "RR",
+                    name :"Risk Register"
+                },
+                "app_WIR" : {
+                    data : "WIR",
+                    title : "RFI",
+                    name :"Request For Inspection"
+                },
+                "app_RFI" : {
+                    data : "RFI",
+                    title : "RFIT",
+                    name :"Request For Information Technical"
+                },
+                "app_SA" : {
+                    data : "SA",
+                    title : "SA",
+                    name :"Safety Activity And Response"
+                },
+                "app_SDL" : {
+                    data : "SDL",
+                    title : "SDL",
+                    name :"Site Diary Log"
+                },
+                "app_SD" : {
+                    data : "SD",
+                    title : "SI",
+                    name :"Site Instruction"
+                },
+                "app_NOI" : {
+                    data : "NOI",
+                    title : "SM / NOI",
+                    name :"Site Memo / Notice Of Improvement"
+                },
+                "app_SMH" : {
+                    data : "SMH",
+                    title : "SMH",
+                    name :"Total Man-Hours"
+                },
+                "app_PU" : {
+                    data : "PU",
+                    title : "PU",
+                    name :"URW - Progress Update"
+                }
+            }
+        }else{
+            arrConstruct = {
+                "app_DCR" : {
+                    data : "DCR",
+                    title : "DCR",
+                    name :"Design Change Request"
+                },
+                "app_IR" : {
+                    data : "IR",
+                    title : "INC",
+                    name :"Incident"
+                },
+                "app_LR" : {
+                    data : "LR",
+                    title : "LA",
+                    name :"Land Acquisition"
+                },
+                "app_LI" : {
+                    data : "LI",
+                    title : "LI",
+                    name :"Land Issue"
+                },
+                "app_LE" : {
+                    data : "LE",
+                    title : "LE",
+                    name :"Land Encumbrances"
+                },
+                "app_LS" : {
+                    data : "LS",
+                    title : "LS",
+                    name :"Land Summary"
+                },
+                "app_MOS" : {
+                    data : "MOS",
+                    title : "MS",
+                    name :"Method Statement"
+                },
+                "app_MS" : {
+                    data : "MS",
+                    title : "MA",
+                    name :"Material Acceptance"
+                },
+                "app_NCR" : {
+                    data : "NCR",
+                    title : "NCR",
+                    name :"Non Conformance Report"
+                },
+                "app_PSU" : {
+                    data : "PSU",
+                    title : "PSU",
+                    name :"Progress Summary Upload"
+                },
+                "app_PBC" : {
+                    data : "PBC",
+                    title : "PBC",
+                    name :"Public Complaint"
+                },
+                "app_RS" : {
+                    data : "RS",
+                    title : "RS",
+                    name :"Report Submission"
+                },
+                "app_RR" : {
+                    data : "RR",
+                    title : "RR",
+                    name :"Risk Register"
+                },
+                "app_WIR" : {
+                    data : "WIR",
+                    title : "RFI",
+                    name :"Request For Inspection"
+                },
+                "app_RFI" : {
+                    data : "RFI",
+                    title : "RFIT",
+                    name :"Request For Information Technical"
+                },
+                "app_SA" : {
+                    data : "SA",
+                    title : "SA",
+                    name :"Safety Activity And Response"
+                },
+                "app_SDL" : {
+                    data : "SDL",
+                    title : "SDL",
+                    name :"Site Diary Log"
+                },
+                "app_SD" : {
+                    data : "SD",
+                    title : "SI",
+                    name :"Site Instruction"
+                },
+                "app_NOI" : {
+                    data : "NOI",
+                    title : "SM / NOI",
+                    name :"Site Memo / Notice Of Improvement"
+                },
+                "app_SMH" : {
+                    data : "SMH",
+                    title : "SMH",
+                    name :"Total Man-Hours"
+                },
+                "app_DA" : {
+                    data : "DA",
+                    title : "DA",
+                    name :"URW - Approved Design Drawing"
+                },
+                "app_PU" : {
+                    data : "PU",
+                    title : "PU",
+                    name :"URW - Progress Update"
+                }
             }
         }
     }
@@ -997,6 +1112,11 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                     title : "NOE",
                     name : "Notice of Emergency"
                 },
+                "GAR" : {
+                    data : "GAR",
+                    title : "GAR",
+                    name : "Government Asset Return"
+                },
                 "WDR" : {
                     data : "WDR",
                     title : "WDR",
@@ -1282,6 +1402,11 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                     data : "maint_view_workorder",
                     title : "WO",
                     name :"Work Order"
+                },
+                4 : {
+                    data : "maint_view_nod_periodic",
+                    title : "NOD",
+                    name :"Notice of Defect"
                 }
             }
     
@@ -1300,6 +1425,11 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                     data : "maint_view_asset_handover",
                     title : "AH",
                     name :"Asset Handover"
+                },
+                3 : {
+                    data : "maint_view_nod_emergency",
+                    title : "NOD",
+                    name :"Notice of Defect"
                 }
             }
         }else{
@@ -1714,11 +1844,6 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                     data : "service_request",
                     title : "Service Request",
                     name :"Service Request"
-                },
-                1 : {
-                    data : "ppm_list",
-                    title : "PPM",
-                    name :"Planned Preventive Maintainance"
                 }
             }
         }
@@ -1902,25 +2027,51 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
             for (const [idx3, ele3] of Object.entries(accessProcess)) {
                 if((ele3 != false) && (idx == "app_" + idx3)){
                     for (const [idxUse, eleUse] of Object.entries(ele3.ORG)) {
-                        if(idxUse == 'allOrg'){
-                            rightConopChoice +=
-                            `
-                                <option value="`+ele.data+`">`+ele.name+`</option>
-                            `
+                        if(localStorage.project_phase == '1B'){
                             if(idx == "app_RR"){
-                                if(localStorage.project_owner == 'JKR_SARAWAK'){
-                                        rightConopChoice +=
+                                if(localStorage.user_org == 'JKR' || localStorage.user_org == 'pmc_1b'){
+                                    rightConopChoice +=
+                                        `
+                                            <option value="`+ele.data+`">`+ele.name+`</option>
+                                        `
+                                }else{
+                                    continue;
+                                }
+                            }else{
+                                if(idxUse == 'allOrg'){
+                                    rightConopChoice +=
                                     `
-                                        <option value="RRU">Risk Upload</option>
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+                                else if(idxUse == currentOrg){
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
                                     `
                                 }
                             }
-                        }
-                        else if(idxUse == currentOrg){
-                            rightConopChoice +=
-                            `
-                                <option value="`+ele.data+`">`+ele.name+`</option>
-                            `
+                        }else{
+                            if(idxUse == 'allOrg'){
+                                rightConopChoice +=
+                                `
+                                    <option value="`+ele.data+`">`+ele.name+`</option>
+                                `
+                                if(idx == "app_RR"){
+                                    if(localStorage.project_owner == 'JKR_SARAWAK'){
+                                            rightConopChoice +=
+                                        `
+                                            <option value="RRU">Risk Upload</option>
+                                        `
+                                    }
+                                }
+                            }
+                            else if(idxUse == currentOrg){
+                                rightConopChoice +=
+                                `
+                                    <option value="`+ele.data+`">`+ele.name+`</option>
+                                `
+                            }
                         }
                     }
                 }
@@ -1983,6 +2134,11 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                         <option value="`+idx+`">District</option>
                     `
                 }
+                else if((idx == 'ccPubc') && (ele == true)){
+                    rightSetupChoice += `
+                        <option value="`+idx+`">PUBC CC Users</option>
+                    `
+                }
             }
 
         }
@@ -2007,6 +2163,8 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
     }
     else{
 
+        var currentOrg = localStorage.user_org;
+        
         //Loop below for Process list based on accessProcess
         for (const [idx3, ele3] of Object.entries(accessProcess)) {
             if((ele3 != false) && (idx3 == "BR")){
@@ -2033,7 +2191,7 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
         for (const [idx, ele] of Object.entries(arrMaintanceListFM)) {
             rightTabMainList +=
             `
-            <div class="tab changeName" data-page = "`+ele.data+`" id="maintainJoget" rel = "`+ele.data+`" style = "font-size;9px" title = "`+ele.title+`" onclick="navBoxTabClick(this)">`+ele.name+`</div>
+            <div class="tab children changeName" rel = "`+ele.data+`" data-page = "`+ele.data+`" id = "maintainJoget" style = "font-size;9px" title = "`+ele.title+`" onclick="navBoxTabClick(this)">`+ele.name+`</div>
 
             `
         }
@@ -2050,6 +2208,15 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                 <div class="subButton" id = "doc_list_doc_restricted" onclick = "linkJoget(this, \'myDocument\')">
                                     <span class="parentTagName">Document (Restricted)</span>
                                 </div>` 
+
+                            let signed_in_email = localStorage.signed_in_email ? localStorage.signed_in_email : ''
+                            if( signed_in_email == "pbh.sabah@gmail.com" ){
+                                console.log('Document Export')
+                                rightDocHTML +=`
+                                    <div class="subButton" id = "doc_list_doc_export" onclick = "linkJoget(this, \'myDocument\')">
+                                        <span class="parentTagName">Document Export</span>
+                                    </div>`
+                            }
                         }
                         else if((idxAccess == "readConfidential") && (eleAccess == true)){
                             rightDocHTML += `
@@ -2057,6 +2224,7 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                     <span class="parentTagName">Document (Confidential)</span>
                                 </div>`
                         }
+                        
 
                         if((idxAccess == "setup") && (eleAccess == true)){
                             rightSetupHTML += `
@@ -2082,6 +2250,19 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                     }
                 }
                 else if(idxSubProcess == "Correspondence"){
+                    if(localStorage.project_owner == 'JKR_SABAH' && localStorage.usr_role == 'Consultant CRE'){
+                        rightCorrHTML += `
+                            <div class="subButton" id = "doc_form_corr_register" onclick = "linkJoget(this, \'myDocument\')">
+                                <span class="parentTagName">New Correspondence</span>
+                            </div>
+                            <div class="subButton" id = "doc_bulk_corr_register" onclick = "linkJoget(this, \'myDocument\')">
+                                <span class="parentTagName">New Multiple Correspondence</span>
+                            </div>
+                            <div class="subButton" id = "doc_list_corr_my" onclick = "linkJoget(this, \'myDocument\')">
+                                <span class="parentTagName">My Correspondence</span>
+                            </div>` 
+                    }
+                    
                     for (const [idxAccess, eleAccess] of Object.entries(eleSubProcess)) {
                         if((idxAccess == "create") && (eleAccess == true)){
                             rightCorrHTML += `
@@ -2124,6 +2305,15 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                 <div class="subButton" id = "doc_list_corr_restricted" onclick = "linkJoget(this, \'myDocument\')">
                                     <span class="parentTagName">Correspondence (Restricted)</span>
                                 </div>`
+
+                            let signed_in_email = localStorage.signed_in_email ? localStorage.signed_in_email : ''
+                            if( signed_in_email == "pbh.sabah@gmail.com" ){
+                                console.log('Corr Export')
+                                rightCorrHTML += `
+                                <div class="subButton" id = "doc_list_corr_export" onclick = "linkJoget(this, \'myDocument\')">
+                                    <span class="parentTagName">Correspondence Export</span>
+                                </div>` 
+                            }
                         }
                         else if((idxAccess == "readConfidential") && (eleAccess == true)){
                             rightCorrHTML += `
@@ -2195,16 +2385,34 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                     </div>`
                             }
                             else if((idxAccess == "newContract") && (eleAccess == true)){
-                                rightPfsContHTML += `
-                                    <div class="subButton" id = "finance_list_NewContract" onclick = "linkJoget(this, \'myFinance\', \'contractApproval\')">
-                                        <span class="parentTagName">New</span>
-                                    </div>`
+                                if(localStorage.project_owner == "JKR_SABAH" && localStorage.project_phase == '1B'){ 
+                                    if(localStorage.userOrg == "JKR"){
+                                        rightPfsContHTML += `
+                                            <div class="subButton" id = "finance_list_NewContract" onclick = "linkJoget(this, \'myFinance\', \'contractApproval\')">
+                                                <span class="parentTagName">New</span>
+                                            </div>`
+                                    }
+                                }else{
+                                    rightPfsContHTML += `
+                                        <div class="subButton" id = "finance_list_NewContract" onclick = "linkJoget(this, \'myFinance\', \'contractApproval\')">
+                                            <span class="parentTagName">New</span>
+                                        </div>`
+                                }
                             }
                             else if((idxAccess == "rejectedContracts") && (eleAccess == true)){
-                                rightPfsContHTML += `
-                                    <div class="subButton" id = "finance_list_RejectedContracts" onclick = "linkJoget(this, \'myFinance\')">
-                                        <span class="parentTagName">Draft</span>
-                                    </div>`
+                                if(localStorage.project_owner == "JKR_SABAH" && localStorage.project_phase == '1B'){ 
+                                    if(localStorage.userOrg == "JKR"){
+                                        rightPfsContHTML += `
+                                            <div class="subButton" id = "finance_list_RejectedContracts" onclick = "linkJoget(this, \'myFinance\')">
+                                                <span class="parentTagName">Draft</span>
+                                            </div>`
+                                    }
+                                }else{
+                                    rightPfsContHTML += `
+                                            <div class="subButton" id = "finance_list_RejectedContracts" onclick = "linkJoget(this, \'myFinance\')">
+                                                <span class="parentTagName">Draft</span>
+                                            </div>`
+                                }
                             }
                             else if((idxAccess == "routineContractAmend") && (eleAccess == true)){
                                 if(localStorage.isParent == "isParent" && localStorage.Project_type == "ASSET"){
@@ -2217,6 +2425,22 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                             else if((idxAccess == "create") && (eleAccess == true)){
                                 assetPfsBtnAccess['newContract'] = true;
                             }
+                            else if((idxAccess == "bulkUploadContracts") && (eleAccess == true)){
+                                if(localStorage.project_owner == 'JKR_SABAH'){
+                                    rightPfsContHTML += `
+                                        <div class="subButton" id = "finance_list_BulkUploadContracts" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">Bulk Import</span>
+                                        </div>`
+                                }
+                            }
+ 
+                        }
+                        let signed_in_email = localStorage.signed_in_email ? localStorage.signed_in_email : ''
+                        if( signed_in_email == "pbh.sabah@gmail.com" ){ 
+                            rightPfsContHTML += `
+                                    <div class="subButton" id = "finance_list_ExportContracts" onclick = "linkJoget(this, \'myFinance\')">
+                                        <span class="parentTagName">Contracts Export</span>
+                                    </div>`
                         }
                     }
                 }
@@ -2230,10 +2454,19 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                     </div>` 
                             }
                             else if((idxAccess == "newAmendment") && (eleAccess == true)){
-                                rightPfsCAHTML += `
-                                    <div class="subButton" id = "finance_list_NewAmendment" onclick = "linkJoget(this, \'myFinance\')">
-                                        <span class="parentTagName">New</span>
-                                    </div>`
+                                if(localStorage.project_owner == "JKR_SABAH" && localStorage.project_phase == '1B'){ 
+                                    if(localStorage.userOrg == "JKR"){
+                                        rightPfsCAHTML += `
+                                            <div class="subButton" id = "finance_list_NewAmendment" onclick = "linkJoget(this, \'myFinance\')">
+                                                <span class="parentTagName">New</span>
+                                            </div>`
+                                    }
+                                }else{
+                                    rightPfsCAHTML += `
+                                            <div class="subButton" id = "finance_list_NewAmendment" onclick = "linkJoget(this, \'myFinance\')">
+                                                <span class="parentTagName">New</span>
+                                            </div>`
+                                }
                             }
                             else if((idxAccess == "amendments") && (eleAccess == true)){
                                 rightPfsCAHTML += `
@@ -2258,6 +2491,12 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                     <div class="subButton" id = "finance_list_ImportUnit" onclick = "linkJoget(this, \'myFinance\')">
                         <span class="parentTagName">Import Units</span>
                     </div>`;
+                    if(localStorage.project_owner == 'JKR_SABAH'){
+                        rightPfsLUHTML += `
+                        <div class="subButton" id = "finance_list_organization" onclick = "linkJoget(this, \'myFinance\')">
+                            <span class="parentTagName">Organization List</span>
+                        </div>`;
+                    }
 
                 }
                 else if (idxSubProcess == "LURates"){
@@ -2304,6 +2543,25 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                         }
                     }
                 }
+                else if (idxSubProcess == "EOT"){
+                    if(localStorage.project_owner == "JKR_SABAH" && localStorage.project_phase == '1B'){                           
+                        for (const [idxAccess, eleAccess] of Object.entries(eleSubProcess)) {                     
+                            if((idxAccess == "create") && (eleAccess == true)){
+                                rightPfsEOTHTML += 
+                                `<div class="subButton" id = "finance_list_NewEOT_Sabah" onclick = "linkJoget(this, \'myFinance\')">
+                                    <span class="parentTagName">New</span>
+                                </div>`;
+                            }
+                            else if((idxAccess == "read") && (eleAccess == true)){
+                                rightPfsEOTHTML += 
+                                `<div class="subButton" id = "finance_list_EOTList_Sabah" onclick = "linkJoget(this, \'myFinance\')">
+                                    <span class="parentTagName">Approved</span>
+                                </div>`;
+                            }
+                        }
+                    }
+                }
+                
 
                 if(flagIc){
                     if (idxSubProcess == "Claims"){
@@ -2359,7 +2617,27 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                             <span class="parentTagName">Submitted</span>
                                         </div>` 
                                 }
+                                else if((idxAccess == "InventoryClaim") && (eleAccess == true)){
+                                    rightPfsPerInventoryClaimHTML += `
+                                        <div class="subButton" id = "finance_list_claimInventory_PBBKPR" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">JKRS.PK(SJ).01.03-PBBKPR</span>
+                                        </div>
+                                        <div class="subButton" id = "finance_list_claimInventory_SPPT" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">JKRS.PK(SJ).01.03-SPPT</span>
+                                        </div>
+                                        <div class="subButton" id = "finance_list_claimInventory_BRTB" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">JKRS.PK(SJ).01.03-BRTB</span>
+                                        </div>`
+                                }
                             }
+                            let signed_in_email = localStorage.signed_in_email ? localStorage.signed_in_email : ''
+                            if( signed_in_email == "pbh.sabah@gmail.com" ){ 
+                                rightPfsClaimHTML += `
+                                        <div class="subButton" id = "finance_list_ExportClaims" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">Claims Export</span>
+                                        </div>` 
+                            }
+                            
                         }else{
                             if(localStorage.Project_type == "ASSET"){
                                 for (const [idxAccess, eleAccess] of Object.entries(eleSubProcess)) {
@@ -2444,7 +2722,17 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                         <span class="parentTagName">Approved</span>
                                     </div>` 
                             }
+
+                            
                         }
+                        let signed_in_email = localStorage.signed_in_email ? localStorage.signed_in_email : ''
+                        if( signed_in_email == "pbh.sabah@gmail.com" ){ 
+                            rightPfsVoHTML += `
+                                    <div class="subButton" id = "finance_list_ExportVOs" onclick = "linkJoget(this, \'myFinance\')">
+                                        <span class="parentTagName">VOs Export</span>
+                                    </div>` 
+                        }
+                        
                     }
                 }
 
@@ -2473,10 +2761,21 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                         `
                     }
 
-                    if(localStorage.project_owner == "JKR_SABAH"){
+                    if(localStorage.project_owner == "JKR_SABAH" && localStorage.Project_type != "ASSET"){
                         rightAdminProjDetHTML += `
                             <div class="subButton" id = "cons_datalist_PF" rel = "main-project-dashboard" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                 <span class="parentTagName">List Feature</span>
+                            </div>
+                        `
+                    }
+
+                    if(localStorage.project_owner == "JKR_SABAH" && localStorage.isParent == "isParent" && localStorage.usr_role == "Project Monitor"){
+                        rightAdminProjDetHTML += `
+                            <div class="subButton" id = "cons_issue_OPU" rel = "main-project-dashboard" data-title = "Overall Progress" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                                <span class="parentTagName">New Overall Progress</span>
+                            </div>
+                            <div class="subButton" id = "cons_datalist_OPU" rel = "main-project-dashboard" data-title = "Overall Progress" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                                <span class="parentTagName">List Overall Progress</span>
                             </div>
                         `
                     }
@@ -2498,7 +2797,8 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                         </div>
                         <div class="subButton" id = "aerialData" rel = "main-aerial" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                             <span class="parentTagName">Aerial Image</span>
-                        </div> `
+                        </div> ` 
+                            
                         if(localStorage.isParent !== "isParent"){
                             rightAdminDataHTML += `
                             <div class="subButton" id = "aerialDataShare" rel = "main-shareAerial" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
@@ -2561,13 +2861,17 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                 <span class="parentTagName">Category Types</span>
                             </div>
                             `
-                            rightAdminConfigHTML += `
-                            <div class="subButton" id = "fm_omni_class" rel = "main-project-dashboard" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
-                                <span class="parentTagName">Omni Class</span>
-                            </div>`
                         }
                     }
                 }
+            }
+            let signed_in_email = localStorage.signed_in_email ? localStorage.signed_in_email : ''
+            if( signed_in_email == "pbh.sabah@gmail.com" ){ 
+                rightAdminProjDetHTML += `
+                <div class="subButton" id = "cons_datalist_exportPP" rel = "main-project-dashboard" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                    <span class="parentTagName">Export Project Progress</span>
+                </div>
+            ` 
             }
         }
         else if (idxApp == "Construct_Apps_Rights") {
@@ -2625,6 +2929,8 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
     $("#lookupSideMenu").html(rightPfsLUHTML) //contract amendment right click
     $("#budgetSideMenu").html(rightPfsBudgetHTML) //budget right click
     $("#claimPeriodicSideMenu").html(rightPfsPerClaimHTML) //budget right click
+    $("#eotSabahSideMenu").html(rightPfsEOTHTML) //budget right click
+    $("#claimInventorySideMenu").html(rightPfsPerInventoryClaimHTML) //budget right click
 
     //FOR PROJECT ADMIN
     $("#editProjectSideMenu").html(rightAdminProjDetHTML) //edit the project information right click
@@ -2687,29 +2993,28 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
         $('.claims .mainButton span').html('Claims');
     }
 
+    if(localStorage.project_owner == "JKR_SABAH" && localStorage.project_phase == '1B'){ 
+        $('.myFinance.eotSabah').show();
+    }else{
+        $('.myFinance.eotSabah').hide();
+    }
+
     //joget default iframe and toggle name
     $('.jogetList.bumiList').css('display', 'none');
     $('.jogetList.conopList').css('display', 'none');
     $('.jogetList.maintenanceBrowser').css('display', 'none');
     $('.jogetList.inventoryList').css('display', 'none');
     $('.jogetList.assetList').css('display', 'none');
-    $('#RIContainer').css('width', '40%');
     $('#changeNameMaintenance').removeClass('active');
     $('#toggleMaintain').removeClass('fa-toggle-off');
     $('#toggleMaintain').addClass('fa-toggle-on');
     $('#changeNameConop').removeClass('active');
+    $('#changeNameInventory').removeClass('active');
     $('#toggleConop').removeClass('fa-toggle-off');
     $('#toggleConop').addClass('fa-toggle-on');
     $('.jogetList.bulkApprovalList').css('display', 'none');
     $('.jogetList.bulkApprovalList').css('display', 'none');
     $('#detactedWidget').removeClass('show');
-
-    if(localStorage.Project_type == "FM"){
-        $('#assetListInventory').trigger('click');
-        $('#spaceAssetTab').trigger('click');
-        $('.navBox.layer').css('display', 'flex');
-        $('.navBox.myTasks').css('display', 'flex');
-    }
 
     if(bulkApprovalTabList == ''){
         $('.toolbutton.bulkApproval').css('display', 'none');
@@ -2833,92 +3138,96 @@ function setAccessRightButtonSSLR2(rightMenu, accessProcess, accessSetup, access
                                             <option value="default">Please Choose</option>
                                             <option value="report">Report</option>
                                         `
-    
-    arrConstruct = {
-        "app_DCR" : {
-            data : "DCR",
-            title : "DCR",
-            name :"Design Change Request"
-        },
-        "app_IR" : {
-            data : "IR",
-            title : "INC",
-            name :"Incident"
-        },
-        "app_LR" : {
-            data : "LR",
-            title : "LA",
-            name :"Land Acquisition"
-        },
-        "app_LI" : {
-            data : "LI",
-            title : "LI",
-            name :"Land Issue"
-        },
-        "app_LE" : {
-            data : "LE",
-            title : "LE",
-            name :"Land Encumbrances"
-        },
-        "app_MOS" : {
-            data : "MOS",
-            title : "MS",
-            name :"Method Statement"
-        },
-        "app_MS" : {
-            data : "MS",
-            title : "MA",
-            name :"Material Approval"
-        },
-        "app_NCR" : {
-            data : "NCR",
-            title : "NCR",
-            name :"Non Conformance Report"
-        },
-        "app_NOI" : {
-            data : "NOI",
-            title : "NOI",
-            name :"Notice Of Improvement"
-        },
-        "app_PBC" : {
-            data : "PBC",
-            title : "PBC",
-            name :"Public Complaint"
-        },
-        "app_RS" : {
-            data : "RS",
-            title : "RS",
-            name :"Report Submission"
-        },
-        "app_RFI" : {
-            data : "RFI",
-            title : "RFI",
-            name :"Request For Information"
-        },
-        "app_SA" : {
-            data : "SA",
-            title : "SA",
-            name :"Safety Activity"
-        },
-        "app_SDL" : {
-            data : "SDL",
-            title : "SDL",
-            name :"Site Diary Log"
-        },
-        "app_SMH" : {
-            data : "SMH",
-            title : "SMH",
-            name :"Total Man-Hours"
-        },
-        "app_WIR" : {
-            data : "WIR",
-            title : "WIR",
-            name :"Work Inspection Request"
-        },
-        "app_PSU" : {
-            data : "PSU",
-            title : "PSU",
-            name :"Progress Summary Upload"
+    if(IS_DOWNSTREAM){
+        arrConstruct = {
+            "app_IR" : {
+                data : "IR",
+                title : "INC",
+                name :"Incident"
+            },
+            "app_LR" : {
+                data : "LR",
+                title : "LA",
+                name :"Land Acquisition"
+            },
+            "app_LI" : {
+                data : "LI",
+                title : "LI",
+                name :"Land Issue"
+            },
+            "app_LE" : {
+                data : "LE",
+                title : "LE",
+                name :"Land Encumbrances"
+            },
+            "app_MOS" : {
+                data : "MOS",
+                title : "MS",
+                name :"Method Statement"
+            },
+            "app_MS" : {
+                data : "MS",
+                title : "MA",
+                name :"Material Approval"
+            },
+            "app_PBC" : {
+                data : "PBC",
+                title : "PBC",
+                name :"Public Complaint"
+            },
+            "app_RS" : {
+                data : "RS",
+                title : "RS",
+                name :"Report Submission"
+            },
+            "app_RFI" : {
+                data : "RFI",
+                title : "RFI",
+                name :"Request For Information"
+            },
+            "app_SA" : {
+                data : "SA",
+                title : "SA",
+                name :"Safety Activity"
+            },
+            "app_SDL" : {
+                data : "SDL",
+                title : "SDL",
+                name :"Site Diary Log"
+            },
+            "app_SMH" : {
+                data : "SMH",
+                title : "SMH",
+                name :"Total Man-Hours"
+            },
+            "app_WIR" : {
+                data : "WIR",
+                title : "WIR",
+                name :"Work Inspection Request"
+            },
+            "app_PSU" : {
+                data : "PSU",
+                title : "PSU",
+                name :"Progress Summary Upload"
+            }
+        }
+    }else{
+        arrConstruct = {
+            "app_NCR" : {
+                data : "NCR",
+                title : "NCR",
+                name :"Non Conformance Report"
+            },
+            "app_NOI" : {
+                data : "NOI",
+                title : "NOI",
+                name :"Notice Of Improvement"
+            },
+            "app_PSU" : {
+                data : "PSU",
+                title : "PSU",
+                name :"Progress Summary Upload"
+            }
         }
     }
 
@@ -3513,37 +3822,95 @@ function setAccessRightButtonSSLR2(rightMenu, accessProcess, accessSetup, access
             for (const [idx3, ele3] of Object.entries(accessProcess)) {
                 if((ele3 != false) && (idx == "app_" + idx3)){
                     for (const [idxUse, eleUse] of Object.entries(ele3.ORG)) {
-                        if(idxUse == 'allOrg'){
-                            rightConopChoice +=
-                            `
-                                <option value="`+ele.data+`">`+ele.name+`</option>
-                            `
-                            if(idx == "app_RR"){
-                                rightConopChoice +=
+                        if(IS_DOWNSTREAM){
+                            if(idxUse == 'allOrg' && localStorage.user_org != 'MAUJV'){
+                                if(idx == "app_LI"){
+                                    rightConopChoice +=
                                     `
-                                        <option value="RRU">Risk Upload</option>
+                                        <option value="`+ele.data+`">Land Issue & Encumbrances</option>
                                     `
-                            }
-                        }
-                        else if(idxUse == currentOrg){
-                            if(idx == "app_LI" && idxUse == "MAUJV"){
-                                rightConopChoice +=
-                                `
-                                    <option value="`+ele.data+`">Land Issue & Encumbrances</option>
-                                `
-                            }else{
-                                rightConopChoice +=
+                                }else{
+                                    rightConopChoice +=
                                 `
                                     <option value="`+ele.data+`">`+ele.name+`</option>
                                 `
+                                }    
+                                if(idx == "app_RR"){
+                                    rightConopChoice +=
+                                        `
+                                            <option value="RRU">Risk Upload</option>
+                                        `
+                                }
                             }
-
-
-                            if(idx == "app_RR" && idxUse == "MAUJV"){
-                                rightConopChoice +=
+                            else if(idxUse == currentOrg){
+                                if(idx == "app_LI" && idxUse == "MAUJV"){
+                                    rightConopChoice +=
                                     `
-                                        <option value="RRU">Risk Upload</option>
+                                        <option value="`+ele.data+`">Land Issue & Encumbrances</option>
                                     `
+                                }else{
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+    
+    
+                                if(idx == "app_RR" && idxUse == "MAUJV"){
+                                    rightConopChoice +=
+                                        `
+                                            <option value="RRU">Risk Upload</option>
+                                        `
+                                }
+                            }
+                        }else{
+                            if(idxUse == 'allOrg'){
+                                if(IS_DOWNSTREAM){
+                                    if(idx == "app_LI"){
+                                        rightConopChoice +=
+                                        `
+                                            <option value="`+ele.data+`">Land Issue & Encumbrances</option>
+                                        `
+                                    }else{
+                                        rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                    }
+                                }else{
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+    
+                                if(idx == "app_RR"){
+                                    rightConopChoice +=
+                                        `
+                                            <option value="RRU">Risk Upload</option>
+                                        `
+                                }
+                            }
+                            else if(idxUse == currentOrg){
+                                if(idx == "app_LI" && idxUse == "MAUJV"){
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">Land Issue & Encumbrances</option>
+                                    `
+                                }else{
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+    
+    
+                                if(idx == "app_RR" && idxUse == "MAUJV"){
+                                    rightConopChoice +=
+                                        `
+                                            <option value="RRU">Risk Upload</option>
+                                        `
+                                }
                             }
                         }
                     }
@@ -3570,21 +3937,6 @@ function setAccessRightButtonSSLR2(rightMenu, accessProcess, accessSetup, access
                 if((idx == 'workDiscipline_SSLR2') && (ele == true)){
                     rightSetupChoice += `
                         <option value="`+idx+`">Work Discipline</option>
-                    `
-                }
-                else if((idx == 'riskCategory') && (ele == true)){
-                    rightSetupChoice += `
-                        <option value="`+idx+`">Risk Category</option>
-                    `
-                }
-                else if((idx == 'riskSubCategory') && (ele == true)){
-                    rightSetupChoice += `
-                        <option value="`+idx+`">Risk Sub-Category</option>
-                    `
-                }
-                else if((idx == 'riskDescription') && (ele == true)){
-                    rightSetupChoice += `
-                        <option value="`+idx+`">Risk Description</option>
                     `
                 }
                 else if((idx == 'machinery') && (ele == true)){
@@ -4088,10 +4440,11 @@ function setAccessRightButtonSSLR2(rightMenu, accessProcess, accessSetup, access
                     rightAdminDataHTML += `
                         <div class="subButton" id = "otherData" rel = "main-layerdata" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                             <span class="parentTagName">GIS, BIM & Reality Model</span>
-                        </div>
+                        </div> 
                         <div class="subButton" id = "aerialData" rel = "main-aerial" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                             <span class="parentTagName">Aerial Image</span>
-                        </div> `
+                        </div> ` 
+                        
                         if(localStorage.isParent !== "isParent"){
                             rightAdminDataHTML += `
                             <div class="subButton" id = "aerialDataShare" rel = "main-shareAerial" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
@@ -4246,6 +4599,7 @@ function setAccessRightButtonSSLR2(rightMenu, accessProcess, accessSetup, access
     $('#toggleMaintain').removeClass('fa-toggle-off');
     $('#toggleMaintain').addClass('fa-toggle-on');
     $('#changeNameConop').removeClass('active');
+    $('#changeNameInventory').removeClass('active');
     $('#toggleConop').removeClass('fa-toggle-off');
     $('#toggleConop').addClass('fa-toggle-on');
     $('.jogetList.bulkApprovalList').css('display', 'none');
@@ -4735,17 +5089,9 @@ function setAccessRightButtonOBYU(rightMenu, accessProcess, accessSetup, accessM
                     rightSetupChoice += `
                         <option value="`+idx+`">WPC</option>
                     `
-                }else if((idx == 'WTG') && (ele == true)){
-                    rightSetupChoice += `
-                        <option value="`+idx+`">WTG (LM)</option>
-                    `
                 }else if((idx == 'packageSection') && (ele == true)){
                     rightSetupChoice += `
                         <option value="`+idx+`">Package & Section (LTD)</option>
-                    `
-                }else if((idx == 'CTD') && (ele == true)){
-                    rightSetupChoice += `
-                        <option value="`+idx+`">CTD (LM)</option>
                     `
                 }
             }
@@ -4914,6 +5260,11 @@ function setAccessRightButtonOBYU(rightMenu, accessProcess, accessSetup, accessM
                     
                 }
                 else if(idxSubProcess == "Correspondence"){
+                    const projectIds = ["NCH", "B_NCH"];
+                    const financeRoles = ["Finance Officer", "Finance Head"];
+
+                    const isNCHFinance = projectIds.includes(localStorage.parent_project_id) && financeRoles.includes(localStorage.usr_role);
+
                     for (const [idxAccess, eleAccess] of Object.entries(eleSubProcess)) {
 
                         if(!proj_id_name.includes(localStorage.p_id_name)){
@@ -4937,18 +5288,31 @@ function setAccessRightButtonOBYU(rightMenu, accessProcess, accessSetup, accessM
                                                 <div class="subButton" id = "document_corr_list_outgoing" onclick = "linkJoget(this, \'myDocument\')">
                                                     <span class="parentTagName">Outgoing</span>
                                                 </div>`
-                            }else if((idxAccess == "confidential") && (eleAccess == true)){
+                            }else if(((idxAccess == "confidential") && (eleAccess == true)) || isNCHFinance){
                                 if(localStorage.project_owner == "MRSB"){
                                     rightCorrHTML += `
-                                                    <div class="subButton" id = "document_corr_list_incoming_conf" onclick = "linkJoget(this, \'myDocument\')">
-                                                        <span class="parentTagName">Incoming Confidential</span>
-                                                    </div>                
-                                                    <div class="subButton" id = "document_corr_list_outgoing_conf" onclick = "linkJoget(this, \'myDocument\')">
-                                                        <span class="parentTagName">Outgoing Confidential</span>
-                                                    </div>`
+                                                <div class="subButton" id = "document_corr_list_incoming_conf" onclick = "linkJoget(this, \'myDocument\')">
+                                                    <span class="parentTagName">Incoming Confidential</span>
+                                                </div>                
+                                                <div class="subButton" id = "document_corr_list_outgoing_conf" onclick = "linkJoget(this, \'myDocument\')">
+                                                    <span class="parentTagName">Outgoing Confidential</span>
+                                                </div>`
+                                                    
                                 }
                             }
                         }
+                    }
+                    if(localStorage.project_owner == "MRSB"){
+                        rightCorrHTML += `
+                        <div class="subButton" id = "document_corr_list_dismiss_notif" onclick = "linkJoget(this, \'myDocument\')">
+                            <span class="parentTagName">Dismissed Notifications</span>
+                        </div>`
+                    }
+                    else if(localStorage.project_owner == "UTSB"){
+                        rightCorrHTML += `
+                    <div class="subButton" id = "document_corr_list_dismiss_notif_utsb" onclick = "linkJoget(this, \'myDocument\')">
+                        <span class="parentTagName">Dismissed Notifications</span>
+                    </div>`
                     }
                 }
                 else if(idxSubProcess == "Project Information"){
@@ -5172,6 +5536,29 @@ function setAccessRightButtonOBYU(rightMenu, accessProcess, accessSetup, accessM
                                     </div>`
                             }
                         }
+                    }else if(localStorage.project_owner == "KACC"){
+                        for (const [idxAccess, eleAccess] of Object.entries(eleSubProcess)) {
+                            if(localStorage.usr_role == "Planning Engineer"){
+                                if((idxAccess == "newEOT") && (eleAccess == true)){
+                                    rightPfsEOTHTML += `
+                                        <div class="subButton" id = "finance_list_NewEOT" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">New</span>
+                                        </div>` 
+                                }else if((idxAccess == "approvedEOT") && (eleAccess == true)){
+                                    rightPfsEOTHTML += `
+                                        <div class="subButton" id = "finance_list_ApprovedEOT" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">Approved EOTs</span>
+                                        </div>`
+                                }
+                            }else{
+                                if((idxAccess == "approvedEOT") && (eleAccess == true)){
+                                    rightPfsEOTHTML += `
+                                        <div class="subButton" id = "finance_list_ApprovedEOT" onclick = "linkJoget(this, \'myFinance\')">
+                                            <span class="parentTagName">Approved EOTs</span>
+                                        </div>`
+                                }
+                            }
+                        }
                     }
                 }
                 else if (idxSubProcess == "CA"){
@@ -5270,11 +5657,14 @@ function setAccessRightButtonOBYU(rightMenu, accessProcess, accessSetup, accessM
                     rightAdminDataHTML += `
                         <div class="subButton" id = "otherData" rel = "main-layerdata" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                             <span class="parentTagName">GIS, BIM & Reality Model</span>
-                        </div>
-                        <div class="subButton" id = "aerialData" rel = "main-aerial" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
-                            <span class="parentTagName">Aerial Image</span>
-                        </div>
-                    `
+                        </div>`
+                    if(SYSTEM != 'OBYU'){
+                        rightAdminDataHTML += `
+                            <div class="subButton" id = "aerialData" rel = "main-aerial" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                                <span class="parentTagName">Aerial Image</span>
+                            </div>
+                        `
+                    }
                 }
                 else if ((idxSubProcess == "Schedule") && eleSubProcess == true){
                     rightAdminScheduleHTML += `
@@ -5535,10 +5925,13 @@ function dashboardSetupLink(){
     };
 
     let procurement_dash = "";
+    let quality_dash = "";
     if(localStorage.contractLevel == "UPSTREAM"){
         procurement_dash = "../Dashboard/v3/procurement_SSLR2.php"
+        quality_dash = "../Dashboard/v3/Quality_SSLR2.php"
     }else if(localStorage.contractLevel == "DOWNSTREAM"){
         procurement_dash = "../Dashboard/v3/procurement_SSLR2_DS.php"
+        quality_dash = "../Dashboard/v3/Quality_SSLR2_DS.php"
     }
 
     let dashbSSLR2 = {
@@ -5564,7 +5957,16 @@ function dashboardSetupLink(){
             "Land" : "../Dashboard/v3/Land_SSLR2.php"
         },
         "qualityDash" : {
-            "Quality" : "../Dashboard/v3/Quality_SSLR2.php"
+            "Quality" : quality_dash
+        }
+    };
+
+    let dashbSSLR2_upstream = {
+        "contractDash" : {
+            "Contract" : procurement_dash
+        },
+        "docDash" : {
+            "Document" : "../Dashboard/v3/Document_SSLR2.php"
         }
     };
 
@@ -5612,7 +6014,11 @@ function dashboardSetupLink(){
         if(localStorage.Project_type == 'ASSET'){
             dashboard = dashbAssetSarawak;
         }else{
-            dashboard = dashbSSLR2;
+            if(IS_DOWNSTREAM){
+                dashboard = dashbSSLR2;
+            }else{
+                dashboard = dashbSSLR2_upstream;
+            }
         }
         
     }
@@ -5717,9 +6123,6 @@ function setAccessForInsight(){
         $(".toolButton.paveReport").css("display", "flex")   
                 
         $('button.toolButton[title="Asset List"]').css("display", "none");
-
-        $(".toolButton#uploadAssetData").css("display", "none");
-        $(".toolButton#uploadTool").html('<i class="fa-solid fa-upload"></i><div class="label">Upload</div>');
     }
 
     //FOR OBYU
@@ -5767,6 +6170,7 @@ function setAccessForInsight(){
 }
 
 function linkDashboard(ele, link, frameId, dashName){
+
     flagChangeDashboard = true;
 
     $('#dashboardSideMenu .subButton').removeClass("active")
@@ -5797,6 +6201,7 @@ function linkDashboard(ele, link, frameId, dashName){
     $('.assetChainToFilter.'+frameId).prop('selectedIndex',0);
     $('.assetApjFilter.'+frameId).prop('selectedIndex',0);
     $('.assetTypeFilter.'+frameId).prop('selectedIndex',0);
+    $('.subActivityFilter.'+frameId).prop('selectedIndex',0);
     $('.assetRoutineActivityFilter.'+frameId).prop('selectedIndex',0);
     $('.assetGroupFilter.'+frameId).prop('selectedIndex',0);
 
@@ -5825,6 +6230,7 @@ function linkDashboard(ele, link, frameId, dashName){
     $('.assetChainToFilter.'+frameId).css("display", "none");
     $('.assetApjFilter.'+frameId).css("display", "none");
     $('.assetTypeFilter.'+frameId).css("display", "none");
+    $('.subActivityFilter.'+frameId).css("display", "none");
     $('.assetRoutineActivityFilter.'+frameId).css("display", "none");
     $('.assetGroupFilter.'+frameId).css("display", "none");
     
@@ -5860,6 +6266,7 @@ function linkDashboard(ele, link, frameId, dashName){
                     $(".yrFilter.myDashboard").css("display", "inline-block")
                     $(".mthFilter.myDashboard").css("display", "inline-block")
                     $(".assetRoutineActivityFilter.myDashboard").css("display", "inline-block")
+                    $(".subActivityFilter.myDashboard").css("display", "inline-block")
                     $(".assetTypeFilter.myDashboard").css("display", "inline-block")
                 break;
                 case 'Periodic Maintenance':
@@ -6090,6 +6497,7 @@ function linkDashboard(ele, link, frameId, dashName){
                     $(".yrFilter.myDashboard").css("display", "inline-block")
                     $(".mthFilter.myDashboard").css("display", "inline-block")
                     $(".assetRoutineActivityFilter.myDashboard").css("display", "inline-block")
+                    $(".subActivityFilter.myDashboard").css("display", "inline-block")
                     $(".assetTypeFilter.myDashboard").css("display", "inline-block")
                 break;
                 case 'Periodic Maintenance':
@@ -6103,16 +6511,21 @@ function linkDashboard(ele, link, frameId, dashName){
                 break;
             }
         }else{
+
+            if(localStorage.contractLevel == "DOWNSTREAM"){
+                $(".sectFilter.myDashboard").css("display", "none !important")
+            } else {
+                $(".sectFilter.myDashboard").css("display", "inline-block")
+            }
+
             switch (dashName) {
                 case 'Bumiputera':
                     $(".categoryFilter.myDashboard").css("display", "inline-block")
                 break;
                 case 'Contract':
-                    $(".sectFilter.myDashboard").css("display", "none")
                     $(".yrFilter.myDashboard").css("display", "inline-block")
                 break;
                 case 'Document':
-                    $(".sectFilter.myDashboard").css("display", "inline-block")
                     $(".yrFilter.myDashboard").css("display", "inline-block")
                     $(".mthFilter.myDashboard").css("display", "inline-block")
                 break;
@@ -6124,7 +6537,6 @@ function linkDashboard(ele, link, frameId, dashName){
                     $(".typeGenMgmt.myDashboard").css("display", "none")
                 break;
                 case 'HSET':
-                    $(".sectFilter.myDashboard").css("display", "inline-block")
                     $(".yrFilter.myDashboard").css("display", "inline-block")
                     $(".mthFilter.myDashboard").css("display", "inline-block")
                 break;
@@ -6132,10 +6544,8 @@ function linkDashboard(ele, link, frameId, dashName){
                     $(".yrFilter.myDashboard").css("display", "inline-block")
                     $(".mthFilter.myDashboard").css("display", "inline-block")
                     $(".issueStatus.myDashboard").css("display", "inline-block")
-                    $(".sectFilter.myDashboard").css("display", "inline-block")
                 break;
                 case 'Quality':
-                    $(".sectFilter.myDashboard").css("display", "inline-block")
                     $(".yrFilter.myDashboard").css("display", "inline-block")
                     $(".mthFilter.myDashboard").css("display", "inline-block")
                 break;
@@ -6150,6 +6560,15 @@ function linkDashboard(ele, link, frameId, dashName){
     iframe = $("iframe#"+frameId);
     $(ele).addClass("active");
     $('.myDashboard > .contentContainer > .head > h2').html(`${dashName} - ${localStorage.p_name}`);
+        
+    const active = $("#dashboardSideMenu").children(".active").text().trim();
+    const $option = $("select.packFilter.myDashboard option[value='PMO-NCH']");
+
+    if (active === "Cost Management" && localStorage.project_owner === "MRSB") {
+        $option.hide();
+    } else {
+        $option.show();
+    }
 
     var loading = $('.loader');
     loading.fadeIn();
@@ -6158,9 +6577,7 @@ function linkDashboard(ele, link, frameId, dashName){
     iframe.attr("src", "");
     iframe.attr("src", link);
     iframe.on("load", function () {
-        if(SYSTEM != 'OBYU'){
-            loading.fadeOut();
-        }
+        
         iframe.show();
     });
 }
@@ -6275,7 +6692,11 @@ function linkJoget(ele, frameId, checkAnotherSetup = false){
 
         if(localStorage.project_owner == "MRSB"){
             corrBulkUploadTemplatePathMRSB = '../Templates/MRSB';
-            myhtml += "<a href='" + corrBulkUploadTemplatePathMRSB+ "/MRSB -Bulk Correspondence Register Template.xlsx' download> MRSB -Bulk Correspondence Register Template.xlsx</a><br>";
+            if(localStorage.parent_project_id == "NCH"){
+                myhtml += "<a href='" + corrBulkUploadTemplatePathMRSB+ "/MRSB -Bulk Correspondence Register Template - NCH.xlsx' download> MRSB -Bulk Correspondence Register Template.xlsx</a><br>";
+            }else{
+                myhtml += "<a href='" + corrBulkUploadTemplatePathMRSB+ "/MRSB -Bulk Correspondence Register Template.xlsx' download> MRSB -Bulk Correspondence Register Template.xlsx</a><br>";
+            }
         }else if(localStorage.project_owner == "KACC"){
             corrBulkUploadTemplatePathKACC = '../Templates/KACC';
             myhtml += "<a href='" + corrBulkUploadTemplatePathKACC+ "/KACC - Bulk Correspondence Register Template (Incoming).xlsx' download> KACC - Bulk Correspondence Register Template (Incoming).xlsx</a><br>";
@@ -6295,6 +6716,19 @@ function linkJoget(ele, frameId, checkAnotherSetup = false){
 
         if(localStorage.project_owner == "SSLR2"){
             myhtml += "<a href='../Templates/pfs_CONTRACT_config_sslr.xlsx' download> pfs_CONTRACT_config_sslr.xlsx</a><br>";
+        }
+    
+        $(".templateContainer").html(myhtml);
+        $(".templateContainer").css("display", "block");
+
+    }
+    else if(linkSet !== "" && linkSet == "finance_list_BulkUploadContracts"){
+
+        
+        let myhtml = "";
+
+        if(localStorage.project_owner == "JKR_SABAH"){
+            myhtml += "<a href='../Templates/pfs_CONTRACT_config_sabah.xlsx' download> pfs_CONTRACT_config_sabah.xlsx</a><br>";
         }
     
         $(".templateContainer").html(myhtml);
@@ -6592,6 +7026,8 @@ function linkJoget(ele, frameId, checkAnotherSetup = false){
                         iframe.on("load", function () {
                             loading.fadeOut();
                             iframe.show();
+                            $(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+                            localStorage.themeJoget = themeJoget
                         });
     
                     }
@@ -6616,16 +7052,21 @@ function linkJoget(ele, frameId, checkAnotherSetup = false){
             iframe.on("load", function () {
                 loading.fadeOut();
                 iframe.show();
+                $(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+                localStorage.themeJoget = themeJoget
             });
         }
     }
     else{
         iframe.hide();
         iframe.attr("src", "");
+        iframe.show(); 
         iframe.attr("src", url);
         iframe.on("load", function () {
             loading.fadeOut();
             iframe.show();
+            $(iframe)[0].contentWindow.postMessage(themeJoget + '|' + localStorage.inspectFlag, '*');
+            localStorage.themeJoget = themeJoget
         });
     }
 }
@@ -6780,7 +7221,7 @@ function loadProjectListatAppsBar(){
 function setFilterDashboard(){
     var wpcType = '';
     if(localStorage.Project_type == "ASSET"){
-        if(localStorage.Project_type == "ASSET" && localStorage.Project_type == "JKR_SARAWAK"){
+        if(localStorage.Project_type == "ASSET" && localStorage.project_owner == "JKR_SARAWAK"){
             wpcType = 'Division';
         }else{
             wpcType = 'District';
@@ -6793,6 +7234,45 @@ function setFilterDashboard(){
     var packHTML = '<option value="overall">Select '+wpcType+'</option>';
     var secHTML = '<option value="overall">Select Section</option>';
     var yearHTML = '<option value="all">Select Year</option>';
+    var catgHTML = '<option value="all">Select Category</option>';
+
+    if(localStorage.project_owner == "JKR_SABAH"){
+        catgHTML += `<option value="Domestic">Domestic</option>
+                    <option value="Nominated">Nominated</option>`;
+    }else if(localStorage.project_owner == "SSLR2"){
+        catgHTML += `<option value="Domestic">Domestic</option>`;
+    }else{
+        catgHTML += `<option value="Designated">Designated</option>
+                    <option value="Domestic">Domestic</option>
+                    <option value="Nominated">Nominated</option>`;
+    }
+
+    $('.categoryFilter').html(catgHTML);
+
+    // asset activity routine filter
+    var htmlOpt = '<option value="default">Select Routine Activity</option>';
+
+    if(localStorage.project_owner == 'JKR_SARAWAK'){
+        htmlOpt += '<option value="R01 : PAVEMENT">R01 : PAVEMENT</option>';
+        htmlOpt += '<option value="R02 : ROAD SHOULDER">R02 : ROAD SHOULDER</option>';
+        htmlOpt += '<option value="R03 : VEGETATION CONTROL & LITTER COLLECTION">R03 : VEGETATION CONTROL & LITTER COLLECTION</option>';
+        htmlOpt += '<option value="R04 : MAINTENANCE OF ROAD FURNITURES">R04 : MAINTENANCE OF ROAD FURNITURES</option>';
+        htmlOpt += '<option value="R05 : MAINTENANCE OF BRIDGES/CULVERT">R05 : MAINTENANCE OF BRIDGES/CULVERT</option>';
+        htmlOpt += '<option value="R06: PAINTING OF ROAD MARKING">R06: PAINTING OF ROAD MARKING</option>';
+        htmlOpt += '<option value="R07 : CLEANING OF DRAINS">R07 : CLEANING OF DRAINS</option>';
+        htmlOpt += '<option value="B : ROUTINE INSPECTION">B : ROUTINE INSPECTION</option>';
+    }else{
+        htmlOpt += '<option value="R01 : PAVEMENT">R01 : PAVEMENT</option>';
+        htmlOpt += '<option value="R02 : ROAD SHOULDER">R02 : ROAD SHOULDER</option>';
+        htmlOpt += '<option value="R03 : GRASS CUTTING">R03 : GRASS CUTTING</option>';
+        htmlOpt += '<option value="R04 : MAINTENANCE OF ROAD FURNITURES">R04 : MAINTENANCE OF ROAD FURNITURES</option>';
+        htmlOpt += '<option value="R05 : MAINTENANCE OF BRIDGES/CULVERT">R05 : MAINTENANCE OF BRIDGES/CULVERT</option>';
+        htmlOpt += '<option value="R06: PAINTING OF ROAD MARKING">R06: PAINTING OF ROAD MARKING</option>';
+        htmlOpt += '<option value="R07 : CLEANING OF DRAINS">R07 : CLEANING OF DRAINS</option>';
+        htmlOpt += '<option value="B : ROUTINE INSPECTION">B : ROUTINE INSPECTION</option>';
+    }
+
+    $('.assetRoutineActivityFilter').html(htmlOpt);
 
     //For Package, Section & Year Filter
     $.ajax({
@@ -6807,15 +7287,46 @@ function setFilterDashboard(){
         },
         success: function (obj, textstatus) {
             if(localStorage.isParent == 'isParent'){
+                var package_uuid_list = []
                 for (const [idx, ele] of Object.entries(obj)) {
                     if(idx == 'wpcPackageFilter'){
                         for (const [idx2, ele2] of Object.entries(ele)) {
                             if(idx2 == 'overall') continue
 
                             if(SYSTEM == 'OBYU'){
-                                packHTML += '<option data-packageuuid = "' + idx2 + '" value="' + idx2 + '">' + ele2 + '</option>';
+                                if(localStorage.p_id_name === "NCH" && localStorage.project_owner ==="MRSB"){
+                                    
+                                    const optionsArray = Object.entries(ele)
+                                        .filter(([key]) => key !== 'overall');
+
+                                    // Custom Sorting logic for NCH project: PMO first, then LIM, then LAW, each by number
+                                    optionsArray.sort(([aKey], [bKey]) => {
+                                        if (aKey.startsWith("PMO")) return -1;
+                                        if (bKey.startsWith("PMO")) return 1;
+
+                                        const order = ["LIM", "LAW"];
+                                        const typeA = order.findIndex(t => aKey.includes(t));
+                                        const typeB = order.findIndex(t => bKey.includes(t));
+
+                                        if (typeA !== typeB) return typeA - typeB;
+
+                                        const numA = parseInt(aKey.match(/\d+/)) || 0;
+                                        const numB = parseInt(bKey.match(/\d+/)) || 0;
+                                        return numA - numB;
+                                    });
+
+                                    for (const [key, text] of optionsArray) {
+                                        packHTML += `<option data-packageuuid="${key}" value="${key}">${text}</option>`;
+                                    }
+
+                                    break;
+                                }
+                                else {
+                                    packHTML += '<option data-packageuuid = "' + idx2 + '" value="' + idx2 + '">' + ele2 + '</option>';
+                                }
                             }else{
                                 for (const [idx3, ele3] of Object.entries(ele2)) {
+                                    package_uuid_list.push(idx3)
                                     packHTML += '<option data-packageuuid = "' + idx3 + '" value="' + idx2 + '">' + ele3 + '</option>';
                                 }
                             }
@@ -6844,6 +7355,17 @@ function setFilterDashboard(){
                         }
                     }
                 }
+                
+                if (localStorage.project_owner && localStorage.project_owner == 'JKR_SABAH'){
+                    if (Array.isArray(package_uuid_list) && package_uuid_list.length > 0) { 
+                        var inPackageUuid = package_uuid_list.join('","'); 
+                        localStorage.setItem('inPackageUuid', inPackageUuid);
+                        localStorage.inPackageUuid = inPackageUuid;
+                    } else { 
+                        localStorage.inPackageUuid = '';
+                    }
+                }
+
 
                 $('.packFilter').html(packHTML);
                 $('.sectFilter').html(secHTML);
@@ -6873,7 +7395,6 @@ function setFilterDashboard(){
                 $('.sectFilter').html(secHTML);
                 $('.yrFilter').html(yearHTML);
             }
-            loading.fadeOut();
         },
         error: function (xhr, textStatus, errorThrown) {
             var str = textStatus + " " + errorThrown;
@@ -6955,10 +7476,13 @@ function openAppProject(e){
                     localStorage.last_update = obj.last_update;
                     localStorage.start_date = obj.start_date;
                     localStorage.end_date = obj.end_date;
+                    localStorage.adminUsersList = obj['Admin Users'] ? obj['Admin Users'] : ''; 
+                    renderAdminList();
                     if (SYSTEM == 'KKR' &&  obj.warranty_end_date !== undefined) {
                         localStorage.warranty_end_date = obj.warranty_end_date;
                     }
                     localStorage.projectDuration = obj.projectDuration;
+                    localStorage.project_phase = obj.project_phase;
                    
                     JOGETLINK = obj.jogetAppLink;
                     
@@ -6989,8 +7513,10 @@ function openAppProject(e){
                         localStorage.end_date = obj.end_date;
                     }
                     localStorage.projectlist = JSON.stringify(obj.project_list)
+                    localStorage.inPackageUuid = obj.inPackageUuid ? obj.inPackageUuid : '';
                     localStorage.page_apps_right = JSON.stringify(obj.apps_right);
                     localStorage.page_pageOpen = pageOpen;
+                    saveLastAccess()
                     localStorage.page_apps_access = JSON.stringify(obj.apps_access);
 
                     if(pageOpen == 'myFinance'){
@@ -7012,7 +7538,28 @@ function openAppProject(e){
     }
 }
 
-function favProject(e){
+function renderAdminList(){
+    let adminUsersList = localStorage.adminUsersList ? localStorage.adminUsersList : '';
+
+    if (adminUsersList && adminUsersList.trim() !== '') {
+        const pmEmails = adminUsersList.split(',');
+        let htmlContent = '';
+
+        pmEmails.forEach(function(email) {
+            email = email.trim();
+            htmlContent += '<div class="notiLabel"><a href="mailto:'+email+'" class="notiText">'+email+'</a></div>';
+        });
+
+        $('#adminUsersList').html(htmlContent);
+    }
+
+}
+ 
+$( document ).ready(function() {
+    renderAdminList();
+});
+
+function favProject(event, e){
     event.stopPropagation()
     var $projectId = $(e).data("projectid")
     
@@ -7070,7 +7617,7 @@ function insightsVisibity(type){
         $('#thematicLayer').children().remove().end();
         $('#thematicLayer').show()
         $('#thematicLayer').prev().show()
-        $('#layergrouplist input[type=checkbox]').each(function() {
+        $('.group.layer input[type=checkbox]').each(function() {
             if ($(this).is(":checked")) {
                 var firstCheck = $(this).next(".fileicon")[0];
                 if(firstCheck){
@@ -7099,7 +7646,28 @@ function insightsVisibity(type){
             $(this).prop('checked', false)
         });
         // start and end year selection filter for asset defect and routine maintenance
-        var AssetstartDate =  new Date(localStorage.start_date);// set start date filter based on project start date
+        // date validation - checking invalid date - 1/12/2026
+        function dateValidation(dateStr) {
+           
+            const date = new Date(dateStr);
+            if (!isNaN(date.getTime())) {
+                return date.toISOString().split("T")[0];
+            }
+           
+            const match = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (match) {
+                const [, day, month, year] = match;
+                const parsed = new Date(year, month - 1, day);
+                if (!isNaN(parsed.getTime())) {
+                    return year+'-'+month.padStart(2, "0")+'-'+day.padStart(2, "0");
+                }
+            }
+           
+            return null; // invalid date
+        }
+        var rawDate = localStorage.start_date;
+        var converted = dateValidation(rawDate);
+        var AssetstartDate =  new Date(converted);// set start date filter based on project start date
         var AssetstartDateYear =  AssetstartDate.getFullYear();
         var curYear = new Date().getFullYear();// set end date filter based on current year
         var yearDiff = curYear - AssetstartDateYear;
@@ -7128,6 +7696,13 @@ function saveLastAccess(){
         url: '../Login/postlogin_processingv3.php',
         data: {
             functionName: 'setLastAccess',
+        },
+        beforeSend: function(jqXHR) {
+            ajaxRequests.push(jqXHR); 
+        },
+        complete: function(jqXHR) { 
+            //load swiper based on toggle view
+            ajaxRequests = ajaxRequests.filter(req => req !== jqXHR); 
         },
         success: function(projId){
             $(`.homeProjSearch[data-projectid="${projId}"] .columnSecond .fontSmall`).html('1 second ago')
@@ -7208,6 +7783,7 @@ function changeApps(ele){
                 resetTaskList()
             }
             if(pageOpen == 'myReporting'){
+                localStorage.page_pageOpen = pageOpen;
                 $(".mainAppButton.active").removeClass('active')
                 $(".mainAppButton.hs").removeClass('show')
 
@@ -7221,6 +7797,7 @@ function changeApps(ele){
 
                 //hide project details navbar
                 $('.navbarButton.project').css("display", "none")
+                DRonLoad()
             }
             if(pageOpen == 'mySysAdmin'){
                 flagCheckSysAdmin = true;
@@ -7259,7 +7836,10 @@ function changeApps(ele){
 
             $(".buttonContainer.show").removeClass('show')
             $(".buttonContainer." + pageOpen).addClass('show')
-
+            $('.myFinance.eotSabah').hide();
+            $('.myFinance.claimsPer').hide();
+            $('.myFinance.claimsInventory').hide();
+            
             $(".projectName").html("");
             $(".projectContainerNav").css('display', 'none');
             saveLastAccess();
@@ -7279,7 +7859,7 @@ function changeApps(ele){
                 $('#sideBarButtonLink').html(`
                   <button onclick="window.open(\'https://wsg.reveronconsulting.com/ReveronInsights/Documentation/Home.php\')"><span class="img"><img src="../Images/icons/third_button/open-book.png"></span><span class="atag"><a>Product Documentation</a></span></button>
                   <button id="appWebsite" value="Open Window" onclick="window.open(\'`+appWebLink+`\')" ><span class="img"><img class="riLogoNavbar" src=""></span><span class="atag"><a class="appProperties"></a></span></button>
-                  <button value="Open Window" onclick="window.open(\'https://reveronconsulting.com/login.html\')" ><span class="img"><img src="../Images/icons/appsbar/service_request.png"></span><span class="atag"><a>Support Request</a></span></button>
+                  <button value="Open Window" onclick="window.open(\'https://ri.digile.com/support/login.html\')" ><span class="img"><img src="../Images/icons/appsbar/service_request.png"></span><span class="atag"><a>Support Request</a></span></button>
                   <!--<button value="Open Window" onclick = "window.open(\'https://wsg.reveronconsulting.com/imodelJS\')" ><span class="img"><img src="../Images/icons/appsbar/imodel.jpg"></span><span class="atag"><a>iModel.js</a></span></button>
                   <button value="Open Window" onclick = PwShareButton(this) ><span class="img"><img src="../Images/icons/appsbar/imodel.jpg"></span><span class="atag"><a>ProjectWise Share</a></span></button>
                   <button value="Open Window"><span class="img"><img src="../Images/icons/appsbar/imodel.jpg"></span><span class="atag"><a>ProjectWise Issue Resolution</a></span></button>-->
@@ -7346,6 +7926,8 @@ function changeApps(ele){
                 $(".mainPage." + pageOpen).addClass('active')
                 
                 $('.myFinance.claimsPer').hide();
+                $('.myFinance.eotSabah').hide();
+                $('.myFinance.claimsInventory').hide();                
             }else if(pageOpen == 'myDashboard'){
                 $('.loader').fadeIn()
                 $('#dashboardSideMenu').children().removeClass("active")
@@ -7361,6 +7943,7 @@ function changeApps(ele){
                 }
             }
             localStorage.page_pageOpen = pageOpen;
+            saveLastAccess()
 
             loadProjectListatAppsBar();
 
@@ -7457,8 +8040,6 @@ function homeSearchTask (inpt){
                         <div class="columnSecond textContainer"><span class="lineHeight"></span></div>
                     </div>`;
 
-    $('.homeTaskSearch').hide();
-
     $('.myTask').find('.tableBody:visible').each(function(){
         var divEle = $(this);
         $.each(tableArr, function(){
@@ -7469,22 +8050,26 @@ function homeSearchTask (inpt){
         })
     })
 
-    $('.homeTaskSearch').each(function(){
-        var listText = $(this).text()
-        if (listText.toUpperCase().indexOf(filter) > -1) {
-            $(this).show();
-        }else{
-            $.each(existTableArr, function(){
-                var descInsideCount = $('.myTask .tableBody.'+this.valueOf()+' .noTaskDesc').length;
-                var visibleInsideCount = $('.myTask .tableBody.'+this.valueOf()+' .homeTaskSearch:visible').length;
+    $.each(existTableArr, function(){
+        var currTask = this.valueOf();
 
-                $('.myTask .tableBody.'+this.valueOf()+' .noTaskDesc').remove();
+        $('.myTask .tableBody.'+currTask+' .homeTaskSearch').hide();
+
+        $('.myTask .tableBody.'+currTask+' .homeTaskSearch').each(function(){
+            var listText = $(this).text()
+            if (listText.toUpperCase().indexOf(filter) > -1) {
+                $(this).show();
+                $('.myTask .tableBody.'+currTask+' .noTaskDesc').remove();
+            }else{
+                var visibleInsideCount = $('.myTask .tableBody.'+currTask+' .homeTaskSearch:visible').length;
+
+                $('.myTask .tableBody.'+currTask+' .noTaskDesc').remove();
 
                 if(visibleInsideCount == 0){
-                    $('.myTask .tableBody.'+this.valueOf()).append(descHTML);
+                    $('.myTask .tableBody.'+currTask).append(descHTML);
                 }
-            })
-        }
+            }
+        })
     })
 }
 
@@ -8395,6 +8980,14 @@ function onFunctionProjAdmin(ele, frameId){
         case 'construct_list_PPU':
             $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, false, parentTagNameText);
             break;
+        case 'cons_datalist_exportPP':
+            $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, false, parentTagNameText);
+            break;
+        case 'cons_issue_OPU':
+        case 'cons_datalist_OPU':
+            parentTagNameText = $(ele).data('title');
+            $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, false, parentTagNameText);
+            break;
         case 'fm_lookup_list_currency':
         case 'fm_lookup_list_division':
         case 'fm_lookup_list_purchasingOrg':
@@ -8404,10 +8997,6 @@ function onFunctionProjAdmin(ele, frameId){
             parentTagNameText = $(ele).find('.parentTagName').text();
             $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, false, parentTagNameText);
             break;
-        case 'fm_omni_class': 
-        parentTagNameText = $(ele).find('.parentTagName').text();
-        $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, false, parentTagNameText);
-        break;
         case 'construct_issue_PPU':
             $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, true, parentTagNameText);
             break;
@@ -8435,6 +9024,8 @@ function removeHistoryMeasure(){
     distEntities = [];
     distanceEntity = 0;
     distance = 0;
+    positionCounter = 0;
+    flagPosEntities = false;
 }
 
 function clearAllFlag(){
@@ -8476,6 +9067,7 @@ function clearAllFlag(){
     resetDrawMarkupTool();
     removeBillboardMarkupTool();
     removeLabelMarkupTool();
+    resetTrackAnimation();
 
     //to remove video pins
     for (var i = 0; i < videoPinsArray.length; i++) {
@@ -8515,6 +9107,41 @@ function resetpinpointtoolValue() {
     $('.inputcontainer .column1').find('input').prop("checked", false);
     $('.inputcontainer .column2').find('input').prop("checked", false);
     $('.inputcontainer .column3').find('input').prop("checked", false);
+}
+
+function resetTrackAnimation(){
+    arrayHeadings = [];
+    arrayOfPositions = null;
+    pointEntity = null;
+    lastCurrentTime = null;
+    polyEntity = null;
+    flagAnimate = false;
+
+    $('#trackDuration').val('');
+    $('#trackDate').val('');
+    $('#trackLevel').val('');
+
+    let j = 0;
+    var indicatorArr = viewer.entities.values
+    while (j < indicatorArr.length) {
+        var indName = indicatorArr[j].name
+        if(indName == 'indicator'){
+            viewer.entities.remove(indicatorArr[j])
+        }
+        j++;
+    }
+
+    if(trackData.length !== 0){
+        for(var i = 0; i < trackData.length; i++){
+            if(trackData[i].tileset){
+                trackData[i].tileset.then((value) => {
+                    value.show = false;
+                });
+            }
+        }
+    }
+
+    stopTrackAnimation();
 }
 
 function tabAICData(ele) {
@@ -8735,15 +9362,23 @@ function getLayerDetail(e) {
     var layerView = $(e).attr('data-view');
     var layerDate = $(e).attr('data-date');
     var layerOwner = $(e).attr('data-owner');
+    var layerAnimation = $(e).attr('data-animate');
 
     var labelButton = "";
+    var enableButton = "";
     
-    layerDetail = {id: layerID, name: layerName, view: layerView, ele: e };
+    layerDetail = {id: layerID, name: layerName, view: layerView, ele: e , animation: layerAnimation};
     
     if (layerView == "ON") {
         labelButton = "OFF";
     } else {
         labelButton = "ON";
+    }
+
+    if (layerAnimation == "Enable") {
+        enableButton = "Disable"
+    } else {
+        enableButton = "Enable"
     }
 
     layerDetailHTML += `<div class="header">
@@ -8757,8 +9392,9 @@ function getLayerDetail(e) {
                             <div>`+layerID+`</div><div>`+layerOwner+`</div><div>`+layerType+`</div><div id="layerDefaultView">`+layerView+`</div><div>`+layerDate+`</div>
                         </div>
                         <div class="col3">
-                            <div><label>Detatch from project</label><button onclick="detachFromProject()">Detach</button></div>
+                            <div><label>Detach from project</label><button onclick="detachFromProject()">Detach</button></div>
                             <div><label>Turn on by default</label><button onclick="switchDefDisplay()" id="switchDefaultDisplay">Turn `+labelButton+`</button></div>
+                            <div><label>Enable Animation</label><button onclick="switchAnimation()" id="enableFlyThrough">`+enableButton+`</button></div>
                             </div>
                         </div>`;
 
@@ -8898,6 +9534,64 @@ function onClickIoTNotiUpdate(){
             }
         }
     });
+}
+
+function switchAnimation() {
+
+    $.ajax({
+        type: "POST",
+        url: '../BackEnd/fetchDatav3.php',
+        dataType: 'json',
+        data: {
+            functionName: 'switchAnimation', data_id: layerDetail.id, animation: layerDetail.animation
+        },
+        success: function (obj, textstatus) {
+        
+            if (obj.bool === true) {
+
+                $("#manageLayerDetail").show(); // important!
+
+                let lyrlist_container = $("#trackList")
+                let lyrlist_item = $("#trackID_"+layerDetail.id)
+                var lyrlist_html = ""
+                
+                if (layerDetail.animation == "Enable") {
+                    $("#enableFlyThrough").html("Enable")
+                    layerDetail.animation = "Disable";
+                    lyrlist_item.remove();
+                } else {
+                    $("#enableFlyThrough").html("Disable")
+                    layerDetail.animation = "Enable";
+                    lyrlist_html += '<div class="item justifyBetween" id="trackID_'+layerDetail.id+'">'+
+                                        '<div class="ellipsis">'+layerDetail.name+'</div>'+
+                                        '<div><a class="fly" onclick="flyToTrackAnimation(this)" title="Fly To"><i class="fa-solid fa-binoculars"></i></a>'+
+                                        '<a class="play" onclick="playTrackAnimation(this)" title="Play Track" style="display: inline;"><i class="fa-solid fa-play"></i></a>'+
+                                        '<a class="pause" onclick="pauseTrackAnimation(this)" title="Pause Track" style="display: none"><i class="fa-solid fa-pause"></i></a>'+
+                                        '<a class="stop" onclick="stopTrackAnimation()" title="Stop Track"><i class="fa-solid fa-rotate-right"></i></a></div>'+
+                                    '</div>';
+                    lyrlist_container.append(lyrlist_html);
+                }
+            } else {
+                $.alert({
+					boxWidth: '30%',
+					useBootstrap: false,
+                    title: 'Message',
+                    content: obj.msg,
+                    // content: 'Update failed! Please try again',
+                });
+            }
+
+            manageLayer(() => {
+                // ensure the detail panel stays visible
+                $("#manageLayerDetail").show();
+            });
+
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            var str = textStatus + " " + errorThrown;
+            console.log(str);
+        }
+    })
 }
 
 function switchDefDisplay() {
@@ -9611,6 +10305,9 @@ function OnClickEdit(ele) {
     flagCamera = false;
     flagAddImage = false; //make the flag for camera false as both are on right click
     flagEntity = false;
+
+    $(".modal-container.insight .newEntityForm").css("display", "none")
+
     if (isEntityPicked) {
         flagEdit = true;
 
@@ -9860,6 +10557,7 @@ function openEarthImagePin(ele) {
 	var i = 0;
     var recordActive = $(`#${name}`)
 
+    $(".modal-container.insight .inputForm").css("display", "none");
     $('#earthViewItem').children().removeClass("imageView")
     recordActive.addClass("imageView")
 
@@ -9878,9 +10576,14 @@ function openEarthImagePin(ele) {
 function earth360(url, long, lat, height, initHeading) {
     if(localStorage.ui_pref == 'ri_v3'){
         url = "../" +url;
+        url = "../../" +url;
     }
+
+    $(".modal-container.insight .inputForm").css("display", "none");
+
     viewer.scene.primitives.remove(planePrimitive);
     $("#wizard").fadeIn(100)
+    $(`#wizard .modal-content`).css("width", "70vw")
     $(`.modal-container.insight`).css("display", "block")
     $(`.modal-container.insight .earthView`).css("display", "block")
     $(`.modal-header a`).html("Show Image")
@@ -10264,6 +10967,17 @@ function OnClickAddImageSave() {
     var headChoice = "";
     var earthViewHTML = "";
     initializeImage = imgInitialSource;
+
+    if(lat == "" || lng == "" ){
+        $.alert({
+            boxWidth: '30%',		
+            useBootstrap: false,
+            title: 'Message',
+            content: 'Please mark a location for image pin',
+        });
+            return;
+    };
+	
     
     if (initializeImage == "choosePinDetails") {
         initHead = lng;
@@ -10427,6 +11141,138 @@ function OnClickRefreshPWFolder() {
     $('#infoRootNode').jstree(true).redraw();
 }
 
+// Function flyTo track animation
+function flyToTrackAnimation(ele){
+    var trackID = $(ele).parent().parent().attr('id').split('_').slice(1);
+
+    if(trackData.length !== 0){
+        for(var i = 0; i < trackData.length; i++){
+            if(trackData[i].Data_ID == trackID){
+                if(trackData[i].tileset == undefined){
+                    var myTrack = addTrackData('../' + trackData[i].Data_URL);
+                    trackData[i].tileset = myTrack;
+                }
+
+                trackData[i].tileset.then((value) => {
+                    value.show = true;
+                })
+                .catch(console.error);
+
+                viewer.flyTo(trackData[i].tileset);
+            }
+        }
+    }
+}
+
+// Function play track animation
+function playTrackAnimation(ele){
+    var trackID = $(ele).parent().parent().attr('id').split('_').slice(1);
+
+    flagAnimate = true;
+
+    //reset button
+    stopTrackAnimation();
+
+    let j = 0;
+    var indicatorArr = viewer.entities.values
+
+    while (j < indicatorArr.length) {
+        var indName = indicatorArr[j].name
+        if(indName == 'indicator'){
+            viewer.entities.remove(indicatorArr[j])
+        }
+        j++;
+    }
+
+    var trackLevel = $('#trackLevel');
+    var trackDuration = $('#trackDuration');
+    var trackDateVal = $('#trackDate').val();
+    var trackDurationVal = trackDuration.val();
+    if(trackDurationVal == '' || trackDurationVal == 0){
+        $.alert({
+            boxWidth: "30%",
+            useBootstrap: false,
+            title: "Message",
+            content: "Please insert duration first before proceed!",
+        });
+
+        return;
+    }
+
+    var trackEle = $('#trackID_'+trackID);
+    if(trackEle.find('.play').css('display') == 'inline'){
+        trackEle.find('.play').hide();
+        trackEle.find('.pause').css('display','inline');
+        trackLevel.prop('disabled', true);
+        trackDuration.prop('disabled', true);
+    }
+
+    if(trackData.length !== 0){
+        for(var i = 0; i < trackData.length; i++){
+            if(trackData[i].Data_ID == trackID){
+                if(trackData[i].tileset == undefined){
+                    var myTrack = addTrackData('../' + trackData[i].Data_URL);
+                    trackData[i].tileset = myTrack;
+                    viewer.flyTo(trackData[i].tileset);
+                }
+
+                trackData[i].tileset.then((value) => {
+                    addPointEntity(value.geoJSON, trackDurationVal, trackDateVal)
+
+                    viewer.clock.startTime = animationStart.clone();
+                    viewer.clock.stopTime = animationStop.clone();
+                    viewer.clock.currentTime = animationStart.clone();
+                
+                    viewer.clock.shouldAnimate = true;
+                    value.show = false;
+                })
+                .catch(console.error);
+                
+                entityAnimate = setInterval(setCameraAngle, 50);
+            }
+        }
+    }
+}
+
+// Function pause track animation
+function pauseTrackAnimation(ele){
+    var trackLevel = $('#trackLevel');
+    var trackDuration = $('#trackDuration');
+    var trackID = $(ele).parent().parent().attr('id').split('_').slice(1);
+    viewer.animation.viewModel.pauseViewModel.command();
+
+    var trackEle = $('#trackID_'+trackID);
+    if(flagAnimate){
+        trackEle.find('.pause i').removeClass('fa-pause');
+        trackEle.find('.pause i').addClass('fa-play');
+        trackLevel.prop('disabled', false);
+        trackDuration.prop('disabled', false);
+        clearInterval(entityAnimate)
+        flagAnimate = false;
+    }else{
+        trackEle.find('.pause i').removeClass('fa-play');
+        trackEle.find('.pause i').addClass('fa-pause');
+        trackLevel.prop('disabled', true);
+        trackDuration.prop('disabled', true);
+        entityAnimate = setInterval(setCameraAngle, 50);
+        flagAnimate = true;
+    }
+}
+
+// Function stop track animation
+function stopTrackAnimation(){
+    clearInterval(entityAnimate)
+
+    $('#trackLevel').prop('disabled', false);
+    $('#trackDuration').prop('disabled', false);
+    $('[id^="trackID_"]').each(function (){
+        $(this).find('.play').css('display','inline');
+        $(this).find('.pause').css('display','none');
+        $(this).find('.pause i').removeClass('fa-play');
+        $(this).find('.pause i').addClass('fa-pause');
+    })
+}
+
 //Function for newsfeed
 function openFeed(){
     let newsFeed = $(".newsFeed");
@@ -10471,24 +11317,106 @@ function closeFeed(){
 $("#switchTerrainMod").on("click", function () {
     if ($(this).hasClass("activate")) {
         $(this).removeClass("activate");
-        $(this).children().removeClass("fa-regular");
-        $(this).children().addClass("fa-solid");
+        $("#toolbarTransparency").removeClass("active");
+        $(this).find('i').removeClass("fa-regular");
+        $(this).find('i').addClass("fa-solid");
+        $(this).find('span').text("TERRAIN OFF");
     }
     else{
         $(this).addClass("activate");
-        $(this).children().removeClass("fa-solid");
-        $(this).children().addClass("fa-regular");
+        $("#toolbarTransparency").addClass("active");
+        $(this).find('i').removeClass("fa-solid");
+        $(this).find('i').addClass("fa-regular");
+        $(this).find('span').text("TERRAIN ON");
     }
 
 
     if (terrainEnabled) { 
+        if (baseMapLayer && Object.prototype.toString.call(baseMapLayer) === "[object Promise]") {
+            baseMapLayer.then((value) => {
+                viewer.imageryLayers.remove(value)
+            })
+        } else {
+            viewer.imageryLayers.remove(baseMapLayer)
+        }
+      
+        baseMapLayer = viewer.imageryLayers.addImageryProvider(
+                new Cesium.MapboxStyleImageryProvider({
+                styleId: 'satellite-v9', 
+                accessToken: mapBoxAccessToken
+            }), 1
+        )
+        viewer.baseLayerPicker = false;
         viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+        viewer.scene.globe.depthTestAgainstTerrain  = false;
         terrainEnabled = false;
+        // var i = 0;
+		// while (i < tilesetlist.length){
+        //     if(tilesetlist[i].type == "kml"){
+        //         if(tilesetlist[i].type == "kml"){
+        //             if (tilesetlist[i].tileset && Object.prototype.toString.call(tilesetlist[i].tileset) === "[object Promise]") {
+        //                 tilesetlist[i].tileset.then((value) => {
+        //                     viewer.dataSources.remove(value);
+        //                 })
+        //             }
+        //             else{
+        //                 viewer.dataSources.remove(tilesetlist[i].tileset);
+        //             }
+        //             tilesetlist[i].tileset = null;
+        //             tilesetlist[i].tileset = LoadKMLDataTerrain(tilesetlist[i].url, false)
+        //             landThematic.push({
+        //                 id: tilesetlist[i].id,
+        //                 name: tilesetlist[i].name,
+        //             });
+        //             $('#thematicLayer').append($('<option>',
+        //                 {
+        //                     value: tilesetlist[i].id,
+        //                     text : tilesetlist[i].name
+        //                 }
+        //             ));
+        //         }
+        //     }
+        //     i++;
+        // }
     } else { 
-        viewer.terrainProvider = Cesium.createWorldTerrain({
-            requestVertexNormals : true
-        });
+        viewer.terrainProvider =   new Cesium.CesiumTerrainProvider({
+			url: "https://api.maptiler.com/tiles/terrain-quantized-mesh-v2/?key="+mapTilerAccessToken,
+			credit: new Cesium.Credit(
+				'<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> ' +
+				'<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+			),
+			requestVertexNormals: true
+		});
+        viewer.baseLayerPicker = false;
+        // viewer.scene.globe.depthTestAgainstTerrain  = true;
         terrainEnabled = true;
+
+        // var i = 0;
+		// while (i < tilesetlist.length){
+        //     if(tilesetlist[i].type == "kml"){
+        //         if (tilesetlist[i].tileset && Object.prototype.toString.call(tilesetlist[i].tileset) === "[object Promise]") {
+        //             tilesetlist[i].tileset.then((value) => {
+        //                 viewer.dataSources.remove(value);
+        //             })
+        //         }
+        //         else{
+        //             viewer.dataSources.remove(tilesetlist[i].tileset);
+        //         }
+        //         tilesetlist[i].tileset = null;
+        //         tilesetlist[i].tileset = LoadKMLDataTerrain(tilesetlist[i].url, true)
+        //         landThematic.push({
+        //             id: tilesetlist[i].id,
+        //             name: tilesetlist[i].name,
+        //         });
+        //         $('#thematicLayer').append($('<option>',
+        //             {
+        //                 value: tilesetlist[i].id,
+        //                 text : tilesetlist[i].name
+        //             }
+        //         ));
+        //     }
+        //     i++;
+        // }
     }
     
 })
@@ -10556,28 +11484,28 @@ $("#changeBaseMap").click(function () {
 		case 0:
 			baseMap = 1
 			baseMapLayer = viewer.imageryLayers.addImageryProvider(
-				new Cesium.BingMapsImageryProvider({
-					url: 'https://dev.virtualearth.net',
-					mapStyle: Cesium.BingMapsStyle.ROAD
-				}), 1
+                new Cesium.MapboxStyleImageryProvider({
+                    styleId: 'streets-v12', 
+                    accessToken: mapBoxAccessToken
+                }), 1
 			)
 			break;
 		case 1:
 			baseMap = 2
 			baseMapLayer = viewer.imageryLayers.addImageryProvider(
-				new Cesium.BingMapsImageryProvider({
-					url: 'https://dev.virtualearth.net',
-					mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS
-				}), 1
+                new Cesium.MapboxStyleImageryProvider({
+                    styleId: 'satellite-streets-v12', 
+                    accessToken: mapBoxAccessToken
+                }), 1
 			)
 			break;
 		case 2: //Bing Maps Road
 			baseMap = 0
 			baseMapLayer = viewer.imageryLayers.addImageryProvider(
-				new Cesium.BingMapsImageryProvider({
-					url: 'https://dev.virtualearth.net',
-					mapStyle: Cesium.BingMapsStyle.AERIAL
-				}), 1
+                new Cesium.MapboxStyleImageryProvider({
+                    styleId: 'satellite-v9', 
+                    accessToken: mapBoxAccessToken
+                }), 1
 			);
 			break;
 	}
@@ -10586,6 +11514,15 @@ $("#changeBaseMap").click(function () {
 function openConstructJoget(ele) {  //where overall list is loaded
     var processType = $(ele).attr("rel");
     var url = "";
+    var process_1b = ["PBC", "RS", "SDL"];
+
+    if(localStorage.project_phase == '1B'){
+		if(process_1b.includes(processType)){
+			processType = processType+"_1B";
+		}else{
+			processType = processType;
+		}
+	}
 
     if (!JOGETLINK) return
     
@@ -10625,10 +11562,10 @@ function openConstructJogetBulkApproval(ele) {
             }else if(org == 'HSSI'){
                 varArr.push('Provide Recommendation');
             }
-        }else if(role == 'Consultant RE'){
-            varArr.push('Task 6a: Review Document');
         }else if(role == 'Safety Officer'){
             varArr.push('Task 6b Review Document');
+        }else if(role == 'Consultant RE' || role == 'Consultant CRE'){
+            varArr.push('');
         }else{
             varArr.push('-');
         }
@@ -10704,574 +11641,10 @@ function openInventoryJoget(ele) {
         .attr("src", url)
         .css("height", "100%")
         .css("width", "100%");
-        assetListInventory()
+    zoomToGetData()
 }
 
 function openAssetTable() { 
-    $('iframe.assetList').attr('src', '')
-    $("#assetDataTable").hide();
-    $(".buttonTab.asset.parentTab").children().remove()
-    $('#facilityBrowser').css('display', 'none');
-
-    $.ajax({
-        type: "POST",
-        url: '../BackEnd/fetchDatav3.php',
-        dataType: 'json',
-        data: { functionName: "getAgileData" },
-        success: function (obj) {
-            let uniqueAssetTypes;
-
-            uniqueAssetTypes = Array.from(new Set(obj.data.map(item => (item.Floor !== null && item.Floor !== undefined) ? item.Floor : 'Others')));
-
-            const parentTab = document.querySelector('#assetList.buttonTab.parentTab');
-            // parentTab.textContent = uniqueAssetTypes[0];
-
-            const assetList = document.getElementById('assetList');
-            uniqueAssetTypes.slice(0).forEach((Floor, index) => {
-            const parentTab = document.createElement('div');
-            parentTab.className = 'tab asset changeName parent';
-            if(Floor == "Others"){
-                parentTab.setAttribute('rel', `Others`);
-                parentTab.textContent = "Others";
-                parentTab.style.fontSize = '12px';
-                parentTab.title = "Others";
-            }else{
-                parentTab.setAttribute('rel', `Floor-${Floor}`);
-                parentTab.textContent = "Floor "+Floor;
-                parentTab.style.fontSize = '12px';
-                parentTab.title = "Floor"+Floor;
-            }
-            
-            parentTab.setAttribute('onclick' , "openFacilityJoget(this)");
-            assetList.appendChild(parentTab);
-
-            });
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            var str = textStatus + " " + errorThrown;
-            console.log(str);
-        }
-    })
-}
-
-
-function openAssetTableFM() { 
-    $('iframe.assetList').attr('src', '')
-    $("#assetDataTable").hide();
-    $(".buttonTab.asset.parentTab").children().remove()
-    $('#facilityBrowser').css('display', 'none');
-    
-    tableRowArray.splice(0,tableRowArray.length);
-    document.getElementById("tempContainer").innerHTML = "";
-
-    // const parentTab = document.querySelector('#assetList.buttonTab.parentTab');
-
-    const assetList = document.getElementById('assetList');
-
-    const parentTab = document.createElement('div');
-    parentTab.className = 'tab asset changeName parent active';
-
-    
-    parentTab.setAttribute('rel', 'fm_asset_data_list');
-    parentTab.setAttribute('id', 'spaceAssetTab');
-    parentTab.textContent = "Space";
-    parentTab.style.fontSize = '12px';
-    parentTab.title = "Space";
-    
-    parentTab.setAttribute('onclick' , "openFacilityJogetFM(this)");
-    assetList.appendChild(parentTab);
-
-    var table = $('#tblAssetData').DataTable({
-        destroy: true,
-        processing: true,
-        serverSide: false,
-        // responsive: true,
-        fixedColumns: true,
-        searching: true,
-        ordering: true,
-        paging: true,
-        scrollCollapse: true,
-        select: { style: 'multi',  },
-        ajax: {
-            url: '../BackEnd/fetchDatav3.php',
-            type: 'POST',
-            dataType: 'json',
-            data: { functionName: "getAssetTypeDataListFM" },
-        },
-        columns: [
-            { data: 'id' },
-            { data: 'project_id' },
-            { data: 'extidentifier', width: '150px' },
-            { data: 'gross_area' },
-            { data: 'gross_area_unit' },
-            { data: 'level_name' },
-            { data: 'net_area' },
-            { data: 'net_area_unit' },
-            { data: 'part_of' },
-            { data: 'roomtag' },
-            { data: 'space_type_name' },
-            { data: 'usable_height_unit' },
-            { data: 'x' },
-            { data: 'y' },
-            { data: 'z' },
-            { data: 'qrCode' },
-            { data: 'name', visible: false },
-        ],
-        lengthMenu: [
-            [ -1, 10, 25, 50, 100 ],
-            [ 'All', '10', '25', '50', 100 ]
-        ],
-        layout: {
-            topStart: {
-                buttons: [
-                    {
-                        extend: 'colvis',
-                        text: 'Column'
-                    },
-                    'pageLength',
-                    {
-                        extend: 'selectAll',
-                        text: 'Select All',
-                        action: function() {
-                            table.rows({
-                                page: 'current'
-                            }).select();
-                            
-                            tableRowArray.splice(0,tableRowArray.length);
-                            selectedRow.splice(0,selectedRow.length);
-
-                            var selectedRows = table.rows({ selected: true }).nodes(); // Get selected rows
-                            $(selectedRows).each(function() {
-                                var imgElement = $(this).find('img');  // Find img element in selected row
-                                var imgSrc = imgElement.attr('src');   // Get img src
-
-                                tableRowArray.push($(this).find("td").eq(0).html());
-                                selectedRow.push({
-                                    id: $(this).find("td").eq(0).html(),
-                                    project_id: $(this).find("td").eq(1).html(),
-                                    extidentifier: $(this).find("td").eq(2).html(),
-                                    gross_area: $(this).find("td").eq(3).html(),
-                                    gross_area_unit: $(this).find("td").eq(4).html(),
-                                    level_name: $(this).find("td").eq(5).html(),
-                                    net_area: $(this).find("td").eq(6).html(),
-                                    net_area_unit: $(this).find("td").eq(7).html(),
-                                    partof: $(this).find("td").eq(8).html(),
-                                    room_tag: $(this).find("td").eq(9).html(),
-                                    spacetype_name: $(this).find("td").eq(10).html(),
-                                    usable_height: $(this).find("td").eq(11).html(),
-                                    x: $(this).find("td").eq(12).html(),
-                                    y: $(this).find("td").eq(13).html(),
-                                    z: $(this).find("td").eq(14).html(),
-                                    qr_code: imgSrc
-                                });
-                            });
-                            
-                            console.log("ARRAY 1", tableRowArray);
-                            console.log("ARRAY 2", selectedRow);
-                        }
-                    },
-                    {
-                        extend: 'selectNone',
-                        text: 'Deselect All',
-                        action: function() {
-                            table.rows({
-                                page: 'current'
-                            }).deselect();
-
-                            tableRowArray.splice(0,tableRowArray.length);
-                            selectedRow.splice(0,selectedRow.length);
-                            console.log("ARRAY 1", tableRowArray);
-                            console.log("ARRAY 2", selectedRow);
-                        }
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        orientation: 'portrait',
-                        pageSize : 'A4',
-                        customize: function (doc) {
-                            doc.pageMargins = [40, 60, 40, 60];  // [left, top, right, bottom]
-                            var newContent = [];
-                            
-                            if(selectedRow.length > 0){
-                                selectedRow.forEach((item, index) => {
-                                    // Add QR
-                                    newContent.push({
-                                        image: item.qr_code,
-                                        fontSize: 18,
-                                        bold: true,
-                                        margin: [0, 0, 0, 20],
-                                        alignment: 'center'
-                                    });
-    
-                                    Object.entries(item).forEach(([key, value]) => {
-                                        if(key != "qr_code"){
-                                            newContent.push({
-                                                text: key.split("_").join(" ").toUpperCase() + ":  " + value,
-                                                margin: [0, 10, 0, 0],
-                                                fontSize: 12,
-                                                alignment: 'left'
-                                            });
-                                        }
-                                    });
-                                    if (index < selectedRow.length - 1) {
-                                        newContent.push([{ text: '', pageBreak: 'after' }]);
-                                    }
-                                });
-                            }
-                            else {
-                                newContent.push({
-                                    text: "No row selected.",
-                                    fontSize: 18,
-                                    bold: true,
-                                    margin: [0, 0, 0, 20],
-                                    alignment: 'center'
-                                });
-                            }
-
-                            // Replace original table content with new layout
-                            doc.content = newContent;
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        text: 'Print',
-                        customize: function (win) {
-
-                            if(selectedRow.length > 0) {
-                                $(win.document.body).find('table tbody tr').each(function() {
-                                    var id = $(this).find('td').eq(0).html();
-                                    selectedRow.forEach((item, index) => {
-                                        if(item.id == id) {
-                                            var imgSrc = item.qr_code;
-                                            $(this).find('td').eq(15).html('<img src="' + imgSrc + '" width="50" height="50" />');
-                                        }
-                                    });
-                                    
-                                    // Optional: Add custom CSS for print view
-                                    $(win.document.body).css('font-size', '10pt');
-                                    $(win.document.body).find('table')
-                                        .addClass('compact')
-                                        .css('font-size', 'inherit');
-                                });
-                            }
-                            else {
-                                $(win.document.body).find('table').each(function() {
-                                    $(this).html('<p>No row selected</p>');
-                                });
-                                alert("No row selected.");
-                            }
-
-                        }
-                    },
-                    // {
-                    //     text: 'Export to Excel',
-                    //     action: function (e, dt, node, config) {
-                    //         const workbook = new ExcelJS.Workbook();
-                    //         const sheet = workbook.addWorksheet('Data Sheet');
-        
-                    //         // Add headers to Excel
-                    //         sheet.addRow(['ID', 'Project', 'Extidentifier', 'Gross Area', 'Gross Area Unit', 'Level Name', 'Net Area', 'Net Area Unit', 'Partof', 'Room Tag', 'Spacetype Name', 'Usable Height', 'X', 'Y', 'Z', 'QR Code' ]);
-        
-                    //         // Loop through table rows to add data
-                    //         $('#tblAssetData tbody tr').each(function(index, row) {
-                    //             const rowData = [];
-                    //             var base64Url = "";
-                    //             $(row).find('td').each(function(cellIndex, cell) {
-                    //                 if(cellIndex == 15){
-                    //                     base64Url = cell.firstChild;
-                    //                 }
-                    //                 rowData.push($(cell).text());
-                    //             });
-        
-                    //             // Add the text data (name and position)
-                    //             sheet.addRow([rowData[0], rowData[1], rowData[2], rowData[3], rowData[4], rowData[5], rowData[6], rowData[7], rowData[8], rowData[9], rowData[10], rowData[11], rowData[12], rowData[13], rowData[14]]);
-        
-
-                    //             // Fetch and add the image
-                    //             console.log(base64Url.getAttribute('src'));
-                    //             const base64Image = base64Url.getAttribute('src'); // Image URL from the 3rd column
-                    //             // Check if the cell contains valid base64 image data
-                    //             if (base64Image.startsWith("data:image")) {
-                    //                 const extension = base64Image.split(';')[0].split('/')[1]; // Get the image extension
-
-                    //                 // Add the image to the workbook using base64
-                    //                 const imageId = workbook.addImage({
-                    //                     base64: base64Image, // Use base64 directly
-                    //                     extension: extension, // The image extension (e.g., jpeg or png)
-                    //                 });
-
-                    //                 // Add the image to the Excel sheet at the corresponding row and column
-                    //                 sheet.addImage(imageId, {
-                    //                     tl: { col: 15, row: index + 1 }, // Top-left cell (column C)
-                    //                     ext: { width: 100, height: 100 }, // Image size
-                    //                 });
-                    //             }
-                    //         });
-                            
-                    //         // After adding all rows and images, export the Excel file
-                    //         workbook.xlsx.writeBuffer().then(function(data) {
-                    //             const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                    //             saveAs(blob, 'export_with_images.xlsx');
-                    //         });
-                    //     }
-                    // }
-                    
-                ]
-                
-            }
-        },
-        initComplete: function() {
-
-            tableRowArray.splice(0,tableRowArray.length);
-            var tableSelect = document.getElementById("tblAssetData");
-            var tableExportAll = tableSelect.cloneNode(true);
-            tableExportAll.removeAttribute("id");
-            tableExportAll.setAttribute("id", "tblAssetDataAll");
-
-            const tempContainer = document.getElementById("tempContainer");
-            tempContainer.innerHTML = '';
-            tempContainer.appendChild(tableExportAll);
-
-            if(!isEventCreated){
-                isEventCreated = true;
-    
-                var assetTable = $("#tblAssetData");
-                assetTable.on("click", "tr", function() { 
-                    var clickedRow = $(this);
-                    var id = $(this).find("td").eq(0).html();  
-                    var base64url = $(this).find("td").eq(15);
-
-                    if(clickedRow.attr("class") != "selected"){
-                        var el = [id];
-                        var obj = {
-                            id: $(this).find("td").eq(0).html(),
-                            project_id: $(this).find("td").eq(1).html(),
-                            extidentifier: $(this).find("td").eq(2).html(), 
-                            gross_area: $(this).find("td").eq(3).html(), 
-                            gross_area_unit: $(this).find("td").eq(4).html(), 
-                            level_name: $(this).find("td").eq(5).html(), 
-                            net_area: $(this).find("td").eq(6).html(), 
-                            net_area_unit: $(this).find("td").eq(7).html(), 
-                            partof: $(this).find("td").eq(8).html(), 
-                            room_tag: $(this).find("td").eq(9).html(), 
-                            spacetype_name: $(this).find("td").eq(10).html(), 
-                            usable_height: $(this).find("td").eq(11).html(), 
-                            x: $(this).find("td").eq(12).html(), 
-                            y: $(this).find("td").eq(13).html(), 
-                            z: $(this).find("td").eq(14).html(), 
-                            qr_code: base64url[0].firstChild.src, 
-                        }
-
-                        const foundElement = tableRowArray.find(e => e === el);
-                        if (!foundElement) {
-                            tableRowArray.push(el);
-                            selectedRow.push(obj);
-                        }
-                    }
-                    else {
-                        tableRowArray.forEach(function (item, index) {
-                            if(id == item) {
-                                tableRowArray.splice(index, 1);
-                            }
-                        });
-                        selectedRow = selectedRow.filter(e => e.id !== id);
-                    }
-                });
-            }
-            
-
-
-        }
-        // fixedColumns: {
-        //     start: 2
-        // },
-    });
-    
-
-
-
-
-    // $.ajax({
-    //     type: "POST",
-    //     url: '../BackEnd/fetchDatav3.php',
-    //     dataType: 'json',
-    //     data: { functionName: "getAssetTypeDataListFM" },
-    //     success: function (obj) {
-    //         let uniqueAssetTypes;
-
-    //         uniqueAssetTypes = Array.from(
-    //             new Set(
-    //                 obj.data.map(item => (item.item !== null && item.item !== undefined) ? item.item : 'Others')
-    //             )
-    //         );
-
-    //         const parentTab = document.querySelector('#assetList.buttonTab.parentTab');
-
-    //         const assetList = document.getElementById('assetList');
-    //         uniqueAssetTypes.slice(0).forEach((Space, index) => {
-    //             const parentTab = document.createElement('div');
-    //             parentTab.className = 'tab asset changeName parent';
-
-    //             if(Space == "Others"){
-    //                 parentTab.setAttribute('rel', `Others`);
-    //                 parentTab.textContent = "Others";
-    //                 parentTab.style.fontSize = '12px';
-    //                 parentTab.title = "Others";
-    //             }else{
-    //                 parentTab.setAttribute('rel', 'fm_asset_data_list');
-    //                 parentTab.textContent = Space;
-    //                 parentTab.style.fontSize = '12px';
-    //                 parentTab.title = Space;
-    //             }
-                
-    //             parentTab.setAttribute('onclick' , "openFacilityJogetFM(this)");
-    //             assetList.appendChild(parentTab);
-
-    //         });
-    //     },
-    //     error: function (xhr, textStatus, errorThrown) {
-    //         var str = textStatus + " " + errorThrown;
-    //         console.log(str);
-    //     }
-    // })
-}
-
-function exportSelectedToExcel() {
-    if(tableRowArray.length > 0){
-        const workbook = new ExcelJS.Workbook();
-        const sheet = workbook.addWorksheet('Data Sheet');
-        var counter = 0;
-
-        // Add headers to Excel
-        sheet.addRow(['ID', 'Project', 'Extidentifier', 'Gross Area', 'Gross Area Unit', 'Level Name', 'Net Area', 'Net Area Unit', 'Partof', 'Room Tag', 'Spacetype Name', 'Usable Height', 'X', 'Y', 'Z', 'QR Code' ]);
-
-        // Loop through table rows to add data
-        $('#tblAssetDataAll tbody tr').each(function(index, row) {
-            const rowData = [];
-            var base64Url = "";
-            var id = $(this).find("td").eq(0).html(); 
-
-            for(let i = 0; i < tableRowArray.length; i++){
-                if(tableRowArray[i] == id){
-                    counter += 1;
-                    console.log(counter);
-                    $(row).find('td').each(function(cellIndex, cell) {
-                        if(cellIndex == 15){
-                            base64Url = cell.firstChild;
-                        }
-                        rowData.push($(cell).text());
-                    });
-                    
-
-                    // Add the text data
-                    sheet.addRow([rowData[0], rowData[1], rowData[2], rowData[3], rowData[4], rowData[5], rowData[6], rowData[7], rowData[8], rowData[9], rowData[10], rowData[11], rowData[12], rowData[13], rowData[14]]);
-
-
-                    // Fetch and add the image
-                    const base64Image = base64Url.getAttribute('src'); // Image URL
-                    // Check if the cell contains valid base64 image data
-                    if (base64Image.startsWith("data:image")) {
-                        const extension = base64Image.split(';')[0].split('/')[1]; // Get the image extension
-
-                        // Add the image to the workbook using base64
-                        const imageId = workbook.addImage({
-                            base64: base64Image, // Use base64 directly
-                            extension: extension, // The image extension (e.g., jpeg or png)
-                        });
-
-                        // Add the image to the Excel sheet at the corresponding row and column
-                        sheet.addImage(imageId, {
-                            tl: { col: 15, row: counter}, // Top-left cell (column C)
-                            ext: { width: 100, height: 100 }, // Image size
-                        });
-                    }
-
-                    // Customize the height of all rows
-                    sheet.eachRow({ includeEmpty: true }, function(row, rowNumber) {
-                        if(rowNumber > 1){
-                            row.height = 70; // Set a default height for all rows
-                        }
-                    });
-
-                    // Bold the first row (header row)
-                    sheet.getRow(1).font = { bold: true };
-                }
-            }
-        });
-        
-        // After adding all rows and images, export the Excel file
-        workbook.xlsx.writeBuffer().then(function(data) {
-            const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            saveAs(blob, 'asset_data.xlsx');
-        });
-
-    }
-    else{
-        alert("No row selected.");
-    }
-    
-}
-
-function exportAllToExcel() {
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Data Sheet');
-
-    // Add headers to Excel
-    sheet.addRow(['ID', 'Project', 'Extidentifier', 'Gross Area', 'Gross Area Unit', 'Level Name', 'Net Area', 'Net Area Unit', 'Partof', 'Room Tag', 'Spacetype Name', 'Usable Height', 'X', 'Y', 'Z', 'QR Code' ]);
-
-    // Loop through table rows to add data
-    $('#tblAssetDataAll tbody tr').each(function(index, row) {
-        const rowData = [];
-        var base64Url = "";
-        $(row).find('td').each(function(cellIndex, cell) {
-            if(cellIndex == 15){
-                base64Url = cell.firstChild;
-            }
-            rowData.push($(cell).text());
-        });
-
-        // Add the text data
-        sheet.addRow([rowData[0], rowData[1], rowData[2], rowData[3], rowData[4], rowData[5], rowData[6], rowData[7], rowData[8], rowData[9], rowData[10], rowData[11], rowData[12], rowData[13], rowData[14]]);
-
-
-        // Fetch and add the image
-        const base64Image = base64Url.getAttribute('src'); // Image URL
-        // Check if the cell contains valid base64 image data
-        if (base64Image.startsWith("data:image")) {
-            const extension = base64Image.split(';')[0].split('/')[1]; // Get the image extension
-
-            // Add the image to the workbook using base64
-            const imageId = workbook.addImage({
-                base64: base64Image, // Use base64 directly
-                extension: extension, // The image extension (e.g., jpeg or png)
-            });
-
-            // Add the image to the Excel sheet at the corresponding row and column
-            sheet.addImage(imageId, {
-                tl: { col: 15, row: index + 1 }, // Top-left cell (column C)
-                ext: { width: 100, height: 100 }, // Image size
-            });
-        }
-        
-        // Customize the height of all rows
-        sheet.eachRow({ includeEmpty: true }, function(row, rowNumber) {
-            if(rowNumber > 1){
-                row.height = 70; // Set a default height for all rows
-            }
-        });
-
-        // Bold the first row (header row)
-        sheet.getRow(1).font = { bold: true };
-    });
-    
-    // After adding all rows and images, export the Excel file
-    workbook.xlsx.writeBuffer().then(function(data) {
-        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        saveAs(blob, 'asset_data.xlsx');
-    });
-}
-
-function openAssetTableTemp() { 
     $('iframe.assetList').attr('src', '')
     $("#assetDataTable").hide();
     $(".buttonTab.asset.parentTab").children().remove()
@@ -11316,25 +11689,6 @@ function openAssetTableTemp() {
             console.log(str);
         }
     })
-}
-
-function openFacilityJogetFM(ele) { 
-
-    if (!JOGETLINK) return
-    var processType = "fm_asset_data_list";
-    var url;
-    
-    url = JOGETLINK[processType];
-
-    $("#facilityBrowser .tab.changeName.children").remove();
-    $('iframe#assetListIframe').attr('src', url)
-    $('.tab.asset').removeClass('active')
-    $("#assetDataTable").hide();
-
-    if(!$(ele).hasClass('active')){
-        $(ele).addClass('active')
-    }
-  
 }
 
 function openFacilityJoget(ele) { 
@@ -11474,7 +11828,7 @@ function openAssetList(ele) {
                     var parts = category.split("-");
                     var cat = parts[0];
                     var floor = parts[1];
-                    var actionBtn = '<button class="toolButton mid" rel="insight" title="New Asset Table Process" data-width="70" data-page="fmNewAssetTable" onclick="assetTableActionNewClick(this)"><div class="label">New</div></button> <button class="toolButton mid" rel="insight" title="QR Code" data-width="70" data-page="fmAssetQrCode" onclick="assetTableActionNewClick(this)"><div class="label">New</div></button>';
+                    var actionBtn = '<button class="toolButton mid" rel="insight" title="New Asset Table Process" data-width="70" data-page="fmNewAssetTable" onclick="assetTableActionNewClick(this)"><div class="label">New</div></button>';
 
                     if(item.Floor !== null && item.Floor !== undefined && item.Floor !== ""){
                         if(item[cat] == floor){
@@ -11600,7 +11954,7 @@ $("#inventoryButton #changeNameInventory").on("click", function () {
         $("#toggleInventory").addClass("fa-toggle-off");
     }
 
-    $('#inventoryList > .changeName').each(function(idx, ele){
+    $('.inventoryList > .changeName').each(function(idx, ele){
         var fulltext = $(ele).attr('title');
         var tooltipText = $(ele).html();
         
@@ -11621,10 +11975,6 @@ function openMaintainJoget(ele) {
         if(processType == 'service_request') {
             processType = "fm_view_list_service_request";
         }
-
-        if(processType == 'ppm_list') {
-            processType = "fm_view_list_ppm";
-        }
    
         url = JOGETLINK[processType];
  
@@ -11637,10 +11987,23 @@ function openMaintainJoget(ele) {
         }else{
             processType = $(ele).attr("rel");
         }
-   
-        if(JOGETLINK['asset_'+processType]){
-            url = JOGETLINK['asset_'+processType];
+
+        if(processType == 'defect_detection' || processType == 'PictorialReport' || processType == 'ScheduleInspection'){
+            if(localStorage.project_owner == 'JKR_SABAH'){
+                if(JOGETLINK['asset_'+processType+'_sbh']){
+                    url = JOGETLINK['asset_'+processType+'_sbh'];
+                }
+            }else{
+                if(JOGETLINK['asset_'+processType]){
+                    url = JOGETLINK['asset_'+processType];
+                }
+            }
+        }else{
+            if(JOGETLINK['asset_'+processType]){
+                url = JOGETLINK['asset_'+processType];
+            }
         }
+        
     }
     $("iframe.maintenanceList")
         .attr("src", url)
@@ -11945,116 +12308,226 @@ function getProcessDownload(apps_link, accessProcess, accessManage, project_type
                             `
 
     if(localStorage.project_owner == "JKR_SABAH"){
-        arrConstruct = {
-            "app_DCR" : {
-                data : "DCR",
-                title : "DCR",
-                name :"Design Change Request"
-            },
-            "app_IR" : {
-                data : "IR",
-                title : "INC",
-                name :"Incident"
-            },
-            "app_LR" : {
-                data : "LR",
-                title : "LA",
-                name :"Land Acquisition"
-            },
-            "app_LI" : {
-                data : "LI",
-                title : "LI",
-                name :"Land Issue"
-            },
-            "app_LE" : {
-                data : "LE",
-                title : "LE",
-                name :"Land Encumbrances"
-            },
-            "app_LS" : {
-                data : "LS",
-                title : "LS",
-                name :"Land Summary"
-            },
-            "app_MOS" : {
-                data : "MOS",
-                title : "MS",
-                name :"Method Statement"
-            },
-            "app_MS" : {
-                data : "MS",
-                title : "MA",
-                name :"Material Acceptance"
-            },
-            "app_NCR" : {
-                data : "NCR",
-                title : "NCR",
-                name :"Non Conformance Report"
-            },
-            "app_PSU" : {
-                data : "PSU",
-                title : "PSU",
-                name :"Progress Summary Upload"
-            },
-            "app_PBC" : {
-                data : "PBC",
-                title : "PBC",
-                name :"Public Complaint"
-            },
-            "app_RS" : {
-                data : "RS",
-                title : "RS",
-                name :"Report Submission"
-            },
-            "app_RR" : {
-                data : "RR",
-                title : "RR",
-                name :"Risk Register"
-            },
-            "app_WIR" : {
-                data : "WIR",
-                title : "RFI",
-                name :"Request For Inspection"
-            },
-            "app_RFI" : {
-                data : "RFI",
-                title : "RFIT",
-                name :"Request For Information Technical"
-            },
-            "app_SA" : {
-                data : "SA",
-                title : "SA",
-                name :"Safety Activity And Response"
-            },
-            "app_SDL" : {
-                data : "SDL",
-                title : "SDL",
-                name :"Site Diary Log"
-            },
-            "app_SD" : {
-                data : "SD",
-                title : "SI",
-                name :"Site Instruction"
-            },
-            "app_NOI" : {
-                data : "NOI",
-                title : "SM / NOI",
-                name :"Site Memo / Notice Of Improvement"
-            },
-            "app_SMH" : {
-                data : "SMH",
-                title : "SMH",
-                name :"Total Man-Hours"
-            },
-            "app_DA" : {
-                data : "DA",
-                title : "DA",
-                name :"URW - Approved Design Drawing"
-            },
-            "app_PU" : {
-                data : "PU",
-                title : "PU",
-                name :"URW - Progress Update"
+        if(localStorage.project_phase == '1B'){
+            arrConstruct = {
+                "app_DCR" : {
+                    data : "DCR",
+                    title : "DCR",
+                    name :"Design Change Request"
+                },
+                "app_IR" : {
+                    data : "IR",
+                    title : "INC",
+                    name :"Incident"
+                },
+                "app_LR" : {
+                    data : "LR",
+                    title : "LA",
+                    name :"Land Acquisition"
+                },
+                "app_LI" : {
+                    data : "LI",
+                    title : "LI",
+                    name :"Land Issue"
+                },
+                "app_LE" : {
+                    data : "LE",
+                    title : "LE",
+                    name :"Land Encumbrances"
+                },
+                "app_LS" : {
+                    data : "LS",
+                    title : "LS",
+                    name :"Land Summary"
+                },
+                "app_MOS" : {
+                    data : "MOS",
+                    title : "MS",
+                    name :"Method Statement"
+                },
+                "app_MS" : {
+                    data : "MS",
+                    title : "MA",
+                    name :"Material Acceptance"
+                },
+                "app_NCR" : {
+                    data : "NCR",
+                    title : "NCR",
+                    name :"Non Conformance Report"
+                },
+                "app_PSU" : {
+                    data : "PSU",
+                    title : "PSU",
+                    name :"Progress Summary Upload"
+                },
+                "app_PBC" : {
+                    data : "PBC",
+                    title : "PBC",
+                    name :"Public Complaint"
+                },
+                "app_RS" : {
+                    data : "RS",
+                    title : "RS",
+                    name :"Report Submission"
+                },
+                "app_RR" : {
+                    data : "RR",
+                    title : "RR",
+                    name :"Risk Register"
+                },
+                "app_WIR" : {
+                    data : "WIR",
+                    title : "RFI",
+                    name :"Request For Inspection"
+                },
+                "app_RFI" : {
+                    data : "RFI",
+                    title : "RFIT",
+                    name :"Request For Information Technical"
+                },
+                "app_SA" : {
+                    data : "SA",
+                    title : "SA",
+                    name :"Safety Activity And Response"
+                },
+                "app_SDL" : {
+                    data : "SDL",
+                    title : "SDL",
+                    name :"Site Diary Log"
+                },
+                "app_SD" : {
+                    data : "SD",
+                    title : "SI",
+                    name :"Site Instruction"
+                },
+                "app_NOI" : {
+                    data : "NOI",
+                    title : "SM / NOI",
+                    name :"Site Memo / Notice Of Improvement"
+                },
+                "app_SMH" : {
+                    data : "SMH",
+                    title : "SMH",
+                    name :"Total Man-Hours"
+                },
+                "app_PU" : {
+                    data : "PU",
+                    title : "PU",
+                    name :"URW - Progress Update"
+                }
+            }
+        }else{
+            arrConstruct = {
+                "app_DCR" : {
+                    data : "DCR",
+                    title : "DCR",
+                    name :"Design Change Request"
+                },
+                "app_IR" : {
+                    data : "IR",
+                    title : "INC",
+                    name :"Incident"
+                },
+                "app_LR" : {
+                    data : "LR",
+                    title : "LA",
+                    name :"Land Acquisition"
+                },
+                "app_LI" : {
+                    data : "LI",
+                    title : "LI",
+                    name :"Land Issue"
+                },
+                "app_LE" : {
+                    data : "LE",
+                    title : "LE",
+                    name :"Land Encumbrances"
+                },
+                "app_LS" : {
+                    data : "LS",
+                    title : "LS",
+                    name :"Land Summary"
+                },
+                "app_MOS" : {
+                    data : "MOS",
+                    title : "MS",
+                    name :"Method Statement"
+                },
+                "app_MS" : {
+                    data : "MS",
+                    title : "MA",
+                    name :"Material Acceptance"
+                },
+                "app_NCR" : {
+                    data : "NCR",
+                    title : "NCR",
+                    name :"Non Conformance Report"
+                },
+                "app_PSU" : {
+                    data : "PSU",
+                    title : "PSU",
+                    name :"Progress Summary Upload"
+                },
+                "app_PBC" : {
+                    data : "PBC",
+                    title : "PBC",
+                    name :"Public Complaint"
+                },
+                "app_RS" : {
+                    data : "RS",
+                    title : "RS",
+                    name :"Report Submission"
+                },
+                "app_RR" : {
+                    data : "RR",
+                    title : "RR",
+                    name :"Risk Register"
+                },
+                "app_WIR" : {
+                    data : "WIR",
+                    title : "RFI",
+                    name :"Request For Inspection"
+                },
+                "app_RFI" : {
+                    data : "RFI",
+                    title : "RFIT",
+                    name :"Request For Information Technical"
+                },
+                "app_SA" : {
+                    data : "SA",
+                    title : "SA",
+                    name :"Safety Activity And Response"
+                },
+                "app_SDL" : {
+                    data : "SDL",
+                    title : "SDL",
+                    name :"Site Diary Log"
+                },
+                "app_SD" : {
+                    data : "SD",
+                    title : "SI",
+                    name :"Site Instruction"
+                },
+                "app_NOI" : {
+                    data : "NOI",
+                    title : "SM / NOI",
+                    name :"Site Memo / Notice Of Improvement"
+                },
+                "app_SMH" : {
+                    data : "SMH",
+                    title : "SMH",
+                    name :"Total Man-Hours"
+                },
+                "app_DA" : {
+                    data : "DA",
+                    title : "DA",
+                    name :"URW - Approved Design Drawing"
+                },
+                "app_PU" : {
+                    data : "PU",
+                    title : "PU",
+                    name :"URW - Progress Update"
+                }
             }
         }
     }
@@ -12163,91 +12636,96 @@ function getProcessDownload(apps_link, accessProcess, accessManage, project_type
         }
     }
     else if(localStorage.project_owner == "SSLR2"){
-        arrConstruct = {
-            "app_DCR" : {
-                data : "DCR",
-                title : "DCR",
-                name :"Design Change Request"
-            },
-            "app_IR" : {
-                data : "IR",
-                title : "INC",
-                name :"Incident"
-            },
-            "app_LR" : {
-                data : "LR",
-                title : "LA",
-                name :"Land Acquisition"
-            },
-            "app_LI" : {
-                data : "LI",
-                title : "LI",
-                name :"Land Issue"
-            },
-            "app_LE" : {
-                data : "LE",
-                title : "LE",
-                name :"Land Encumbrances"
-            },
-            "app_MOS" : {
-                data : "MOS",
-                title : "MS",
-                name :"Method Statement"
-            },
-            "app_MS" : {
-                data : "MS",
-                title : "MT",
-                name :"Material Approval"
-            },
-            "app_NCR" : {
-                data : "NCR",
-                title : "NCR",
-                name :"Non Conformance Report"
-            },
-            "app_NOI" : {
-                data : "NOI",
-                title : "NOI",
-                name :"Notice Of Improvement"
-            },
-            "app_PBC" : {
-                data : "PBC",
-                title : "PBC",
-                name :"Public Complaint"
-            },
-            "app_RS" : {
-                data : "RS",
-                title : "RS",
-                name :"Report Submission"
-            },
-            "app_RFI" : {
-                data : "RFI",
-                title : "RFI",
-                name :"Request For Information"
-            },
-            "app_SA" : {
-                data : "SA",
-                title : "SA",
-                name :"Safety Activity"
-            },
-            "app_SDL" : {
-                data : "SDL",
-                title : "SDL",
-                name :"Site Diary Log"
-            },
-            "app_SMH" : {
-                data : "SMH",
-                title : "SMH",
-                name :"Total Man-Hours"
-            },
-            "app_WIR" : {
-                data : "WIR",
-                title : "WIR",
-                name :"Work Inspection Request"
-            },
-            "app_PSU" : {
-                data : "PSU",
-                title : "PSU",
-                name :"Progress Summary Upload"
+        if(IS_DOWNSTREAM){
+            arrConstruct = {
+                "app_IR" : {
+                    data : "IR",
+                    title : "INC",
+                    name :"Incident"
+                },
+                "app_LR" : {
+                    data : "LR",
+                    title : "LA",
+                    name :"Land Acquisition"
+                },
+                "app_LI" : {
+                    data : "LI",
+                    title : "LI",
+                    name :"Land Issue"
+                },
+                "app_LE" : {
+                    data : "LE",
+                    title : "LE",
+                    name :"Land Encumbrances"
+                },
+                "app_MOS" : {
+                    data : "MOS",
+                    title : "MS",
+                    name :"Method Statement"
+                },
+                "app_MS" : {
+                    data : "MS",
+                    title : "MT",
+                    name :"Material Approval"
+                },
+                "app_PBC" : {
+                    data : "PBC",
+                    title : "PBC",
+                    name :"Public Complaint"
+                },
+                "app_RS" : {
+                    data : "RS",
+                    title : "RS",
+                    name :"Report Submission"
+                },
+                "app_RFI" : {
+                    data : "RFI",
+                    title : "RFI",
+                    name :"Request For Information"
+                },
+                "app_SA" : {
+                    data : "SA",
+                    title : "SA",
+                    name :"Safety Activity"
+                },
+                "app_SDL" : {
+                    data : "SDL",
+                    title : "SDL",
+                    name :"Site Diary Log"
+                },
+                "app_SMH" : {
+                    data : "SMH",
+                    title : "SMH",
+                    name :"Total Man-Hours"
+                },
+                "app_WIR" : {
+                    data : "WIR",
+                    title : "WIR",
+                    name :"Work Inspection Request"
+                },
+                "app_PSU" : {
+                    data : "PSU",
+                    title : "PSU",
+                    name :"Progress Summary Upload"
+                }
+            }
+        }else{
+            arrConstruct = {
+                "app_NCR" : {
+                    data : "NCR",
+                    title : "NCR",
+                    name :"Non Conformance Report"
+                },
+                "app_NOI" : {
+                    data : "NOI",
+                    title : "NOI",
+                    name :"Notice Of Improvement"
+                },
+                "app_PSU" : {
+                    data : "PSU",
+                    title : "PSU",
+                    name :"Progress Summary Upload"
+                }
             }
         }
     }
@@ -12501,6 +12979,11 @@ function getProcessDownload(apps_link, accessProcess, accessManage, project_type
                     data : "NOE",
                     title : "NOE",
                     name : "Notice of Emergency"
+                },
+                "GAR" : {
+                    data : "GAR",
+                    title : "GAR",
+                    name : "Government Asset Return"
                 },
                 "WDR" : {
                     data : "WDR",
@@ -13387,38 +13870,99 @@ function getProcessDownload(apps_link, accessProcess, accessManage, project_type
             for (const [idx3, ele3] of Object.entries(accessProcess)) {
                 if((ele3 != false) && (idx == "app_" + idx3)){
                     for (const [idxUse, eleUse] of Object.entries(ele3.ORG)) {
-                        if(idxUse == 'allOrg'){
-                            rightConopChoice +=
-                            `
-                                <option value="`+ele.data+`">`+ele.name+`</option>
-                            `
-                            if(idx3 == "RR"){
-                                if(localStorage.project_owner != 'JKR_SABAH'){
-                                        rightConopChoice +=
-                                    `
-                                        <option value="RRU">Risk Upload</option>
-                                    `
-                                }
-                            }
-                        }
-                        else if(idxUse == currentOrg){
-                            if(idx3 == "LI" && idxUse == "MAUJV"){
-                                rightConopChoice +=
-                                `
-                                    <option value="`+ele.data+`">Land Issue & Encumbrances</option>
-                                `
-                            }else{
-                                rightConopChoice +=
-                                `
-                                    <option value="`+ele.data+`">`+ele.name+`</option>
-                                `
-                            }
-
-                            if(idx3 == "RR" && idxUse == "MAUJV"){
+                        if(IS_DOWNSTREAM){
+                            if(idxUse == 'allOrg' && localStorage.user_org != 'MAUJV'){
+                                if(idx3 == "LI"){
                                     rightConopChoice +=
                                     `
-                                    <option value="RRU">Risk Upload</option>
+                                        <option value="`+ele.data+`">Land Issue & Encumbrances</option>
                                     `
+                                }else{
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+    
+                                if(idx3 == "RR"){
+                                    if(localStorage.project_owner != 'JKR_SABAH'){
+                                            rightConopChoice +=
+                                        `
+                                            <option value="RRU">Risk Upload</option>
+                                        `
+                                    }
+                                }
+                            }
+                            else if(idxUse == currentOrg){
+                                if(idx3 == "LI" && idxUse == "MAUJV"){
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">Land Issue & Encumbrances</option>
+                                    `
+                                }else{
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+    
+                                if(idx3 == "RR" && idxUse == "MAUJV"){
+                                        rightConopChoice +=
+                                        `
+                                        <option value="RRU">Risk Upload</option>
+                                        `
+                                }
+                            }
+                        }else{
+
+                            if(idxUse == 'allOrg'){
+                                if(IS_DOWNSTREAM){
+                                    if(idx3 == "LI"){
+                                        rightConopChoice +=
+                                        `
+                                            <option value="`+ele.data+`">Land Issue & Encumbrances</option>
+                                        `
+                                    }else{
+                                        rightConopChoice +=
+                                        `
+                                            <option value="`+ele.data+`">`+ele.name+`</option>
+                                        `
+                                    }
+                                }else{
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+    
+                                if(idx3 == "RR"){
+                                    if(localStorage.project_owner != 'JKR_SABAH'){
+                                            rightConopChoice +=
+                                        `
+                                            <option value="RRU">Risk Upload</option>
+                                        `
+                                    }
+                                }
+                            }
+                            else if(idxUse == currentOrg){
+                                if(idx3 == "LI" && idxUse == "MAUJV"){
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">Land Issue & Encumbrances</option>
+                                    `
+                                }else{
+                                    rightConopChoice +=
+                                    `
+                                        <option value="`+ele.data+`">`+ele.name+`</option>
+                                    `
+                                }
+    
+                                if(idx3 == "RR" && idxUse == "MAUJV"){
+                                        rightConopChoice +=
+                                        `
+                                        <option value="RRU">Risk Upload</option>
+                                        `
+                                }
                             }
                         }
                     }
@@ -13767,6 +14311,7 @@ function visiblityFilterDashboard(pageOpen){
     $('.assetChainToFilter.'+pageOpen).css("display", "none");
     $('.assetApjFilter.'+pageOpen).css("display", "none");
     $('.assetTypeFilter.'+pageOpen).css("display", "none");
+    $('.subActivityFilter.'+pageOpen).css("display", "none");
     $('.assetRoutineActivityFilter.'+pageOpen).css("display", "none");
     $('.assetGroupFilter.'+pageOpen).css("display", "none");
 
@@ -13867,6 +14412,9 @@ eventer(
             case "VO Form":
                 showVisibilityButton("backButtonContainer", "")
                 break;
+            case "EOT Form":
+                showVisibilityButton("backButtonContainer", "")
+                break;
             case "Contract Approval Submitted":
                 if(localStorage.contractLevel == 'UPSTREAM'){
                     eventSuccessMsg('Contract');
@@ -13890,7 +14438,7 @@ eventer(
             case "VO Approval Submitted":
                 setTimeout(() => {
                     if(localStorage.contractLevel == 'DOWNSTREAM'){
-                        $("#finance_list_ApprovedVOs_SSLR2").trigger("click")
+                        $("#finance_list_VOInbox_SSLR2").trigger("click")
                     }else if(localStorage.contractLevel == 'UPSTREAM'){
                         eventSuccessMsg('Vo');
                     }else{
@@ -13899,6 +14447,26 @@ eventer(
                 }, 3000);
                
                 break;
+            case "EOT Approval Submitted":
+                if(localStorage.contractLevel == 'DOWNSTREAM'){
+                    setTimeout(() => {
+                        $("#finance_list_EOTInbox_SSLR2").trigger("click")
+                    }, 3000);
+                }else{
+                    eventSuccessMsg('EOT');
+                }
+                
+                break;
+
+            
+        }
+
+        if(e.data.bimLinking){
+            openBimLinkingModal(e.data.bimLinking, e.data.bimLayerName);
+        }
+
+        if(e.data.bimRedirection){
+            floatBoxcompnentInfo("ClaimView", e.data.bimRedirection, e.data.bimLayerName);
         }
     },
     false
@@ -13935,13 +14503,25 @@ function eventSuccessMsg(evenType){
 
 $(document).ready(function(){
     //remove because afraid will effect other code
-    if(localStorage.page_pageOpen == 'mySysAdmin'){
+    if(localStorage.page_pageOpen == 'myProject' || localStorage.page_pageOpen == 'mySysAdmin'){
         localStorage.page_pageOpen = '';
     }
 
     // to retain the page when user refresh
     if(localStorage.page_pageOpen && localStorage.page_apps_access && localStorage.page_apps_right){
         whatToSetup();
+    }else if(localStorage.page_pageOpen == 'myReporting'){
+        $(".mainAppButton[rel='myReporting']").addClass("active");
+        $(".mainAppButton[rel='myProject']").removeClass("active");
+        $('.mainPage.myReporting').show();
+        $('.mainPage.myReporting').addClass('active');
+        $(".subMenuButtonContainer").removeClass('active');
+        $(".subMenuButtonContainer").css('opacity', '1');
+        $("#mainContainer").removeClass("subMenuOpened");
+        $('.loader').fadeIn(100);
+        setTimeout(() => {
+            $('.loader').fadeOut(100);
+        }, 3500);
     }else{
         //show opacity for submenu button and myProject container if first load
         $('.mainPage.myProject').css('opacity', '1');
@@ -13999,6 +14579,19 @@ $(document).ready(function(){
             localStorage.projOwnerSwk = response[2];
             localStorage.userLoginName = response[3];
             localStorage.encPassword = response[4];
+        }
+    });
+
+    // get view pref
+    $.ajax({
+        type: "POST",
+        dataType: "JSON",
+        url: '../Login/postlogin_processingv3.php',
+        data: {
+            functionName: "getViewPref"
+        },
+        success:function (res){
+            localStorage.view_pref = res[0];
         }
     });
 })
@@ -14107,3 +14700,4 @@ function selectMetadata(ele){
     $('#filterMissionCycleID').val()
     wizardCancelPage()
 }
+

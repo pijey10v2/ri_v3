@@ -489,6 +489,9 @@ html {
   display: flex;
   flex-direction: column;
 }
+.dashboardBody .threeColumn .flex.row {
+  flex-direction: row;
+}
 .dashboardBody .threeColumn .flex .infoContainer {
   margin: auto 5px;
 }
@@ -626,8 +629,15 @@ html {
   justify-content: space-evenly;
   margin: auto 0;
 }
+.dashboardBody .infoContainerDiv.column {
+  flex-direction: column;
+  justify-content: space-between;
+}
 .dashboardBody .infoContainerDiv .infoContainer {
   width: 50%;
+}
+.dashboardBody .infoContainerDiv .infoContainer.full {
+  width: unset;
 }
 .dashboardBody .infoContainerDiv .infoContainerBox {
   margin: auto 5px;

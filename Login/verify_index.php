@@ -14,7 +14,7 @@ if(isset($_SESSION['created'])&&(time() - $_SESSION['created'] >= 60*60*24)&&!is
 }
 
 elseif(!isset($_SESSION['project_id'])){
-	header("Location: login/postlogin");
+	header("Location: login/homePage.php");
 	exit();
 }
 

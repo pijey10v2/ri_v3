@@ -84,6 +84,8 @@ if (isset($_SESSION['email'])) {
   exit();
 };
 
+$prodFlag = (isset($PRODUCTION_FLAG) && $PRODUCTION_FLAG == true) ? 'true' : 'false';
+
 $formAction = "login/include/login";
 if (isset($_GET["redirect"])) {
   $formAction = "login/include/login?redirect=".urlencode($_GET["redirect"]);
@@ -102,7 +104,12 @@ $htmlProduction = '<head>
                   <script src="JS/JsLibrary/jquery-3.5.1.js"></script>
                   <script src="JS/signin.js"></script>
                   <script src="JS/JsLibrary/jquery-confirm.min.js"></script>
-                  <script src="JS/fontawesome.js"></script>
+                  <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/all.min.css">
+                  <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/fontawesome.min.css">
+                  <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/solid.min.css">
+                  <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/regular.min.css">
+                  <link rel="stylesheet" href="CSS/fontawesome7/fontawesome-free/css/brands.min.css">
+
                   </head>
 
                   <body class="main-container">
@@ -285,4 +292,28 @@ if(isset($PRODUCTION_FLAG) && $PRODUCTION_FLAG == true){
 
 <script>
   window.localStorage.clear();
+
+  var prodFlag = '<?php echo $prodFlag; ?>';
+    if(prodFlag == 'true'){
+
+        // When the form is submitted
+        $('#loginForm').on('submit', function(event) {
+          console.log("masuk")
+          var password = $('#password').val();
+
+          var encryptedPassword = btoa(password);
+
+          $('#password').val(encryptedPassword);
+        });
+
+        document.addEventListener("contextmenu", function(event) {
+            event.preventDefault();
+        });
+    
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "C") || (event.ctrlKey && event.shiftKey && event.key === "J")) {
+                event.preventDefault();
+            }
+        });
+    }
 </script>

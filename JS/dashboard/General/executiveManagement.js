@@ -1,5 +1,7 @@
+//V3
 var execData;
 var sectionData;
+var overallData;
 var ownerProject;
 var userOrg;
 var colorArr = [];
@@ -29,7 +31,7 @@ function exitFullScreenHandler(){
 
 function defaultScreenState(){
     $(".btn-full-screen.active").children().removeClass("fa-compress");
-    $(".btn-full-screen.active").children().addClass("fa-expand-wide");
+    $(".btn-full-screen.active").children().addClass("fa-expand");
     $(".container-full-screen.active").removeClass("active");
     $(".btn-full-screen.active").removeClass("active");
 }
@@ -47,7 +49,7 @@ function chartFullScreen(e){
         $(e).addClass("active");
         $(e).parent().parent().addClass("active");
 
-        $(e).children().removeClass("fa-expand-wide");
+        $(e).children().removeClass("fa-expand");
         $(e).children().addClass("fa-compress");
 
         containerActive = $(".container-full-screen.active")[0];
@@ -95,6 +97,16 @@ function closeDigitalModal(e){
     if(!$(e).parent().hasClass("active")){
         $(e).parent().addClass("active")
     }else{
+        var flagFilter = false;
+        var cardMonthFilter = $('#filterMonth').val();
+        var cardYearFilter = $('#filterYear').val();
+        var homeMonthFilter = $('#filterMonthDashboard').val();
+        var homeYearFilter = $('#filterYearDashboard').val();
+
+        if(cardMonthFilter != homeMonthFilter || cardYearFilter != homeYearFilter){
+            flagFilter = true;
+        }
+
         if(modal == 'pictureSlideModal'){
             $('.pictureSlideModal .button').fadeOut(100)
             if($("#imageTop .swiper-slide.active video").length){
@@ -179,7 +191,8 @@ function closeDigitalModal(e){
 
             //reload the digital reporting Main page
             if(userOrg !== "KKR"){
-                if(localStorage.project_owner == 'JKR_SABAH'){
+                if(localStorage.project_owner == 'JKR_SABAH' && flagFilter == true){
+                    $('.loader').fadeIn(100)
                     submitDashboardExecFilter()
                 }
             }
@@ -1264,9 +1277,23 @@ function homeSearchExecutive(inpt){
     $('.cardProjSearch').hide();
     $('.cardProjSearch').each(function(){
         var listText = $(this).text()
-        if (listText.toUpperCase().indexOf(filter) > -1) {
-            $(this).show();
-        }
+        var projectPhase = $(this).data('project_phase');
+
+        
+
+        if(localStorage.userOrg == "HSSI"){
+            if ( projectPhase === "1A" && listText.toUpperCase().indexOf(filter) > -1) {
+                $(this).show();
+            }
+        }else if (localStorage.userOrg == "pmc_1b"){
+            if ( projectPhase === "1B" && listText.toUpperCase().indexOf(filter) > -1) {
+                $(this).show();
+            }
+        }else{
+            if ( listText.toUpperCase().indexOf(filter) > -1) {
+                $(this).show();
+            }
+        } 
     })
 }
 
@@ -1430,29 +1457,29 @@ $(document).ready(function(){
             $('.filterContainer .sort-btn.asc').addClass('unset')
             $('.filterContainer .sort-btn.asc').next(".sort-btn:first").css("display", "none")
             $('.filterContainer .sort-btn.asc').css("display", "inline-block")
-            $('.filterContainer .sort-btn.asc').children("i").removeClass('fa-duotone fa-sort-up')
+            $('.filterContainer .sort-btn.asc').children("i").removeClass('fa-solid fa-sort-up')
             $('.filterContainer .sort-btn.asc').children("i").addClass('fa-solid fa-sort')
             $('.filterContainer .sort-btn.asc').removeClass('asc')
 
             $(this).removeClass("unset")
             $(this).addClass("asc")
             $(this).children("i").removeClass("fa-solid fa-sort")
-            $(this).children("i").addClass("fa-duotone fa-sort-up")
+            $(this).children("i").addClass("fa-solid fa-sort-up")
         }
     })
 
     $('.filter-expand').click(function(){
         if(!$(this).hasClass("max")){
             $(this).addClass("max")
-            $(this).children().removeClass("fa-regular fa-arrows-from-line")
-            $(this).children().addClass("fa-regular fa-arrows-to-line")
+            $(this).children().removeClass("fa-solid fa-arrows-down-to-line")
+            $(this).children().addClass("fa-solid fa-arrows-up-to-line")
             $('.division').removeClass("active")
             $('.division .row-container').removeClass("active")
             $('.division .row-container').siblings().slideDown(150)
         }else{
             $(this).removeClass("max")
-            $(this).children().removeClass("fa-regular fa-arrows-to-line")
-            $(this).children().addClass("fa-regular fa-arrows-from-line")
+            $(this).children().removeClass("fa-solid fa-arrows-up-to-line")
+            $(this).children().addClass("fa-solid fa-arrows-down-to-line")
             $('.division').addClass("active")
             $('.division .row-container').addClass("active")
             $('.division .row-container').siblings().slideUp(150)
@@ -1508,26 +1535,50 @@ $(document).ready(function(){
         $('#loaderHome').fadeIn()
     })
 
-    $('.row-container').click(function(){
-        if($(this).hasClass("active")){
-            $(this).removeClass("active")
-            $(this).parent().removeClass("active")
-            $(this).siblings().slideDown(150)
-            if(SYSTEM == 'KKR'){
-                if(localStorage.userOrg == 'KKR' && localStorage.projOwnerSbh == "true" && localStorage.projOwnerSwk == "true"){
-                    $(this).children().show()
+    $('.row-container').click(function(event){
+        if($(event.target).is(":not(select)")){
+            if($(this).hasClass("active")){
+                $(this).removeClass("active")
+                $(this).parent().removeClass("active")
+                $(this).siblings().slideDown(150)
+                if(SYSTEM == 'KKR'){
+                    if(localStorage.userOrg == 'KKR' && localStorage.projOwnerSbh == "true" && localStorage.projOwnerSwk == "true"){
+                        $(this).children().show()
+                    }
                 }
-            }
-        }else{
-            $(this).addClass("active")
-            $(this).parent().addClass("active")
-            $(this).siblings().slideUp(150)
-            if(SYSTEM == 'KKR'){
-                if(localStorage.userOrg == 'KKR' && localStorage.projOwnerSbh == "true" && localStorage.projOwnerSwk == "true"){
-                    $(this).children().hide()
+            }else{
+                $(this).addClass("active")
+                $(this).parent().addClass("active")
+                $(this).siblings().slideUp(150)
+                if(SYSTEM == 'KKR'){
+                    if(localStorage.userOrg == 'KKR' && localStorage.projOwnerSbh == "true" && localStorage.projOwnerSwk == "true"){
+                        $(this).children().hide()
+                    }
                 }
             }
         }
+    })
+
+    $('.select-projectphase').change(function(){
+        var selTarget = $(this).data('projectid');
+        var selValue = $(this).val();
+        var selYear = $('#filterYearDashboard').val();
+        var selMonth = $('#filterMonthDashboard').val();
+        var cards = $('.division.'+selTarget);
+        var cardsAll = cards.find('.card.package');
+        var cardsTarget = cards.find('.card.package[data-project_phase="'+selValue+'"]');
+
+        if(selValue == 'all'){
+            cardsAll.css('display', 'flex');
+        }else{
+            cardsAll.hide();
+            cardsTarget.css('display', 'flex');
+        }
+        if(localStorage.userOrg == "pmc_1b" || localStorage.userOrg == "HSSI"){
+            $(".select-projectphase").hide()
+        }
+
+        getOverallProgress(selValue, selYear, selMonth);
     })
 
     $('.progressBar .filter-btn').first().addClass("active")
@@ -1589,7 +1640,7 @@ function saveRange(){
         url: dataFunction,
         type: "POST",
         dataType: "JSON",
-        data: {functionName: "saveRangeSetting", red, yellow, green},
+        data: {functionName: "saveRangeSetting",red:red, yellow:yellow, green:green},
         complete: ()=>{
             window.location.search = '?rangeSaved=true'
         }
@@ -1654,3 +1705,95 @@ pauseVideoOnchange = () =>{
         $(`#imageTop .swiper-slide#imageResize-${prevImg} video`)[0].currentTime = 0;
     }
 }
+
+//retrieve overall progress data by phase
+$(document).ready(function(){
+    $.ajax({
+      type: "POST",
+      url: '../Dashboard/General/overallProgress.php',
+      dataType: 'json',
+      data: {
+          page: "overall"
+      },
+      success: function (obj) {
+        if (obj.status && obj.status == 'ok') {
+            overallData = obj.data;
+
+            var selYear = $('#filterYearDashboard').val();
+            var selMonth = $('#filterMonthDashboard').val();
+
+            if(localStorage.userOrg == "HSSI"){
+                getOverallProgress('1A', selYear, selMonth);
+                
+            }else if (localStorage.userOrg == "pmc_1b"){
+                getOverallProgress('1B', selYear, selMonth);
+                
+            }else{
+                getOverallProgress('all', selYear, selMonth);
+            }   
+            
+        }
+      }
+  });
+})
+
+getOverallProgress = (selPhase, selYear, selMonth) => {
+    var curr_physical;
+    var prev_physical;
+    var variance;
+
+    if(selPhase !== 'all'){
+        if(overallData.length != 0){
+            if((overallData.overall && (overallData.overall['flag1A'] == true && selPhase == '1A') )|| (overallData.overall &&  (overallData.overall['flag1B'] == true && selPhase == '1B'))){
+                curr_physical = '100.00';
+            }else{
+                curr_physical = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth][selPhase] && overallData.overall[selYear][selMonth][selPhase]['prev_month_physical']) ? overallData.overall[selYear][selMonth][selPhase]['curr_month_physical'] : 'N/A';
+            }
+    
+            prev_physical = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth][selPhase] && overallData.overall[selYear][selMonth][selPhase]['prev_month_physical']) ? overallData.overall[selYear][selMonth][selPhase]['prev_month_physical'] : 'N/A';
+            variance = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth][selPhase] && overallData.overall[selYear][selMonth][selPhase]['variance']) ? overallData.overall[selYear][selMonth][selPhase]['variance'] : 'N/A';
+        }else{
+            curr_physical = 'N/A'
+            prev_physical = 'N/A'
+            variance = 'N/A' 
+        }
+        
+    }else{
+        var temp_curr_physical_1A = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth]['1A'] && overallData.overall[selYear][selMonth]['1A']['curr_month_physical']) ? overallData.overall[selYear][selMonth]['1A']['curr_month_physical'] : 'N/A';
+        var temp_prev_physical_1A = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth]['1A'] && overallData.overall[selYear][selMonth]['1A']['prev_month_physical']) ? overallData.overall[selYear][selMonth]['1A']['prev_month_physical'] : 'N/A';
+        var temp_variance_1A = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth]['1A'] && overallData.overall[selYear][selMonth]['1A']['variance']) ? overallData.overall[selYear][selMonth]['1A']['variance'] : 'N/A';
+
+        var temp_curr_physical_1B = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth]['1B'] && overallData.overall[selYear][selMonth]['1B']['curr_month_physical']) ? overallData.overall[selYear][selMonth]['1B']['curr_month_physical'] : 'N/A';
+        var temp_prev_physical_1B = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth]['1B'] && overallData.overall[selYear][selMonth]['1B']['prev_month_physical']) ? overallData.overall[selYear][selMonth]['1B']['prev_month_physical'] : 'N/A';
+        var temp_variance_1B = (overallData.overall && overallData.overall[selYear] && overallData.overall[selYear][selMonth] && overallData.overall[selYear][selMonth]['1B'] && overallData.overall[selYear][selMonth]['1B']['variance']) ? overallData.overall[selYear][selMonth]['1B']['variance'] : 'N/A';
+
+        curr_physical = '1A : ' + temp_curr_physical_1A + ' <b>|</b> 1B : ' + temp_curr_physical_1B;
+        prev_physical = '1A : ' + temp_prev_physical_1A + ' <b>|</b> 1B : ' + temp_prev_physical_1B;
+        variance = '1A : ' + temp_variance_1A + ' <b>|</b> 1B : ' + temp_variance_1B;
+    }
+
+    $("#curr_month_physical").html(curr_physical);
+    $("#prev_month_physical").html(prev_physical);
+    $("#variance_physical").html(variance);
+}
+
+
+//DR - to control view access for PMC
+function DRonLoad(){
+    if(localStorage.userOrg == "HSSI"){
+        console.log("DR HSSI 1")
+        $(".select-projectphase").val("1A").change();
+        
+    }else if (localStorage.userOrg == "pmc_1b"){
+        console.log("DR pmc_1b 1")
+        $(".select-projectphase").val("1B").change(); 
+        
+    }else{
+        console.log("DR none triggered")
+    } 
+}
+
+
+$(document).ready(function(){ 
+    DRonLoad()
+});

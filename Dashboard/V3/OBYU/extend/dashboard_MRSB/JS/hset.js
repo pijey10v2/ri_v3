@@ -1190,12 +1190,19 @@ function updateCardCumul(data){
 
     var paramYr = (allDataArr.year) ? allDataArr.year : {};
     var paramMonth = (allDataArr.month) ? allDataArr.month : {};
+    var num = parseFloat(data.cardCumulWithoutLti);
+    var formatted = isNaN(num)
+        ? '0.00'
+        : num.toLocaleString('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
 
     if(! jQuery.isEmptyObject(allDataArr)){
-        $('#cumulLTI').html((data.cardCumulWithoutLti) ?  '<span style="cursor:pointer;" onclick="openConOpDashboard(\''+paramYr+'\',\''+paramMonth+'\')">'+data.cardCumulWithoutLti+'</span>' : 0);
+        $('#cumulLTI').html((formatted) ?  '<span style="cursor:pointer;" onclick="openConOpDashboard(\''+paramYr+'\',\''+paramMonth+'\')">'+formatted+'</span>' : 0);
     }
     else{
-        $('#cumulLTI').html((data.cardCumulWithoutLti) ?  data.cardCumulWithoutLti : 0);
+        $('#cumulLTI').html((formatted) ?  formatted : 0);
     }
 }
 function refreshInformation(package = 'overall', year = 'all', month = 'all'){
@@ -1223,8 +1230,92 @@ function refreshInformation(package = 'overall', year = 'all', month = 'all'){
 
     var smhData = (hsetData && hsetData.smh[package] && hsetData.smh[package] && hsetData.smh[package][year] && hsetData.smh[package][year][month]) ? hsetData.smh[package][year][month] : [];
     var smhChart = (smhData && smhData.chart) ? smhData.chart : [];
+    var smhYearData = (hsetData && hsetData.smh && hsetData.smh[package] && hsetData.smh[package][year]) ? hsetData.smh[package][year] : {};
+    var smhCumData;
+
+    // handle package only (year = all, month = all)
+    if(year === 'all' && month === 'all'){
+
+        var packageData = (hsetData && hsetData.smh && hsetData.smh[package])
+            ? hsetData.smh[package]
+            : {};
+
+        var yearKeys = [];
+        for(var y in packageData){
+            if(packageData.hasOwnProperty(y) && y !== 'all'){
+                yearKeys.push(y);
+            }
+        }
+
+        if(yearKeys.length > 0){
+
+            // get latest year
+            var latestYear = yearKeys[0];
+            for(var i=1; i<yearKeys.length; i++){
+                if(parseInt(yearKeys[i],10) > parseInt(latestYear,10)){
+                    latestYear = yearKeys[i];
+                }
+            }
+
+            var latestYearData = packageData[latestYear];
+
+            // now get latest month inside that year
+            var monthKeys = [];
+            for(var m in latestYearData){
+                if(latestYearData.hasOwnProperty(m) && m !== 'all'){
+                    monthKeys.push(m);
+                }
+            }
+
+            if(monthKeys.length > 0){
+                var monthMap = {Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12};
+
+                var latestMonth = monthKeys[0];
+                for(var j=1; j<monthKeys.length; j++){
+                    if(monthMap[monthKeys[j]] > monthMap[latestMonth]){
+                        latestMonth = monthKeys[j];
+                    }
+                }
+
+                smhCumData = latestYearData[latestMonth];
+
+            } else {
+                smhCumData = latestYearData['all'] || {};
+            }
+
+        } else {
+            smhCumData = {};
+        }
+
+    } else if(month === 'all'){
+        // get the real month keys (exclude 'all')
+        var monthKeys = [];
+        for(var k in smhYearData){
+            if(smhYearData.hasOwnProperty(k) && k !== 'all'){
+                monthKeys.push(k);
+            }
+        }
+
+        if(monthKeys.length > 0){
+            // map month names to numbers
+            var monthMap = {Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12};
+            var latestMonth = monthKeys[0];
+            for(var i=1; i<monthKeys.length; i++){
+                if(monthMap[monthKeys[i]] > monthMap[latestMonth]){
+                    latestMonth = monthKeys[i];
+                }
+            }
+            smhCumData = smhYearData[latestMonth];
+        } else if(smhYearData['all']){
+            smhCumData = smhYearData['all']; // fallback if only 'all' exists
+        } else {
+            smhCumData = {};
+        }
+    } else {
+        smhCumData = (smhYearData && smhYearData[month]) ? smhYearData[month] : {};
+    }
     drawManHourWithoutLti(smhChart, dataYearMonth);
-    updateCardCumul(smhData);
+    updateCardCumul(smhCumData);
 }
 
 function refreshDashboard(){

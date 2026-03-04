@@ -1,5 +1,5 @@
 <?php
-
+//V3 file
 class accessControl
 {
     var $accessArr = array();
@@ -11,7 +11,7 @@ class accessControl
 
 
     function __construct(){
-        global $SYSTEM;
+        global $SYSTEM, $IS_DOWNSTREAM;
 
         if($SYSTEM == 'KKR'){
             $this->loadAccessKKR();
@@ -21,6 +21,8 @@ class accessControl
     }
 
     function loadAccessKKR(){
+        global $IS_DOWNSTREAM;
+        
         $appListsEncode = isset($_SESSION['appsLinks']) ? json_decode($_SESSION['appsLinks'], true) : [];
         $addOwner = ($_SESSION['project_owner']) ? $_SESSION['project_owner'] : ""; 
 
@@ -49,7 +51,22 @@ class accessControl
         }
 
         if($_SESSION['Project_type'] == 'CONSTRUCT'){
-            $linkFile = dirname(__FILE__)."\..\access\accessControl_".$addOwner.".json";
+
+            if($_SESSION['project_owner'] == 'JKR_SABAH'){
+                if($_SESSION['project_phase'] == '1B'){
+                    $linkFile = dirname(__FILE__)."\..\access\accessControl_".$addOwner."_1B.json";
+                }else{
+                    $linkFile = dirname(__FILE__)."\..\access\accessControl_".$addOwner.".json";
+                }
+            }else if($_SESSION['project_owner'] == 'SSLR2'){
+                if($IS_DOWNSTREAM){
+                    $linkFile = dirname(__FILE__)."\..\access\accessControl_SSLR2_DOWNSTREAM.json";
+                }else{
+                    $linkFile = dirname(__FILE__)."\..\access\accessControl_SSLR2.json";
+                }
+            }else{
+                $linkFile = dirname(__FILE__)."\..\access\accessControl_".$addOwner.".json";
+            }
 
             if(file_exists($linkFile)){
                 $access_control = json_decode(file_get_contents($linkFile), true);
@@ -58,6 +75,7 @@ class accessControl
                 $access_control = json_decode(file_get_contents("../BackEnd/accessControl.json"), true);
             }
         }else{
+
             $linkFile = dirname(__FILE__)."\..\access\accessControlAsset_".$addOwner.".json";
 
             if(file_exists($linkFile)){
@@ -90,8 +108,8 @@ class accessControl
             $assetMainMenu = array('RM','PM','EW','RFI','NCP','PAU');
             $assetMenuRM = array('RM','PM','EW','RFI','NCP','PAU','RI','AM','WP','WA','WI','DR','NOD','IVR','BRG','CVT','DRG','PAVE','RF','SLP');
             $assetMenuPM = array('RM','PM','EW','RFI','NCP','PAU','WO','WB');
-            $assetMenuEW = array('RM','PM','EW','RFI','NCP','PAU','NOE','WDR');
-            $assetMenu = array('RM','PM','EW','RI','AM','WP','WA','WI','DR','NOD','IVR','WO','WB','NOE','WDR','RFI','NCP','PAU','BRG','CVT','DRG','PAVE','RF','SLP');
+            $assetMenuEW = array('RM','PM','EW','RFI','NCP','PAU','NOE','GAR','WDR');
+            $assetMenu = array('RM','PM','EW','RI','AM','WP','WA','WI','DR','NOD','IVR','WO','WB','NOE','GAR','WDR','RFI','NCP','PAU','BRG','CVT','DRG','PAVE','RF','SLP');
 
             if($_SESSION['Project_type'] == 'CONSTRUCT'){
                 foreach ($this->accessArr as $index => $true) {

@@ -148,7 +148,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -182,6 +182,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -441,7 +449,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -483,6 +491,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -672,7 +688,15 @@
             "NOE": {
                 "create": true,
                 "read": true,
-                "update": false,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": true,
+                "read": true,
+                "update": true,
                 "verify": false,
                 "approve": false,
                 "delete": false
@@ -750,6 +774,14 @@
                 "delete": false
             },
             "SLP": {
+                "create": true,
+                "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "DIV": {
                 "create": true,
                 "read": true,
                 "update": false,
@@ -910,7 +942,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -952,6 +984,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -1174,7 +1214,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -1208,6 +1248,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -1446,7 +1494,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -1480,6 +1528,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -1708,7 +1764,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -1742,6 +1798,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -1964,7 +2028,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -1998,6 +2062,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -2172,7 +2244,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -2206,6 +2278,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -2399,6 +2479,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": true,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -2692,7 +2780,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -2726,6 +2814,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -2895,7 +2991,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -2929,6 +3025,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,
@@ -3313,6 +3417,14 @@
                 "approve": false,
                 "delete": false
             },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
             "WDR": {
                 "create": false,
                 "read": true,
@@ -3385,7 +3497,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -3590,6 +3702,14 @@
                 "approve": false,
                 "delete": false
             },
+            "GAR": {
+                "create": false,
+                "read": false,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
             "WDR": {
                 "create": false,
                 "read": true,
@@ -3654,7 +3774,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -3878,7 +3998,7 @@
                 "delete": false
             },
             "DR": {
-                "create": false,
+                "create": true,
                 "read": false,
                 "update": false,
                 "verify": false,
@@ -3912,6 +4032,14 @@
             "NOE": {
                 "create": false,
                 "read": true,
+                "update": false,
+                "verify": false,
+                "approve": false,
+                "delete": false
+            },
+            "GAR": {
+                "create": false,
+                "read": false,
                 "update": false,
                 "verify": false,
                 "approve": false,

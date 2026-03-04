@@ -1079,7 +1079,8 @@
                 "newClaimsHQ": false,
                 "newClaimsPerHQ": false,
                 "rejectedClaims": true,
-                "approvedClaims": true
+                "approvedClaims": true,
+                "InventoryClaim": true
             },
             "VO": {
                 "create": false,
@@ -1573,6 +1574,20 @@
                 "approve": false,
                 "delete": false
             }
+        },
+        "Project_Admin": {
+            "UserDetails": true,
+            "DataPool": true,
+            "AerialImages": true,
+            "Schedule": true,
+            "Config":  {
+                "Config" : true,
+                "ProjectWise 365" : true,
+                "ProjectWise" : true,
+                "Power BI" : true,
+                "Share Point": true
+            },
+            "Project": true
         }
     },
     "Facility Management Department": {
@@ -1869,7 +1884,8 @@
                 "newClaimsHQ": true,
                 "newClaimsPerHQ": true,
                 "rejectedClaims": true,
-                "approvedClaims": true
+                "approvedClaims": true,
+                "InventoryClaim": true
             },
             "VO": {
                 "create": false,

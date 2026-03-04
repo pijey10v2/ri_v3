@@ -15,16 +15,22 @@ function drawTypeEvents(data, eventDate, monthYear){
     if(localStorage.ui_pref == 'ri_v3'){
         const colors = ['#00DFCF', '#8FDAAE', '#C6E18F', '#F3E98E', '#FFDC6B', '#FFB265', '#FF7D61', '#D63C68', '#BC1052', '#7E2571', '#565697', '#6DB9D7']
         const gradients = ['#00BAAD', '#57C785', '#ADD45C', '#EDDD53', '#FFC300', '#FF8D1A', '#FF5733', '#C70039', '#900C3F', '#511849', '#3D3D6B', '#2A7B9B'] 
+        const colorOps = [];
+        for (var i = 0; i < colors.length; i++) { 
+            const colorPair = {
+                linearGradient: {
+                    x1: 0, y1: 0, x2: 1, y2: 1 // Gradient direction (from top-left to bottom-right)
+                },
+                stops: [
+                    [0, colors[i]],
+                    [1, gradients[i]]
+                ]
+            }
+            colorOps.push(colorPair);
+        }
+
         Highcharts.setOptions({
-        colors: Highcharts.map(colors, (color, i) => ({
-            linearGradient: {
-                x1: 1, x2: 0, y1: 0, y2: 1
-            },
-            stops: [
-                [0, color],
-                [1, gradients[i]]
-            ]
-            }))
+        colors: colorOps
         });
     }else{
         colorArr = ['#a8caff', '#ffa8a8', '#f7b365', '#c9cc85', '#f0f582', '#a8ffc5', '#a8ffef', '#b5a8ff', '#dea8ff', '#ffa8f2', '#ffa8c9', '#ffa8a8']
@@ -334,16 +340,23 @@ function drawTypePublic(data, eventDate, monthYear){
     if(localStorage.ui_pref == 'ri_v3'){
         const colors = ['#00DFCF', '#8FDAAE', '#C6E18F', '#F3E98E', '#FFDC6B', '#FFB265', '#FF7D61', '#D63C68', '#BC1052', '#7E2571', '#565697', '#6DB9D7']
         const gradients = ['#00BAAD', '#57C785', '#ADD45C', '#EDDD53', '#FFC300', '#FF8D1A', '#FF5733', '#C70039', '#900C3F', '#511849', '#3D3D6B', '#2A7B9B'] 
+        
+        const colorOps = [];
+        for (var i = 0; i < colors.length; i++) { 
+            const colorPair = {
+                linearGradient: {
+                    x1: 0, y1: 0, x2: 1, y2: 1 // Gradient direction (from top-left to bottom-right)
+                },
+                stops: [
+                    [0, colors[i]],
+                    [1, gradients[i]]
+                ]
+            }
+            colorOps.push(colorPair);
+        }
+
         Highcharts.setOptions({
-        colors: Highcharts.map(colors, (color, i) => ({
-            linearGradient: {
-                x1: 1, x2: 0, y1: 0, y2: 1
-            },
-            stops: [
-                [0, color],
-                [1, gradients[i]]
-            ]
-            }))
+        colors: colorOps
         });
     }else{
         colorArr = ['#a8caff', '#ffa8a8', '#f7b365', '#c9cc85', '#f0f582', '#a8ffc5', '#a8ffef', '#b5a8ff', '#dea8ff', '#ffa8f2', '#ffa8c9', '#ffa8a8']

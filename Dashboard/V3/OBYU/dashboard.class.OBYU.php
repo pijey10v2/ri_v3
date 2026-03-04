@@ -16,6 +16,7 @@ class RiDashboard
 	var $projectID;
 	var $parentProjectID;
 	var $childProjectInfo;
+	var $childProjectList;
 	var $isWPC;
 	var $ownerOrg;
 	var $jogetLinkObj;
@@ -133,10 +134,11 @@ class RiDashboard
 		// load highcharts and jquery module
 		echo '
 		<script src="'.$this->pathRel.'../../JS/JsLibrary/jquery-3.5.1.js"></script>
-		<script src="'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http').'://code.highcharts.com/highcharts.js"></script>
-		<script src="'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http').'://code.highcharts.com/modules/exporting.js"></script>
+		<script src="'.$this->pathRel.'../../JS/highchart/v11/highcharts.js"></script>
+		<script src="'.$this->pathRel.'../../JS/highchart/v11/highcharts.js"></script>
 		<script src="../../JS/dashboard.js"></script>
 		';
+		
 		
 		switch ($this->dashboard) {
 			case 'projectSummary':
@@ -163,10 +165,10 @@ class RiDashboard
 
 		// disable all for now as it return error on highcharts
 		if ($this->enableMenu) {
-			echo '<script src="https://code.highcharts.com/modules/series-label.js"></script>
-	        <script src="https://code.highcharts.com/modules/exporting.js"></script>
-	        <script src="https://code.highcharts.com/modules/export-data.js"></script>
-	        <script src="https://code.highcharts.com/modules/accessibility.js"></script>';
+			echo '<script src="https://code.highcharts.com/11/modules/series-label.js"></script>
+	        <script src="https://code.highcharts.com/11/modules/exporting.js"></script>
+	        <script src="https://code.highcharts.com/11/modules/export-data.js"></script>
+	        <script src="https://code.highcharts.com/11/modules/accessibility.js"></script>';
 		}
 	}
 
@@ -278,6 +280,7 @@ class RiDashboard
 				}
 			}
 
+			$childProjectList = [];
 			foreach ($this->childProjectInfo as $childID) {
 				$resSection = $this->getCustomDatalistData($url.$childID['project_id'], 'doc');
 				if (isset($resSection['data'])) {
@@ -288,7 +291,9 @@ class RiDashboard
 						$this->sectionOptions[$childID['project_id']][] = $sec['section_code'];
 					}
 				}
+				$childProjectList[] = $childID['project_id'];
 			}
+			$this->childProjectList = $childProjectList;
 		}
 
 	}
