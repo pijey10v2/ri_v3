@@ -14766,6 +14766,23 @@ $(document).ready(function(){
 
 });
 
+var to = false;
+
+$('#treeSearch').keyup(function () {
+
+    if (to) {
+        clearTimeout(to);
+    }
+
+    to = setTimeout(function () {
+
+        var v = $('#treeSearch').val();
+        $('#assetHierarchyTree').jstree(true).search(v);
+
+    }, 250);
+
+});
+
 $('#assetHierarchyTree').on("select_node.jstree", function (e, data) {
 
     let nodeID = data.node.id;
