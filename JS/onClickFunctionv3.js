@@ -2830,9 +2830,6 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                 <div class="subButton" id = "configPowerBI" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                     <span class="parentTagName">Power BI</span>
                                 </div>
-                                <div class="subButton" id = "configAssetHierarchy" rel = "main-assethierarchy" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
-                                    <span class="parentTagName">Asset Table Hierarchy Setup</span>
-                                </div>
                             `
                         }
                         if ((idxAccess == "Lookup") && eleAccess == true){
@@ -4479,9 +4476,6 @@ function setAccessRightButtonSSLR2(rightMenu, accessProcess, accessSetup, access
                                 <div class="subButton" id = "configPowerBI" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                     <span class="parentTagName">Power BI</span>
                                 </div>
-                                <div class="subButton" id = "configAssetHierarchy" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
-                                    <span class="parentTagName">Asset Table Hierarchy Setup</span>
-                                </div>
                             `
                         }
                     }
@@ -5694,9 +5688,6 @@ function setAccessRightButtonOBYU(rightMenu, accessProcess, accessSetup, accessM
                                 </div>
                                 <div class="subButton" id = "configPowerBI" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                     <span class="parentTagName">Power BI</span>
-                                </div>
-                                <div class="subButton" id = "configAssetHierarchy" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
-                                    <span class="parentTagName">Asset Table Hierarchy Setup</span>
                                 </div>
                             `
                         }
