@@ -2830,6 +2830,9 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                 <div class="subButton" id = "configPowerBI" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                     <span class="parentTagName">Power BI</span>
                                 </div>
+                                <div class="subButton" id = "configAssetHierarchy" rel = "main-assethierarchy" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                                    <span class="parentTagName">Asset Table Hierarchy Setup</span>
+                                </div>
                             `
                         }
                         if ((idxAccess == "Lookup") && eleAccess == true){
@@ -4476,6 +4479,9 @@ function setAccessRightButtonSSLR2(rightMenu, accessProcess, accessSetup, access
                                 <div class="subButton" id = "configPowerBI" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                     <span class="parentTagName">Power BI</span>
                                 </div>
+                                <div class="subButton" id = "configAssetHierarchy" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                                    <span class="parentTagName">Asset Table Hierarchy Setup</span>
+                                </div>
                             `
                         }
                     }
@@ -5688,6 +5694,9 @@ function setAccessRightButtonOBYU(rightMenu, accessProcess, accessSetup, accessM
                                 </div>
                                 <div class="subButton" id = "configPowerBI" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                     <span class="parentTagName">Power BI</span>
+                                </div>
+                                <div class="subButton" id = "configAssetHierarchy" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                                    <span class="parentTagName">Asset Table Hierarchy Setup</span>
                                 </div>
                             `
                         }
@@ -14700,4 +14709,77 @@ function selectMetadata(ele){
     $('#filterMissionCycleID').val()
     wizardCancelPage()
 }
+
+$(document).ready(function(){
+
+    $.ajax({
+        type: "POST",
+        url: "../BackEnd/fetchAssetHierarchy.php",
+        dataType: "json",
+        data: {
+            functionName: "getListOfOmniClass"
+        },
+        success: function(response){
+
+            let treeData = [];
+            let result = response.data;
+
+            result.sort((a,b)=> a.auto_id - b.auto_id);
+
+            result.forEach(function(item){
+
+                let parent = "#";
+
+                if(item.parent_asset_id && item.parent_asset_id !== "0"){
+                    parent = item.parent_asset_id;
+                }
+
+                let text = item.asset_name ? item.asset_name : item.asset_type;
+
+                treeData.push({
+                    id: item.id,
+                    parent: parent,
+                    text: text
+                });
+
+            });
+
+            $('#assetHierarchyTree').jstree("destroy");
+
+            $('#assetHierarchyTree').jstree({
+                core:{
+                    data: treeData
+                },
+                plugins:["search","wholerow","types"],
+                types:{
+                    "default":{
+                        "icon":"fa fa-folder"
+                    }
+                }
+            });
+
+        },
+        error:function(xhr,status,error){
+            console.log("Hierarchy load error:", error);
+        }
+    });
+
+});
+
+$('#assetHierarchyTree').on("select_node.jstree", function (e, data) {
+
+    let nodeID = data.node.id;
+    let parentID = data.node.parent;
+
+    let url = JOGETLINK['asset_table_hierarchy_list'];
+
+    if(parentID === "#"){
+        url += "&parent_asset=" + nodeID;
+    }else{
+        url += "&child_asset=" + nodeID;
+    }
+
+    $("#jogetAssetTableHierarchyList").attr("src", url);
+
+});
 

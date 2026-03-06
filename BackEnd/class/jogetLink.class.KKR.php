@@ -4361,6 +4361,7 @@ class JogetLink
 		$cons_issue_markupv3_sbh = $userviewPrefixDocument."new_markupSbh?project_id_number=".$this->pid."&package_id=".$this->currPackageId."&package_uuid=".$this->currPackageUuid."&package_name=".$this->currPackageName."&project_owner=".$this->currProjectOwner."&wpc=".$this->currWPCId."&project_id=".$this->currProjectId;
 		$markup_json_notification_package = $jsonPrefixDocument."inbox_markupPackage?d-2911267-fn_ResourceId=".$this->currUserEmail."&d-2911267-fn_package_uuid=".$this->currPackageUuid;
 		$cons_datalist_markup_sabah = $userviewPrefixDocument."markupForm_crud_sabah?d-6595155-fn_package_uuid=".$this->currPackageUuid;
+		$omni_class_network_asset = $jsonPrefixAsset.'list_AssetHierarchy?start=0&rows=9999';
 
 		$generalLinkArr = array(
 			'cons_json_datalist_task' => $cons_json_datalist_task,
@@ -4505,7 +4506,9 @@ class JogetLink
 			'cons_issue_markupv3' => $cons_issue_markupv3,
 			'cons_issue_markupv3_sbh' => $cons_issue_markupv3_sbh,
 			'markup_json_notification_package' => $markup_json_notification_package,
-			'cons_datalist_markup_sabah' => $cons_datalist_markup_sabah
+			'cons_datalist_markup_sabah' => $cons_datalist_markup_sabah,
+
+			'omni_class_network_asset' => $omni_class_network_asset
 		);
 
 		if($this->currProjectOwner == "SSLR2"){

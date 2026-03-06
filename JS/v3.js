@@ -380,6 +380,13 @@ detachWidgetToOpen = (listToOpen) =>{
             $("#detachWidgetMaintenanceList").removeClass("show");
             $("#detachWidgetInventoryList").addClass("show");
             break;
+        case "assetTableHierarchyView":
+            title = "Asset Table - Hierarchy View";
+            $(".jogetList.assetTableHierarchyList").hide();
+            $("#detachWidgetConopList").removeClass("show");
+            $("#detachWidgetMaintenanceList").removeClass("show");
+            $("#detachWidgetassetTableHierarchyList").addClass("show");
+            break;
         case "maintenanceBrowser":
             title = "Maintenance Browser";
             $(".jogetList.maintenanceBrowser").hide();
@@ -8186,8 +8193,23 @@ $(function () {
                 $(`.jogetList.inventoryList`).css('display', 'block')
                 //close maintenance browser list
                 $(`.jogetList.maintenanceBrowser`).css('display', 'none')
+                //close asset table hierarchy list
+                $(`.jogetList.assetTableHierarchyList`).css('display', 'none')
                 //update iframe class for detach widget
                 $("#detachWidgetIframe").addClass("jogetInventorylist");
+            }
+            else if(pageDatalist == 'assetTableHierarchyView'){
+                $('.buttonTab.parentTab').children().removeClass('active')
+                $('.buttonTab.parentTab').removeClass('parent')
+                $('.buttonTab.childrenTab').css('display', 'none')
+                $("iframe.jogetAssetTableHierarchyList").attr("src", "");
+                $(`.jogetList.assetTableHierarchyList`).css('display', 'block')
+                //close maintenance browser list
+                $(`.jogetList.maintenanceBrowser`).css('display', 'none')
+                //close asset table list
+                $(`.jogetList.inventoryList`).css('display', 'none')
+                //update iframe class for detach widget
+                $("#detachWidgetIframe").addClass("jogetAssetTableHierarchyList");
             }
             else if(pageDatalist == 'assetListInventory'){
                 $(`.jogetList.assetList`).css('display', 'block')

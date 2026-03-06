@@ -2857,6 +2857,9 @@ echo '
                                     <button class="toolButton mid bulk" rel="insight" title="Bulk Export Process" data-width="55" data-page="bulkAsset"><i class="fa-solid fa-paste"></i><div class="label">Bulk<br>Export</div></button>
                                     <button class="toolButton mid" rel="list" title="Maintenance Browser" data-process="maintenanceBrowser"><i class="fa-solid fa-wrench"></i><div class="label">Maintenance<br>Browser</div></button>
                                     <button class="toolButton mid" rel="insight" title="Setup" data-width="70" data-page="setupList"><i class="fa-solid fa-gear"></i><div class="label">Setup</div></button>
+                                    <button class="toolButton mid inventory" rel="list" title="Asset Table - Hierarchy View" data-process="assetTableHierarchyView" style="display: none;">
+                                    <i class="fa-solid fa-boxes-stacked"></i><div class="label">Asset Table - <br>Hierarchy View</div>
+                                    </button>
                                 </div>
                             </div>
                             <div class="text">Asset</div>
@@ -4123,6 +4126,33 @@ echo '
                                 <div class="tab changeName children inventoryJoget" rel="network_route" id="inventoryJoget" style="max-width: 100px;" title="RT" onclick="navBoxTabClick(this)">Route</div>
                             </div>
                             <iframe class="fullFrame jogetInventorylist" id="jogetInventoryList" src="" frameBorder="0"></iframe>
+                        </div>
+                        <div class="infoFooter">
+                        </div>
+                    </div>
+                    <div class="navbox jogetList assetTableHierarchyList">
+                        <div class="infoHeader" id="inventoryButton">
+                            <div class="header" id = "nameAssetTableHierarchyList">Asset Table  - Hierarchy View</div>
+                            <div class="refreshButton" onclick="detachWidgetOpen(this)" title="Attach/Detach" data-list="assetTableHierarchyView"><i class="fa-solid fa-square-arrow-up-right"></i></div>
+                            <div class="refreshButton" id = "changeNameInventory" title="Change Tab Name"><i class="fa-solid fa-toggle-on fa-xs top-3" id = "toggleInventory"></i></div>
+                            <div class="closeButton" title="Close"><i class="fa-solid fa-xmark"></i></div>
+                        </div>
+                        <div class="infoBody">
+
+                            <div class="hierarchy-container">
+
+                                <input type="text" id="treeSearch" placeholder="Search asset..." style="width:100%; margin-bottom:5px;">
+
+                                <div id="assetHierarchyTree"></div>
+
+                            </div>
+
+                            <iframe class="fullFrame jogetAssetTableHierarchyList"
+                                id="jogetAssetTableHierarchyList"
+                                src=""
+                                frameborder="0">
+                            </iframe>
+
                         </div>
                         <div class="infoFooter">
                         </div>
