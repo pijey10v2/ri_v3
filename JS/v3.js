@@ -380,19 +380,19 @@ detachWidgetToOpen = (listToOpen) =>{
             $("#detachWidgetMaintenanceList").removeClass("show");
             $("#detachWidgetInventoryList").addClass("show");
             break;
-        case "assetTableHierarchyView":
-            title = "Asset Table - Hierarchy View";
-            $(".jogetList.assetTableHierarchyList").hide();
-            $("#detachWidgetConopList").removeClass("show");
-            $("#detachWidgetMaintenanceList").removeClass("show");
-            $("#detachWidgetassetTableHierarchyList").addClass("show");
-            break;
         case "maintenanceBrowser":
             title = "Maintenance Browser";
             $(".jogetList.maintenanceBrowser").hide();
             $("#detachWidgetConopList").removeClass("show");
             $("#detachWidgetMaintenanceList").addClass("show");
             $("#detachWidgetInventoryList").removeClass("show");
+            break;
+        case "assetTableHierarchyView":
+            title = "Asset Table - Hierarchy View";
+            $(".jogetList.assetTableHierarchyList").hide();
+            $("#detachWidgetConopList").removeClass("show");
+            $("#detachWidgetMaintenanceList").removeClass("show");
+            $("#detachWidgetassetTableHierarchyList").addClass("show");
             break;
     }
 

@@ -6102,6 +6102,7 @@ function OnClickSaveAerialGroup(){
 }
 
 function openJogetFromProjAdmin(url, form = false, parentTagNameText = ''){
+    const originalUrlKey = url; // Save the original key
 
     $("#main-project-dashboard h3").text(parentTagNameText);
     
@@ -6117,12 +6118,23 @@ function openJogetFromProjAdmin(url, form = false, parentTagNameText = ''){
         url = JOGETLINK[url];
     }
 
+    
     if(url) {
-        $("#digitalReportingInfo iframe").attr("src", url).show();
- 
+        // $("#digitalReportingInfo iframe").attr("src", url).show();
+    
+        if(originalUrlKey == "asset_hierarchy_crud"){
+            $("#digitalReportingInfo iframe").attr("src", url).hide();
+            $("#digitalReportingInfo #omniClassContainer").show();
+            $("#omniClassContainer iframe").attr("src", url).show();
+            OnLoadOmniClass();
+        }
+        else{
+            $("#digitalReportingInfo iframe").attr("src", url).show();
+            $("#digitalReportingInfo #omniClassContainer").hide();
+            $("#omniClassContainer iframe").attr("src", url).hide();
+        }
     } else {
         $("#digitalReportingInfo iframe").attr("src", url).hide();
- 
     }
 }
 
@@ -6286,4 +6298,132 @@ OnClickSaveUserList = () =>{
 
 OnClickEditUserList = () =>{
     $("#adminProjectUsers").find(".edit").removeAttr("disabled");
+}
+
+function OnLoadOmniClass() {
+    var btnAssetType = document.querySelector('#btnCreateAssetType');
+    
+    $("#myUL").html("");
+    var assetTypeBtn = `<li class="item">
+                            <input type="checkbox" id="assetType" name="assetType">
+                            <label for="assetType">Asset (Parent)</label>
+                            <button type="button" class="btnAssetType btn-link-transparent" id="btnCreateAssetType">
+                                <i class="fa fa-plus-circle"></i>
+                            </button>
+                            <ul class="item-list" id="parentUL"></ul>
+                        </li>`;
+    $("#myUL").append(assetTypeBtn);
+
+    $.ajax({
+        type: "POST",
+        url: "BackEnd/fetchAssetHierarchy.php",
+        dataType: 'json',
+        data: {
+            functionName: "getListOfOmniClass",
+        },
+        success: function (obj, textStatus) {
+            var result = obj.data;
+
+            //Sort Object
+            result.sort((a, b) => {
+                    return a.auto_id - b.auto_id;
+            });
+            
+
+            for (const [key, value] of Object.entries(result)) {
+                var child = "";
+
+                if(value.is_parent === "true"){
+                    child = `<li class="item">
+                                <input type="checkbox" name="item1">
+                                <label for="item1">${value.asset_type} 
+                                    <button type="button" class="btnAsset  btn-link-transparent" id="${value.id}">
+                                    <i class="fa fa-plus-circle"></i>
+                                    </button>
+                                </label>
+                                <ul class="item-list" id="id_${value.id}"></ul>
+                                </li>`;
+                    $("#parentUL").append(child);
+                }
+                else {
+                    child = `<li class="item">
+                                <input type="checkbox" name="item1">
+                                <label for="item1">${value.asset_name} 
+                                    <button type="button" class="btnAsset  btn-link-transparent" id="${value.id}">
+                                    <i class="fa fa-plus-circle"></i></button>
+                                </label>
+                                <ul class="item-list" id="id_${value.id}"></ul>
+                                </li>`;
+                    $("#id_"+ value.parent_asset_id).append(child);
+                }
+            }
+
+            
+                const childBtn = document.querySelectorAll('.btnAsset');
+                
+                childBtn.forEach(btn=> {
+                    btn.addEventListener('click', () => {
+                        $("#addOmniClass").fadeIn();
+                        $(".loader").fadeIn();
+                        $("#addOmniClass").find(".modal-header a").html("Add New");
+                        
+                        var url = JOGETLINK['asset_hierarchy_form'];
+                        $("#omniClassContainer1 #myAdminInnerFrame2").attr("src", url+ "&isParent=false&parent_id=" + btn.id).show();
+                    });
+                });
+        
+            },
+        error: function (xhr, textStatus, errorThrown) {
+            var str = textStatus + ": " + errorThrown;
+            console.log("TEST RESULT: ", str);
+        }
+    });
+
+    const parentBtn = document.querySelectorAll('.btnAssetType');
+            
+    parentBtn.forEach(btn=> {
+        btn.addEventListener('click', () => {
+        $("#addOmniClass").fadeIn();
+        $(".loader").fadeIn();
+        $("#addOmniClass").find(".modal-header a").html("Add New");
+        
+        var url = JOGETLINK['asset_hierarchy_form'];
+        $("#omniClassContainer1 #myAdminInnerFrame2").attr("src", url + "&isParent=true").show();
+        });
+    });
+}
+
+
+$(document).on("refreshAssetIframe", function(){
+    $("#myAdminInnerFrame1")[0].contentWindow.location.reload();
+});
+
+var eventMethod = window.addEventListener
+? "addEventListener"
+: "attachEvent";
+var eventer = window[eventMethod];
+var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+// Listen to message from child window
+
+eventer(
+    messageEvent,
+    function (e) {
+        switch (e.data.formName) {
+            case "Asset Submitted":
+                wizardCancelPage();
+                setTimeout(() => {
+                       OnLoadOmniClass();
+                       var iframe = $("#myAdminInnerFrame1");
+                        iframe.attr("src", iframe.attr("src"));
+                    }, 1000);
+                break;
+        }
+    },
+    false
+);
+
+
+wizardCancelPage = () =>{
+    $("#addOmniClass").fadeOut(100);
+    $('#gdiv').html('')
 }

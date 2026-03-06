@@ -287,7 +287,8 @@
                 "ProjectWise 365" : true,
                 "ProjectWise" : true,
                 "Power BI" : true,
-                "Share Point": true
+                "Share Point": true,
+                "AssetHierarchy" : true
             },
             "Project": true
         }

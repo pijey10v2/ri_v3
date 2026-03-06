@@ -131,6 +131,7 @@ function updateFrameSrc(data){
                         destroyCesium(cesiumObj)
                     }
                     cesiumObj = loadRiCesium();
+                    loadAssetHierarchy();
                     break;
                 case "myDashboard":
                     if(localStorage.Project_type == 'ASSET'){
@@ -188,6 +189,7 @@ function updateFrameSrc(data){
                         destroyCesium(cesiumObj)
                     }
                     cesiumObj = loadRiCesium();
+                    loadAssetHierarchy();
                     break;
                 case "myDashboard":
                     if(localStorage.Project_type == 'ASSET'){
@@ -2829,6 +2831,9 @@ function setAccessRightButtonKKR(rightMenu, accessProcess, accessSetup, accessMa
                                 </div>
                                 <div class="subButton" id = "configPowerBI" rel = "main-powerbi" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
                                     <span class="parentTagName">Power BI</span>
+                                </div>
+                                 <div class="subButton" id = "asset_hierarchy_crud" rel = "main-project-dashboard" onclick = "onFunctionProjAdmin(this, \'myAdmin\')">
+                                    <span class="parentTagName">Asset Table Hierarchy Setup</span>
                                 </div>
                             `
                         }
@@ -9000,6 +9005,9 @@ function onFunctionProjAdmin(ele, frameId){
         case 'construct_issue_PPU':
             $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, true, parentTagNameText);
             break;
+        case 'asset_hierarchy_crud':  
+            $("#"+frameId)[0].contentWindow.openJogetFromProjAdmin(linkid, true, 'Asset Hierarchy');
+            break;
         default:
             break;
     }
@@ -14401,7 +14409,7 @@ var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 eventer(
     messageEvent,
     function (e) {
-    
+    console.log("EVENT FORM NAME: ", e.data.formName);
         switch (e.data.formName) {
             case "Claim Form":
                 showVisibilityButton("backButtonContainer", "")
@@ -14456,6 +14464,9 @@ eventer(
                     eventSuccessMsg('EOT');
                 }
                 
+                break;
+            case "Asset Submitted":
+                wizardCancelPage();
                 break;
 
             
@@ -14594,6 +14605,7 @@ $(document).ready(function(){
             localStorage.view_pref = res[0];
         }
     });
+    loadAssetHierarchy();
 })
 
 function refreshLayerList() {
@@ -14701,7 +14713,7 @@ function selectMetadata(ele){
     wizardCancelPage()
 }
 
-$(document).ready(function(){
+function loadAssetHierarchy(){
 
     $.ajax({
         type: "POST",
@@ -14755,24 +14767,24 @@ $(document).ready(function(){
         }
     });
 
-});
+    var to = false;
 
-var to = false;
+    $('#treeSearch').keyup(function () {
 
-$('#treeSearch').keyup(function () {
+        if (to) {
+            clearTimeout(to);
+        }
 
-    if (to) {
-        clearTimeout(to);
-    }
+        to = setTimeout(function () {
 
-    to = setTimeout(function () {
+            var v = $('#treeSearch').val();
+            $('#assetHierarchyTree').jstree(true).search(v);
 
-        var v = $('#treeSearch').val();
-        $('#assetHierarchyTree').jstree(true).search(v);
+        }, 250);
 
-    }, 250);
+    });
 
-});
+};
 
 $('#assetHierarchyTree').on("select_node.jstree", function (e, data) {
 

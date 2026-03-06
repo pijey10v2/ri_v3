@@ -89,6 +89,65 @@ echo '
             <!-- <script src="JS/fontawesome.js"></script> -->
             <script src="JS/all.js"></script>
             <script src="JS/JsLibrary/mixitup.min.js"></script>
+            
+            <style>
+                .btn-link-transparent{
+                    background-color: transparent;
+                    border-color: transparent;
+                    box-shadow: none;
+                    color: #212221ff;
+                    padding: 0;
+                    position: relative;
+                    cursor: pointer;
+                }
+                
+                ul.tree-list li {
+                    list-style: none;
+                    padding: 0.2em 0;
+                }
+                ul.tree-list li label {
+                    display: inline-block;
+                    /*margin-left: 0.5em;*/
+                    padding: 0.2em 1.3em;
+                    border-radius: 0.2em;
+                    font-size: 13px;
+                    float: none !important;
+                    width: auto;
+                }
+                ul.tree-list li > ul {
+                    padding-left: 1.2em;
+                    position: relative;
+                }
+                ul.tree-list li > ul > li {
+                    display: none;
+                }
+                ul.tree-list li > ul:before {
+                    content: "\f0da";
+                    font-family: "FontAwesome";
+                    visibility: visible;
+                    font-size: 13px;
+                    position: absolute;
+                    left: 5px;
+                    top: -17px;
+                    transition: transform 0.3s;
+                }
+                ul.tree-list li input {
+                    width: 80%;
+                    position: absolute;
+                    cursor: pointer;
+                    margin-top: 0.5em;
+                    opacity: 0;
+                }
+                ul.tree-list li input:hover + label {
+                    background-color: #eee;
+                }
+                ul.tree-list li input:checked ~ ul:before {
+                    transform: rotate(90deg);
+                }
+                ul.tree-list li input:checked ~ ul > li {
+                    display: block;
+                }
+            </style>
 
         </head>';
 
@@ -479,6 +538,31 @@ echo '
                 </div>
                 <div class="projectDashboardContainer" id = "digitalReportingInfo">
                     <iframe id = "myAdminInnerFrame" src = "" style="width: 100%; height: 100%; border: unset;"></iframe>
+                    <div class="omniclass-container" id="omniClassContainer" style="width: 100%; height: 100%; border: unset; display: flex;">
+                        <div id="addOmniClass" class="modal" style="z-index: 50;">
+                            <div class="modal-content">
+                                <span id="wizardClose" class ="closebuttonWizard" rel ="" onclick="wizardCancelPage()">&times;</span>
+                                <span id="wizardMaximize" class ="maximizebutton" rel =""><img src="./Images/icons/form/maximize.png"></span>
+                                <div class="modal-header"><a></a></div>
+                    
+                                <div class="modal-container" id="omniClassContainer1" style="display: block !important">
+                                    <iframe id = "myAdminInnerFrame2" src = "" style="width: 100%; height: 100%; border: unset;"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-table1" style="width: 40%; height: 100%; background-color: #FFFFFF; border: unset; margin-right: 5px;">
+                            <h4 style="margin-left: 10px;">Hierarchy</h4>
+                            <hr>
+                            <ul id="myUL" class="tree-list">
+                            </ul>
+                        </div>
+                        <div class="container-table1" style="width: 60%; height: 100%; background-color: #FFFFFF; border: unset;">
+                            <h4 style="margin-left: 10px;">Data List</h4>
+                            <hr>
+                            <iframe id = "myAdminInnerFrame1" src = "" style="width: 100%; height: 90%; border: unset;"></iframe>
+                        </div>
+                    </div>
+
                 </div>
             </div>';
 

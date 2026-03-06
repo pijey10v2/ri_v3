@@ -2903,6 +2903,9 @@ echo '
                                     <button class="toolButton mid bulk" rel="insight" title="Bulk Export Process" data-width="55" data-page="bulkAsset"><i class="fa-solid fa-paste"></i><div class="label">Bulk<br>Export</div></button>
                                     <button class="toolButton mid" rel="list" title="Maintenance Browser" data-process="maintenanceBrowser"><i class="fa-solid fa-wrench"></i><div class="label">Maintenance<br>Browser</div></button>
                                     <button class="toolButton mid" rel="insight" title="Setup" data-width="70" data-page="fmSetupList"><i class="fa-solid fa-gear"></i><div class="label">Setup</div></button>
+                                    <button class="toolButton mid inventory" rel="list" title="Asset Table - Hierarchy View" data-process="assetTableHierarchyView" style="display: none;">
+                                    <i class="fa-solid fa-boxes-stacked"></i><div class="label">Asset Table - <br>Hierarchy View</div>
+                                    </button>
                                     </div>
                             </div>
                             <div class="text">Facilites</div>

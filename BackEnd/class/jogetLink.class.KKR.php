@@ -4362,6 +4362,8 @@ class JogetLink
 		$markup_json_notification_package = $jsonPrefixDocument."inbox_markupPackage?d-2911267-fn_ResourceId=".$this->currUserEmail."&d-2911267-fn_package_uuid=".$this->currPackageUuid;
 		$cons_datalist_markup_sabah = $userviewPrefixDocument."markupForm_crud_sabah?d-6595155-fn_package_uuid=".$this->currPackageUuid;
 		$omni_class_network_asset = $jsonPrefixAsset.'list_AssetHierarchy?start=0&rows=9999';
+		$asset_hierarchy_form = $userviewPrefixAsset."assetHierarchyForm?project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId;
+		$asset_hierarchy_crud = $userviewPrefixAsset."assetHierarchy_crud?project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId;
 
 		$generalLinkArr = array(
 			'cons_json_datalist_task' => $cons_json_datalist_task,
@@ -4508,7 +4510,9 @@ class JogetLink
 			'markup_json_notification_package' => $markup_json_notification_package,
 			'cons_datalist_markup_sabah' => $cons_datalist_markup_sabah,
 
-			'omni_class_network_asset' => $omni_class_network_asset
+			'omni_class_network_asset' => $omni_class_network_asset,
+			'asset_hierarchy_crud' => $asset_hierarchy_crud,
+			'asset_hierarchy_form' => $asset_hierarchy_form
 		);
 
 		if($this->currProjectOwner == "SSLR2"){
