@@ -14726,80 +14726,110 @@ function loadAssetHierarchy(){
 
             let treeData = [];
             let result = response.data;
+            let parentSet = new Set(); // Detect parent nodes
 
-            result.sort((a,b)=> a.auto_id - b.auto_id);
+            // Sort hierarchy properly
+            result.sort((a,b)=> 
+                (a.item_no || "").localeCompare(b.item_no || "", undefined, {numeric:true})
+            );
+
+            result.forEach(function(item){
+                if(item.item_no.includes(".")){
+                    parentSet.add(item.item_no.substring(0, item.item_no.lastIndexOf(".")));
+                }
+            });
 
             result.forEach(function(item){
 
                 let parent = "#";
 
-                if(item.parent_asset_id && item.parent_asset_id !== "0"){
-                    parent = item.parent_asset_id;
+                if(item.item_no.includes(".")){
+                    parent = item.item_no.substring(0, item.item_no.lastIndexOf("."));
                 }
 
-                let text = item.asset_name ? item.asset_name : item.asset_type;
+                let text = item.item_no + " " + item.full_asset_name;
+
+                // Make parent bold
+                if(parentSet.has(item.item_no)){
+                    text = "<b>" + text + "</b>";
+                }
 
                 treeData.push({
-                    id: item.id,
+                    id: item.item_no,
                     parent: parent,
-                    text: text
+                    text: text,
+                    data:{
+                        asset_id: item.id
+                    }
                 });
 
             });
 
+            // Destroy previous tree
             $('#assetHierarchyTree').jstree("destroy");
 
+            // Create tree
             $('#assetHierarchyTree').jstree({
                 core:{
-                    data: treeData
-                },
-                plugins:["search","wholerow","types"],
-                types:{
-                    "default":{
-                        "icon":"fa fa-folder"
+                    data: treeData,
+                    themes:{
+                        icons:false
                     }
+                },
+                plugins:["search","wholerow","state"],
+                search:{
+                    case_sensitive:false,
+                    show_only_matches:true
                 }
             });
 
+            // node click event
+            $('#assetHierarchyTree')
+            .off("select_node.jstree")
+            .on("select_node.jstree", function (e, data) {
+
+                let nodeID = data.node.data.asset_id;
+
+                if(!nodeID) return;
+
+                let url = JOGETLINK['asset_table_hierarchy_list'];
+
+                url += "&asset_id=" + nodeID;
+
+                $("#jogetAssetTableHierarchyList")
+                    .attr("src", url)
+                    .show();
+
+            });
+
+
+            // search filter
+            let to = false;
+
+            $('#treeSearch')
+            .off('keyup')
+            .on('keyup', function () {
+
+                if (to) clearTimeout(to);
+
+                to = setTimeout(function () {
+
+                    let v = $('#treeSearch').val();
+
+                    $('#assetHierarchyTree')
+                        .jstree(true)
+                        .search(v);
+
+                }, 250);
+
+            });
+
         },
+
         error:function(xhr,status,error){
             console.log("Hierarchy load error:", error);
         }
-    });
-
-    var to = false;
-
-    $('#treeSearch').keyup(function () {
-
-        if (to) {
-            clearTimeout(to);
-        }
-
-        to = setTimeout(function () {
-
-            var v = $('#treeSearch').val();
-            $('#assetHierarchyTree').jstree(true).search(v);
-
-        }, 250);
 
     });
 
-};
-
-$('#assetHierarchyTree').on("select_node.jstree", function (e, data) {
-
-    let nodeID = data.node.id;
-    let parentID = data.node.parent;
-
-    let url = JOGETLINK['asset_table_hierarchy_list'];
-
-    if(parentID === "#"){
-        url += "&parent_asset=" + nodeID;
-    }else{
-        url += "&child_asset=" + nodeID;
-    }
-
-    $("#jogetAssetTableHierarchyList").attr("src", url);
-
-});
-
+}
