@@ -14685,12 +14685,9 @@ function loadAssetHierarchy(){
 
                 let text = item.item_no + " " + item.asset_name;
 
-                // // Make parent bold
-                // if(parentSet.has(item.item_no)){
-                //     text = "<b>" + text + "</b>";
-                // }
+                // Make parent bold
                 if(parentSet.has(item.item_no)){
-                    text = text; // revert to not bold for now
+                    text = text;
                 }
 
                 treeData.push({
@@ -14772,4 +14769,5 @@ function loadAssetHierarchy(){
     });
 
 }
+
 
