@@ -6300,98 +6300,289 @@ OnClickEditUserList = () =>{
     $("#adminProjectUsers").find(".edit").removeAttr("disabled");
 }
 
-function OnLoadOmniClass() {
-    var btnAssetType = document.querySelector('#btnCreateAssetType');
+// function OnLoadOmniClass() {
+//     var btnAssetType = document.querySelector('#btnCreateAssetType');
     
-    $("#myUL").html("");
-    var assetTypeBtn = `<li class="item">
-                            <input type="checkbox" id="assetType" name="assetType">
-                            <label for="assetType">Asset (Parent)</label>
-                            <button type="button" class="btnAssetType btn-link-transparent" id="btnCreateAssetType">
-                                <i class="fa fa-plus-circle"></i>
-                            </button>
-                            <ul class="item-list" id="parentUL"></ul>
-                        </li>`;
-    $("#myUL").append(assetTypeBtn);
+//     $("#myUL").html("");
+
+//     $.ajax({
+//         type: "POST",
+//         url: "BackEnd/fetchAssetHierarchy.php",
+//         dataType: 'json',
+//         data: {
+//             functionName: "getListOfOmniClass",
+//         },
+//         success: function (obj, textStatus) {
+//             var result = obj.data;
+
+//             //Sort Object
+//             result.sort((a, b) => {
+//                     return a.auto_id - b.auto_id;
+//             });
+            
+
+//             for (const [key, value] of Object.entries(result)) {
+//                 var child = "";
+
+//                 if(value.level === "1"){
+//                     child = `<li class="item">
+//                                 <input type="checkbox" name="item1">
+//                                 <label for="item1">
+//                                     <span class="tree-text">${value.item_no} - ${value.asset_name}</span>
+//                                     <button type="button" class="btnAsset btn-link-transparent" id="${value.id}">
+//                                         <i class="fa fa-plus-circle" style="color:#3F51B5;"></i>
+//                                     </button>
+//                                 </label>
+//                                 <ul class="item-list" id="id_${value.id}"></ul>
+//                             </li>`;
+//                     $("#myUL").append(child);
+//                 }
+//                 else {
+//                     child = `<li class="item">
+//                                 <input type="checkbox" name="item1">
+//                                 <label for="item1">
+//                                     <span class="tree-text">${value.item_no} - ${value.asset_name}</span>
+//                                     <button type="button" class="btnAsset btn-link-transparent" id="${value.id}">
+//                                         <i class="fa fa-plus-circle" style="color:#3F51B5;"></i>
+//                                     </button>
+//                                 </label>
+//                                 <ul class="item-list" id="id_${value.id}"></ul>
+//                             </li>`;
+//                     $("#id_"+ value.parent_id).append(child);
+//                 }
+//             }
+
+            
+
+//             const childBtn = document.querySelectorAll('.btnAsset');
+            
+//             childBtn.forEach(btn=> {
+//                 btn.addEventListener('click', () => {
+//                     $("#addOmniClass").fadeIn();
+//                     $(".loader").fadeIn();
+//                     $("#addOmniClass").find(".modal-header a").html("Add New");
+                    
+//                     var url = JOGETLINK['asset_hierarchy_form'];
+//                     $("#omniClassContainer1 #myAdminInnerFrame2").attr("src", url+ "&isParent=false&parent_id=" + btn.id).show();
+//                 });
+//             });
+    
+//         },
+//         error: function (xhr, textStatus, errorThrown) {
+//             var str = textStatus + ": " + errorThrown;
+//         }
+//     });
+
+    
+//     const btnNewParent = `<li>
+//                             <button type="button" class="btnAssetType" id="btnCreateAssetType">
+//                                 Add New   
+//                                 <i class="fa fa-plus-circle" style="color: #FFFFFF"></i>
+//                             </button>
+//                         </li>`;
+                        
+//     $("#myUL").append(btnNewParent);
+
+//     const parentBtn = document.querySelectorAll('.btnAssetType');
+            
+//     parentBtn.forEach(btn=> {
+//         btn.addEventListener('click', () => {
+//             $("#addOmniClass").fadeIn();
+//             $(".loader").fadeIn();
+//             $("#addOmniClass").find(".modal-header a").html("Add New");
+            
+//             const url = JOGETLINK['asset_hierarchy_form'];
+//             $("#omniClassContainer1 #myAdminInnerFrame2").attr("src", url + "&isParent=true").show();
+//         });
+//     });
+// }
+
+function OnLoadOmniClass(){
 
     $.ajax({
         type: "POST",
         url: "BackEnd/fetchAssetHierarchy.php",
-        dataType: 'json',
+        dataType: "json",
         data: {
-            functionName: "getListOfOmniClass",
+            functionName: "getListOfOmniClass"
         },
-        success: function (obj, textStatus) {
-            var result = obj.data;
+        success: function(response){
 
-            //Sort Object
-            result.sort((a, b) => {
-                    return a.auto_id - b.auto_id;
+            let treeData = [];
+            let result = response.data;
+            let parentSet = new Set(); // Detect parent nodes
+
+            // Sort hierarchy properly
+            result.sort((a,b)=> 
+                (a.item_no || "").localeCompare(b.item_no || "", undefined, {numeric:true})
+            );
+
+            result.forEach(function(item){
+                if(item.item_no.includes(".")){
+                    parentSet.add(item.item_no.substring(0, item.item_no.lastIndexOf(".")));
+                }
             });
-            
 
-            for (const [key, value] of Object.entries(result)) {
-                var child = "";
+            result.forEach(function(item){
 
-                if(value.is_parent === "true"){
-                    child = `<li class="item">
-                                <input type="checkbox" name="item1">
-                                <label for="item1">${value.asset_type} 
-                                    <button type="button" class="btnAsset  btn-link-transparent" id="${value.id}">
-                                    <i class="fa fa-plus-circle"></i>
-                                    </button>
-                                </label>
-                                <ul class="item-list" id="id_${value.id}"></ul>
-                                </li>`;
-                    $("#parentUL").append(child);
+                let parent = "#";
+
+                if(item.item_no.includes(".")){
+                    parent = item.item_no.substring(0, item.item_no.lastIndexOf("."));
                 }
-                else {
-                    child = `<li class="item">
-                                <input type="checkbox" name="item1">
-                                <label for="item1">${value.asset_name} 
-                                    <button type="button" class="btnAsset  btn-link-transparent" id="${value.id}">
-                                    <i class="fa fa-plus-circle"></i></button>
-                                </label>
-                                <ul class="item-list" id="id_${value.id}"></ul>
-                                </li>`;
-                    $("#id_"+ value.parent_asset_id).append(child);
-                }
-            }
 
-            
-                const childBtn = document.querySelectorAll('.btnAsset');
-                
-                childBtn.forEach(btn=> {
-                    btn.addEventListener('click', () => {
-                        $("#addOmniClass").fadeIn();
-                        $(".loader").fadeIn();
-                        $("#addOmniClass").find(".modal-header a").html("Add New");
-                        
-                        var url = JOGETLINK['asset_hierarchy_form'];
-                        $("#omniClassContainer1 #myAdminInnerFrame2").attr("src", url+ "&isParent=false&parent_id=" + btn.id).show();
-                    });
+                // let text = item.item_no + " " + item.full_asset_name;
+                let text = `
+                            <div class="tree-row">
+                                <span class="tree-text">${item.item_no} ${item.asset_name}</span>
+                                <button class="btnAddAsset btn-link-transparent" data-id="${item.id}" type="button">
+                                    <i class="fa fa-plus-circle" style="color:#3F51B5;"></i>
+                                </button>
+                            </div>
+                            `;
+
+//                                     <button type="button" class="btnAsset btn-link-transparent" id="${value.id}">
+//                                         <i class="fa fa-plus-circle" style="color:#3F51B5;"></i>
+//                                     </button>
+                // Make parent bold
+                // if(parentSet.has(item.item_no)){
+                //     text = "<b>" + text + "</b>";
+                // }
+
+                treeData.push({
+                    id: item.item_no,
+                    parent: parent,
+                    text: text,
+                    data:{
+                        asset_id: item.id
+                    }
                 });
-        
-            },
-        error: function (xhr, textStatus, errorThrown) {
-            var str = textStatus + ": " + errorThrown;
-            console.log("TEST RESULT: ", str);
-        }
-    });
 
-    const parentBtn = document.querySelectorAll('.btnAssetType');
-            
-    parentBtn.forEach(btn=> {
-        btn.addEventListener('click', () => {
+            });
+
+            // Destroy previous tree
+            $('#assetHierarchyTreeAdmin').jstree("destroy");
+
+            // Create tree
+            $('#assetHierarchyTreeAdmin').jstree({
+                core:{
+                    data: treeData,
+                    themes:{
+                        icons:false
+                    },
+                    check_callback:true
+                },
+                plugins:["search","wholerow","state"],
+                search:{
+                    case_sensitive:false,
+                    show_only_matches:true
+                }
+            });
+
+            // node click event
+            $('#assetHierarchyTreeAdmin')
+            .off("select_node.jstree")
+            .on("select_node.jstree", function (e, data) {
+
+                let nodeID = data.node.data.asset_id;
+
+                if(!nodeID) return;
+
+                let url = JOGETLINK['asset_table_hierarchy_list'];
+
+                url += "&asset_id=" + nodeID;
+
+                // $("#jogetAssetTableHierarchyList")
+                //     .attr("src", url)
+                //     .show();
+
+            });
+
+
+            // search filter
+            let to = false;
+
+            $('#treeSearch')
+            .off('keyup')
+            .on('keyup', function () {
+
+                if (to) clearTimeout(to);
+
+                to = setTimeout(function () {
+
+                    let v = $('#treeSearch').val();
+
+                    $('#assetHierarchyTreeAdmin')
+                        .jstree(true)
+                        .search(v);
+
+                }, 250);
+
+            });
+
+            $(document).on("click",".btnAddAsset",function(e){
+
+                e.stopPropagation();
+
+                let parentId = $(this).data("id");
+
+                let tree = $('#assetHierarchyTreeAdmin').jstree(true);
+
+                // create temporary node
+                let newNode = tree.create_node(parentId,{
+                    text:"New Asset",
+                    icon:false
+                });
+
+                if(newNode){
+                    tree.edit(newNode); // allow inline rename
+                }
+
+            });
+
+        },
+
+        error:function(xhr,status,error){
+            console.log("Hierarchy load error:", error);
+        }
+
+    });
+    
+    function openAssetForm(isParent, parentId){
+
+        let url = JOGETLINK['asset_hierarchy_form'];
+
+        if(isParent){
+            url += "&isParent=true";
+            if(parentId) url += "&parent_id=" + parentId;
+        }
+
         $("#addOmniClass").fadeIn();
         $(".loader").fadeIn();
-        $("#addOmniClass").find(".modal-header a").html("Add New");
-        
-        var url = JOGETLINK['asset_hierarchy_form'];
-        $("#omniClassContainer1 #myAdminInnerFrame2").attr("src", url + "&isParent=true").show();
-        });
+        $("#addOmniClass .modal-header a").text("Add New");
+
+        $("#omniClassContainer1 #myAdminInnerFrame2")
+            .attr("src", url)
+            .show();
+    }
+
+    $("#assetHierarchyTreeAdmin")
+    .on("mousedown",".btnAddAsset",e=>e.stopImmediatePropagation())
+    .on("click",".btnAddAsset",function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openAssetForm(true,$(this).data("id"));
     });
+
+    $(".container-table-hierarchy")
+    .on("click","#btnCreateAssetType",function(e){
+        e.preventDefault();
+        openAssetForm(true);
+    });
+
 }
+
+
 
 
 $(document).on("refreshAssetIframe", function(){

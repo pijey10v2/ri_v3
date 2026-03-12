@@ -14411,73 +14411,9 @@ eventer(
     function (e) {
     console.log("EVENT FORM NAME: ", e.data.formName);
         switch (e.data.formName) {
-            case "Claim Form":
-                showVisibilityButton("backButtonContainer", "")
-                break;
-            case "Contract Form":
-                showVisibilityButton("backButtonContainer", "")
-                break;
-            case "VO Form":
-                showVisibilityButton("backButtonContainer", "")
-                break;
-            case "EOT Form":
-                showVisibilityButton("backButtonContainer", "")
-                break;
-            case "Contract Approval Submitted":
-                if(localStorage.contractLevel == 'UPSTREAM'){
-                    eventSuccessMsg('Contract');
-                }else{
-                    setTimeout(() => {
-                        $("#finance_list_ContractInbox").trigger("click")
-                    }, 3000);
-                }
-                
-                break;
-            case "Claim Approval Submitted":
-                if(localStorage.contractLevel == 'UPSTREAM'){
-                    eventSuccessMsg('Claim');
-                }else{
-                    setTimeout(() => {
-                        $("#finance_list_ClaimInbox").trigger("click")
-                    }, 3000);
-                }
-               
-                break;
-            case "VO Approval Submitted":
-                setTimeout(() => {
-                    if(localStorage.contractLevel == 'DOWNSTREAM'){
-                        $("#finance_list_VOInbox_SSLR2").trigger("click")
-                    }else if(localStorage.contractLevel == 'UPSTREAM'){
-                        eventSuccessMsg('Vo');
-                    }else{
-                        $("#finance_list_VOInbox").trigger("click")                
-                    }
-                }, 3000);
-               
-                break;
-            case "EOT Approval Submitted":
-                if(localStorage.contractLevel == 'DOWNSTREAM'){
-                    setTimeout(() => {
-                        $("#finance_list_EOTInbox_SSLR2").trigger("click")
-                    }, 3000);
-                }else{
-                    eventSuccessMsg('EOT');
-                }
-                
-                break;
             case "Asset Submitted":
                 wizardCancelPage();
                 break;
-
-            
-        }
-
-        if(e.data.bimLinking){
-            openBimLinkingModal(e.data.bimLinking, e.data.bimLayerName);
-        }
-
-        if(e.data.bimRedirection){
-            floatBoxcompnentInfo("ClaimView", e.data.bimRedirection, e.data.bimLayerName);
         }
     },
     false
@@ -14833,3 +14769,21 @@ function loadAssetHierarchy(){
     });
 
 }
+
+$('#assetHierarchyTree').on("select_node.jstree", function (e, data) {
+
+    let nodeID = data.node.id;
+    let parentID = data.node.parent;
+
+    let url = JOGETLINK['asset_table_hierarchy_list'];
+
+    if(parentID === "#"){
+        url += "&parent_asset=" + nodeID;
+    }else{
+        url += "&child_asset=" + nodeID;
+    }
+
+    $("#jogetAssetTableHierarchyList").attr("src", url);
+
+});
+

@@ -91,6 +91,17 @@ echo '
             <script src="JS/JsLibrary/mixitup.min.js"></script>
             
             <style>
+                #myUL{
+                    width: 100%;
+                    height: calc(100% - 60px); /* adjust depending on header space */
+                    overflow-x: auto;
+                    overflow-y: auto;
+                    box-sizing: border-box;
+                    scrollbar-width: thin;
+                }
+                #myUL .jstree-anchor{
+                    white-space: nowrap;
+                }
                 .btn-link-transparent{
                     background-color: transparent;
                     border-color: transparent;
@@ -100,52 +111,81 @@ echo '
                     position: relative;
                     cursor: pointer;
                 }
+
+                #omniClassContainer{
+                    display: flex;
+                    width: 100%;
+                    height: 100%;
+                }
+                    
+                #omniClassContainer > div{
+                    min-width: 0;
+                }
+
+                .container-table-hierarchy{
+                    width: 50%;
+                    margin: 5px;
+                    padding:  0px 10px 0 10px;
+                    background: #fff;
+                    overflow: auto;
+                    min-width: 0;
+                    max-width: 50%;
+                    border: unset;
+                }
+
+                .container-table-datalist{
+                    width: 50%;
+                    margin: 5px;
+                    padding:  10px 10px 0 10px;
+                    background: #fff;
+                    overflow: auto;
+                    min-width: 0;
+                    max-width: 50%;
+                    border: unset;
+                }
+                .btnAsset{
+                    flex-shrink: 0;
+                    margin-left: 6px;
+                }
+                .tree-text{
+                    flex: 1;
+                    word-break: break-word;
+                }
+
                 
-                ul.tree-list li {
-                    list-style: none;
-                    padding: 0.2em 0;
-                }
-                ul.tree-list li label {
-                    display: inline-block;
-                    /*margin-left: 0.5em;*/
-                    padding: 0.2em 1.3em;
-                    border-radius: 0.2em;
-                    font-size: 13px;
-                    float: none !important;
-                    width: auto;
-                }
-                ul.tree-list li > ul {
-                    padding-left: 1.2em;
-                    position: relative;
-                }
-                ul.tree-list li > ul > li {
-                    display: none;
-                }
-                ul.tree-list li > ul:before {
-                    content: "\f0da";
-                    font-family: "FontAwesome";
-                    visibility: visible;
-                    font-size: 13px;
-                    position: absolute;
-                    left: 5px;
-                    top: -17px;
-                    transition: transform 0.3s;
-                }
-                ul.tree-list li input {
-                    width: 80%;
-                    position: absolute;
+
+                .btnAssetType {
+                    background-color: #2F3E5A;
+                    color: #fff;
+                    border: none;
+                    padding: 6px 14px;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    font-weight: 500;
                     cursor: pointer;
-                    margin-top: 0.5em;
-                    opacity: 0;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: all 0.25s ease;
                 }
-                ul.tree-list li input:hover + label {
-                    background-color: #eee;
+
+                .btnAssetType i{
+                    font-size: 15px;
                 }
-                ul.tree-list li input:checked ~ ul:before {
+
+                .btnAssetType:hover{
+                    background-color: #384663ff;
+                    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+                    transform: translateY(-1px);
+                }
+
+                .btnAssetType:active{
+                    transform: translateY(0);
+                    box-shadow: none;
+                }
+                .btnAssetType:hover i{
                     transform: rotate(90deg);
-                }
-                ul.tree-list li input:checked ~ ul > li {
-                    display: block;
+                    transition: transform 0.3s ease;
                 }
             </style>
 
@@ -550,13 +590,20 @@ echo '
                                 </div>
                             </div>
                         </div>
-                        <div class="container-table1" style="width: 40%; height: 100%; background-color: #FFFFFF; border: unset; margin-right: 5px;">
+                        <div class="container-table-hierarchy">
                             <h4 style="margin-left: 10px;">Hierarchy</h4>
                             <hr>
-                            <ul id="myUL" class="tree-list">
-                            </ul>
+                            <button type="button" class="btnAssetType" id="btnCreateAssetType">
+                                Add New  
+                                <i class="fa fa-plus-circle" style="color: #FFFFFF"></i>
+                            </button>
+                            </br></br>
+                            <div class="hierarchy-container">
+                                <input class="btn btn-sm-primary" type="text" id="treeSearch" placeholder="Search asset..." style="width:100%; margin-bottom:5px;">
+                                <div id="assetHierarchyTreeAdmin" class="tree-list"></div>
+                            </div>
                         </div>
-                        <div class="container-table1" style="width: 60%; height: 100%; background-color: #FFFFFF; border: unset;">
+                        <div class="container-table-datalist">
                             <h4 style="margin-left: 10px;">Data List</h4>
                             <hr>
                             <iframe id = "myAdminInnerFrame1" src = "" style="width: 100%; height: 90%; border: unset;"></iframe>
