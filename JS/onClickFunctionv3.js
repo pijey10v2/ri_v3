@@ -14683,11 +14683,14 @@ function loadAssetHierarchy(){
                     parent = item.item_no.substring(0, item.item_no.lastIndexOf("."));
                 }
 
-                let text = item.item_no + " " + item.full_asset_name;
+                let text = item.item_no + " " + item.asset_name;
 
-                // Make parent bold
+                // // Make parent bold
+                // if(parentSet.has(item.item_no)){
+                //     text = "<b>" + text + "</b>";
+                // }
                 if(parentSet.has(item.item_no)){
-                    text = "<b>" + text + "</b>";
+                    text = text; // revert to not bold for now
                 }
 
                 treeData.push({
@@ -14769,21 +14772,4 @@ function loadAssetHierarchy(){
     });
 
 }
-
-$('#assetHierarchyTree').on("select_node.jstree", function (e, data) {
-
-    let nodeID = data.node.id;
-    let parentID = data.node.parent;
-
-    let url = JOGETLINK['asset_table_hierarchy_list'];
-
-    if(parentID === "#"){
-        url += "&parent_asset=" + nodeID;
-    }else{
-        url += "&child_asset=" + nodeID;
-    }
-
-    $("#jogetAssetTableHierarchyList").attr("src", url);
-
-});
 
