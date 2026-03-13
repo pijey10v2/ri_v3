@@ -14683,12 +14683,18 @@ function loadAssetHierarchy(){
                     parent = item.item_no.substring(0, item.item_no.lastIndexOf("."));
                 }
 
-                let text = item.item_no + " " + item.asset_name;
-
-                // Make parent bold
-                if(parentSet.has(item.item_no)){
-                    text = text;
-                }
+                let text = `
+                <div class="tree-row">
+                    <span class="tree-text">${item.item_no} ${item.asset_name}</span>
+                    <button 
+                        class="btnAddAssetData btn-link-transparent"
+                        data-id="${item.id}" 
+                        type="button"
+                        style="background:none;border:none;padding:0;">
+                        <i class="fa fa-plus-circle" style="color:#3F51B5;"></i>
+                    </button>
+                </div>
+                `;
 
                 treeData.push({
                     id: item.item_no,
@@ -14710,7 +14716,8 @@ function loadAssetHierarchy(){
                     data: treeData,
                     themes:{
                         icons:false
-                    }
+                    },
+                    check_callback:true
                 },
                 plugins:["search","wholerow","state"],
                 search:{
@@ -14760,6 +14767,26 @@ function loadAssetHierarchy(){
 
             });
 
+            $(document).on("click",".btnAddAssetData",function(e){
+
+                e.stopPropagation();
+
+                let parentId = $(this).data("id");
+
+                let tree = $('#assetHierarchyTree').jstree(true);
+
+                // create temporary node
+                let newNode = tree.create_node(parentId,{
+                    text:"New Asset",
+                    icon:false
+                });
+
+                if(newNode){
+                    tree.edit(newNode); // allow inline rename
+                }
+
+            });
+
         },
 
         error:function(xhr,status,error){
@@ -14768,6 +14795,35 @@ function loadAssetHierarchy(){
 
     });
 
+    function openAssetForm(isParent, parentId){
+
+        let url = JOGETLINK['asset_hierarchy_form'];
+
+        if(isParent){
+            url += "&isParent=true";
+            if(parentId) url += "&parent_id=" + parentId;
+        }
+
+        $("#hierarchyClassContainer1").show();
+        $("#addHierarchyClass .modal-header a").text("Add New Asset Data");
+        $("#hierarchyClassContainer1 #hierarchyInnerFrame2")
+            .attr("src", url)
+            .show();
+        $("#addHierarchyClass").fadeIn();
+    }
+
+    $("#assetHierarchyTree")
+    .on("mousedown",".btnAddAssetData",e=>e.stopImmediatePropagation())
+    .on("click",".btnAddAssetData",function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openAssetForm(true,$(this).data("id"));
+    });
+
 }
+
+$(document).on("click","#wizardClose",function(){
+    $("#addHierarchyClass").hide();
+});
 
 

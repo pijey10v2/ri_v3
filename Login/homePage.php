@@ -4133,7 +4133,18 @@ echo '
                         <div class="infoFooter">
                         </div>
                     </div>
-                    <div class="navbox jogetList assetTableHierarchyList">
+                    <div class="navbox jogetList assetTableHierarchyList" style="background:white;">
+                        <div id="addHierarchyClass" class="modal" style="z-index: 50;">
+                            <div class="modal-content">
+                                <span id="wizardClose" class ="closebuttonWizard" rel ="" onclick="wizardCancelPage()">&times;</span>
+                                <span id="wizardMaximize" class ="maximizebutton" rel =""><img src="./Images/icons/form/maximize.png"></span>
+                                <div class="modal-header"><a></a></div>
+                    
+                                <div class="modal-container" id="hierarchyClassContainer1" style="display: block !important">
+                                    <iframe id = "hierarchyInnerFrame2" src = "" style="width: 100%; height: 100%; border: unset;"></iframe>
+                                </div>
+                            </div>
+                        </div>
                         <div class="infoHeader" id="inventoryButton">
                             <div class="header" id = "nameAssetTableHierarchyList">Asset Table  - Hierarchy View</div>
                             <div class="refreshButton" onclick="detachWidgetOpen(this)" title="Attach/Detach" data-list="assetTableHierarchyView"><i class="fa-solid fa-square-arrow-up-right"></i></div>
