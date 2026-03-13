@@ -4364,6 +4364,8 @@ class JogetLink
 		$omni_class_network_asset = $jsonPrefixAsset.'list_AssetHierarchy?start=0&rows=9999';
 		$asset_hierarchy_form = $userviewPrefixAsset."assetHierarchyForm?project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId;
 		$asset_hierarchy_crud = $userviewPrefixAsset."assetHierarchy_crud?project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId;
+		$new_general_asset_form = $userviewPrefixAsset."newGeneralAssetData?project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId;
+		$list_general_asset_data = $userviewPrefixAsset."assetGeneralData_crud?project_id=".$this->currProjectId."&package_uuid=".$this->currPackageUuid."&package_id=".$this->currPackageId;
 
 		$generalLinkArr = array(
 			'cons_json_datalist_task' => $cons_json_datalist_task,
@@ -4512,7 +4514,9 @@ class JogetLink
 
 			'omni_class_network_asset' => $omni_class_network_asset,
 			'asset_hierarchy_crud' => $asset_hierarchy_crud,
-			'asset_hierarchy_form' => $asset_hierarchy_form
+			'asset_hierarchy_form' => $asset_hierarchy_form,
+			'new_general_asset_form' => $new_general_asset_form,
+			'list_general_asset_data' => $list_general_asset_data
 		);
 
 		if($this->currProjectOwner == "SSLR2"){

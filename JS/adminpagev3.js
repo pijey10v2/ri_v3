@@ -6431,19 +6431,15 @@ function OnLoadOmniClass(){
                     parent = item.item_no.substring(0, item.item_no.lastIndexOf("."));
                 }
 
-                // let text = item.item_no + " " + item.full_asset_name;
                 let text = `
                             <div class="tree-row">
-                                <span class="tree-text">${item.item_no} ${item.asset_name}</span>
+                                <span class="tree-text"><b>${item.item_no}</b> ${item.asset_name}</span>
                                 <button class="btnAddAsset btn-link-transparent" data-id="${item.id}" type="button">
                                     <i class="fa fa-plus-circle" style="color:#3F51B5;"></i>
                                 </button>
                             </div>
                             `;
 
-//                                     <button type="button" class="btnAsset btn-link-transparent" id="${value.id}">
-//                                         <i class="fa fa-plus-circle" style="color:#3F51B5;"></i>
-//                                     </button>
                 // Make parent bold
                 // if(parentSet.has(item.item_no)){
                 //     text = "<b>" + text + "</b>";
@@ -6547,42 +6543,40 @@ function OnLoadOmniClass(){
         }
 
     });
-    
-    function openAssetForm(isParent, parentId){
-
-        let url = JOGETLINK['asset_hierarchy_form'];
-
-        if(isParent){
-            url += "&isParent=true";
-            if(parentId) url += "&parent_id=" + parentId;
-        }
-
-        $("#addOmniClass").fadeIn();
-        $(".loader").fadeIn();
-        $("#addOmniClass .modal-header a").text("Add New");
-
-        $("#omniClassContainer1 #myAdminInnerFrame2")
-            .attr("src", url)
-            .show();
-    }
-
-    $("#assetHierarchyTreeAdmin")
-    .on("mousedown",".btnAddAsset",e=>e.stopImmediatePropagation())
-    .on("click",".btnAddAsset",function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        openAssetForm(true,$(this).data("id"));
-    });
-
-    $(".container-table-hierarchy")
-    .on("click","#btnCreateAssetType",function(e){
-        e.preventDefault();
-        openAssetForm(true);
-    });
 
 }
 
+$("#assetHierarchyTreeAdmin")
+.on("mousedown",".btnAddAsset",e=>e.stopImmediatePropagation())
+.on("click",".btnAddAsset",function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    openAssetForm(true,$(this).data("id"));
+});
 
+$(".container-table-hierarchy")
+.on("click","#btnCreateAssetType",function(e){
+    e.preventDefault();
+    openAssetForm(true);
+});
+
+function openAssetForm(isParent, parentId){
+
+    let url = JOGETLINK['asset_hierarchy_form'];
+
+    if(isParent){
+        url += "&isParent=true";
+        if(parentId) url += "&parent_id=" + parentId;
+    }
+
+    $("#addNewAsset").fadeIn();
+    $(".loader").fadeIn();
+    $("#addNewAsset .modal-header a").text("Add New");
+
+    $("#omniClassContainer1 #myAdminInnerFrame2")
+        .attr("src", url)
+        .show();
+}
 
 
 $(document).on("refreshAssetIframe", function(){
@@ -6599,6 +6593,7 @@ var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 eventer(
     messageEvent,
     function (e) {
+        console.log("formName", e.data.formName);
         switch (e.data.formName) {
             case "Asset Submitted":
                 wizardCancelPage();
@@ -6615,6 +6610,6 @@ eventer(
 
 
 wizardCancelPage = () =>{
-    $("#addOmniClass").fadeOut(100);
+    $("#addNewAsset").fadeOut(100);
     $('#gdiv').html('')
 }

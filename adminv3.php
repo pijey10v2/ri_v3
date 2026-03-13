@@ -136,7 +136,7 @@ echo '
                 .container-table-datalist{
                     width: 50%;
                     margin: 5px;
-                    padding:  10px 10px 0 10px;
+                    padding:  0px 10px 0 10px;
                     background: #fff;
                     overflow: auto;
                     min-width: 0;
@@ -151,8 +151,6 @@ echo '
                     flex: 1;
                     word-break: break-word;
                 }
-
-                
 
                 .btnAssetType {
                     background-color: #2F3E5A;
@@ -579,7 +577,7 @@ echo '
                 <div class="projectDashboardContainer" id = "digitalReportingInfo">
                     <iframe id = "myAdminInnerFrame" src = "" style="width: 100%; height: 100%; border: unset;"></iframe>
                     <div class="omniclass-container" id="omniClassContainer" style="width: 100%; height: 100%; border: unset; display: flex;">
-                        <div id="addOmniClass" class="modal" style="z-index: 50;">
+                        <div id="addNewAsset" class="modal" style="z-index: 50;">
                             <div class="modal-content">
                                 <span id="wizardClose" class ="closebuttonWizard" rel ="" onclick="wizardCancelPage()">&times;</span>
                                 <span id="wizardMaximize" class ="maximizebutton" rel =""><img src="./Images/icons/form/maximize.png"></span>

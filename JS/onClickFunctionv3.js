@@ -14735,16 +14735,15 @@ function loadAssetHierarchy(){
 
                 if(!nodeID) return;
 
-                let url = JOGETLINK['asset_table_hierarchy_list'];
+                let url = JOGETLINK['list_general_asset_data'];
 
-                url += "&asset_id=" + nodeID;
+                url += "&parent_id=" + nodeID;
 
                 $("#jogetAssetTableHierarchyList")
                     .attr("src", url)
                     .show();
 
             });
-
 
             // search filter
             let to = false;
@@ -14794,10 +14793,10 @@ function loadAssetHierarchy(){
         }
 
     });
-
+    
     function openAssetForm(isParent, parentId){
 
-        let url = JOGETLINK['asset_hierarchy_form'];
+        let url = JOGETLINK['new_general_asset_form'];
 
         if(isParent){
             url += "&isParent=true";
@@ -14822,8 +14821,8 @@ function loadAssetHierarchy(){
 
 }
 
+
 $(document).on("click","#wizardClose",function(){
     $("#addHierarchyClass").hide();
 });
-
 
